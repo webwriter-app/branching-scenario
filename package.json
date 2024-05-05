@@ -1,0 +1,16 @@
+{
+  "name": "@webwriter/branching-scenario",
+  "version": "0.0.1",
+  "keywords": [
+    "webwriter-widget"
+  ],
+  "license": "MIT",
+  "author": "",
+  "dependencies": {
+    "@webwriter/lit": "^1",
+    "lit": "^1.0.1"
+  },
+  "exports": {
+    "./widgets/webwriter-branching-scenario": "./widgets/webwriter-branching-scenario.ts"
+  }
+}
