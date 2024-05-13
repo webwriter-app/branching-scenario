@@ -7,6 +7,7 @@
   "license": "MIT",
   "author": "",
   "dependencies": {
+    "@shoelace-style/shoelace": "^2.15.0",
     "@webwriter/lit": "^1",
     "lit": "^1.0.1"
   },
