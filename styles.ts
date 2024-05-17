@@ -79,7 +79,7 @@ export default css`
     background: #ffffff;
     border: 1px solid #949494;
     padding: 0px;
-    width: 300px;
+    width: 280px;
     font-family: "Roboto", sans-serif;
     -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
     box-shadow: 0 2px 20px 2px #d0d0d0;
@@ -101,15 +101,27 @@ export default css`
     border-radius: 4px 4px 0px 0px;
 
     display: flex;
-    flex-direction: row; /* This is the default, but it's good to be explicit */
-    justify-content: flex-start; /* Aligns items to the start of the container */
-    align-items: center; /* Aligns items along the cross-axis (vertically in this case) */
-    gap: 5px; /* Adjust the gap between items as needed */
+    align-items: center; /* Align items vertically */
+
+    display: flex;
+    flex-direction: row; // This is the default, but it's good to be explicit
+    justify-content: flex-start; // Aligns items to the start of the container
+    align-items: center; // Aligns items along the cross-axis (vertically in this case)
+    gap: 5px; //Adjust the gap between items as needed
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 15px;
 
     font-weight: 600;
+  }
+  .drawflow-node.sheet .title-box #svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .drawflow .drawflow-node.sheet .title-box .title {
+    margin: 10px;
+    margin-left: 25px;
   }
 
   .drawflow .drawflow-node.selected.sheet .title-box {
@@ -119,6 +131,23 @@ export default css`
   .drawflow-node.sheet .content {
     padding: 15px;
     color: #71717a;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Aligns items to the start of the container */
+    gap: 0px;
+  }
+
+  .drawflow-node.sheet .content .input-label {
+    font-size: 14px;
+    color: #a1a1a1; /* gray tone */
+    margin: 2px;
+  }
+
+  .drawflow-node.sheet .content #test-textarea {
+    resize: none;
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem;
   }
 
   /* ------- */
@@ -129,7 +158,7 @@ export default css`
     background: #f6f0fd;
     border: 1px solid #ab54f7;
     padding: 0px;
-    width: 120px;
+    width: auto;
     color: black;
     text-align: center;
     font-family: "Roboto", sans-serif;
@@ -140,10 +169,19 @@ export default css`
   .drawflow-node.branch .title-box {
     display: flex;
     flex-direction: row;
-    justify-content: center; /* Centers items horizontally */
+    justify-content: flex-start; /* Centers items horizontally */
     align-items: center; /* Centers items vertically */
-    gap: 10px; /* Adjust the gap between items as needed */
-    padding: 10px;
+    padding: 15px;
+    width: auto;
+  }
+
+  .drawflow-node.branch .title-box #svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .drawflow .drawflow-node.branch .title-box .title {
+    margin-left: 25px;
   }
 
   .drawflow-node .box {

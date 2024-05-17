@@ -1,6 +1,6 @@
 import { html, css, LitElement, unsafeCSS } from "lit";
 import { LitElementWw } from "@webwriter/lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 
 //Shoelace Imports
 import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
@@ -12,9 +12,11 @@ import "@shoelace-style/shoelace/dist/themes/light.css";
 
 //TODO: sl icons dont work
 import FileEarmarkPlus from "bootstrap-icons/icons/file-earmark-plus.svg";
+import FileEarmark from "bootstrap-icons/icons/file-earmark.svg";
 import ZoomIn from "bootstrap-icons/icons/zoom-in.svg";
 import ZoomOut from "bootstrap-icons/icons/zoom-out.svg";
 import JournalPlus from "bootstrap-icons/icons/journal-plus.svg";
+import Journal from "bootstrap-icons/icons/journal.svg";
 import ArrowCounterClockWise from "bootstrap-icons/icons/arrow-counterclockwise.svg";
 import ArrowClockWise from "bootstrap-icons/icons/arrow-clockwise.svg";
 import Trash3 from "bootstrap-icons/icons/trash3.svg";
@@ -32,11 +34,10 @@ let selected_node_id = null;
 
 @customElement("webwriter-branching-scenario")
 export class WebWriterBranchingScenario extends LitElementWw {
-  //TODO: what does this exactly do?
   @query("#drawflow")
   drawflow;
 
-  @property()
+  @state()
   editor?: Drawflow;
 
   static get scopedElements() {
@@ -49,14 +50,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
     };
   }
 
-  // static scopedElements = {
-  //   "sl-button": SlButton,
-  //   "sl-textarea": SlTextarea,
-  //   "sl-divider": SlDivider,
-  //   "sl-dialog": SlDialog,
-  //   "sl-icon-button": SlIconButton,
-  // };
-
   static styles = [style, styles];
 
   protected firstUpdated(_changedProperties: any): void {
@@ -65,7 +58,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.reroute = true;
     this.editor.reroute_fix_curvature = true;
 
+    this.editor.zoom = 0.75;
+
     this.editor.start();
+
+    this.editor.zoom_refresh();
 
     //register editor event
     this.editor.on("nodeDataChanged", (id) => {
@@ -169,11 +166,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
           >Cancel</sl-button
         >
         <sl-button
-          id="clearConfirmBtn"
           slot="footer"
           variant="danger"
           outline
-          @click=${() => this._clearEditor}
+          @click=${() => this._clearEditor()}
           >Clear</sl-button
         >
       </sl-dialog>`;
@@ -186,7 +182,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       html: `<div><p>Testing HTML Editing</p></div>`,
     };
 
-    // Create a new div element and set its inner HTML
+    //const test = "<div><div class='title-box'><p>Worksheet</p></div><div class='content'><button>test</button><sl-textarea id='test' rows='1' resize='none' value='${name}' placeholder='Enter name' size='small' label='Name' df-name></sl-textarea></div></div>";
 
     //this.editor.addNode(name, inputs, outputs, posx, posy, class, data, html);
     this.editor.addNode(
@@ -197,21 +193,22 @@ export class WebWriterBranchingScenario extends LitElementWw {
       0,
       "sheet",
       data,
-      ` <div>
+      `
+      <div>
         <div class="title-box">
-          <p>Worksheet</p>
+          <svg id="svg">
+            ${FileEarmark}
+          </svg>
+          <p class= "title" >Worksheet</p>
         </div>
         <div class="content">
-          <button>test</button>
-          <sl-textarea
-            rows="1"
-            resize="none"
-            value="${name}"
+        <p class="input-label">Name</p>
+          <input
+            type="text"
+            id="test-textarea"
             placeholder="Enter name"
-            size="small"
-            label="Name"
             df-name
-          ></sl-textarea>
+          ></input>
         </div>
       </div>`,
       false
@@ -233,8 +230,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "branch",
       data,
       `
-        <div>
-          <div class="title-box">${type}</div>
+        <div class="title-box">
+          <svg id="svg">
+            ${Journal}
+          </svg>
+          <div class="title">${type}</div>
         </div>
       `,
       false
