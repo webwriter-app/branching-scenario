@@ -8,6 +8,10 @@ import SlTextarea from "@shoelace-style/shoelace/dist/components/textarea/textar
 import SlDivider from "@shoelace-style/shoelace/dist/components/divider/divider.component.js";
 import SlDialog from "@shoelace-style/shoelace/dist/components/dialog/dialog.component.js";
 import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js";
+import SlDropdown from "@shoelace-style/shoelace/dist/components/dropdown/dropdown.component.js";
+import SlMenu from "@shoelace-style/shoelace/dist/components/menu/menu.component.js";
+import SlMenuItem from "@shoelace-style/shoelace/dist/components/menu-item/menu-item.component.js";
+
 import "@shoelace-style/shoelace/dist/themes/light.css";
 
 //TODO: sl icons dont work
@@ -29,7 +33,6 @@ import { style } from "drawflow/dist/drawflow.style.js";
 
 import styles from "../styles";
 
-let i_count_new_sheets = 0; // Global variable to count new sheets
 let selected_node_id = null;
 
 @customElement("webwriter-branching-scenario")
@@ -47,6 +50,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-divider": SlDivider,
       "sl-dialog": SlDialog,
       "sl-icon-button": SlIconButton,
+      "sl-dropdown": SlDropdown,
+      "sl-menu": SlMenu,
+      "sl-menu-item": SlMenuItem,
     };
   }
 
@@ -102,23 +108,30 @@ export class WebWriterBranchingScenario extends LitElementWw {
   render() {
     return html` <div class="widget">
         <div class="controls">
-          <sl-icon-button
-            id="addSheetBtn"
-            src=${FileEarmarkPlus}
-            @click=${() => this._addSheetNode("Untitled Sheet")}
-          ></sl-icon-button>
-          <sl-icon-button
-            id="addBranchBtn"
-            src=${JournalPlus}
-            @click=${() => this._addBranchNode("Branch")}
-          ></sl-icon-button>
-          <sl-divider vertical style="height: 30px;"></sl-divider>
-          <sl-icon-button src=${ArrowCounterClockWise}> </sl-icon-button>
-          <sl-icon-button src=${ArrowClockWise}></sl-icon-button>
+          <div class="first-item">
+            <sl-icon-button
+              id="addSheetBtn"
+              src=${FileEarmarkPlus}
+              class="border"
+              @click=${() => this._addSheetNode("Untitled Sheet")}
+            ></sl-icon-button>
+            <sl-dropdown>
+              <sl-button slot="trigger">Add Branch</sl-button>
+              <sl-menu>
+                <sl-menu-item @click=${() => this._addBranchNode("Branch")}
+                  >Branch Type</sl-menu-item
+                >
+              </sl-menu>
+            </sl-dropdown>
+          </div>
+          <sl-icon-button src=${ArrowCounterClockWise} class="border">
+          </sl-icon-button>
+          <sl-icon-button src=${ArrowClockWise} class="border"></sl-icon-button>
           <sl-divider vertical style="height: 30px;"></sl-divider>
           <sl-icon-button
             id="clearBtn"
             src=${Trash3}
+            class="border"
             @click=${() =>
               (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
           ></sl-icon-button>
@@ -128,11 +141,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
             <sl-icon-button
               id="zoomInBtn"
               src=${ZoomIn}
+              style="font-size: auto;"
               @click=${() => this.editor.zoom_in()}
             ></sl-icon-button>
             <sl-icon-button
               id="zoomOutBtn"
               src=${ZoomOut}
+              style="font-size: auto;"
               @click=${() => this.editor.zoom_out()}
             ></sl-icon-button>
           </div>

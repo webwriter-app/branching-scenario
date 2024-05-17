@@ -43,7 +43,18 @@ export default css`
   }
 
   .controls .first-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center; /* Center items vertically */
+    gap: 10px;
     margin-right: auto; // Push this item to the start
+  }
+
+  .border {
+    border: 1px solid #cecece;
+    border-radius: 4px;
+    font-size: auto;
   }
 
   #zoomInBtn,
@@ -276,20 +287,10 @@ export default css`
   /* OTHERS */
   /* ---- */
 
-  .drawflow > .drawflow-delete {
-    border: 2px solid #43b993;
-    background: white;
-    color: #43b993;
-    -webkit-box-shadow: 0 2px 20px 2px #43b993;
-    box-shadow: 0 2px 20px 2px #43b993;
-  }
-
   .drawflow-delete {
-    border: 2px solid #4ea9ff;
-    background: white;
-    color: #4ea9ff;
-    -webkit-box-shadow: 0 2px 20px 2px #4ea9ff;
-    box-shadow: 0 2px 20px 2px #4ea9ff;
+    border: 2px solid #b94543;
+    background: #ffe9e8;
+    color: #b94543;
   }
 
   /* ------- */
