@@ -188,7 +188,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 <sl-button @click=${this._addInputToSelectedNode}>
                   Add Input
                 </sl-button>
-                <sl-button> Add Output </sl-button>
+                <sl-button @click=${this._addOutputToSelectedNode}>
+                  Add Output
+                </sl-button>
               `
             : html`
                 <!-- Content to display when the condition is false -->
@@ -304,6 +306,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   private _addInputToSelectedNode() {
     this.editor.addNodeInput(this.selectedNodeId);
+  }
+
+  private _addOutputToSelectedNode() {
+    this.editor.addNodeOutput(this.selectedNodeId);
   }
 }
 
