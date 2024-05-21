@@ -185,6 +185,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   id="saveChangesBtn"
                   @click=${this._saveChangesToNodeData}
                 ></sl-icon-button>
+                <sl-button @click=${this._addInputToSelectedNode}>
+                  Add Input
+                </sl-button>
+                <sl-button> Add Output </sl-button>
               `
             : html`
                 <!-- Content to display when the condition is false -->
@@ -227,7 +231,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.addNode(
       name,
       0,
-      1,
+      0,
       0,
       0,
       "sheet",
@@ -262,8 +266,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //this.editor.addNode(name, inputs, outputs, posx, posy, class, data, html);
     this.editor.addNode(
       type,
-      1,
-      2,
+      0,
+      0,
       0,
       0,
       "branch",
@@ -296,6 +300,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
       name: selectedNode.data.name,
       html: newHTML,
     });
+  }
+
+  private _addInputToSelectedNode() {
+    this.editor.addNodeInput(this.selectedNodeId);
   }
 }
 
