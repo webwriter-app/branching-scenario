@@ -23,6 +23,13 @@ export default css`
     background-color: #fafafb;
     border-radius: 0px 0px 8px 8px;
   }
+  .worksheet {
+    background-color: white;
+    height: 1000px;
+    width: 100%;
+    border: 1px solid;
+    border-color: #e9e9e9;
+  }
 
   .dialog {
     font-family: "Roboto", sans-serif;

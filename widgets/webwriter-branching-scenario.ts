@@ -43,6 +43,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   @property({ type: Boolean }) nodeSelected = false;
   @property({ type: Number }) selectedNodeId = null;
+  @property({ type: String }) selectedNodeName = "";
+  @property({ type: Number }) createdNodeId = null;
 
   static get scopedElements() {
     return {
@@ -74,7 +76,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //register editor event
     this.editor.on("nodeDataChanged", (id) => {
       console.log("nodeDataChanged");
-      console.log(this.editor.getNodeFromId(id));
+      const node = this.editor.getNodeFromId(id);
+      console.log(node);
+      this.selectedNodeName = node.data.name;
     });
 
     // Event listener for node click
@@ -82,6 +86,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       const node = this.editor.getNodeFromId(id);
       this.nodeSelected = true;
       this.selectedNodeId = node.id;
+      this.selectedNodeName = node.data.name;
       console.log("node selected");
     });
 
@@ -101,6 +106,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
       textAreaHTML.value = "";
       this.nodeSelected = false;
       this.selectedNodeId = null;
+      this.selectedNodeName = "";
+    });
+
+    this.editor.on("nodeCreated", (id) => {
+      this.createdNodeId = id;
     });
   }
 
@@ -177,25 +187,19 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   <sl-button @click=${this._deleteOutputOfSelectedNode}>
                     Delete Output
                   </sl-button>
+                  <sl-button @click=${() => this._addLinkToSelectedNode()}
+                    >Add Link</sl-button
+                  >
                   <sl-dropdown>
                     <sl-button slot="trigger">Add Branch</sl-button>
                     <sl-menu>
-                      <sl-menu-item
-                        @click=${() => this._addBranchNode("Branch")}
-                        >Link Branch</sl-menu-item
-                      >
-                      <sl-menu-item
-                        @click=${() => this._addBranchNode("Branch")}
-                        >Quiz Branch</sl-menu-item
-                      >
-                      <sl-menu-item
-                        @click=${() => this._addBranchNode("Branch")}
-                        >Reactive Branch</sl-menu-item
-                      >
+                      <sl-menu-item>Quiz Branch</sl-menu-item>
+                      <sl-menu-item>Reactive Branch</sl-menu-item>
                     </sl-menu>
                   </sl-dropdown>
                 </div>
-                Connected HTML
+                <p>Selected Worksheet: ${this.selectedNodeName}</p>
+                <div class="worksheet">Test</div>
                 <sl-textarea
                   id="textAreaHTML"
                   resize="none"
@@ -271,7 +275,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     );
   }
 
-  private _addBranchNode(type) {
+  private _addLinkNodeToEditor(type, posx, posy) {
     const data = {
       name: type,
     };
@@ -279,10 +283,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //this.editor.addNode(name, inputs, outputs, posx, posy, class, data, html);
     this.editor.addNode(
       type,
-      0,
-      0,
-      0,
-      0,
+      1,
+      1,
+      posx,
+      posy,
       "branch",
       data,
       `
@@ -340,6 +344,29 @@ export class WebWriterBranchingScenario extends LitElementWw {
         `output_${noOfOutputs}`
       );
     }
+  }
+
+  private _addLinkToSelectedNode() {
+    this._addOutputToSelectedNode();
+
+    const selectedNode = this.editor.getNodeFromId(this.selectedNodeId);
+    const outputs = selectedNode.outputs;
+    const keys = Object.keys(outputs);
+    const lastKey = keys[keys.length - 1];
+
+    console.log(lastKey);
+
+    this._addLinkNodeToEditor(
+      "Link",
+      selectedNode.pos_x + 350,
+      selectedNode.pos_y + 25
+    );
+    this.editor.addConnection(
+      this.selectedNodeId,
+      this.createdNodeId,
+      lastKey,
+      "input_1"
+    );
   }
 }
 
