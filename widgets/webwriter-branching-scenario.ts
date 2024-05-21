@@ -33,8 +33,6 @@ import { style } from "drawflow/dist/drawflow.style.js";
 
 import styles from "../styles";
 
-let selected_node_id = null;
-
 @customElement("webwriter-branching-scenario")
 export class WebWriterBranchingScenario extends LitElementWw {
   @query("#drawflow")
@@ -42,6 +40,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   @state()
   editor?: Drawflow;
+
+  @property({ type: Boolean }) nodeSelected = false;
+  @property({ type: Number }) selectedNodeId = null;
 
   static get scopedElements() {
     return {
@@ -78,13 +79,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     // Event listener for node click
     this.editor.on("nodeSelected", (id) => {
-      console.log("node selected");
       const node = this.editor.getNodeFromId(id);
-      const textAreaHTML = this.shadowRoot?.getElementById(
-        "textAreaHTML"
-      ) as SlTextarea;
-      textAreaHTML.value = node.data.html;
-      selected_node_id = id;
+      this.nodeSelected = true;
+      this.selectedNodeId = node.id;
+      console.log("node selected");
     });
 
     // Event listener for node click
@@ -101,8 +99,21 @@ export class WebWriterBranchingScenario extends LitElementWw {
         "textAreaHTML"
       ) as SlTextarea;
       textAreaHTML.value = "";
-      selected_node_id = null;
+      this.nodeSelected = false;
+      this.selectedNodeId = null;
     });
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.has("nodeSelected") && this.nodeSelected) {
+      const textAreaHTML = this.shadowRoot?.getElementById(
+        "textAreaHTML"
+      ) as SlTextarea;
+      if (textAreaHTML) {
+        const node = this.editor.getNodeFromId(this.selectedNodeId);
+        textAreaHTML.value = node.data.html;
+      }
+    }
   }
 
   render() {
@@ -119,7 +130,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
               <sl-button slot="trigger">Add Branch</sl-button>
               <sl-menu>
                 <sl-menu-item @click=${() => this._addBranchNode("Branch")}
-                  >Branch Type</sl-menu-item
+                  >Simple Branch</sl-menu-item
+                >
+                <sl-menu-item @click=${() => this._addBranchNode("Branch")}
+                  >Quiz Branch</sl-menu-item
+                >
+                <sl-menu-item @click=${() => this._addBranchNode("Branch")}
+                  >Reactive Branch</sl-menu-item
                 >
               </sl-menu>
             </sl-dropdown>
@@ -154,18 +171,25 @@ export class WebWriterBranchingScenario extends LitElementWw {
         </div>
 
         <div id="selection" class="selected-content-area">
-          Connected HTML
-          <sl-textarea
-            id="textAreaHTML"
-            resize="none"
-            placeholder="No node selected"
-            size="large"
-          ></sl-textarea>
-          <sl-icon-button
-            src=${Floppy}
-            id="saveChangesBtn"
-            @click=${this._saveChangesToNodeData}
-          ></sl-icon-button>
+          ${this.nodeSelected
+            ? html`
+                Connected HTML
+                <sl-textarea
+                  id="textAreaHTML"
+                  resize="none"
+                  placeholder="No node selected"
+                  size="large"
+                ></sl-textarea>
+                <sl-icon-button
+                  src=${Floppy}
+                  id="saveChangesBtn"
+                  @click=${this._saveChangesToNodeData}
+                ></sl-icon-button>
+              `
+            : html`
+                <!-- Content to display when the condition is false -->
+                <p>Select a node to display its content</p>
+              `}
         </div>
       </div>
 
@@ -266,9 +290,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
     const textAreaHTML = this.shadowRoot?.getElementById(
       "textAreaHTML"
     ) as SlTextarea;
-    const selectedNode = this.editor.getNodeFromId(selected_node_id);
+    const selectedNode = this.editor.getNodeFromId(this.selectedNodeId);
     const newHTML = textAreaHTML.value;
-    this.editor.updateNodeDataFromId(selected_node_id, {
+    this.editor.updateNodeDataFromId(this.selectedNodeId, {
       name: selectedNode.data.name,
       html: newHTML,
     });

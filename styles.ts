@@ -4,22 +4,24 @@ export default css`
   .widget {
     display: flex;
     flex-direction: column;
+    width: 100%;
     border-radius: 8px;
     border: 1px solid;
     border-color: #e4e4e4;
   }
 
   .selected-content-area {
-    width: 100%;
-    height: 500px;
-    padding: 20px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: flex-start;
+    height: 100%;
+    padding: 20px;
     align-items: center; /* Center items vertically */
     gap: 10px;
     font-family: "Roboto", sans-serif;
     font-size: 18px;
+    background-color: #fafafb;
+    border-radius: 0px 0px 8px 8px;
   }
 
   .dialog {
@@ -102,7 +104,7 @@ export default css`
 
   .drawflow .drawflow-node.selected.sheet {
     background: #f4faff;
-    border: 1.5px solid #4ea9ff;
+    border: 3px solid #4ea9ff;
     color: #215f98;
   }
 
