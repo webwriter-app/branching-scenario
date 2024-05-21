@@ -244,6 +244,11 @@ export default css`
     background: #4ea9ff;
   }
 
+  .drawflow .drawflow-node .input:active,
+  .drawflow .drawflow-node .output:active {
+    background: red;
+  }
+
   .drawflow .drawflow-node .output {
     right: 10px;
   }

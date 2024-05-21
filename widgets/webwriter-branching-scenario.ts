@@ -126,20 +126,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
               class="border"
               @click=${() => this._addSheetNode("Untitled Sheet")}
             ></sl-icon-button>
-            <sl-dropdown>
-              <sl-button slot="trigger">Add Branch</sl-button>
-              <sl-menu>
-                <sl-menu-item @click=${() => this._addBranchNode("Branch")}
-                  >Simple Branch</sl-menu-item
-                >
-                <sl-menu-item @click=${() => this._addBranchNode("Branch")}
-                  >Quiz Branch</sl-menu-item
-                >
-                <sl-menu-item @click=${() => this._addBranchNode("Branch")}
-                  >Reactive Branch</sl-menu-item
-                >
-              </sl-menu>
-            </sl-dropdown>
           </div>
           <sl-icon-button src=${ArrowCounterClockWise} class="border">
           </sl-icon-button>
@@ -173,6 +159,42 @@ export class WebWriterBranchingScenario extends LitElementWw {
         <div id="selection" class="selected-content-area">
           ${this.nodeSelected
             ? html`
+                <div class="controls">
+                  <sl-icon-button
+                    src=${Floppy}
+                    id="saveChangesBtn"
+                    @click=${this._saveChangesToNodeData}
+                  ></sl-icon-button>
+                  <sl-button @click=${this._addInputToSelectedNode}>
+                    Add Input
+                  </sl-button>
+                  <sl-button @click=${this._deleteInputOfSelectedNode}>
+                    Delete Input
+                  </sl-button>
+                  <sl-button @click=${this._addOutputToSelectedNode}>
+                    Add Output
+                  </sl-button>
+                  <sl-button @click=${this._deleteOutputOfSelectedNode}>
+                    Delete Output
+                  </sl-button>
+                  <sl-dropdown>
+                    <sl-button slot="trigger">Add Branch</sl-button>
+                    <sl-menu>
+                      <sl-menu-item
+                        @click=${() => this._addBranchNode("Branch")}
+                        >Link Branch</sl-menu-item
+                      >
+                      <sl-menu-item
+                        @click=${() => this._addBranchNode("Branch")}
+                        >Quiz Branch</sl-menu-item
+                      >
+                      <sl-menu-item
+                        @click=${() => this._addBranchNode("Branch")}
+                        >Reactive Branch</sl-menu-item
+                      >
+                    </sl-menu>
+                  </sl-dropdown>
+                </div>
                 Connected HTML
                 <sl-textarea
                   id="textAreaHTML"
@@ -180,17 +202,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   placeholder="No node selected"
                   size="large"
                 ></sl-textarea>
-                <sl-icon-button
-                  src=${Floppy}
-                  id="saveChangesBtn"
-                  @click=${this._saveChangesToNodeData}
-                ></sl-icon-button>
-                <sl-button @click=${this._addInputToSelectedNode}>
-                  Add Input
-                </sl-button>
-                <sl-button @click=${this._addOutputToSelectedNode}>
-                  Add Output
-                </sl-button>
               `
             : html`
                 <!-- Content to display when the condition is false -->
@@ -310,6 +321,25 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   private _addOutputToSelectedNode() {
     this.editor.addNodeOutput(this.selectedNodeId);
+  }
+
+  private _deleteInputOfSelectedNode() {
+    const node = this.editor.getNodeFromId(this.selectedNodeId);
+    const noOfInputs = Object.keys(node.inputs).length;
+    if (noOfInputs != 0) {
+      this.editor.removeNodeInput(this.selectedNodeId, `input_${noOfInputs}`);
+    }
+  }
+
+  private _deleteOutputOfSelectedNode() {
+    const node = this.editor.getNodeFromId(this.selectedNodeId);
+    const noOfOutputs = Object.keys(node.outputs).length;
+    if (noOfOutputs != 0) {
+      this.editor.removeNodeOutput(
+        this.selectedNodeId,
+        `output_${noOfOutputs}`
+      );
+    }
   }
 }
 
