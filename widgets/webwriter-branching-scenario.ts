@@ -130,24 +130,21 @@ export class WebWriterBranchingScenario extends LitElementWw {
     return html` <div class="widget">
         <div class="controls">
           <div class="first-item">
-            <sl-icon-button
-              id="addSheetBtn"
-              src=${FileEarmarkPlus}
-              class="border"
-              @click=${() => this._addSheetNode("Untitled Sheet")}
-            ></sl-icon-button>
+            <sl-button id="previewBtn">Preview</sl-button>
           </div>
-          <sl-icon-button src=${ArrowCounterClockWise} class="border">
-          </sl-icon-button>
-          <sl-icon-button src=${ArrowClockWise} class="border"></sl-icon-button>
-          <sl-divider vertical style="height: 30px;"></sl-divider>
           <sl-icon-button
-            id="clearBtn"
-            src=${Trash3}
+            id="addSheetBtn"
+            src=${FileEarmarkPlus}
             class="border"
+            @click=${() => this._addSheetNode("Untitled Sheet")}
+          ></sl-icon-button>
+          <sl-divider vertical style="height: 30px;"></sl-divider>
+          <sl-button
+            id="clearBtn"
             @click=${() =>
               (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
-          ></sl-icon-button>
+            >Clear</sl-button
+          >
         </div>
         <div id="drawflow">
           <div class="bar-zoom">
@@ -199,7 +196,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   </sl-dropdown>
                 </div>
                 <p>Selected Worksheet: ${this.selectedNodeName}</p>
-                <div class="worksheet">Test</div>
+                <!-- <div class="worksheet">test</div> -->
                 <sl-textarea
                   id="textAreaHTML"
                   resize="none"
@@ -361,12 +358,25 @@ export class WebWriterBranchingScenario extends LitElementWw {
       selectedNode.pos_x + 350,
       selectedNode.pos_y + 25
     );
+
     this.editor.addConnection(
       this.selectedNodeId,
       this.createdNodeId,
       lastKey,
       "input_1"
     );
+
+    //TODO: Think about gamebook structure on development side (ask chatgpt)
+    //TODO: does a gamebook have an always continue button? does one define a flow?
+    //TODO: subchapters?? like swithcing between screens but then proceeding? i mean wtf
+    //TODO: does it have a start screen? an end screen?
+    //TOOD: do links really need to do this node stuff?
+    //TODO: back button?
+    //TODO: check time plan
+    //TODO: selected area should only be available for nodes of type sheet
+    //TODO: how to let the area be webwriter editable?
+    //TODO: write this decision making down... work visually with node inputs? have a link component?
+    //TODO: add preview Mode and stuff
   }
 }
 
