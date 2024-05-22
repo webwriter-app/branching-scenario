@@ -49,7 +49,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Number }) selectedNodeId = null;
   @property({ type: String }) selectedNodeName = "";
   @property({ type: Number }) createdNodeId = null;
-  @property({ type: Array }) nodes: number[] = [];
+  //(Id, Name)
+  @property({ type: Array }) nodesInEditor: [number, string][] = [];
 
   static get scopedElements() {
     return {
@@ -82,10 +83,24 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     //register editor event
     this.editor.on("nodeDataChanged", (id) => {
-      console.log("nodeDataChanged");
-      const node = this.editor.getNodeFromId(id);
-      console.log(node);
-      this.selectedNodeName = node.data.name;
+      const updatedNode = this.editor.getNodeFromId(id);
+
+      //assume name changed
+      let index = -1;
+      for (let i = 0; i < this.nodesInEditor.length; i++) {
+        if (this.nodesInEditor[i][0] == id) {
+          index = i;
+          break;
+        }
+      }
+
+      this.nodesInEditor = [
+        ...this.nodesInEditor.slice(0, index),
+        [id, updatedNode.data.name],
+        ...this.nodesInEditor.slice(index + 1),
+      ];
+
+      this.selectedNodeName = updatedNode.data.name;
     });
 
     // Event listener for node click
@@ -94,7 +109,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.nodeSelected = true;
       this.selectedNodeId = node.id;
       this.selectedNodeName = node.data.name;
-      console.log("node selected");
     });
 
     // Event listener for node click
@@ -118,13 +132,17 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     this.editor.on("nodeCreated", (id) => {
       this.createdNodeId = id;
-      this.nodes = [...this.nodes, id];
-      console.log(this.nodes);
+      let createdNodeName = this.editor.getNodeFromId(id).data.name;
+      this.nodesInEditor = [
+        ...this.nodesInEditor,
+        [this.createdNodeId, createdNodeName],
+      ];
+      console.log(this.nodesInEditor);
     });
 
     this.editor.on("nodeRemoved", (id) => {
-      this.nodes = this.nodes.filter((item) => item != id);
-      console.log(this.nodes);
+      this.nodesInEditor = this.nodesInEditor.filter((item) => item[0] != id);
+      console.log(this.nodesInEditor);
     });
   }
 
@@ -138,58 +156,42 @@ export class WebWriterBranchingScenario extends LitElementWw {
         textAreaHTML.value = node.data.html;
       }
 
+      //TODO: change this
       const nodeSelect = this.shadowRoot?.getElementById(
         "nodeSelect"
       ) as SlSelect;
       if (nodeSelect) {
-        console.log("found node-select");
         // Clear existing options
         // Clear existing options
         while (nodeSelect.firstChild) {
           nodeSelect.removeChild(nodeSelect.firstChild);
         }
 
-        console.log("cleared inner HTML / options");
         // Add new options based on the current nodes
-        console.log("enter for each node array");
-        this.nodes.forEach((id) => {
-          console.log(id);
-          const node = this.editor.getNodeFromId(id);
-          // const option = document.createElement("sl-option");
-          // option.setAttribute("value", id.toString());
-          // option.innerHTML = node.data.name.toString();
-          // console.log(option);
-          nodeSelect.innerHTML += `<sl-option value=${id.toString()}>${
-            node.data.name
+        this.nodesInEditor.forEach((node) => {
+          nodeSelect.innerHTML += `<sl-option value=${node[0].toString()}>${
+            node[1]
           }</sl-option>`;
         });
       }
     }
 
-    if (changedProperties.has("nodes")) {
+    //TODO: change this
+    if (changedProperties.has("nodesInEditor")) {
+      console.log("here now");
       const nodeSelect = this.shadowRoot?.getElementById(
         "nodeSelect"
       ) as SlSelect;
       if (nodeSelect) {
-        console.log("found node-select");
         // Clear existing options
         // Clear existing options
         while (nodeSelect.firstChild) {
           nodeSelect.removeChild(nodeSelect.firstChild);
         }
-
-        console.log("cleared inner HTML / options");
         // Add new options based on the current nodes
-        console.log("enter for each node array");
-        this.nodes.forEach((id) => {
-          console.log(id);
-          const node = this.editor.getNodeFromId(id);
-          // const option = document.createElement("sl-option");
-          // option.setAttribute("value", id.toString());
-          // option.innerHTML = node.data.name.toString();
-          // console.log(option);
-          nodeSelect.innerHTML += `<sl-option value=${id.toString()}>${
-            node.data.name
+        this.nodesInEditor.forEach((node) => {
+          nodeSelect.innerHTML += `<sl-option value=${node[0].toString()}>${
+            node[1]
           }</sl-option>`;
         });
       }
@@ -385,7 +387,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     const dialog = this.shadowRoot.getElementById("dialog") as SlDialog;
     dialog.hide();
     this.editor.clear();
-    this.nodes = [];
+    this.nodesInEditor = [];
   }
 
   private _saveChangesToNodeData() {
