@@ -11,6 +11,8 @@ import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/i
 import SlDropdown from "@shoelace-style/shoelace/dist/components/dropdown/dropdown.component.js";
 import SlMenu from "@shoelace-style/shoelace/dist/components/menu/menu.component.js";
 import SlMenuItem from "@shoelace-style/shoelace/dist/components/menu-item/menu-item.component.js";
+import SlSelect from "@shoelace-style/shoelace/dist/components/select/select.component.js";
+import SlOption from "@shoelace-style/shoelace/dist/components/option/option.component.js";
 
 import "@shoelace-style/shoelace/dist/themes/light.css";
 
@@ -25,6 +27,8 @@ import ArrowCounterClockWise from "bootstrap-icons/icons/arrow-counterclockwise.
 import ArrowClockWise from "bootstrap-icons/icons/arrow-clockwise.svg";
 import Trash3 from "bootstrap-icons/icons/trash3.svg";
 import Floppy from "bootstrap-icons/icons/floppy.svg";
+import Plus from "bootstrap-icons/icons/plus.svg";
+import Dash from "bootstrap-icons/icons/dash.svg";
 
 //Drawflow Imports
 import Drawflow from "drawflow";
@@ -45,6 +49,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Number }) selectedNodeId = null;
   @property({ type: String }) selectedNodeName = "";
   @property({ type: Number }) createdNodeId = null;
+  @property({ type: Array }) nodes: number[] = [];
 
   static get scopedElements() {
     return {
@@ -56,6 +61,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-dropdown": SlDropdown,
       "sl-menu": SlMenu,
       "sl-menu-item": SlMenuItem,
+      "sl-select": SlSelect,
+      "sl-option": SlOption,
     };
   }
 
@@ -111,6 +118,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     this.editor.on("nodeCreated", (id) => {
       this.createdNodeId = id;
+      this.nodes = [...this.nodes, id];
+      console.log(this.nodes);
+    });
+
+    this.editor.on("nodeRemoved", (id) => {
+      this.nodes = this.nodes.filter((item) => item != id);
+      console.log(this.nodes);
     });
   }
 
@@ -122,6 +136,62 @@ export class WebWriterBranchingScenario extends LitElementWw {
       if (textAreaHTML) {
         const node = this.editor.getNodeFromId(this.selectedNodeId);
         textAreaHTML.value = node.data.html;
+      }
+
+      const nodeSelect = this.shadowRoot?.getElementById(
+        "nodeSelect"
+      ) as SlSelect;
+      if (nodeSelect) {
+        console.log("found node-select");
+        // Clear existing options
+        // Clear existing options
+        while (nodeSelect.firstChild) {
+          nodeSelect.removeChild(nodeSelect.firstChild);
+        }
+
+        console.log("cleared inner HTML / options");
+        // Add new options based on the current nodes
+        console.log("enter for each node array");
+        this.nodes.forEach((id) => {
+          console.log(id);
+          const node = this.editor.getNodeFromId(id);
+          // const option = document.createElement("sl-option");
+          // option.setAttribute("value", id.toString());
+          // option.innerHTML = node.data.name.toString();
+          // console.log(option);
+          nodeSelect.innerHTML += `<sl-option value=${id.toString()}>${
+            node.data.name
+          }</sl-option>`;
+        });
+      }
+    }
+
+    if (changedProperties.has("nodes")) {
+      const nodeSelect = this.shadowRoot?.getElementById(
+        "nodeSelect"
+      ) as SlSelect;
+      if (nodeSelect) {
+        console.log("found node-select");
+        // Clear existing options
+        // Clear existing options
+        while (nodeSelect.firstChild) {
+          nodeSelect.removeChild(nodeSelect.firstChild);
+        }
+
+        console.log("cleared inner HTML / options");
+        // Add new options based on the current nodes
+        console.log("enter for each node array");
+        this.nodes.forEach((id) => {
+          console.log(id);
+          const node = this.editor.getNodeFromId(id);
+          // const option = document.createElement("sl-option");
+          // option.setAttribute("value", id.toString());
+          // option.innerHTML = node.data.name.toString();
+          // console.log(option);
+          nodeSelect.innerHTML += `<sl-option value=${id.toString()}>${
+            node.data.name
+          }</sl-option>`;
+        });
       }
     }
   }
@@ -168,25 +238,32 @@ export class WebWriterBranchingScenario extends LitElementWw {
             ? html`
                 <div class="controls">
                   <sl-icon-button
-                    src=${Floppy}
-                    id="saveChangesBtn"
-                    @click=${this._saveChangesToNodeData}
-                  ></sl-icon-button>
-                  <sl-button @click=${this._addInputToSelectedNode}>
-                    Add Input
-                  </sl-button>
-                  <sl-button @click=${this._deleteInputOfSelectedNode}>
-                    Delete Input
-                  </sl-button>
-                  <sl-button @click=${this._addOutputToSelectedNode}>
-                    Add Output
-                  </sl-button>
-                  <sl-button @click=${this._deleteOutputOfSelectedNode}>
-                    Delete Output
-                  </sl-button>
+                    src=${Plus}
+                    @click=${this._addInputToSelectedNode}
+                  >
+                  </sl-icon-button>
+                  <sl-icon-button
+                    src=${Dash}
+                    @click=${this._deleteInputOfSelectedNode}
+                  >
+                  </sl-icon-button>
+                  <sl-divider vertical style="height: 30px;"></sl-divider>
+                  <sl-icon-button
+                    src=${Plus}
+                    @click=${this._addOutputToSelectedNode}
+                  >
+                  </sl-icon-button>
+                  <sl-icon-button
+                    src=${Dash}
+                    @click=${this._deleteOutputOfSelectedNode}
+                  >
+                  </sl-icon-button>
+                  <sl-divider vertical style="height: 30px;"></sl-divider>
+                  <sl-select id="nodeSelect"> </sl-select>
                   <sl-button @click=${() => this._addLinkToSelectedNode()}
                     >Add Link</sl-button
                   >
+                  <sl-divider vertical style="height: 30px;"></sl-divider>
                   <sl-dropdown>
                     <sl-button slot="trigger">Add Branch</sl-button>
                     <sl-menu>
@@ -194,6 +271,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
                       <sl-menu-item>Reactive Branch</sl-menu-item>
                     </sl-menu>
                   </sl-dropdown>
+                  <sl-divider vertical style="height: 30px;"></sl-divider>
+                  <sl-icon-button
+                    src=${Floppy}
+                    id="saveChangesBtn"
+                    @click=${this._saveChangesToNodeData}
+                  ></sl-icon-button>
                 </div>
                 <p>Selected Worksheet: ${this.selectedNodeName}</p>
                 <!-- <div class="worksheet">test</div> -->
@@ -302,6 +385,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     const dialog = this.shadowRoot.getElementById("dialog") as SlDialog;
     dialog.hide();
     this.editor.clear();
+    this.nodes = [];
   }
 
   private _saveChangesToNodeData() {
