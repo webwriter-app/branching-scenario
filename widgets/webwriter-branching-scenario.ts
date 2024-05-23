@@ -29,6 +29,7 @@ import Trash3 from "bootstrap-icons/icons/trash3.svg";
 import Floppy from "bootstrap-icons/icons/floppy.svg";
 import Plus from "bootstrap-icons/icons/plus.svg";
 import Dash from "bootstrap-icons/icons/dash.svg";
+import PlayFill from "bootstrap-icons/icons/play-fill.svg";
 
 //Drawflow Imports
 import Drawflow from "drawflow";
@@ -78,6 +79,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.zoom = 0.75;
     this.editor.start();
     this.editor.zoom_refresh();
+
+    this._addSheetNode("origin");
 
     //Register Event Handlers for editor
     this.editor.on("nodeDataChanged", (id) => {
@@ -141,6 +144,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.on("nodeRemoved", (id) => {
       this.nodesInEditor = this.nodesInEditor.filter((item) => item[0] != id);
       console.log(this.nodesInEditor);
+    });
+
+    this.editor.on("translate", ({ x, y }) => {
+      //let movedNode = this.editor.getNodeFromId(id);
+      //console.log(movedNode.pos_x, movedNode.pos_y);
     });
   }
 
@@ -348,13 +356,17 @@ export class WebWriterBranchingScenario extends LitElementWw {
       `
       <div>
         <div class="title-box">
-          <svg id="svg">
-            ${FileEarmark}
-          </svg>
-          <p class= "title" >Worksheet</p>
+          <svg id="svg">${FileEarmark}</svg>
+          <p class="title">Worksheet</p>
+          <div class="badge">
+            <div class="div-svg">
+               <svg>${PlayFill}</svg>
+            </div>
+            <p>Origin</p>
+          </div>
         </div>
         <div class="content">
-        <p class="input-label">Name</p>
+          <p class="input-label">Name</p>
           <input
             type="text"
             id="test-textarea"

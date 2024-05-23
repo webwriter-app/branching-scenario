@@ -118,20 +118,17 @@ export default css`
 
   .drawflow-node.sheet .title-box {
     background: #f7f7f7;
-    border-bottom: 1px solid #e9e9e9;
-    border-radius: 4px 4px 0px 0px;
 
     display: flex;
     align-items: center; /* Align items vertically */
-
-    display: flex;
     flex-direction: row; // This is the default, but it's good to be explicit
     justify-content: flex-start; // Aligns items to the start of the container
-    align-items: center; // Aligns items along the cross-axis (vertically in this case)
     gap: 5px; //Adjust the gap between items as needed
+
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 15px;
+    padding-right: 15px;
 
     font-weight: 600;
   }
@@ -169,6 +166,41 @@ export default css`
     width: 100%;
     text-align: left;
     padding: 0.5rem;
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 3px;
+
+    background-color: #0ca349;
+    color: white;
+
+    border-radius: 12px;
+    padding: 5px 10px;
+    margin-left: auto; /* Push the badge to the end of the title box */
+  }
+
+  .badge .div-svg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px; /* Add padding to hug the content */
+  }
+  .badge .div-svg svg {
+    display: block;
+    width: 10px;
+    height: 10px;
+    transform: translate(-30%, -30%);
+    margin: 0px;
+  }
+
+  .badge p {
+    text-align: center;
+    margin: 0;
+    font-size: 12px; /* Adjust font size as needed */
   }
 
   /* ------- */
