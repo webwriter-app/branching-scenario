@@ -29,7 +29,7 @@ import Trash3 from "bootstrap-icons/icons/trash3.svg";
 import Floppy from "bootstrap-icons/icons/floppy.svg";
 import Plus from "bootstrap-icons/icons/plus.svg";
 import Dash from "bootstrap-icons/icons/dash.svg";
-import PlayFill from "bootstrap-icons/icons/play-fill.svg";
+import PlayFill from "bootstrap-icons/icons/arrow-right-circle-fill.svg";
 
 //Drawflow Imports
 import Drawflow from "drawflow";
@@ -79,8 +79,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.zoom = 0.75;
     this.editor.start();
     this.editor.zoom_refresh();
-
-    this._addSheetNode("origin");
 
     //Register Event Handlers for editor
     this.editor.on("nodeDataChanged", (id) => {
@@ -150,6 +148,46 @@ export class WebWriterBranchingScenario extends LitElementWw {
       //let movedNode = this.editor.getNodeFromId(id);
       //console.log(movedNode.pos_x, movedNode.pos_y);
     });
+
+    //Create Origin
+
+    const data = {
+      name: "First Worksheet",
+      html: `<div><p>Testing HTML Editing</p></div>`,
+    };
+
+    this.editor.addNode(
+      "First Worksheet",
+      0,
+      0,
+      0,
+      0,
+      "origin",
+      data,
+      `
+      <div>
+        <div class="title-box">
+          <svg id="svg">${FileEarmark}</svg>
+          <p class="title">Worksheet</p>
+          <div class="badge">
+            <div class="div-svg">
+               <svg>${PlayFill}</svg>
+            </div>
+            <p>Start Page</p>
+          </div>
+        </div>
+        <div class="content">
+          <p class="input-label">Name</p>
+          <input
+            type="text"
+            id="test-textarea"
+            placeholder="Enter name"
+            df-name
+          ></input>
+        </div>
+      </div>`,
+      false
+    );
   }
 
   //React to changes in lit properties
@@ -358,12 +396,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
         <div class="title-box">
           <svg id="svg">${FileEarmark}</svg>
           <p class="title">Worksheet</p>
-          <div class="badge">
-            <div class="div-svg">
-               <svg>${PlayFill}</svg>
-            </div>
-            <p>Origin</p>
-          </div>
         </div>
         <div class="content">
           <p class="input-label">Name</p>

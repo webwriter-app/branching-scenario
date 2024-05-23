@@ -168,16 +168,96 @@ export default css`
     padding: 0.5rem;
   }
 
+  /* ------- */
+  /* Origin */
+  /* ------- */
+
+  .drawflow .drawflow-node.origin {
+    background: #ffffff;
+    border: 1px solid #949494;
+    padding: 0px;
+    width: 280px;
+    font-family: "Roboto", sans-serif;
+    -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
+    box-shadow: 0 2px 20px 2px #d0d0d0;
+  }
+
+  .drawflow .drawflow-node:hover.origin {
+    border: 1.5px solid #4ea9ff;
+  }
+
+  .drawflow .drawflow-node.selected.origin {
+    background: #f4faff;
+    border: 3px solid #4ea9ff;
+    color: #215f98;
+  }
+
+  .drawflow-node.origin .title-box {
+    background: #f7f7f7;
+
+    display: flex;
+    align-items: center; /* Align items vertically */
+    flex-direction: row; // This is the default, but it's good to be explicit
+    justify-content: flex-start; // Aligns items to the start of the container
+    gap: 5px; //Adjust the gap between items as needed
+
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    font-weight: 600;
+  }
+  .drawflow-node.origin .title-box #svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .drawflow .drawflow-node.origin .title-box .title {
+    margin: 10px;
+    margin-left: 25px;
+  }
+
+  .drawflow .drawflow-node.selected.origin .title-box {
+    color: #22598c;
+  }
+
+  .drawflow-node.origin .content {
+    padding: 15px;
+    color: #71717a;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Aligns items to the start of the container */
+    gap: 0px;
+  }
+
+  .drawflow-node.origin .content .input-label {
+    font-size: 14px;
+    color: #a1a1a1; /* gray tone */
+    margin: 2px;
+  }
+
+  .drawflow-node.origin .content #test-textarea {
+    resize: none;
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem;
+  }
+
+  .drawflow-node.origin .drawflow-delete {
+    display: none;
+  }
+
   .badge {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: row;
-    gap: 3px;
+    gap: 8px;
 
-    background-color: #0ca349;
-    color: white;
+    color: #0ca349;
 
+    border: 1px solid #0ca349;
     border-radius: 12px;
     padding: 5px 10px;
     margin-left: auto; /* Push the badge to the end of the title box */
@@ -235,20 +315,6 @@ export default css`
 
   .drawflow .drawflow-node.branch .title-box .title {
     margin-left: 25px;
-  }
-
-  .drawflow-node .box {
-    padding: 10px 20px 20px 20px;
-    font-size: 14px;
-    color: #555555;
-  }
-  .drawflow-node .box p {
-    margin-top: 5px;
-    margin-bottom: 5px;
-  }
-
-  .drawflow-node.welcome {
-    width: 250px;
   }
 
   .drawflow-node input,
@@ -334,11 +400,11 @@ export default css`
   /* OTHERS */
   /* ---- */
 
-  .drawflow-delete {
+  /* .drawflow-delete {
     border: 2px solid #b94543;
     background: #ffe9e8;
     color: #b94543;
-  }
+  } */
 
   /* ------- */
   /* MODAL */
