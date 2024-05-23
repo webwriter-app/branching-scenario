@@ -150,44 +150,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     });
 
     //Create Origin
-
-    const data = {
-      name: "First Worksheet",
-      html: `<div><p>Testing HTML Editing</p></div>`,
-    };
-
-    this.editor.addNode(
-      "First Worksheet",
-      0,
-      0,
-      0,
-      0,
-      "origin",
-      data,
-      `
-      <div>
-        <div class="title-box">
-          <svg id="svg">${FileEarmark}</svg>
-          <p class="title">Worksheet</p>
-          <div class="badge">
-            <div class="div-svg">
-               <svg>${PlayFill}</svg>
-            </div>
-            <p>Start Page</p>
-          </div>
-        </div>
-        <div class="content">
-          <p class="input-label">Name</p>
-          <input
-            type="text"
-            id="test-textarea"
-            placeholder="Enter name"
-            df-name
-          ></input>
-        </div>
-      </div>`,
-      false
-    );
+    this._addOriginToGraph();
   }
 
   //React to changes in lit properties
@@ -441,9 +404,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
     const dialog = this.shadowRoot.getElementById("dialog") as SlDialog;
     dialog.hide();
     this.editor.clear();
+
     this.nodesInEditor = [];
     this.selectedNode = [null, null];
     this.nodeSelected = false;
+
+    //Create Origin
+    this._addOriginToGraph();
   }
 
   private _saveChangesToNodeData() {
@@ -531,6 +498,46 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //TODO: how to let the area be webwriter editable?
     //TODO: write this decision making down... work visually with node inputs? have a link component?
     //TODO: add preview Mode and stuff
+  }
+
+  private _addOriginToGraph() {
+    const data = {
+      name: "First Worksheet",
+      html: `<div><p>Testing HTML Editing</p></div>`,
+    };
+
+    this.editor.addNode(
+      "First Worksheet",
+      0,
+      0,
+      0,
+      0,
+      "origin",
+      data,
+      `
+      <div>
+        <div class="title-box">
+          <svg id="svg">${FileEarmark}</svg>
+          <p class="title">Worksheet</p>
+          <div class="badge">
+            <div class="div-svg">
+               <svg>${PlayFill}</svg>
+            </div>
+            <p>Start Page</p>
+          </div>
+        </div>
+        <div class="content">
+          <p class="input-label">Name</p>
+          <input
+            type="text"
+            id="test-textarea"
+            placeholder="Enter name"
+            df-name
+          ></input>
+        </div>
+      </div>`,
+      false
+    );
   }
 }
 
