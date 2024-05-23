@@ -46,10 +46,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
   editor?: Drawflow;
 
   @property({ type: Boolean }) nodeSelected = false;
-  @property({ type: Number }) selectedNodeId = null;
-  @property({ type: String }) selectedNodeName = "";
   @property({ type: Number }) createdNodeId = null;
-  //(Id, Name)
+
+  //Nodes for referencing: (Id, Name)
+  @property({ type: Array }) selectedNode: [number, string] = [null, null];
   @property({ type: Array }) nodesInEditor: [number, string][] = [];
 
   static get scopedElements() {
@@ -100,15 +100,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
         ...this.nodesInEditor.slice(index + 1),
       ];
 
-      this.selectedNodeName = updatedNode.data.name;
+      this.selectedNode[1] = updatedNode.data.name;
     });
 
     // Event listener for node click
     this.editor.on("nodeSelected", (id) => {
       const node = this.editor.getNodeFromId(id);
       this.nodeSelected = true;
-      this.selectedNodeId = node.id;
-      this.selectedNodeName = node.data.name;
+      this.selectedNode[0] = node.id;
+      this.selectedNode[1] = node.data.name;
     });
 
     // Event listener for node click
@@ -126,8 +126,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
       ) as SlTextarea;
       textAreaHTML.value = "";
       this.nodeSelected = false;
-      this.selectedNodeId = null;
-      this.selectedNodeName = "";
+      this.selectedNode[0] = null;
+      this.selectedNode[1] = null;
     });
 
     this.editor.on("nodeCreated", (id) => {
@@ -152,7 +152,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
         "textAreaHTML"
       ) as SlTextarea;
       if (textAreaHTML) {
-        const node = this.editor.getNodeFromId(this.selectedNodeId);
+        const node = this.editor.getNodeFromId(this.selectedNode[0]);
         textAreaHTML.value = node.data.html;
       }
 
@@ -280,7 +280,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     @click=${this._saveChangesToNodeData}
                   ></sl-icon-button>
                 </div>
-                <p>Selected Worksheet: ${this.selectedNodeName}</p>
+                <p>Selected Worksheet: ${this.selectedNode[1]}</p>
                 <!-- <div class="worksheet">test</div> -->
                 <sl-textarea
                   id="textAreaHTML"
@@ -394,36 +394,35 @@ export class WebWriterBranchingScenario extends LitElementWw {
     const textAreaHTML = this.shadowRoot?.getElementById(
       "textAreaHTML"
     ) as SlTextarea;
-    const selectedNode = this.editor.getNodeFromId(this.selectedNodeId);
     const newHTML = textAreaHTML.value;
-    this.editor.updateNodeDataFromId(this.selectedNodeId, {
-      name: selectedNode.data.name,
+    this.editor.updateNodeDataFromId(this.selectedNode[0], {
+      name: this.selectedNode[1],
       html: newHTML,
     });
   }
 
   private _addInputToSelectedNode() {
-    this.editor.addNodeInput(this.selectedNodeId);
+    this.editor.addNodeInput(this.selectedNode[0]);
   }
 
   private _addOutputToSelectedNode() {
-    this.editor.addNodeOutput(this.selectedNodeId);
+    this.editor.addNodeOutput(this.selectedNode[0]);
   }
 
   private _deleteInputOfSelectedNode() {
-    const node = this.editor.getNodeFromId(this.selectedNodeId);
+    const node = this.editor.getNodeFromId(this.selectedNode[0]);
     const noOfInputs = Object.keys(node.inputs).length;
     if (noOfInputs != 0) {
-      this.editor.removeNodeInput(this.selectedNodeId, `input_${noOfInputs}`);
+      this.editor.removeNodeInput(this.selectedNode[0], `input_${noOfInputs}`);
     }
   }
 
   private _deleteOutputOfSelectedNode() {
-    const node = this.editor.getNodeFromId(this.selectedNodeId);
+    const node = this.editor.getNodeFromId(this.selectedNode[0]);
     const noOfOutputs = Object.keys(node.outputs).length;
     if (noOfOutputs != 0) {
       this.editor.removeNodeOutput(
-        this.selectedNodeId,
+        this.selectedNode[0],
         `output_${noOfOutputs}`
       );
     }
@@ -432,7 +431,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   private _addLinkToSelectedNode() {
     this._addOutputToSelectedNode();
 
-    const selectedNode = this.editor.getNodeFromId(this.selectedNodeId);
+    const selectedNode = this.editor.getNodeFromId(this.selectedNode[0]);
     const outputs = selectedNode.outputs;
     const keys = Object.keys(outputs);
     const lastKey = keys[keys.length - 1];
@@ -446,7 +445,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     );
 
     this.editor.addConnection(
-      this.selectedNodeId,
+      this.selectedNode[0],
       this.createdNodeId,
       lastKey,
       "input_1"
