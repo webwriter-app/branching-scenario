@@ -98,15 +98,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
         ...this.nodesInEditor.slice(index + 1),
       ];
 
-      this.selectedNode[1] = updatedNode.data.name;
+      this.selectedNode = [this.selectedNode[0], updatedNode.data.name];
     });
 
     // Event listener for node click
     this.editor.on("nodeSelected", (id) => {
       const node = this.editor.getNodeFromId(id);
       this.nodeSelected = true;
-      this.selectedNode[0] = node.id;
-      this.selectedNode[1] = node.data.name;
+      this.selectedNode = [node.id, node.data.name];
     });
 
     // Event listener for connection click
@@ -124,8 +123,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       ) as SlTextarea;
       textAreaHTML.value = "";
       this.nodeSelected = false;
-      this.selectedNode[0] = null;
-      this.selectedNode[1] = null;
+      this.selectedNode = [null, null];
     });
 
     //Event listerner for creation of a node
@@ -196,6 +194,16 @@ export class WebWriterBranchingScenario extends LitElementWw {
             }</sl-option>`;
           }
         });
+      }
+    }
+
+    //reset the node select once selectedNode changes
+    if (changedProperties.has("selectedNode")) {
+      const nodeSelect = this.shadowRoot?.getElementById(
+        "nodeSelect"
+      ) as SlSelect;
+      if (nodeSelect) {
+        nodeSelect.value = "";
       }
     }
   }
