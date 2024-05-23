@@ -70,22 +70,20 @@ export class WebWriterBranchingScenario extends LitElementWw {
   static styles = [style, styles];
 
   protected firstUpdated(_changedProperties: any): void {
+    //initialize the Editor
     const container = this.shadowRoot?.getElementById("drawflow");
     this.editor = new Drawflow(container);
     this.editor.reroute = true;
     this.editor.reroute_fix_curvature = true;
-
     this.editor.zoom = 0.75;
-
     this.editor.start();
-
     this.editor.zoom_refresh();
 
-    //register editor event
+    //Register Event Handlers for editor
     this.editor.on("nodeDataChanged", (id) => {
       const updatedNode = this.editor.getNodeFromId(id);
 
-      //assume name changed
+      //This just assumes that the name changed
       let index = -1;
       for (let i = 0; i < this.nodesInEditor.length; i++) {
         if (this.nodesInEditor[i][0] == id) {
@@ -111,7 +109,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.selectedNode[1] = node.data.name;
     });
 
-    // Event listener for node click
+    // Event listener for connection click
     this.editor.on(
       "connectionSelected",
       (output_id, input_id, output_class, input_class) => {
@@ -119,7 +117,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       }
     );
 
-    // Event listener for node click
+    // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
       const textAreaHTML = this.shadowRoot?.getElementById(
         "textAreaHTML"
@@ -130,6 +128,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.selectedNode[1] = null;
     });
 
+    //Event listerner for creation of a node
     this.editor.on("nodeCreated", (id) => {
       this.createdNodeId = id;
       let createdNodeName = this.editor.getNodeFromId(id).data.name;
@@ -140,14 +139,20 @@ export class WebWriterBranchingScenario extends LitElementWw {
       console.log(this.nodesInEditor);
     });
 
+    //Event listener for deletion of a node
     this.editor.on("nodeRemoved", (id) => {
       this.nodesInEditor = this.nodesInEditor.filter((item) => item[0] != id);
       console.log(this.nodesInEditor);
     });
   }
 
+  //React to changes in lit properties
   updated(changedProperties) {
     if (changedProperties.has("nodeSelected") && this.nodeSelected) {
+      //When a node is selected the HTML tree changes.
+      //This code is necessary to dynamically set the content of the appearing components
+
+      //Update the textArea content
       const textAreaHTML = this.shadowRoot?.getElementById(
         "textAreaHTML"
       ) as SlTextarea;
@@ -156,43 +161,40 @@ export class WebWriterBranchingScenario extends LitElementWw {
         textAreaHTML.value = node.data.html;
       }
 
-      //TODO: change this
+      //Initially fills the NodeSelect with options
       const nodeSelect = this.shadowRoot?.getElementById(
         "nodeSelect"
       ) as SlSelect;
       if (nodeSelect) {
-        // Clear existing options
-        // Clear existing options
         while (nodeSelect.firstChild) {
           nodeSelect.removeChild(nodeSelect.firstChild);
         }
 
-        // Add new options based on the current nodes
         this.nodesInEditor.forEach((node) => {
-          nodeSelect.innerHTML += `<sl-option value=${node[0].toString()}>${
-            node[1]
-          }</sl-option>`;
+          if (node[0] != this.selectedNode[0]) {
+            nodeSelect.innerHTML += `<sl-option value=${node[0].toString()}>${
+              node[1]
+            }</sl-option>`;
+          }
         });
       }
     }
 
-    //TODO: change this
+    //Reacts to changes such as node names
     if (changedProperties.has("nodesInEditor")) {
-      console.log("here now");
       const nodeSelect = this.shadowRoot?.getElementById(
         "nodeSelect"
       ) as SlSelect;
       if (nodeSelect) {
-        // Clear existing options
-        // Clear existing options
         while (nodeSelect.firstChild) {
           nodeSelect.removeChild(nodeSelect.firstChild);
         }
-        // Add new options based on the current nodes
         this.nodesInEditor.forEach((node) => {
-          nodeSelect.innerHTML += `<sl-option value=${node[0].toString()}>${
-            node[1]
-          }</sl-option>`;
+          if (node[0] != this.selectedNode[0]) {
+            nodeSelect.innerHTML += `<sl-option value=${node[0].toString()}>${
+              node[1]
+            }</sl-option>`;
+          }
         });
       }
     }
@@ -262,7 +264,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   </sl-icon-button>
                   <sl-divider vertical style="height: 30px;"></sl-divider>
                   <sl-select id="nodeSelect"> </sl-select>
-                  <sl-button @click=${() => this._addLinkToSelectedNode()}
+                  <sl-button @click=${() => this._connectSelectedNodes()}
                     >Add Link</sl-button
                   >
                   <sl-divider vertical style="height: 30px;"></sl-divider>
@@ -388,6 +390,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
     dialog.hide();
     this.editor.clear();
     this.nodesInEditor = [];
+    this.selectedNode = [null, null];
+    this.nodeSelected = false;
   }
 
   private _saveChangesToNodeData() {
@@ -428,27 +432,40 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
   }
 
-  private _addLinkToSelectedNode() {
+  private _connectSelectedNodes() {
+    const nodeSelect = this.shadowRoot?.getElementById(
+      "nodeSelect"
+    ) as SlSelect;
+
+    const nodeToBeConnectedId = nodeSelect.value;
+
+    let nodeToBeConnectedIdAsNumber;
+
+    if (Array.isArray(nodeToBeConnectedId)) {
+      // If it's an array, convert each element to a number
+      nodeToBeConnectedIdAsNumber = nodeToBeConnectedId.map((id) => Number(id));
+    } else {
+      // If it's a single string, convert it directly to a number
+      nodeToBeConnectedIdAsNumber = Number(nodeToBeConnectedId);
+    }
+
+    this.editor.addNodeInput(nodeToBeConnectedIdAsNumber);
+    const inputs = this.editor.getNodeFromId(
+      nodeToBeConnectedIdAsNumber
+    ).inputs;
+    const inputKeys = Object.keys(inputs);
+    const lastInputKey = inputKeys[inputKeys.length - 1];
+
     this._addOutputToSelectedNode();
-
-    const selectedNode = this.editor.getNodeFromId(this.selectedNode[0]);
-    const outputs = selectedNode.outputs;
-    const keys = Object.keys(outputs);
-    const lastKey = keys[keys.length - 1];
-
-    console.log(lastKey);
-
-    this._addLinkNodeToEditor(
-      "Link",
-      selectedNode.pos_x + 350,
-      selectedNode.pos_y + 25
-    );
+    const outputs = this.editor.getNodeFromId(this.selectedNode[0]).outputs;
+    const outputKeys = Object.keys(outputs);
+    const lastOutputKey = outputKeys[outputKeys.length - 1];
 
     this.editor.addConnection(
       this.selectedNode[0],
-      this.createdNodeId,
-      lastKey,
-      "input_1"
+      nodeToBeConnectedIdAsNumber,
+      lastOutputKey,
+      lastInputKey
     );
 
     //TODO: Think about gamebook structure on development side (ask chatgpt)
