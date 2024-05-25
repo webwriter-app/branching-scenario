@@ -1,6 +1,7 @@
 import { html, css, LitElement, unsafeCSS } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, query, state } from "lit/decorators.js";
+import { Gamebook, Page } from "../gamebook";
 
 //Shoelace Imports
 import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
@@ -53,6 +54,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Array }) selectedNode: [number, string] = [null, null];
   @property({ type: Array }) nodesInEditor: [number, string][] = [];
 
+  @property({ type: Boolean }) inPreviewMode = false;
+  @property({ type: Object, attribute: false }) gamebook: Gamebook =
+    new Gamebook();
+
   static get scopedElements() {
     return {
       "sl-button": SlButton,
@@ -80,11 +85,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.start();
     this.editor.zoom_refresh();
 
-    //Register Event Handlers for editor
+    /*
+    // EDITOR EVENT HANDLERS
+    */
+
+    //event when node data changed, but this only picks up data changes from html objects in the node
+    //so this only picks up name changes
     this.editor.on("nodeDataChanged", (id) => {
       const updatedNode = this.editor.getNodeFromId(id);
 
-      //This just assumes that the name changed
       let index = -1;
       for (let i = 0; i < this.nodesInEditor.length; i++) {
         if (this.nodesInEditor[i][0] == id) {
@@ -100,6 +109,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
       ];
 
       this.selectedNode = [this.selectedNode[0], updatedNode.data.name];
+
+      this.gamebook.saveChangesToPageName(id, updatedNode.data.name);
     });
 
     // Event listener for node click
@@ -130,18 +141,27 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //Event listerner for creation of a node
     this.editor.on("nodeCreated", (id) => {
       this.createdNodeId = id;
-      let createdNodeName = this.editor.getNodeFromId(id).data.name;
+      let createdNode = this.editor.getNodeFromId(id);
       this.nodesInEditor = [
         ...this.nodesInEditor,
-        [this.createdNodeId, createdNodeName],
+        [this.createdNodeId, createdNode.data.name],
       ];
-      console.log(this.nodesInEditor);
+
+      const createdPage: Page = {
+        id: id,
+        title: createdNode.data.name,
+        content: createdNode.data.html,
+      };
+
+      this.gamebook.addPage(createdPage);
+      console.log(this.gamebook.pages);
     });
 
     //Event listener for deletion of a node
     this.editor.on("nodeRemoved", (id) => {
       this.nodesInEditor = this.nodesInEditor.filter((item) => item[0] != id);
-      console.log(this.nodesInEditor);
+      this.gamebook.removePage(id);
+      console.log(this.gamebook.pages);
     });
 
     this.editor.on("translate", ({ x, y }) => {
@@ -404,6 +424,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     const dialog = this.shadowRoot.getElementById("dialog") as SlDialog;
     dialog.hide();
     this.editor.clear();
+    this.gamebook.clearPages();
 
     this.nodesInEditor = [];
     this.selectedNode = [null, null];
@@ -422,6 +443,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       name: this.selectedNode[1],
       html: newHTML,
     });
+    this.gamebook.saveChangesToPageContent(this.selectedNode[0], newHTML);
   }
 
   private _addInputToSelectedNode() {
@@ -523,7 +545,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
             <div class="div-svg">
                <svg>${PlayFill}</svg>
             </div>
-            <p>Start Page</p>
+            <p>Start Sheet</p>
           </div>
         </div>
         <div class="content">

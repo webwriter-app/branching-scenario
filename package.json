@@ -18,6 +18,7 @@
     "./widgets/webwriter-branching-scenario": "./widgets/webwriter-branching-scenario.ts"
   },
   "devDependencies": {
-    "@types/drawflow": "^0.0.11"
+    "@types/drawflow": "^0.0.11",
+    "typescript": "^5.4.5"
   }
 }
