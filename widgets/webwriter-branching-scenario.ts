@@ -171,11 +171,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
           this.editor.zoom_refresh();
           this.editor.import(this.editorDataSave);
           this._registerEditorEventHandlers();
-
-          console.log(this.editorDataSave);
         }
       } else {
-        console.log("preview mode");
+        const previewSheet = this.shadowRoot?.getElementById("previewSheet");
+        const content = this.gamebook.pages[0][1].content;
+        previewSheet.innerHTML = content;
       }
     }
   }
@@ -213,7 +213,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
             `}
       </div>
       ${this.inPreviewMode
-        ? html` <div>test</div> `
+        ? html`
+            <div class="preview">
+              <div id="previewSheet" class="previewSheet">
+                <!-- ${this.gamebook.pages[0][1].content} -->
+              </div>
+            </div>
+          `
         : html`
         <div id="drawflow">
           <div class="bar-zoom">
@@ -289,7 +295,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 `
               : html`
                   <!-- Content to display when the condition is false -->
-                  <p>Select a node to display its content</p>
+                  <p>Select a node to edit its content</p>
                 `
           }
         </div>
@@ -560,7 +566,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     // Event listener for node click
     this.editor.on("nodeSelected", (id) => {
-      console.log("lets see if this works");
       const node = this.editor.getNodeFromId(id);
       this.nodeSelected = true;
       this.selectedNode = [node.id, node.data.name];

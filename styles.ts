@@ -67,9 +67,15 @@ export default css`
     font-size: auto;
   }
 
-  #zoomInBtn,
-  #zoomOutBtn {
-    color: white;
+  .preview {
+    background-color: #fafafb;
+    height: 500px;
+    padding: 10px;
+  }
+
+  .previewSheet {
+    background-color: #ffffff;
+    height: 400px;
   }
 
   /* ------- */
@@ -88,6 +94,10 @@ export default css`
     border-bottom: 1px solid #e4e4e4; /* You can adjust the thickness and color as needed */
   }
 
+  #zoomInBtn,
+  #zoomOutBtn {
+    color: white;
+  }
   /* ------- */
   /* NODE */
   /* ------- */
