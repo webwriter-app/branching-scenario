@@ -30,7 +30,9 @@ import Trash3 from "bootstrap-icons/icons/trash3.svg";
 import Floppy from "bootstrap-icons/icons/floppy.svg";
 import Plus from "bootstrap-icons/icons/plus.svg";
 import Dash from "bootstrap-icons/icons/dash.svg";
-import PlayFill from "bootstrap-icons/icons/arrow-right-circle-fill.svg";
+import ArrowRightCircleFill from "bootstrap-icons/icons/arrow-right-circle-fill.svg";
+import StopCircle from "bootstrap-icons/icons/stop-circle.svg";
+import PlayFill from "bootstrap-icons/icons/play-fill.svg";
 
 //Drawflow Imports
 import Drawflow from "drawflow";
@@ -55,8 +57,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Array }) nodesInEditor: [number, string][] = [];
 
   @property({ type: Boolean }) inPreviewMode = false;
-  @property({ type: Object, attribute: false }) gamebook: Gamebook =
-    new Gamebook();
+  @property({ type: Object, attribute: false }) editorDataSave = null;
+  @property({ type: Object, attribute: false })
+  gamebook: Gamebook = new Gamebook();
 
   static get scopedElements() {
     return {
@@ -76,7 +79,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
   static styles = [style, styles];
 
   protected firstUpdated(_changedProperties: any): void {
-    //initialize the Editor
     const container = this.shadowRoot?.getElementById("drawflow");
     this.editor = new Drawflow(container);
     this.editor.reroute = true;
@@ -84,93 +86,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.zoom = 0.75;
     this.editor.start();
     this.editor.zoom_refresh();
-
-    /*
-    // EDITOR EVENT HANDLERS
-    */
-
-    //event when node data changed, but this only picks up data changes from html objects in the node
-    //so this only picks up name changes
-    this.editor.on("nodeDataChanged", (id) => {
-      const updatedNode = this.editor.getNodeFromId(id);
-
-      let index = -1;
-      for (let i = 0; i < this.nodesInEditor.length; i++) {
-        if (this.nodesInEditor[i][0] == id) {
-          index = i;
-          break;
-        }
-      }
-
-      this.nodesInEditor = [
-        ...this.nodesInEditor.slice(0, index),
-        [id, updatedNode.data.name],
-        ...this.nodesInEditor.slice(index + 1),
-      ];
-
-      this.selectedNode = [this.selectedNode[0], updatedNode.data.name];
-
-      this.gamebook.saveChangesToPageName(id, updatedNode.data.name);
-    });
-
-    // Event listener for node click
-    this.editor.on("nodeSelected", (id) => {
-      const node = this.editor.getNodeFromId(id);
-      this.nodeSelected = true;
-      this.selectedNode = [node.id, node.data.name];
-    });
-
-    // Event listener for connection click
-    this.editor.on(
-      "connectionSelected",
-      (output_id, input_id, output_class, input_class) => {
-        console.log("connection selected");
-      }
-    );
-
-    // Event listener for node unselected
-    this.editor.on("nodeUnselected", (boolean) => {
-      const textAreaHTML = this.shadowRoot?.getElementById(
-        "textAreaHTML"
-      ) as SlTextarea;
-      textAreaHTML.value = "";
-      this.nodeSelected = false;
-      this.selectedNode = [null, null];
-    });
-
-    //Event listerner for creation of a node
-    this.editor.on("nodeCreated", (id) => {
-      this.createdNodeId = id;
-      let createdNode = this.editor.getNodeFromId(id);
-      this.nodesInEditor = [
-        ...this.nodesInEditor,
-        [this.createdNodeId, createdNode.data.name],
-      ];
-
-      const createdPage: Page = {
-        id: id,
-        title: createdNode.data.name,
-        content: createdNode.data.html,
-      };
-
-      this.gamebook.addPage(createdPage);
-      console.log(this.gamebook.pages);
-    });
-
-    //Event listener for deletion of a node
-    this.editor.on("nodeRemoved", (id) => {
-      this.nodesInEditor = this.nodesInEditor.filter((item) => item[0] != id);
-      this.gamebook.removePage(id);
-      console.log(this.gamebook.pages);
-    });
-
-    this.editor.on("translate", ({ x, y }) => {
-      //let movedNode = this.editor.getNodeFromId(id);
-      //console.log(movedNode.pos_x, movedNode.pos_y);
-    });
-
-    //Create Origin
-    this._addOriginToGraph();
+    this._registerEditorEventHandlers();
   }
 
   //React to changes in lit properties
@@ -235,28 +151,70 @@ export class WebWriterBranchingScenario extends LitElementWw {
         nodeSelect.value = "";
       }
     }
+
+    //entering edit mode again
+    if (changedProperties.has("inPreviewMode")) {
+      //is entered on init
+      if (!this.inPreviewMode) {
+        //add origin on init
+        if (this.editorDataSave == null) {
+          this._addOriginToGraph();
+        }
+        //when entering edit mode from preview mode, reinitialize and import data
+        else {
+          const container = this.shadowRoot?.getElementById("drawflow");
+          this.editor = new Drawflow(container);
+          this.editor.reroute = true;
+          this.editor.reroute_fix_curvature = true;
+          this.editor.zoom = 0.75;
+          this.editor.start();
+          this.editor.zoom_refresh();
+          this.editor.import(this.editorDataSave);
+          this._registerEditorEventHandlers();
+
+          console.log(this.editorDataSave);
+        }
+      } else {
+        console.log("preview mode");
+      }
+    }
   }
 
   render() {
     return html` <div class="widget">
-        <div class="controls">
-          <div class="first-item">
-            <sl-button id="previewBtn">Preview</sl-button>
-          </div>
-          <sl-icon-button
-            id="addSheetBtn"
-            src=${FileEarmarkPlus}
-            class="border"
-            @click=${() => this._addSheetNode("Untitled Sheet")}
-          ></sl-icon-button>
-          <sl-divider vertical style="height: 30px;"></sl-divider>
-          <sl-button
-            id="clearBtn"
-            @click=${() =>
-              (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
-            >Clear</sl-button
-          >
-        </div>
+      <div class="controls">
+        ${this.inPreviewMode
+          ? html`
+              <div class="first-item">
+                <sl-button id="previewBtn" @click=${() => this._switchMode()}
+                  >Cancel</sl-button
+                >
+              </div>
+            `
+          : html`
+              <div class="first-item">
+                <sl-button id="previewBtn" @click=${this._switchMode}
+                  >Preview</sl-button
+                >
+              </div>
+              <sl-icon-button
+                id="addSheetBtn"
+                src=${FileEarmarkPlus}
+                class="border"
+                @click=${() => this._addSheetNode("Untitled Sheet")}
+              ></sl-icon-button>
+              <sl-divider vertical style="height: 30px;"></sl-divider>
+              <sl-button
+                id="clearBtn"
+                @click=${() =>
+                  (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
+                >Clear</sl-button
+              >
+            `}
+      </div>
+      ${this.inPreviewMode
+        ? html` <div>test</div> `
+        : html`
         <div id="drawflow">
           <div class="bar-zoom">
             <sl-icon-button
@@ -275,65 +233,67 @@ export class WebWriterBranchingScenario extends LitElementWw {
         </div>
 
         <div id="selection" class="selected-content-area">
-          ${this.nodeSelected
-            ? html`
-                <div class="controls">
-                  <sl-icon-button
-                    src=${Plus}
-                    @click=${this._addInputToSelectedNode}
-                  >
-                  </sl-icon-button>
-                  <sl-icon-button
-                    src=${Dash}
-                    @click=${this._deleteInputOfSelectedNode}
-                  >
-                  </sl-icon-button>
-                  <sl-divider vertical style="height: 30px;"></sl-divider>
-                  <sl-icon-button
-                    src=${Plus}
-                    @click=${this._addOutputToSelectedNode}
-                  >
-                  </sl-icon-button>
-                  <sl-icon-button
-                    src=${Dash}
-                    @click=${this._deleteOutputOfSelectedNode}
-                  >
-                  </sl-icon-button>
-                  <sl-divider vertical style="height: 30px;"></sl-divider>
-                  <sl-select id="nodeSelect"> </sl-select>
-                  <sl-button @click=${() => this._connectSelectedNodes()}
-                    >Add Link</sl-button
-                  >
-                  <sl-divider vertical style="height: 30px;"></sl-divider>
-                  <sl-dropdown>
-                    <sl-button slot="trigger">Add Branch</sl-button>
-                    <sl-menu>
-                      <sl-menu-item>Quiz Branch</sl-menu-item>
-                      <sl-menu-item>Reactive Branch</sl-menu-item>
-                    </sl-menu>
-                  </sl-dropdown>
-                  <sl-divider vertical style="height: 30px;"></sl-divider>
-                  <sl-icon-button
-                    src=${Floppy}
-                    id="saveChangesBtn"
-                    @click=${this._saveChangesToNodeData}
-                  ></sl-icon-button>
-                </div>
-                <p>Selected Worksheet: ${this.selectedNode[1]}</p>
-                <!-- <div class="worksheet">test</div> -->
-                <sl-textarea
-                  id="textAreaHTML"
-                  resize="none"
-                  placeholder="No node selected"
-                  size="large"
-                ></sl-textarea>
-              `
-            : html`
-                <!-- Content to display when the condition is false -->
-                <p>Select a node to display its content</p>
-              `}
+          ${
+            this.nodeSelected
+              ? html`
+                  <div class="controls">
+                    <sl-icon-button
+                      src=${Plus}
+                      @click=${this._addInputToSelectedNode}
+                    >
+                    </sl-icon-button>
+                    <sl-icon-button
+                      src=${Dash}
+                      @click=${this._deleteInputOfSelectedNode}
+                    >
+                    </sl-icon-button>
+                    <sl-divider vertical style="height: 30px;"></sl-divider>
+                    <sl-icon-button
+                      src=${Plus}
+                      @click=${this._addOutputToSelectedNode}
+                    >
+                    </sl-icon-button>
+                    <sl-icon-button
+                      src=${Dash}
+                      @click=${this._deleteOutputOfSelectedNode}
+                    >
+                    </sl-icon-button>
+                    <sl-divider vertical style="height: 30px;"></sl-divider>
+                    <sl-select id="nodeSelect"> </sl-select>
+                    <sl-button @click=${() => this._connectSelectedNodes()}
+                      >Add Link</sl-button
+                    >
+                    <sl-divider vertical style="height: 30px;"></sl-divider>
+                    <sl-dropdown>
+                      <sl-button slot="trigger">Add Branch</sl-button>
+                      <sl-menu>
+                        <sl-menu-item>Quiz Branch</sl-menu-item>
+                        <sl-menu-item>Reactive Branch</sl-menu-item>
+                      </sl-menu>
+                    </sl-dropdown>
+                    <sl-divider vertical style="height: 30px;"></sl-divider>
+                    <sl-icon-button
+                      src=${Floppy}
+                      id="saveChangesBtn"
+                      @click=${this._saveChangesToNodeData}
+                    ></sl-icon-button>
+                  </div>
+                  <p>Selected Worksheet: ${this.selectedNode[1]}</p>
+                  <!-- <div class="worksheet">test</div> -->
+                  <sl-textarea
+                    id="textAreaHTML"
+                    resize="none"
+                    placeholder="No node selected"
+                    size="large"
+                  ></sl-textarea>
+                `
+              : html`
+                  <!-- Content to display when the condition is false -->
+                  <p>Select a node to display its content</p>
+                `
+          }
         </div>
-      </div>
+      </div>`}
 
       <sl-dialog label="Clear graph" class="dialog" id="dialog">
         Do you want to clear the graph? All your progress will be lost.
@@ -353,7 +313,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
           @click=${() => this._clearEditor()}
           >Clear</sl-button
         >
-      </sl-dialog>`;
+      </sl-dialog>
+    </div>`;
   }
 
   //TODO: make this.editor a state variable, change the html render to include @click event catcher, write the funciton outside firstRender, see if that fixes sl-bug in node
@@ -543,7 +504,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
           <p class="title">Worksheet</p>
           <div class="badge">
             <div class="div-svg">
-               <svg>${PlayFill}</svg>
+               <svg>${ArrowRightCircleFill}</svg>
             </div>
             <p>Start Sheet</p>
           </div>
@@ -560,6 +521,97 @@ export class WebWriterBranchingScenario extends LitElementWw {
       </div>`,
       false
     );
+  }
+
+  private _switchMode() {
+    if (!this.inPreviewMode) {
+      this.editorDataSave = this.editor.export();
+      this.nodeSelected = false;
+      this.selectedNode = [null, null];
+    }
+
+    this.inPreviewMode = !this.inPreviewMode;
+  }
+
+  private _registerEditorEventHandlers() {
+    //event when node data changed, but this only picks up data changes from html objects in the node
+    //so this only picks up name changes
+    this.editor.on("nodeDataChanged", (id) => {
+      const updatedNode = this.editor.getNodeFromId(id);
+
+      let index = -1;
+      for (let i = 0; i < this.nodesInEditor.length; i++) {
+        if (this.nodesInEditor[i][0] == id) {
+          index = i;
+          break;
+        }
+      }
+
+      this.nodesInEditor = [
+        ...this.nodesInEditor.slice(0, index),
+        [id, updatedNode.data.name],
+        ...this.nodesInEditor.slice(index + 1),
+      ];
+
+      this.selectedNode = [this.selectedNode[0], updatedNode.data.name];
+
+      this.gamebook.saveChangesToPageName(id, updatedNode.data.name);
+    });
+
+    // Event listener for node click
+    this.editor.on("nodeSelected", (id) => {
+      console.log("lets see if this works");
+      const node = this.editor.getNodeFromId(id);
+      this.nodeSelected = true;
+      this.selectedNode = [node.id, node.data.name];
+    });
+
+    // Event listener for connection click
+    this.editor.on(
+      "connectionSelected",
+      (output_id, input_id, output_class, input_class) => {
+        console.log("connection selected");
+      }
+    );
+
+    // Event listener for node unselected
+    this.editor.on("nodeUnselected", (boolean) => {
+      const textAreaHTML = this.shadowRoot?.getElementById(
+        "textAreaHTML"
+      ) as SlTextarea;
+      textAreaHTML.value = "";
+      this.nodeSelected = false;
+      this.selectedNode = [null, null];
+    });
+
+    //Event listerner for creation of a node
+    this.editor.on("nodeCreated", (id) => {
+      this.createdNodeId = id;
+      let createdNode = this.editor.getNodeFromId(id);
+      this.nodesInEditor = [
+        ...this.nodesInEditor,
+        [this.createdNodeId, createdNode.data.name],
+      ];
+
+      const createdPage: Page = {
+        id: id,
+        title: createdNode.data.name,
+        content: createdNode.data.html,
+      };
+
+      this.gamebook.addPage(createdPage);
+    });
+
+    //Event listener for deletion of a node
+    this.editor.on("nodeRemoved", (id) => {
+      this.nodesInEditor = this.nodesInEditor.filter((item) => item[0] != id);
+      this.gamebook.removePage(id);
+    });
+
+    this.editor.on("translate", ({ x, y }) => {
+      //let movedNode = this.editor.getNodeFromId(id);
+      //console.log(movedNode.pos_x, movedNode.pos_y);
+    });
   }
 }
 
