@@ -55,11 +55,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
   //Nodes for referencing: (Id, Name)
   @property({ type: Array }) selectedNode: [number, string] = [null, null];
   @property({ type: Array }) nodesInEditor: [number, string][] = [];
+  @property({ type: Object, attribute: false }) editorDataSave = null;
 
   @property({ type: Boolean }) inPreviewMode = false;
-  @property({ type: Object, attribute: false }) editorDataSave = null;
   @property({ type: Object, attribute: false })
   gamebook: Gamebook = new Gamebook();
+  @property({ type: Object, attribute: false }) currentPage: Page = null;
 
   static get scopedElements() {
     return {
@@ -173,10 +174,39 @@ export class WebWriterBranchingScenario extends LitElementWw {
           this._registerEditorEventHandlers();
         }
       } else {
+        this.currentPage = this.gamebook.startGamebook();
+
+        const previewTitle = this.shadowRoot?.getElementById("previewTitle");
         const previewSheet = this.shadowRoot?.getElementById("previewSheet");
-        const content = this.gamebook.pages[0][1].content;
-        previewSheet.innerHTML = content;
+
+        previewTitle.innerHTML = this.currentPage.title;
+        previewSheet.innerHTML = this.currentPage.content;
+
+        // Attach event listeners to all buttons
+        const buttons = previewSheet.querySelectorAll(".link");
+        buttons.forEach((button) => {
+          const targetId = parseInt(button.getAttribute("data-target-id"), 10);
+          button.addEventListener("click", () =>
+            this._navigateToPageGamebook(targetId)
+          );
+        });
       }
+    }
+
+    if (changedProperties.has("currentPage")) {
+      const previewTitle = this.shadowRoot?.getElementById("previewTitle");
+      const previewSheet = this.shadowRoot?.getElementById("previewSheet");
+      previewTitle.innerHTML = this.currentPage.title;
+      previewSheet.innerHTML = this.currentPage.content;
+
+      // Attach event listeners to all buttons
+      const buttons = previewSheet.querySelectorAll(".link");
+      buttons.forEach((button) => {
+        const targetId = parseInt(button.getAttribute("data-target-id"), 10);
+        button.addEventListener("click", () =>
+          this._navigateToPageGamebook(targetId)
+        );
+      });
     }
   }
 
@@ -215,9 +245,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
       ${this.inPreviewMode
         ? html`
             <div class="preview">
-              <div id="previewSheet" class="previewSheet">
-                <!-- ${this.gamebook.pages[0][1].content} -->
-              </div>
+              <div id="previewTitle" class="previewTitle"></div>
+              <div id="previewSheet" class="previewSheet"></div>
             </div>
           `
         : html`
@@ -476,17 +505,48 @@ export class WebWriterBranchingScenario extends LitElementWw {
       lastInputKey
     );
 
-    //TODO: Think about gamebook structure on development side (ask chatgpt)
-    //TODO: does a gamebook have an always continue button? does one define a flow?
-    //TODO: subchapters?? like swithcing between screens but then proceeding? i mean wtf
-    //TODO: does it have a start screen? an end screen?
-    //TOOD: do links really need to do this node stuff?
-    //TODO: back button?
-    //TODO: check time plan
-    //TODO: selected area should only be available for nodes of type sheet
-    //TODO: how to let the area be webwriter editable?
-    //TODO: write this decision making down... work visually with node inputs? have a link component?
-    //TODO: add preview Mode and stuff
+    const textAreaHTML = this.shadowRoot?.getElementById(
+      "textAreaHTML"
+    ) as SlTextarea;
+    const currentHtml = textAreaHTML.value;
+
+    const buttonHtml = `<button class="link" data-target-id="${nodeToBeConnectedIdAsNumber}">Test</button>`;
+
+    //(window as any)._navigateToPageGamebook = this._navigateToPageGamebook;
+
+    // Find the index of the closing </div> tag
+    const closingDivIndex = currentHtml.lastIndexOf("</div>");
+
+    if (closingDivIndex !== -1) {
+      // Insert the buttonHtml before the closing </div> tag
+      const newHtml =
+        currentHtml.slice(0, closingDivIndex) +
+        buttonHtml +
+        currentHtml.slice(closingDivIndex);
+
+      // Update the textAreaHTML value with the new HTML
+      textAreaHTML.value = newHtml;
+
+      this.editor.updateNodeDataFromId(this.selectedNode[0], {
+        name: this.selectedNode[1],
+        html: newHtml,
+      });
+      this.gamebook.saveChangesToPageContent(this.selectedNode[0], newHtml);
+
+      this.gamebook.addLinkToPage(
+        this.selectedNode[0],
+        nodeToBeConnectedIdAsNumber
+      );
+    }
+  }
+
+  private _navigateToPageGamebook(targetPageId: number) {
+    this.gamebook.navigateWithLink(targetPageId);
+
+    this.currentPage =
+      this.gamebook.pages[
+        this.gamebook.getPageIndex(this.gamebook.currentPageId)
+      ][1];
   }
 
   private _addOriginToGraph() {
@@ -571,14 +631,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.selectedNode = [node.id, node.data.name];
     });
 
-    // Event listener for connection click
-    this.editor.on(
-      "connectionSelected",
-      (output_id, input_id, output_class, input_class) => {
-        console.log("connection selected");
-      }
-    );
-
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
       const textAreaHTML = this.shadowRoot?.getElementById(
@@ -602,6 +654,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
         id: id,
         title: createdNode.data.name,
         content: createdNode.data.html,
+        links: [],
       };
 
       this.gamebook.addPage(createdPage);
@@ -613,10 +666,20 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.gamebook.removePage(id);
     });
 
-    this.editor.on("translate", ({ x, y }) => {
-      //let movedNode = this.editor.getNodeFromId(id);
-      //console.log(movedNode.pos_x, movedNode.pos_y);
-    });
+    this.editor.on(
+      "connectionCreated",
+      ({ output_id, input_id, output_class, input_class }) => {
+        console.log("connection Created");
+      }
+    );
+
+    // Event listener for connection click
+    this.editor.on(
+      "connectionSelected",
+      (output_id, input_id, output_class, input_class) => {
+        console.log("connection selected");
+      }
+    );
   }
 }
 
@@ -624,3 +687,15 @@ customElements.define(
   "webwriter-branching-scenario",
   WebWriterBranchingScenario
 );
+
+//TODO: Think about gamebook structure on development side (ask chatgpt)
+//TODO: does a gamebook have an always continue button? does one define a flow?
+//TODO: subchapters?? like swithcing between screens but then proceeding? i mean wtf
+//TODO: does it have a start screen? an end screen?
+//TOOD: do links really need to do this node stuff?
+//TODO: back button?
+//TODO: check time plan
+//TODO: selected area should only be available for nodes of type sheet
+//TODO: how to let the area be webwriter editable?
+//TODO: write this decision making down... work visually with node inputs? have a link component?
+//TODO: add preview Mode and stuff

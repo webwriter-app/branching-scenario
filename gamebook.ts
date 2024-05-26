@@ -1,6 +1,5 @@
 // Represents a choice leading to another page
-export interface Choice {
-  text: string;
+export interface Link {
   targetPageId: number;
 }
 
@@ -9,7 +8,7 @@ export interface Page {
   id: number;
   title: string;
   content: string;
-  //choices: Choice[];
+  links: Link[];
 }
 
 export class Gamebook {
@@ -62,6 +61,40 @@ export class Gamebook {
   saveChangesToPageName(pageId: number, newName: string): void {
     let index = this.getPageIndex(pageId);
     this.pages[index][1].title = newName;
+  }
+
+  addLinkToPage(pageId: number, targetPageId: number): void {
+    const link: Link = {
+      targetPageId: targetPageId,
+    };
+
+    this.pages[this.getPageIndex(pageId)][1].links.push(link);
+  }
+
+  startGamebook(): Page {
+    //first page in array is always origin
+    //TODO: introduce origin ID attribute
+    this.currentPageId = this.pages[0][1].id;
+    return this.pages[0][1];
+  }
+
+  navigateWithLink(targetPageId: number): boolean {
+    let currPage = this.pages[this.getPageIndex(this.currentPageId)][1];
+    // Check if the page has a links array
+    if (currPage.links) {
+      // Check if any link in the links array has the targetPageId
+      let linkExists = currPage.links.some(
+        (link) => link.targetPageId == targetPageId
+      );
+
+      if (linkExists) {
+        return this.navigateToPage(targetPageId);
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   // Navigate to a page by its ID

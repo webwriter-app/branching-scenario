@@ -68,6 +68,10 @@ export default css`
   }
 
   .preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items vertically */
+    gap: 0px;
     background-color: #fafafb;
     height: 500px;
     padding: 10px;
@@ -76,6 +80,13 @@ export default css`
   .previewSheet {
     background-color: #ffffff;
     height: 400px;
+    width: 100%;
+  }
+
+  .previewTitle {
+    background-color: #cecece;
+    height: 40px;
+    width: 100%;
   }
 
   /* ------- */
