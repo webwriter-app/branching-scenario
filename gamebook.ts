@@ -12,10 +12,12 @@ export interface Page {
 }
 
 export class Gamebook {
+  title: string;
   pages: [number, Page][];
   currentPageId: number;
 
   constructor() {
+    this.title = "Untitled";
     this.pages = [];
     this.currentPageId = 0;
   }

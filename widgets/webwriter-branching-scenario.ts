@@ -31,7 +31,7 @@ import Floppy from "bootstrap-icons/icons/floppy.svg";
 import Plus from "bootstrap-icons/icons/plus.svg";
 import Dash from "bootstrap-icons/icons/dash.svg";
 import ArrowRightCircleFill from "bootstrap-icons/icons/arrow-right-circle-fill.svg";
-import StopCircle from "bootstrap-icons/icons/stop-circle.svg";
+import StopFill from "bootstrap-icons/icons/stop-fill.svg";
 import PlayFill from "bootstrap-icons/icons/play-fill.svg";
 
 //Drawflow Imports
@@ -176,14 +176,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
       } else {
         this.currentPage = this.gamebook.startGamebook();
 
-        const previewTitle = this.shadowRoot?.getElementById("previewTitle");
-        const previewSheet = this.shadowRoot?.getElementById("previewSheet");
+        const pageTitle = this.shadowRoot?.getElementById("pageTitle");
+        const page = this.shadowRoot?.getElementById("page");
 
-        previewTitle.innerHTML = this.currentPage.title;
-        previewSheet.innerHTML = this.currentPage.content;
+        pageTitle.innerHTML = this.currentPage.title;
+
+        page.innerHTML = this.currentPage.content;
 
         // Attach event listeners to all buttons
-        const buttons = previewSheet.querySelectorAll(".link");
+        const buttons = page.querySelectorAll(".link");
         buttons.forEach((button) => {
           const targetId = parseInt(button.getAttribute("data-target-id"), 10);
           button.addEventListener("click", () =>
@@ -194,13 +195,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
 
     if (changedProperties.has("currentPage")) {
-      const previewTitle = this.shadowRoot?.getElementById("previewTitle");
-      const previewSheet = this.shadowRoot?.getElementById("previewSheet");
-      previewTitle.innerHTML = this.currentPage.title;
-      previewSheet.innerHTML = this.currentPage.content;
+      const pageTitle = this.shadowRoot?.getElementById("pageTitle");
+      const page = this.shadowRoot?.getElementById("page");
+      pageTitle.innerHTML = this.currentPage.title;
+      page.innerHTML = this.currentPage.content;
 
       // Attach event listeners to all buttons
-      const buttons = previewSheet.querySelectorAll(".link");
+      const buttons = page.querySelectorAll(".link");
       buttons.forEach((button) => {
         const targetId = parseInt(button.getAttribute("data-target-id"), 10);
         button.addEventListener("click", () =>
@@ -216,16 +217,33 @@ export class WebWriterBranchingScenario extends LitElementWw {
         ${this.inPreviewMode
           ? html`
               <div class="first-item">
-                <sl-button id="previewBtn" @click=${() => this._switchMode()}
-                  >Cancel</sl-button
+                <sl-icon-button
+                  src=${StopFill}
+                  class="border"
+                  id="previewBtn"
+                  @click=${() => this._switchMode()}
+                  >Cancel</sl-icon-button
                 >
               </div>
             `
           : html`
               <div class="first-item">
-                <sl-button id="previewBtn" @click=${this._switchMode}
-                  >Preview</sl-button
+                <sl-icon-button
+                  src=${PlayFill}
+                  class="border"
+                  id="previewBtn"
+                  @click=${this._switchMode}
+                  >Preview</sl-icon-button
                 >
+                <sl-divider vertical style="height: 30px;"></sl-divider>
+                <sl-textarea
+                  id="gamebookTitle"
+                  rows="1"
+                  resize="none"
+                  placeholder="Gamebook Name"
+                  @input="${this._handleGamebookTitle}"
+                  .value="${this.gamebook.title}"
+                ></sl-textarea>
               </div>
               <sl-icon-button
                 id="addSheetBtn"
@@ -245,8 +263,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
       ${this.inPreviewMode
         ? html`
             <div class="preview">
-              <div id="previewTitle" class="previewTitle"></div>
-              <div id="previewSheet" class="previewSheet"></div>
+              <div class="gamebook">
+                <div class="gamebookTitle">${this.gamebook.title}</div>
+                <div id="pageTitle" class="pageTitle"></div>
+                <div id="page" class="page"></div>
+              </div>
             </div>
           `
         : html`
@@ -419,6 +440,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   private _clearEditor() {
     const dialog = this.shadowRoot.getElementById("dialog") as SlDialog;
     dialog.hide();
+
     this.editor.clear();
     this.gamebook.clearPages();
 
@@ -434,11 +456,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
     const textAreaHTML = this.shadowRoot?.getElementById(
       "textAreaHTML"
     ) as SlTextarea;
+    console.log(textAreaHTML.value);
     const newHTML = textAreaHTML.value;
+    console.log(newHTML);
     this.editor.updateNodeDataFromId(this.selectedNode[0], {
       name: this.selectedNode[1],
       html: newHTML,
     });
+    console.log(this.selectedNode);
     this.gamebook.saveChangesToPageContent(this.selectedNode[0], newHTML);
   }
 
@@ -510,9 +535,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     ) as SlTextarea;
     const currentHtml = textAreaHTML.value;
 
-    const buttonHtml = `<button class="link" data-target-id="${nodeToBeConnectedIdAsNumber}">Test</button>`;
-
-    //(window as any)._navigateToPageGamebook = this._navigateToPageGamebook;
+    const buttonHtml = `<sl-button class="link" data-target-id="${nodeToBeConnectedIdAsNumber}">Test</sl-button>`;
 
     // Find the index of the closing </div> tag
     const closingDivIndex = currentHtml.lastIndexOf("</div>");
@@ -680,6 +703,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
         console.log("connection selected");
       }
     );
+  }
+
+  private _handleGamebookTitle(event) {
+    this.gamebook.title = event.target.value;
   }
 }
 
