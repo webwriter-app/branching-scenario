@@ -53,7 +53,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Number }) createdNodeId = null;
 
   //Nodes for referencing: (Id, Name)
-  @property({ type: Array }) selectedNode: [number, string] = [null, null];
+  @property({ type: Array }) selectedNode: [number, string, string] = [
+    null,
+    null,
+    null,
+  ];
   @property({ type: Array }) nodesInEditor: [number, string][] = [];
   @property({ type: Object, attribute: false }) editorDataSave = null;
 
@@ -290,59 +294,94 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
         <div id="selection" class="selected-content-area">
           ${
-            this.nodeSelected
+            this.nodeSelected &&
+            (this.selectedNode[2] == "sheet" ||
+              this.selectedNode[2] == "origin")
               ? html`
+                  <div id="sheetControls">
+                    <div class="controls">
+                      <sl-icon-button
+                        src=${Plus}
+                        @click=${this._addInputToSelectedNode}
+                      >
+                      </sl-icon-button>
+                      <sl-icon-button
+                        src=${Dash}
+                        @click=${this._deleteInputOfSelectedNode}
+                      >
+                      </sl-icon-button>
+                      <sl-divider vertical style="height: 30px;"></sl-divider>
+                      <sl-icon-button
+                        src=${Plus}
+                        @click=${this._addOutputToSelectedNode}
+                      >
+                      </sl-icon-button>
+                      <sl-icon-button
+                        src=${Dash}
+                        @click=${this._deleteOutputOfSelectedNode}
+                      >
+                      </sl-icon-button>
+                      <sl-divider vertical style="height: 30px;"></sl-divider>
+                      <sl-select id="nodeSelect"> </sl-select>
+                      <sl-button @click=${() => this._connectSelectedNodes()}
+                        >Add Link</sl-button
+                      >
+                      <sl-divider vertical style="height: 30px;"></sl-divider>
+                      <sl-dropdown>
+                        <sl-button slot="trigger">Add Branch</sl-button>
+                        <sl-menu>
+                          <sl-menu-item
+                            @click=${() =>
+                              this._addQuizBranchNodeToSelectedNode()}
+                            >Quiz Branch</sl-menu-item
+                          >
+                          <sl-menu-item>Reactive Branch</sl-menu-item>
+                        </sl-menu>
+                      </sl-dropdown>
+                      <sl-divider vertical style="height: 30px;"></sl-divider>
+                      <sl-icon-button
+                        src=${Floppy}
+                        id="saveChangesBtn"
+                        @click=${this._saveChangesToNodeData}
+                      ></sl-icon-button>
+                    </div>
+                    <p>Selected Worksheet: ${this.selectedNode[1]}</p>
+                    <!-- <div class="worksheet">test</div> -->
+                    <sl-textarea
+                      id="textAreaHTML"
+                      resize="none"
+                      placeholder="No node selected"
+                      size="large"
+                    ></sl-textarea>
+                  </div>
+                `
+              : this.nodeSelected && this.selectedNode[2] == "quiz-branch"
+              ? html` <div id="quizBranchControls">
                   <div class="controls">
+                    <!-- Add controls specific to quiz-branch here -->
                     <sl-icon-button
                       src=${Plus}
-                      @click=${this._addInputToSelectedNode}
+                      @click=${this._addAnswerToQuizBranch}
                     >
                     </sl-icon-button>
-                    <sl-icon-button
-                      src=${Dash}
-                      @click=${this._deleteInputOfSelectedNode}
-                    >
-                    </sl-icon-button>
-                    <sl-divider vertical style="height: 30px;"></sl-divider>
-                    <sl-icon-button
-                      src=${Plus}
-                      @click=${this._addOutputToSelectedNode}
-                    >
-                    </sl-icon-button>
-                    <sl-icon-button
-                      src=${Dash}
-                      @click=${this._deleteOutputOfSelectedNode}
-                    >
-                    </sl-icon-button>
-                    <sl-divider vertical style="height: 30px;"></sl-divider>
-                    <sl-select id="nodeSelect"> </sl-select>
-                    <sl-button @click=${() => this._connectSelectedNodes()}
-                      >Add Link</sl-button
-                    >
-                    <sl-divider vertical style="height: 30px;"></sl-divider>
-                    <sl-dropdown>
-                      <sl-button slot="trigger">Add Branch</sl-button>
-                      <sl-menu>
-                        <sl-menu-item>Quiz Branch</sl-menu-item>
-                        <sl-menu-item>Reactive Branch</sl-menu-item>
-                      </sl-menu>
-                    </sl-dropdown>
+                    <sl-icon-button src=${Dash}> </sl-icon-button>
                     <sl-divider vertical style="height: 30px;"></sl-divider>
                     <sl-icon-button
                       src=${Floppy}
-                      id="saveChangesBtn"
-                      @click=${this._saveChangesToNodeData}
+                      id="saveQuizBranchChangesBtn"
                     ></sl-icon-button>
                   </div>
-                  <p>Selected Worksheet: ${this.selectedNode[1]}</p>
-                  <!-- <div class="worksheet">test</div> -->
+                  <p>Selected Quiz Branch: ${this.selectedNode[1]}</p>
                   <sl-textarea
-                    id="textAreaHTML"
+                    id="quizBranchTextArea"
                     resize="none"
-                    placeholder="No node selected"
+                    placeholder="Question"
                     size="large"
                   ></sl-textarea>
-                `
+                  <sl-divider horizontal></sl-divider>
+                  <div id="answersContainer"></div>
+                  <!-- Container for dynamically added answers -->
+                </div>`
               : html`
                   <!-- Content to display when the condition is false -->
                   <p>Select a node to edit its content</p>
@@ -411,29 +450,48 @@ export class WebWriterBranchingScenario extends LitElementWw {
     );
   }
 
-  private _addLinkNodeToEditor(type, posx, posy) {
+  private _addQuizBranchNodeToSelectedNode() {
     const data = {
-      name: type,
+      name: "Quiz Branch",
+      question: "",
+      answers: [],
     };
 
     //this.editor.addNode(name, inputs, outputs, posx, posy, class, data, html);
     this.editor.addNode(
-      type,
-      1,
-      1,
-      posx,
-      posy,
-      "branch",
+      "Quiz Branch",
+      0,
+      0,
+      0,
+      0,
+      "quiz-branch",
       data,
       `
         <div class="title-box">
           <svg id="svg">
             ${Journal}
           </svg>
-          <div class="title">${type}</div>
+          <div class="title">Quiz Branch</div>
         </div>
       `,
       false
+    );
+
+    this.editor.addNodeInput(this.createdNodeId);
+    const inputs = this.editor.getNodeFromId(this.createdNodeId).inputs;
+    const inputKeys = Object.keys(inputs);
+    const lastInputKey = inputKeys[inputKeys.length - 1];
+
+    this._addOutputToSelectedNode();
+    const outputs = this.editor.getNodeFromId(this.selectedNode[0]).outputs;
+    const outputKeys = Object.keys(outputs);
+    const lastOutputKey = outputKeys[outputKeys.length - 1];
+
+    this.editor.addConnection(
+      this.selectedNode[0],
+      this.createdNodeId,
+      lastOutputKey,
+      lastInputKey
     );
   }
 
@@ -445,7 +503,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.gamebook.clearPages();
 
     this.nodesInEditor = [];
-    this.selectedNode = [null, null];
+    this.selectedNode = [null, null, null];
     this.nodeSelected = false;
 
     //Create Origin
@@ -456,14 +514,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
     const textAreaHTML = this.shadowRoot?.getElementById(
       "textAreaHTML"
     ) as SlTextarea;
-    console.log(textAreaHTML.value);
     const newHTML = textAreaHTML.value;
-    console.log(newHTML);
     this.editor.updateNodeDataFromId(this.selectedNode[0], {
       name: this.selectedNode[1],
       html: newHTML,
     });
-    console.log(this.selectedNode);
     this.gamebook.saveChangesToPageContent(this.selectedNode[0], newHTML);
   }
 
@@ -616,7 +671,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     if (!this.inPreviewMode) {
       this.editorDataSave = this.editor.export();
       this.nodeSelected = false;
-      this.selectedNode = [null, null];
+      this.selectedNode = [null, null, null];
     }
 
     this.inPreviewMode = !this.inPreviewMode;
@@ -642,7 +697,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
         ...this.nodesInEditor.slice(index + 1),
       ];
 
-      this.selectedNode = [this.selectedNode[0], updatedNode.data.name];
+      this.selectedNode = [
+        this.selectedNode[0],
+        updatedNode.data.name,
+        updatedNode.class,
+      ];
 
       this.gamebook.saveChangesToPageName(id, updatedNode.data.name);
     });
@@ -651,7 +710,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.on("nodeSelected", (id) => {
       const node = this.editor.getNodeFromId(id);
       this.nodeSelected = true;
-      this.selectedNode = [node.id, node.data.name];
+      this.selectedNode = [node.id, node.data.name, node.class];
     });
 
     // Event listener for node unselected
@@ -659,9 +718,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
       const textAreaHTML = this.shadowRoot?.getElementById(
         "textAreaHTML"
       ) as SlTextarea;
-      textAreaHTML.value = "";
+
+      if (textAreaHTML) {
+        textAreaHTML.value = "";
+      }
+
       this.nodeSelected = false;
-      this.selectedNode = [null, null];
+      this.selectedNode = [null, null, null];
     });
 
     //Event listerner for creation of a node
@@ -708,6 +771,36 @@ export class WebWriterBranchingScenario extends LitElementWw {
   private _handleGamebookTitle(event) {
     this.gamebook.title = event.target.value;
   }
+
+  private _addAnswerToQuizBranch() {
+    const answersContainer = this.shadowRoot.getElementById("answersContainer");
+    if (answersContainer) {
+      answersContainer.innerHTML += `<div class="answer"><sl-textarea resize="none" placeholder="Answer"></sl-textarea></div>`;
+    }
+
+    // // Create a dropdown for the answer options
+    // const answerDropdown = document.createElement("sl-dropdown") as SlDropdown;
+    // const dropdownButton = document.createElement("sl-button") as SlButton;
+    // dropdownButton.slot = "trigger";
+    // dropdownButton.textContent = "Options";
+
+    // const dropdownMenu = document.createElement("sl-menu") as SlMenu;
+    // const option1 = document.createElement("sl-menu-item") as SlMenuItem;
+    // option1.textContent = "Option 1";
+    // const option2 = document.createElement("sl-menu-item");
+    // option2.textContent = "Option 2";
+
+    // dropdownMenu.appendChild(option1);
+    // dropdownMenu.appendChild(option2);
+    // answerDropdown.appendChild(dropdownButton);
+    // answerDropdown.appendChild(dropdownMenu);
+
+    // Append the textarea and dropdown to the answer div
+
+    // answerDiv.appendChild(answerDropdown);
+
+    // Append the answer div to the answers container
+  }
 }
 
 customElements.define(
@@ -715,14 +808,9 @@ customElements.define(
   WebWriterBranchingScenario
 );
 
-//TODO: Think about gamebook structure on development side (ask chatgpt)
-//TODO: does a gamebook have an always continue button? does one define a flow?
-//TODO: subchapters?? like swithcing between screens but then proceeding? i mean wtf
-//TODO: does it have a start screen? an end screen?
-//TOOD: do links really need to do this node stuff?
+//TODO: Main Order (Does a gamebook have an always continue button? Does one define a Flow?) and Links as additional component?
+//TODO: does it have a cover screen? an end screen?
 //TODO: back button?
 //TODO: check time plan
-//TODO: selected area should only be available for nodes of type sheet
 //TODO: how to let the area be webwriter editable?
 //TODO: write this decision making down... work visually with node inputs? have a link component?
-//TODO: add preview Mode and stuff

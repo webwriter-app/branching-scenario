@@ -11,8 +11,13 @@ export interface Page {
   links: Link[];
 }
 
+export interface QuizBranch {
+  id: number;
+}
+
 export class Gamebook {
   title: string;
+  originPageId: number;
   pages: [number, Page][];
   currentPageId: number;
 
@@ -24,6 +29,9 @@ export class Gamebook {
 
   // Add a new page to the gamebook
   addPage(page: Page): void {
+    if (this.pages.length == 0) {
+      this.originPageId = page.id;
+    }
     this.pages.push([page.id, page]);
   }
 
@@ -35,6 +43,7 @@ export class Gamebook {
   //remove all pages from the gamebook
   clearPages(): void {
     this.pages = [];
+    this.originPageId = null;
   }
 
   //Returns

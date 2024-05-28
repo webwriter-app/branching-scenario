@@ -123,6 +123,25 @@ export default css`
   }
 
   /* ------- */
+  /* QUIZ BRANCH */
+  /* ------- */
+
+  .answer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .answer sl-textarea {
+    flex-grow: 1;
+    margin-right: 10px;
+  }
+
+  .answer sl-dropdown {
+    margin-left: 10px;
+  }
+
+  /* ------- */
   /* DRAWFLOW */
   /* ------- */
 
@@ -341,9 +360,9 @@ export default css`
   /* BRANCHING */
   /* ------- */
 
-  .drawflow .drawflow-node.branch {
-    background: #f6f0fd;
-    border: 1px solid #ab54f7;
+  .drawflow .drawflow-node.quiz-branch {
+    background: #f3e9ff;
+    border: 1px solid #949494;
     padding: 0px;
     width: auto;
     color: black;
@@ -351,9 +370,19 @@ export default css`
     font-family: "Roboto", sans-serif;
     -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
     box-shadow: 0 2px 20px 2px #d0d0d0;
+    font-weight: 600;
   }
 
-  .drawflow-node.branch .title-box {
+  .drawflow .drawflow-node.quiz-branch:hover {
+    border: 1px solid #c798ff;
+  }
+
+  .drawflow .drawflow-node.quiz-branch.selected {
+    border: 1px solid #c798ff;
+    color: #c798ff;
+  }
+
+  .drawflow-node.quiz-branch .title-box {
     display: flex;
     flex-direction: row;
     justify-content: flex-start; /* Centers items horizontally */
@@ -362,14 +391,18 @@ export default css`
     width: auto;
   }
 
-  .drawflow-node.branch .title-box #svg {
+  .drawflow-node.quiz-branch .title-box #svg {
     width: 16px;
     height: 16px;
   }
 
-  .drawflow .drawflow-node.branch .title-box .title {
+  .drawflow .drawflow-node.quiz-branch .title-box .title {
     margin-left: 25px;
   }
+
+  /* ---- */
+  /* NODE INPUT AND OUTPUTS */
+  /* ---- */
 
   .drawflow-node input,
   .drawflow-node select,
@@ -387,10 +420,6 @@ export default css`
   .drawflow-node textarea {
     height: 100px;
   }
-
-  /* ---- */
-  /* NODE INPUT AND OUTPUTS */
-  /* ---- */
 
   .drawflow .drawflow-node .input,
   .drawflow .drawflow-node .output {
