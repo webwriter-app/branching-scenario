@@ -3,6 +3,17 @@ export interface Link {
   targetPageId: number;
 }
 
+export interface QuizBranch {
+  question: string;
+}
+
+export interface Answer {
+  id: number;
+  text: string;
+  targetPageId: string;
+  isCorrect: boolean;
+}
+
 // Represents a single page in the gamebook
 export interface Page {
   id: number;
