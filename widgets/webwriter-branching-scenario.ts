@@ -1,7 +1,7 @@
 import { html, css, LitElement, unsafeCSS } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, query, state } from "lit/decorators.js";
-import { Gamebook, Page, Answer } from "../gamebook";
+import { Gamebook, Page, Answer } from "./gamebook-model";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -10,12 +10,6 @@ import SlTextarea from "@shoelace-style/shoelace/dist/components/textarea/textar
 import SlDivider from "@shoelace-style/shoelace/dist/components/divider/divider.component.js";
 import SlDialog from "@shoelace-style/shoelace/dist/components/dialog/dialog.component.js";
 import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js";
-import SlDropdown from "@shoelace-style/shoelace/dist/components/dropdown/dropdown.component.js";
-import SlMenu from "@shoelace-style/shoelace/dist/components/menu/menu.component.js";
-import SlMenuItem from "@shoelace-style/shoelace/dist/components/menu-item/menu-item.component.js";
-import SlSelect from "@shoelace-style/shoelace/dist/components/select/select.component.js";
-import SlOption from "@shoelace-style/shoelace/dist/components/option/option.component.js";
-import SlCheckbox from "@shoelace-style/shoelace/dist/components/checkbox/checkbox.component.js";
 
 //Bootstrap Icon Import
 import FileEarmarkPlus from "bootstrap-icons/icons/file-earmark-plus.svg";
@@ -29,16 +23,16 @@ import PlayFill from "bootstrap-icons/icons/play-fill.svg";
 //Drawflow Imports
 import Drawflow from "drawflow";
 import { DrawflowNode } from "drawflow";
-
 import { style } from "drawflow/dist/drawflow.style.js";
 
 //Import Styles
-import styles from "../customStyles";
+import styles from "../css/webwriter-branching-scenario-css";
+import customDrawflowStyles from "../css/custom-drawflow-css";
 
 //Import Sub Components
-import { PageNodeDetails } from "../page-node-details";
-import { QuizBranchNodeDetails } from "../quiz-branch-node-details";
-import { GamebookPreview } from "../gamebook-preview";
+import { PageNodeDetails } from "./page-node-details";
+import { QuizBranchNodeDetails } from "./quiz-branch-node-details";
+import { GamebookPreview } from "./gamebook-preview";
 
 // Declare global variable of type DrawflowNode
 const NO_NODE_SELECTED: DrawflowNode = {
@@ -61,8 +55,8 @@ const NO_NODE_SELECTED: DrawflowNode = {
 @customElement("webwriter-branching-scenario")
 export class WebWriterBranchingScenario extends LitElementWw {
   //access nodes in the internal component DOM.
-  @query("#drawflowDiv")
-  drawflowDiv;
+  @query("#drawflowEditorDiv")
+  drawflowEditorDiv;
 
   //internal reactive state, not part of the component's API
   @state() editor?: Drawflow;
@@ -86,12 +80,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-divider": SlDivider,
       "sl-dialog": SlDialog,
       "sl-icon-button": SlIconButton,
-      "sl-dropdown": SlDropdown,
-      "sl-menu": SlMenu,
-      "sl-menu-item": SlMenuItem,
-      "sl-select": SlSelect,
-      "sl-option": SlOption,
-      "sl-checkbox": SlCheckbox,
       "page-node-details": PageNodeDetails,
       "quiz-branch-node-details": QuizBranchNodeDetails,
       "gamebook-preview": GamebookPreview,
@@ -99,11 +87,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
   }
 
   //import CSS
-  static styles = [style, styles];
+  static styles = [style, styles, customDrawflowStyles];
 
   //Called after the component's DOM has been updated the first time
   protected firstUpdated(_changedProperties: any): void {
-    this.editor = new Drawflow(this.drawflowDiv);
+    this.editor = new Drawflow(this.drawflowEditorDiv);
     this.editor.reroute = true;
     this.editor.reroute_fix_curvature = true;
     this.editor.zoom = 0.75;
@@ -122,7 +110,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
         }
         //Entering Edit Mode from Preview Mode
         else {
-          this.editor = new Drawflow(this.drawflowDiv);
+          this.editor = new Drawflow(this.drawflowEditorDiv);
           this.editor.reroute = true;
           this.editor.reroute_fix_curvature = true;
           this.editor.zoom = 0.75;
@@ -143,8 +131,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
               <div class="first-item">
                 <sl-icon-button
                   src=${StopFill}
-                  class="border"
-                  id="previewBtn"
+                  class="iconButton"
                   @click=${() => this._switchMode()}
                   >Cancel</sl-icon-button
                 >
@@ -153,8 +140,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
           : html` <div class="first-item">
                 <sl-icon-button
                   src=${PlayFill}
-                  class="border"
-                  id="previewBtn"
+                  class="iconButton"
                   @click=${this._switchMode}
                   >Preview</sl-icon-button
                 >
@@ -169,14 +155,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 ></sl-textarea>
               </div>
               <sl-icon-button
-                id="addSheetBtn"
                 src=${FileEarmarkPlus}
-                class="border"
-                @click=${() => this._addSheetNode("Untitled Sheet")}
+                class="iconButton"
+                @click=${() => this._addPageNode("Untitled Page")}
               ></sl-icon-button>
               <sl-divider vertical style="height: 30px;"></sl-divider>
               <sl-button
-                id="clearBtn"
                 @click=${() =>
                   (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
                 >Clear</sl-button
@@ -185,8 +169,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
       ${this.inPreviewMode
         ? html`<gamebook-preview
             .gamebook="${this.gamebook}"
+            .currentPage="${this.gamebook.startGamebook()}"
           ></gamebook-preview>`
-        : html`<div id="drawflowDiv">
+        : html`<div id="drawflowEditorDiv">
               <div class="bar-zoom">
                 <sl-icon-button
                   id="zoomInBtn"
@@ -204,7 +189,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
             </div>
 
             <div id="selected-node-details">
-              ${this.selectedNode.class == "sheet" ||
+              ${this.selectedNode.class == "page" ||
               this.selectedNode.class == "origin"
                 ? html`
                     <page-node-details
@@ -227,7 +212,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
             <sl-dialog label="Clear graph" class="dialog" id="dialog">
               Do you want to clear the graph? All your progress will be lost.
               <sl-button
-                id="closeDialogBtn"
                 slot="footer"
                 variant="primary"
                 outline
@@ -247,9 +231,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
   }
 
   private _addOriginToGraph() {
-    const data = {
-      name: "First Worksheet",
-      html: `<div><p>Testing HTML Editing</p></div>`,
+    const pageContent = {
+      title: "First Page",
+      content: `<div><p>Testing HTML Editing</p></div>`,
     };
 
     this.editor.addNode(
@@ -259,17 +243,17 @@ export class WebWriterBranchingScenario extends LitElementWw {
       0,
       0,
       "origin",
-      data,
+      pageContent,
       `
       <div>
         <div class="title-box">
           <svg id="svg">${FileEarmark}</svg>
-          <p class="title">Worksheet</p>
+          <p class="title">Page</p>
           <div class="badge">
             <div class="div-svg">
                <svg>${ArrowRightCircleFill}</svg>
             </div>
-            <p>Start Sheet</p>
+            <p>Start Page</p>
           </div>
         </div>
         <div class="content">
@@ -278,7 +262,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
             type="text"
             id="test-textarea"
             placeholder="Enter name"
-            df-name
+            df-title
           ></input>
         </div>
       </div>`,
@@ -286,26 +270,25 @@ export class WebWriterBranchingScenario extends LitElementWw {
     );
   }
 
-  //TODO: align node data with gamebook page data
-  private _addSheetNode(name) {
-    const data = {
-      name: name,
-      html: `<div><p>Testing HTML Editing</p></div>`,
+  private _addPageNode(title) {
+    const pageContent = {
+      title: title,
+      content: `<div><p>Testing HTML Editing</p></div>`,
     };
 
     this.editor.addNode(
-      name,
+      title,
       0,
       0,
       0,
       0,
-      "sheet",
-      data,
+      "page",
+      pageContent,
       `
       <div>
         <div class="title-box">
           <svg id="svg">${FileEarmark}</svg>
-          <p class="title">Worksheet</p>
+          <p class="title">Page</p>
         </div>
         <div class="content">
           <p class="input-label">Name</p>
@@ -313,7 +296,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
             type="text"
             id="test-textarea"
             placeholder="Enter name"
-            df-name
+            df-title
           ></input>
         </div>
       </div>`,
@@ -330,7 +313,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     this.selectedNode = NO_NODE_SELECTED;
 
-    //Create Origin
     this._addOriginToGraph();
   }
 
@@ -350,7 +332,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       const updatedNode = this.editor.getNodeFromId(id);
       this.selectedNode = updatedNode;
 
-      //this.gamebook.saveChangesToPageName(id, updatedNode.data.name);
+      this.gamebook.saveChangesToPageTitle(id, updatedNode.data.title);
     });
 
     // Event listener for node click
@@ -367,22 +349,23 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //Event listerner for creation of a node
     this.editor.on("nodeCreated", (id) => {
       this.nodesInEditor = this.editor.drawflow.drawflow.Home.data;
+      let createdNode = this.editor.getNodeFromId(id);
 
-      // let createdNode = this.editor.getNodeFromId(id);
-      // const createdPage: Page = {
-      //   id: id,
-      //   title: createdNode.data.name,
-      //   content: createdNode.data.html,
-      //   links: [],
-      // };
+      //Add the page to the gamebook
+      const createdPage: Page = {
+        id: id,
+        title: createdNode.data.title,
+        content: createdNode.data.content,
+        links: [],
+      };
 
-      // this.gamebook.addPage(createdPage);
+      this.gamebook.addPage(createdPage);
     });
 
     //Event listener for deletion of a node
     this.editor.on("nodeRemoved", (id) => {
       this.nodesInEditor = this.editor.drawflow.drawflow.Home.data;
-      // this.gamebook.removePage(id);
+      this.gamebook.removePage(id);
     });
 
     // this.editor.on(
