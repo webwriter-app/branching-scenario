@@ -16,4 +16,18 @@ export default css`
     font-size: 20px;
     font-weight: bold;
   }
+
+  .title {
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #215f98;
+  }
+
+  .page {
+    height: auto;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #d4d4d8;
+  }
 `;

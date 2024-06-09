@@ -1,6 +1,12 @@
 import { html, css, LitElement, unsafeCSS } from "lit";
 import { LitElementWw } from "@webwriter/lit";
-import { customElement, property, query, state } from "lit/decorators.js";
+import {
+  customElement,
+  property,
+  query,
+  state,
+  queryAssignedElements,
+} from "lit/decorators.js";
 import { Gamebook, Page, Answer } from "./gamebook-model";
 
 //Drawflow Imports
@@ -19,6 +25,8 @@ import SlMenuItem from "@shoelace-style/shoelace/dist/components/menu-item/menu-
 import SlSelect from "@shoelace-style/shoelace/dist/components/select/select.component.js";
 import SlOption from "@shoelace-style/shoelace/dist/components/option/option.component.js";
 
+import { LinkButton } from "./link-button";
+
 //Bootstrap Icon Import
 import Plus from "bootstrap-icons/icons/plus.svg";
 import Dash from "bootstrap-icons/icons/dash.svg";
@@ -26,6 +34,7 @@ import Journal from "bootstrap-icons/icons/journal.svg";
 
 //CSS
 import styles from "../css/page-node-details-css";
+import { PageContainer } from "./page-container";
 
 //TODO: use slots to have actual webwriter editing capabilities
 @customElement("page-node-details")
@@ -42,6 +51,7 @@ export class PageNodeDetails extends LitElementWw {
       "sl-menu-item": SlMenuItem,
       "sl-select": SlSelect,
       "sl-option": SlOption,
+      "link-button": LinkButton,
     };
   }
 
@@ -65,6 +75,9 @@ export class PageNodeDetails extends LitElementWw {
   @property({ type: Number }) createdNodeId = null;
   @property({ type: Object, attribute: false }) nodesInEditor = {};
 
+  @queryAssignedElements({ flatten: true, selector: "page-container" })
+  pageContainers;
+
   protected firstUpdated(_changedProperties: any): void {
     //Event listerner for creation of a node
     this.editor.on("nodeCreated", (id) => {
@@ -85,13 +98,18 @@ export class PageNodeDetails extends LitElementWw {
         <sl-icon-button src=${Dash} @click=${this._deleteOutputOfSelectedNode}>
         </sl-icon-button>
         <sl-divider vertical style="height: 30px;"></sl-divider>
+        <!-- TODO: This does not reset since page-node-details is always in the DOM but made hidden over CSS -->
         <sl-select class="nodeSelect" placeholder="Page">
-          ${Object.keys(this.nodesInEditor).map(
-            (key) =>
-              html`<sl-option value=${this.nodesInEditor[key].id}
-                >${this.nodesInEditor[key].data.title}</sl-option
-              >`
-          )}
+          ${Object.keys(this.nodesInEditor)
+            .filter(
+              (key) => this.nodesInEditor[key].id !== this.selectedNode.id
+            )
+            .map(
+              (key) =>
+                html`<sl-option value=${this.nodesInEditor[key].id}>
+                  ${this.nodesInEditor[key].data.title}
+                </sl-option>`
+            )}
         </sl-select>
         <sl-button @click=${() => this._connectSelectedNodes()}
           >Add Link</sl-button
@@ -108,16 +126,10 @@ export class PageNodeDetails extends LitElementWw {
           </sl-menu>
         </sl-dropdown>
       </div>
-      <p>Selected Worksheet: ${this.selectedNode.data.title}</p>
-      <!-- <div class="worksheet">test</div>  -->
-      <sl-textarea
-        id="textAreaHTML"
-        resize="none"
-        placeholder="No node selected"
-        size="large"
-        .value="${this.selectedNode.data.content}"
-        @input="${this._handleUserInputNodeData}"
-      ></sl-textarea>
+      <p class="title">${this.selectedNode.data.title}</p>
+      <div class="page">
+        <slot></slot>
+      </div>
     </div>`;
   }
 
@@ -151,6 +163,8 @@ export class PageNodeDetails extends LitElementWw {
   private _connectSelectedNodes() {
     //Get the node to be connected from the sl-select "nodeSelect"
     const nodeToBeConnectedId = this.nodeSelect.value;
+    const nodeToBeConnected = this.editor.getNodeFromId(nodeToBeConnectedId);
+    const nodeToBeConnectedTitle = nodeToBeConnected.data.title;
 
     //Add an input to said node and get the input id
     this.editor.addNodeInput(nodeToBeConnectedId);
@@ -172,36 +186,18 @@ export class PageNodeDetails extends LitElementWw {
       lastInputKey
     );
 
-    //insert a button to the selected page nodes data.content
-    const currentPageContent = this.textAreaHTML.value;
+    const pageContainer = this.pageContainers.find(
+      (pageContainer) =>
+        pageContainer.getAttribute("drawflowNodeId") == this.selectedNode.id
+    );
 
-    const buttonHtml = `<sl-button class="link" data-target-id="${nodeToBeConnectedId}">Test</sl-button>`;
+    // Create a new SlButton element
+    const button = document.createElement("link-button") as LinkButton;
+    button.setAttribute("name", nodeToBeConnectedTitle);
+    button.setAttribute("dataTargetId", nodeToBeConnectedId);
+    pageContainer.appendChild(button);
 
-    // Find the index of the closing </div> tag
-    const closingDivIndex = currentPageContent.lastIndexOf("</div>");
-
-    if (closingDivIndex !== -1) {
-      // Insert the buttonHtml before the closing </div> tag
-      const newPageContent =
-        currentPageContent.slice(0, closingDivIndex) +
-        buttonHtml +
-        currentPageContent.slice(closingDivIndex);
-
-      // Update the textAreaHTML value with the new HTML
-      this.textAreaHTML.value = newPageContent;
-
-      this.editor.updateNodeDataFromId(this.selectedNode.id, {
-        title: this.selectedNode.data.title,
-        content: newPageContent,
-      });
-
-      this.gamebook.saveChangesToPageContent(
-        this.selectedNode.id,
-        newPageContent
-      );
-
-      this.gamebook.addLinkToPage(this.selectedNode.id, nodeToBeConnectedId);
-    }
+    this.gamebook.addLinkToPage(this.selectedNode.id, nodeToBeConnectedId);
   }
 
   private _addQuizBranchNodeToSelectedNode() {
@@ -245,18 +241,6 @@ export class PageNodeDetails extends LitElementWw {
       this.createdNodeId,
       lastOutputKey,
       lastInputKey
-    );
-  }
-
-  private _handleUserInputNodeData(event) {
-    //save the data changed by the user
-    this.editor.updateNodeDataFromId(this.selectedNode.id, {
-      title: this.selectedNode.data.title,
-      content: event.target.value,
-    });
-    this.gamebook.saveChangesToPageContent(
-      this.selectedNode.id,
-      event.target.value
     );
   }
 }

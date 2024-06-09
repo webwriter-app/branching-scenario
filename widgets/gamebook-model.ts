@@ -1,7 +1,5 @@
-//TODO: rename attributes such that its clear what comes from the drawflow nodes
-
 export interface QuizBranch {
-  id: number;
+  drawflowNodeId: number;
   title: string;
   question: string;
   answers: Answer[];
@@ -16,9 +14,8 @@ export interface Answer {
 }
 
 export interface Page {
-  id: number;
+  drawflowNodeId: number;
   title: string;
-  content: string;
   links: Link[];
 }
 
@@ -42,9 +39,9 @@ export class Gamebook {
   // Add a new page to the gamebook
   addPage(page: Page): void {
     if (this.pages.length == 0) {
-      this.originPageId = page.id;
+      this.originPageId = page.drawflowNodeId;
     }
-    this.pages.push([page.id, page]);
+    this.pages.push([page.drawflowNodeId, page]);
   }
 
   //remove a specific page from the gamebook
@@ -76,10 +73,10 @@ export class Gamebook {
     return this.pages.map(([_, page]) => page);
   }
 
-  saveChangesToPageContent(pageId: number, newContent: string): void {
-    let index = this.getPageIndex(pageId);
-    this.pages[index][1].content = newContent;
-  }
+  // saveChangesToPageContent(pageId: number, newContent: string): void {
+  //   let index = this.getPageIndex(pageId);
+  //   this.pages[index][1].content = newContent;
+  // }
 
   saveChangesToPageTitle(pageId: number, newTitle: string): void {
     let index = this.getPageIndex(pageId);
@@ -97,7 +94,7 @@ export class Gamebook {
   startGamebook(): Page {
     //first page in array is always origin
     //TODO: introduce origin ID attribute
-    this.currentPageId = this.pages[0][1].id;
+    this.currentPageId = this.pages[0][1].drawflowNodeId;
     return this.pages[0][1];
   }
 

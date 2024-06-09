@@ -7,6 +7,7 @@ import {
   query,
   queryAll,
   state,
+  queryAssignedElements,
 } from "lit/decorators.js";
 
 //Shoelace Imports
@@ -25,6 +26,9 @@ import { Gamebook, Page, Answer } from "./gamebook-model";
 
 //Import Styles
 import styles from "../css/gamebook-preview-css";
+import { PageContainer } from "./page-container";
+
+import { LinkButton } from "./link-button";
 
 //Define Component
 //TODO: Fix Gamebook Errors. Check other modules for proper updating. I commented out a lot for restructure!
@@ -42,13 +46,13 @@ export class GamebookPreview extends LitElementWw {
       "sl-menu-item": SlMenuItem,
       "sl-select": SlSelect,
       "sl-option": SlOption,
+      "link-button": LinkButton,
     };
   }
 
   //import CSS
   static styles = [styles];
 
-  @queryAll(".link") linkButtons;
   @query(".pageTitle") pageTitle;
   @query(".page") page;
 
@@ -56,15 +60,33 @@ export class GamebookPreview extends LitElementWw {
   @property({ type: Object, attribute: false })
   gamebook: Gamebook = new Gamebook();
 
+  @queryAssignedElements({ flatten: true, selector: "page-container" })
+  pageContainers;
+
   protected firstUpdated(_changedProperties: any): void {
     // Attach event listeners to all buttons
-    // this.currentPage = this.gamebook.startGamebook();
+    this.currentPage = this.gamebook.startGamebook();
 
-    this.linkButtons.forEach((button) => {
-      const targetId = parseInt(button.getAttribute("data-target-id"), 10);
-      button.addEventListener("click", () =>
-        this._navigateToPageGamebook(targetId)
-      );
+    const pageContainer = this.pageContainers.find(
+      (pageContainer) =>
+        pageContainer.getAttribute("drawflowNodeId") ==
+        this.currentPage.drawflowNodeId
+    );
+
+    pageContainer.linkButtons.forEach((button) => {
+      const targetId = parseInt(button.getAttribute("dataTargetId"), 10);
+      button.addEventListener("click", () => this._navigateToPage(targetId));
+    });
+
+    this.pageContainers.forEach((pageContainer) => {
+      if (
+        (pageContainer as PageContainer).drawflowNodeId ==
+        this.currentPage.drawflowNodeId
+      ) {
+        (pageContainer as PageContainer).show();
+      } else {
+        (pageContainer as PageContainer).hide();
+      }
     });
   }
 
@@ -73,17 +95,47 @@ export class GamebookPreview extends LitElementWw {
       <div class="gamebook">
         <div class="gamebookTitle">${this.gamebook.title}</div>
         <div class="pageTitle">${this.currentPage.title}</div>
-        <div class="page">${unsafeHTML(this.currentPage.content)}</div>
+        <div class="page">
+          <slot></slot>
+        </div>
       </div>
     </div> `;
   }
 
-  private _navigateToPageGamebook(targetPageId: number) {
+  //TODO: this seems to be laggy. consider saving the pagecontainer content directly into gamebook structure or drawflownode structure.
+  //This would also fix the editability issue. However, I would then need to rebuild the webwriter preview view as well
+  private _navigateToPage(targetPageId: number) {
+    console.log(this.currentPage);
+
     this.gamebook.navigateWithLink(targetPageId);
 
     this.currentPage =
       this.gamebook.pages[
         this.gamebook.getPageIndex(this.gamebook.currentPageId)
       ][1];
+
+    console.log(this.currentPage);
+
+    this.pageContainers.forEach((pageContainer) => {
+      if (
+        (pageContainer as PageContainer).drawflowNodeId ==
+        this.currentPage.drawflowNodeId
+      ) {
+        (pageContainer as PageContainer).show();
+      } else {
+        (pageContainer as PageContainer).hide();
+      }
+    });
+
+    const pageContainer = this.pageContainers.find(
+      (pageContainer) =>
+        pageContainer.getAttribute("drawflowNodeId") ==
+        this.currentPage.drawflowNodeId
+    );
+
+    pageContainer.linkButtons.forEach((button) => {
+      const targetId = parseInt(button.getAttribute("dataTargetId"), 10);
+      button.addEventListener("click", () => this._navigateToPage(targetId));
+    });
   }
 }

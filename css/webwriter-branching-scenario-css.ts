@@ -81,4 +81,12 @@ export default css`
   .dialog {
     font-family: "Roboto", sans-serif;
   }
+
+  .page {
+    height: auto;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid;
+    border-color: #e4e4e4;
+  }
 `;

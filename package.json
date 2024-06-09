@@ -15,10 +15,20 @@
     "styled-components": "^6.1.11"
   },
   "exports": {
-    "./widgets/webwriter-branching-scenario": "./widgets/webwriter-branching-scenario.ts"
+    "./widgets/webwriter-branching-scenario": "./widgets/webwriter-branching-scenario.ts",
+    "./widgets/page-container": "./widgets/page-container.ts",
+    "./widgets/link-button": "./widgets/link-button.ts"
   },
   "devDependencies": {
     "@types/drawflow": "^0.0.11",
     "typescript": "^5.4.5"
+  },
+  "editingConfig": {
+    "./widgets/webwriter-branching-scenario": {
+      "content": "page-container*"
+    },
+    "./widgets/page-container": {
+      "content": "flow*"
+    }
   }
 }
