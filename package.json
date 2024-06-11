@@ -17,7 +17,8 @@
   "exports": {
     "./widgets/webwriter-branching-scenario": "./widgets/webwriter-branching-scenario.ts",
     "./widgets/page-container": "./widgets/page-container.ts",
-    "./widgets/link-button": "./widgets/link-button.ts"
+    "./widgets/link-button": "./widgets/link-button.ts",
+    "./widgets/gamebook-preview": "./widgets/gamebook-preview.ts"
   },
   "devDependencies": {
     "@types/drawflow": "^0.0.11",

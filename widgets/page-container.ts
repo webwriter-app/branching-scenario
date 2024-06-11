@@ -18,8 +18,14 @@ import { LinkButton } from "./link-button";
 //Shoelace
 import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
 
+//CSS
+import styles from "../css/page-container-css";
+
 @customElement("page-container")
 export class PageContainer extends LitElementWw {
+  //import CSS
+  static styles = [styles];
+
   //registering custom elements used in the widget
   static get scopedElements() {
     return {
@@ -75,7 +81,10 @@ export class PageContainer extends LitElementWw {
   }
 
   render() {
-    return html`<slot @slotchange="${this.handleSlotChange}"></slot>`;
+    return html`<slot
+      class="page"
+      @slotchange="${this.handleSlotChange}"
+    ></slot>`;
   }
 
   hide() {

@@ -56,7 +56,11 @@ export class GamebookPreview extends LitElementWw {
   @query(".pageTitle") pageTitle;
   @query(".page") page;
 
-  @state() currentPage: Page = null;
+  @state() currentPage: Page = {
+    drawflowNodeId: -1,
+    title: "undefined",
+    links: [],
+  };
   @property({ type: Object, attribute: false })
   gamebook: Gamebook = new Gamebook();
 

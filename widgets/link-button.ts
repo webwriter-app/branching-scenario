@@ -21,11 +21,18 @@ export class LinkButton extends LitElementWw {
       "sl-button": SlButton,
     };
   }
-
+  //TODO: Focus is messed up, when clicking on the input, the focus shifts away from the button
   render() {
     return html`
       <div>
-        <sl-button>Link to ${this.name}</sl-button>
+        <sl-button variant="text" size="medium" style="padding: 0px;"
+          >${this.name}</sl-button
+        >
+        <input
+          part="options"
+          .value=${this.name}
+          @change=${(e) => (this.name = e.target.value)}
+        />
       </div>
     `;
   }

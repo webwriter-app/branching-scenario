@@ -66,6 +66,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   //access nodes in the internal component DOM.
   @query("#drawflowEditorDiv")
   drawflowEditorDiv;
+  @query(".drawflow-node.origin") originNode;
 
   //internal reactive state, not part of the component's API
   @state() editor?: Drawflow;
@@ -146,155 +147,137 @@ export class WebWriterBranchingScenario extends LitElementWw {
   render() {
     return html`
       ${this.isContentEditable
-        ? html` <div id="widget">
-                <div class="controls">
-                  ${
-                    this.inPreviewMode
-                      ? html`
-                          <div class="first-item">
-                            <sl-icon-button
-                              src=${StopFill}
-                              class="iconButton"
-                              @click=${() => this._switchMode()}
-                              >Cancel</sl-icon-button
-                            >
-                          </div>
-                        `
-                      : html` <div class="first-item">
-                            <sl-icon-button
-                              src=${PlayFill}
-                              class="iconButton"
-                              @click=${this._switchMode}
-                              >Preview</sl-icon-button
-                            >
-                            <sl-divider
-                              vertical
-                              style="height: 30px;"
-                            ></sl-divider>
-                            <sl-textarea
-                              id="gamebookTitle"
-                              rows="1"
-                              resize="none"
-                              placeholder="Gamebook Name"
-                              @input="${this._handleGamebookTitle}"
-                              .value="${this.gamebook.title}"
-                            ></sl-textarea>
-                          </div>
-                          <sl-icon-button
-                            src=${FileEarmarkPlus}
-                            class="iconButton"
-                            @click=${() => this._addPageNode("Untitled Page")}
-                          ></sl-icon-button>
-                          <sl-divider
-                            vertical
-                            style="height: 30px;"
-                          ></sl-divider>
-                          <sl-button
-                            @click=${() =>
-                              (
-                                this.shadowRoot.getElementById(
-                                  "dialog"
-                                ) as SlDialog
-                              ).show()}
-                            >Clear</sl-button
-                          >`
-                  }
-                </div>
-                ${
-                  this.inPreviewMode
-                    ? html`<gamebook-preview
-                        .gamebook="${this.gamebook}"
-                        .currentPage="${this.gamebook.startGamebook()}"
-                        ><slot></slot
-                      ></gamebook-preview>`
-                    : html`<div id="drawflowEditorDiv">
-                          <div class="bar-zoom">
-                            <sl-icon-button
-                              id="zoomInBtn"
-                              src=${ZoomIn}
-                              style="font-size: auto;"
-                              @click=${() => this.editor.zoom_in()}
-                            ></sl-icon-button>
-                            <sl-icon-button
-                              id="zoomOutBtn"
-                              src=${ZoomOut}
-                              style="font-size: auto;"
-                              @click=${() => this.editor.zoom_out()}
-                            ></sl-icon-button>
-                          </div>
-                        </div>
-                        <!-- TODO: Now everything is shown without being set correctly. 
-            The structure of the subcomponents should change such that they do not throw errors when they are handed null arguments -->
-                        <div
-                          id="selected-node-details"
-                          style="${this.selectedNode.class == "page" ||
-                          this.selectedNode.class == "origin"
-                            ? "display: block;"
-                            : "display: none;"}"
+        ? html` 
+          <div id="widget">
+            <div class="controls">
+              ${
+                this.inPreviewMode
+                  ? html` <div class="first-item">
+                      <sl-icon-button
+                        src=${StopFill}
+                        class="iconButton"
+                        @click=${() => this._switchMode()}
+                      >
+                        Cancel
+                      </sl-icon-button>
+                    </div>`
+                  : html` <div class="first-item">
+                        <sl-icon-button
+                          src=${PlayFill}
+                          class="iconButton"
+                          @click=${this._switchMode}
                         >
+                          Preview
+                        </sl-icon-button>
+                        <sl-divider vertical style="height: 30px;"></sl-divider>
+                        <sl-textarea
+                          id="gamebookTitle"
+                          rows="1"
+                          resize="none"
+                          placeholder="Gamebook Name"
+                          @input="${this._handleGamebookTitle}"
+                          .value="${this.gamebook.title}"
+                        >
+                        </sl-textarea>
+                      </div>
+                      <sl-icon-button
+                        src=${FileEarmarkPlus}
+                        class="iconButton"
+                        @click=${() => this._addPageNode("Untitled Page")}
+                      >
+                      </sl-icon-button>
+                      <sl-divider vertical style="height: 30px;"> </sl-divider>
+                      <sl-button
+                        @click=${() =>
+                          (
+                            this.shadowRoot.getElementById("dialog") as SlDialog
+                          ).show()}
+                      >
+                        Clear
+                      </sl-button>`
+              }
+              </div>
+            ${
+              this.inPreviewMode
+                ? html` <gamebook-preview .gamebook="${this.gamebook}">
+                    <slot></slot>
+                  </gamebook-preview>`
+                : html` <div id="drawflowEditorDiv">
+                      <div class="bar-zoom">
+                        <sl-icon-button
+                          id="zoomInBtn"
+                          src=${ZoomIn}
+                          style="font-size: auto;"
+                          @click=${() => this.editor.zoom_in()}
+                        >
+                        </sl-icon-button>
+                        <sl-icon-button
+                          id="zoomOutBtn"
+                          src=${ZoomOut}
+                          style="font-size: auto;"
+                          @click=${() => this.editor.zoom_out()}
+                        >
+                        </sl-icon-button>
+                      </div>
+                    </div>
+                    <!-- TODO: Now everything is shown without being set correctly. 
+            The structure of the subcomponents should change such that they do not throw errors when they are handed null arguments -->
+
+                    ${this.selectedNode.class == "page" ||
+                    this.selectedNode.class == "origin"
+                      ? html` <div id="selected-node-details">
                           <page-node-details
                             .editor="${this.editor}"
                             .nodesInEditor="${this.nodesInEditor}"
                             .selectedNode="${this.selectedNode}"
                             .gamebook="${this.gamebook}"
-                            ><slot></slot
-                          ></page-node-details>
-                        </div>
-
-                        <div
-                          id="selected-node-details"
-                          style="${this.selectedNode.class == "quiz-branch"
-                            ? "display: block;"
-                            : "display: none;"}"
-                        >
+                          >
+                            <slot></slot>
+                          </page-node-details>
+                        </div>`
+                      : this.selectedNode.class == "quiz-branch"
+                      ? html` <div id="selected-node-details">
                           <quiz-branch-node-details
                             .editor="${this.editor}"
                             .nodesInEditor="${this.nodesInEditor}"
                             .selectedNode="${this.selectedNode}"
                             .gamebook="${this.gamebook}"
+                          >
+                            <slot></slot
                           ></quiz-branch-node-details>
-                        </div>
-
-                        <div
-                          id="selected-node-details"
-                          style="${this.selectedNode == NO_NODE_SELECTED
-                            ? "display: block;"
-                            : "display: none;"}"
-                        >
+                        </div>`
+                      : html` <div id="selected-node-details">
                           <p>Select a node to edit its content</p>
-                        </div>
+                          <slot></slot>
+                        </div>`}
 
-                        <sl-dialog
-                          label="Clear graph"
-                          class="dialog"
-                          id="dialog"
-                        >
-                          Do you want to clear the graph? All your progress will
-                          be lost.
-                          <sl-button
-                            slot="footer"
-                            variant="primary"
-                            outline
-                            @click=${() =>
-                              (
-                                this.shadowRoot.getElementById(
-                                  "dialog"
-                                ) as SlDialog
-                              ).hide()}
-                            >Cancel</sl-button
-                          >
-                          <sl-button
-                            slot="footer"
-                            variant="danger"
-                            outline
-                            @click=${() => this._clearEditor()}
-                            >Clear</sl-button
-                          >
-                        </sl-dialog>`
-                }
+                    <sl-dialog label="Clear graph" class="dialog" id="dialog">
+                      Do you want to clear the graph? All your progress will be
+                      lost.
+                      <sl-button
+                        slot="footer"
+                        variant="primary"
+                        outline
+                        @click=${() =>
+                          (
+                            this.shadowRoot.getElementById("dialog") as SlDialog
+                          ).hide()}
+                        >Cancel</sl-button
+                      >
+                      <sl-button
+                        slot="footer"
+                        variant="danger"
+                        outline
+                        @click=${() => this._clearEditor()}
+                        >Clear</sl-button
+                      >
+                    </sl-dialog>`
+            }
               </div>
               </div>`
-        : html`<div class="page"><slot></slot></div>`}
+        : html`<gamebook-preview .gamebook="${this.gamebook}"
+            ><slot></slot
+          ></gamebook-preview>`}
     `;
   }
 
@@ -433,6 +416,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
       this.selectedNode = NO_NODE_SELECTED;
+
+      this.pageContainers.forEach((pageContainer) => {
+        (pageContainer as PageContainer).hide();
+      });
     });
 
     //Event listerner for creation of a node
@@ -516,8 +503,3 @@ export class WebWriterBranchingScenario extends LitElementWw {
   //   // this.gamebook.saveChangesToPageContent(id, content);
   // }
 }
-
-customElements.define(
-  "webwriter-branching-scenario",
-  WebWriterBranchingScenario
-);

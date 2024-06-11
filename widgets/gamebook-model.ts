@@ -91,7 +91,7 @@ export class Gamebook {
     this.pages[this.getPageIndex(pageId)][1].links.push(link);
   }
 
-  startGamebook(): Page {
+  public startGamebook(): Page {
     //first page in array is always origin
     //TODO: introduce origin ID attribute
     this.currentPageId = this.pages[0][1].drawflowNodeId;

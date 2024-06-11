@@ -68,6 +68,8 @@ export class PageNodeDetails extends LitElementWw {
   @state()
   editor?: Drawflow;
 
+  @property({ type: Boolean }) isNodeSelected = false;
+
   //public properties are part of the component's public API
   @property({ type: Object, attribute: false }) selectedNode?: DrawflowNode;
   @property({ type: Object, attribute: false }) gamebook: Gamebook =
@@ -79,10 +81,24 @@ export class PageNodeDetails extends LitElementWw {
   pageContainers;
 
   protected firstUpdated(_changedProperties: any): void {
+    this._resetSelect();
     //Event listerner for creation of a node
     this.editor.on("nodeCreated", (id) => {
       this.createdNodeId = id;
     });
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.has("selectedNode")) {
+      this._resetSelect();
+    }
+  }
+
+  private _resetSelect() {
+    if (this.nodeSelect) {
+      this.nodeSelect.value = "";
+      this.isNodeSelected = false;
+    }
   }
 
   render() {
@@ -99,7 +115,11 @@ export class PageNodeDetails extends LitElementWw {
         </sl-icon-button>
         <sl-divider vertical style="height: 30px;"></sl-divider>
         <!-- TODO: This does not reset since page-node-details is always in the DOM but made hidden over CSS -->
-        <sl-select class="nodeSelect" placeholder="Page">
+        <sl-select
+          class="nodeSelect"
+          placeholder="Page"
+          @sl-change=${this._handleSelectChange}
+        >
           ${Object.keys(this.nodesInEditor)
             .filter(
               (key) => this.nodesInEditor[key].id !== this.selectedNode.id
@@ -111,8 +131,10 @@ export class PageNodeDetails extends LitElementWw {
                 </sl-option>`
             )}
         </sl-select>
-        <sl-button @click=${() => this._connectSelectedNodes()}
-          >Add Link</sl-button
+        <sl-button
+          @click=${() => this._connectSelectedNodes()}
+          ?disabled=${!this.isNodeSelected}
+          >Connect</sl-button
         >
         <sl-divider vertical style="height: 30px;"></sl-divider>
         <sl-dropdown>
@@ -131,6 +153,11 @@ export class PageNodeDetails extends LitElementWw {
         <slot></slot>
       </div>
     </div>`;
+  }
+
+  private _handleSelectChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    this.isNodeSelected = !!selectElement.value;
   }
 
   private _addInputToSelectedNode() {
