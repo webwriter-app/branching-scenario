@@ -8,10 +8,10 @@ export default css`
     justify-content: flex-end;
     align-items: center; /* Center items vertically */
     gap: 10px; /* Adjust the value to your desired spacing */
-    padding-left: 15px;
+    /* padding-left: 15px;
     padding-right: 15px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 10px;*/
+    margin-bottom: 10px;
     font-family: "Roboto", sans-serif;
     font-size: 20px;
     font-weight: bold;

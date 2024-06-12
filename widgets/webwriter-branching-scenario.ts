@@ -63,27 +63,29 @@ const NO_NODE_SELECTED: DrawflowNode = {
 //TODO: write this decision making down... work visually with node inputs? have a link component?
 @customElement("webwriter-branching-scenario")
 export class WebWriterBranchingScenario extends LitElementWw {
+  //
+
   //access nodes in the internal component DOM.
   @query("#drawflowEditorDiv")
   drawflowEditorDiv;
-  @query(".drawflow-node.origin") originNode;
 
   //internal reactive state, not part of the component's API
-  @state() editor?: Drawflow;
-  @state() inPreviewMode = false;
+  @property({ type: Object, attribute: true }) editor?: Drawflow;
 
+  @property({ type: Object, attribute: true, reflect: true }) editorContent;
+
+  //
   @property({ type: Object, attribute: true }) selectedNode: DrawflowNode =
     NO_NODE_SELECTED;
 
-  @property({ type: Object, attribute: true }) nodesInEditor = {};
-
-  @property({ type: Object, attribute: true }) cacheEditorData = null;
-
-  @property({ type: Object, attribute: true, reflect: true })
+  //
+  @property({ type: Object, attribute: true })
   gamebook: Gamebook = new Gamebook();
-
+  //
   @queryAssignedElements() pageContainers: Array<HTMLElement>;
-
+  //
+  @state() inPreviewMode = false;
+  //
   static shadowRootOptions = {
     ...LitElement.shadowRootOptions,
     delegatesFocus: true,
@@ -110,6 +112,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   //Called after the component's DOM has been updated the first time
   protected firstUpdated(_changedProperties: any): void {
+    this.pageContainers.forEach((pageContainer) => {
+      (pageContainer as PageContainer).hide();
+    });
+
     this.editor = new Drawflow(this.drawflowEditorDiv);
     this.editor.reroute = true;
     this.editor.reroute_fix_curvature = true;
@@ -117,31 +123,36 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.start();
     this.editor.zoom_refresh();
     this._registerEditorEventHandlers();
-    //this.addEventListener("contentChangeOnPage", this.handleContentChange);
+
+    if (this.editorContent == null) {
+      this._addOriginToGraph();
+    } else {
+      this.editor.import(this.editorContent);
+    }
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("inPreviewMode")) {
-      //is entered on init
-      if (!this.inPreviewMode) {
-        //On Component Init
-        if (this.cacheEditorData == null) {
-          this._addOriginToGraph();
-        }
-        //Entering Edit Mode from Preview Mode
-        else {
-          this.editor = new Drawflow(this.drawflowEditorDiv);
-          this.editor.reroute = true;
-          this.editor.reroute_fix_curvature = true;
-          this.editor.zoom = 0.75;
-          this.editor.start();
-          this.editor.zoom_refresh();
-          this.editor.import(this.cacheEditorData);
-          this._registerEditorEventHandlers();
-          //todo: cache view settings such that it is exactly the same way when you come back
-        }
-      }
-    }
+    // if (changedProperties.has("inPreviewMode")) {
+    //   //is entered on init
+    //   if (!this.inPreviewMode) {
+    //     //On Component Init
+    //     if (this.cacheEditorData == null) {
+    //       //this._addOriginToGraph();
+    //     }
+    //     //Entering Edit Mode from Preview Mode
+    //     else {
+    //       this.editor = new Drawflow(this.drawflowEditorDiv);
+    //       this.editor.reroute = true;
+    //       this.editor.reroute_fix_curvature = true;
+    //       this.editor.zoom = 0.75;
+    //       this.editor.start();
+    //       this.editor.zoom_refresh();
+    //       this.editor.import(this.cacheEditorData);
+    //       this._registerEditorEventHandlers();
+    //       //todo: cache view settings such that it is exactly the same way when you come back
+    //     }
+    //   }
+    // }
   }
 
   render() {
@@ -220,15 +231,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
                         </sl-icon-button>
                       </div>
                     </div>
-                    <!-- TODO: Now everything is shown without being set correctly. 
-            The structure of the subcomponents should change such that they do not throw errors when they are handed null arguments -->
-
                     ${this.selectedNode.class == "page" ||
                     this.selectedNode.class == "origin"
                       ? html` <div id="selected-node-details">
                           <page-node-details
                             .editor="${this.editor}"
-                            .nodesInEditor="${this.nodesInEditor}"
+                            .nodesInEditor="${this.editorContent.drawflow.Home
+                              .data}"
                             .selectedNode="${this.selectedNode}"
                             .gamebook="${this.gamebook}"
                           >
@@ -239,7 +248,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                       ? html` <div id="selected-node-details">
                           <quiz-branch-node-details
                             .editor="${this.editor}"
-                            .nodesInEditor="${this.nodesInEditor}"
+                            .nodesInEditor="${this.editorContent.drawflow.Home
+                              .data}"
                             .selectedNode="${this.selectedNode}"
                             .gamebook="${this.gamebook}"
                           >
@@ -358,11 +368,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
     const dialog = this.shadowRoot.getElementById("dialog") as SlDialog;
     dialog.hide();
 
+    this.selectedNode = NO_NODE_SELECTED;
     this.editor.clear();
     this.gamebook.clearPages();
-
-    this.selectedNode = NO_NODE_SELECTED;
-
     //clear all the slotted PageContainers
     this.pageContainers.forEach((pageContainer) => {
       pageContainer.remove();
@@ -373,7 +381,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   private _switchMode() {
     if (!this.inPreviewMode) {
-      this.cacheEditorData = this.editor.export();
       this.selectedNode = NO_NODE_SELECTED;
     }
 
@@ -424,8 +431,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     //Event listerner for creation of a node
     this.editor.on("nodeCreated", (id) => {
-      this.nodesInEditor = this.editor.drawflow.drawflow.Home.data;
+      console.log(id);
       let createdNode = this.editor.getNodeFromId(id);
+      this.editorContent = this.editor.drawflow; //.drawflow.Home.data;
+      this.setAttribute("editorContent", JSON.stringify(this.editor.drawflow));
 
       if (createdNode.class == "page" || createdNode.class == "origin") {
         // Create a new instance of PageContainer using the constructor, append to slot
@@ -434,7 +443,16 @@ export class WebWriterBranchingScenario extends LitElementWw {
           "page-container"
         ) as PageContainer;
         pageContainer.setAttribute("drawflowNodeId", id.toString());
-        pageContainer.setAttribute("content", createdNode.data.content);
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(
+          createdNode.data.content,
+          "text/html"
+        );
+        // Loop through the child nodes of the body of the parsed document
+        doc.body.childNodes.forEach((node) => {
+          pageContainer.appendChild(node);
+        });
 
         //TODO: either try callback method or global storage OR event propagation
         //to let it access editor
@@ -453,8 +471,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     //Event listener for deletion of a node
     this.editor.on("nodeRemoved", (id) => {
-      this.nodesInEditor = this.editor.drawflow.drawflow.Home.data;
-
       for (let i = 0; i < this.pageContainers.length; i++) {
         const pageContainer = this.pageContainers[i] as PageContainer;
         if (pageContainer.drawflowNodeId === id) {
@@ -462,26 +478,29 @@ export class WebWriterBranchingScenario extends LitElementWw {
           break;
         }
       }
-
       //since we only add pages to the gamebook this is secure for removing other nodes than pages
       //TODO: make secure
       this.gamebook.removePage(id);
+
+      this.editorContent = this.editor.drawflow; //.drawflow.Home.data;ß
+      this.setAttribute("editorContent", JSON.stringify(this.editor.drawflow));
     });
 
-    // this.editor.on(
-    //   "connectionCreated",
-    //   ({ output_id, input_id, output_class, input_class }) => {
-    //     console.log("connection Created");
-    //   }
-    // );
+    this.editor.on("nodeMoved", (id) => {
+      this.editorContent = this.editor.drawflow;
+      this.setAttribute("editorContent", JSON.stringify(this.editor.drawflow));
+    });
 
-    // // Event listener for connection click
-    // this.editor.on(
-    //   "connectionSelected",
-    //   (output_id, input_id, output_class, input_class) => {
-    //     console.log("connection selected");
-    //   }
-    // );
+    this.editor.on(
+      "connectionCreated",
+      ({ output_id, input_id, output_class, input_class }) => {
+        this.editorContent = this.editor.drawflow;
+        this.setAttribute(
+          "editorContent",
+          JSON.stringify(this.editor.drawflow)
+        );
+      }
+    );
   }
 
   private _handleGamebookTitle(event) {

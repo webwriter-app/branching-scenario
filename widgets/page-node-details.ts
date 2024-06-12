@@ -219,10 +219,18 @@ export class PageNodeDetails extends LitElementWw {
     );
 
     // Create a new SlButton element
+    // console.log(pageContainer);
+
+    //TODO: This only works once. Multiple buttons can not be added. If you use connectedCallback to check when its added to DOM, the render method does not get called anymore. When you add the innerHTML programtically, css does not work anymore.
     const button = document.createElement("link-button") as LinkButton;
     button.setAttribute("name", nodeToBeConnectedTitle);
     button.setAttribute("dataTargetId", nodeToBeConnectedId);
-    pageContainer.appendChild(button);
+    // Ensure uniqueness by adding a unique identifier
+    button.setAttribute("uniqueId", `${nodeToBeConnectedTitle}-${Date.now()}`);
+    pageContainer.append(button);
+
+    // console.log(button);
+    // console.log(pageContainer);
 
     this.gamebook.addLinkToPage(this.selectedNode.id, nodeToBeConnectedId);
   }

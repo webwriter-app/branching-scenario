@@ -109,7 +109,7 @@ export class GamebookPreview extends LitElementWw {
   //TODO: this seems to be laggy. consider saving the pagecontainer content directly into gamebook structure or drawflownode structure.
   //This would also fix the editability issue. However, I would then need to rebuild the webwriter preview view as well
   private _navigateToPage(targetPageId: number) {
-    console.log(this.currentPage);
+    //console.log(this.currentPage);
 
     this.gamebook.navigateWithLink(targetPageId);
 
@@ -118,7 +118,7 @@ export class GamebookPreview extends LitElementWw {
         this.gamebook.getPageIndex(this.gamebook.currentPageId)
       ][1];
 
-    console.log(this.currentPage);
+    //console.log(this.currentPage);
 
     this.pageContainers.forEach((pageContainer) => {
       if (

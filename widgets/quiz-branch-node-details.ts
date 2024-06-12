@@ -243,6 +243,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
     //refresh the node such that component renders again
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
 
-    console.log(this.selectedNode.data.answers);
+    //console.log(this.selectedNode.data.answers);
   }
 }
