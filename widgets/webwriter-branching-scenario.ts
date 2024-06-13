@@ -425,6 +425,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
+      console.log("nodeUnselected");
       this.selectedNode = NO_NODE_SELECTED;
 
       this.pageContainers.forEach((pageContainer) => {
@@ -434,7 +435,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     //Event listerner for creation of a node
     this.editor.on("nodeCreated", (id) => {
-      console.log(id);
       let createdNode = this.editor.getNodeFromId(id);
       this.editorContent = { ...this.editor.drawflow };
 
@@ -498,6 +498,33 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this._addLinkButtonToPageContainer(output_id, input_id);
       }
     );
+
+    this.editor.on(
+      "connectionRemoved",
+      ({ output_id, input_id, output_class, input_class }) => {
+        //TODO: remove link buttons from page container
+      }
+    );
+
+    this.editor.on("connectionStart", ({ output_id, output_class }) => {
+      this.selectedNode = this.editor.getNodeFromId(output_id);
+
+      const node = this.shadowRoot?.getElementById(`node-${output_id}`);
+      if (node) {
+        node.classList.add("selected");
+      }
+
+      this.pageContainers.forEach((pageContainer) => {
+        if (
+          (pageContainer as PageContainer).drawflowNodeId ==
+          this.selectedNode.id
+        ) {
+          (pageContainer as PageContainer).show();
+        } else {
+          (pageContainer as PageContainer).hide();
+        }
+      });
+    });
   }
 
   private _handleGamebookTitle(event) {
@@ -515,7 +542,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
         pageContainer.getAttribute("drawflowNodeId") == originNodeId
     );
 
-    //TODO: This only works once. Multiple buttons can not be added. If you use connectedCallback to check when its added to DOM, the render method does not get called anymore. When you add the innerHTML programtically, css does not work anymore.
     const button = document.createElement("link-button") as LinkButton;
     button.setAttribute("name", sinkNodeTitle);
     button.setAttribute("dataTargetId", sinkNodeId.toString());
@@ -523,9 +549,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
     button.setAttribute("uniqueId", `${sinkNodeId}-${Date.now()}`);
     pageContainer.appendChild(button);
 
-    this.gamebook.addLinkToPage(
-      parseInt(originNodeId, 10),
-      parseInt(sinkNodeId, 10)
-    );
+    //TODO: Remove this once frederic fixed this
+    const par = document.createElement("p");
+    par.textContent = "";
+    pageContainer.appendChild(par);
+
+    // this.gamebook.addLinkToPage(
+    //   parseInt(originNodeId, 10),
+    //   parseInt(sinkNodeId, 10)
+    // );
   }
 }

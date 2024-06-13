@@ -82,9 +82,6 @@ export class PageNodeDetails extends LitElementWw {
   @property({ type: Number }) createdNodeId = null;
   @property({ type: Object, attribute: false }) nodesInEditor = {};
 
-  @queryAssignedElements({ flatten: true, selector: "page-container" })
-  pageContainers;
-
   protected firstUpdated(_changedProperties: any): void {
     this._resetSelect();
     //Event listerner for creation of a node
@@ -251,14 +248,6 @@ export class PageNodeDetails extends LitElementWw {
       lastOutputKey,
       lastInputKey
     );
-
-    const pageContainer = this.pageContainers.find(
-      (pageContainer) =>
-        pageContainer.getAttribute("drawflowNodeId") == this.selectedNode.id
-    );
-
-    console.log(this.pageContainers);
-    console.log(pageContainer);
   }
 
   private _addQuizBranchNodeToSelectedNode() {
