@@ -82,7 +82,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Object, attribute: true })
   gamebook: Gamebook = new Gamebook();
   //
-  @queryAssignedElements() pageContainers: Array<HTMLElement>;
+  @queryAssignedElements({ flatten: true, selector: "page-container" })
+  pageContainers;
+
   //
   @state() inPreviewMode = false;
   //
@@ -434,10 +436,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.on("nodeCreated", (id) => {
       console.log(id);
       let createdNode = this.editor.getNodeFromId(id);
-      this.editorContent = this.editor.drawflow; //.drawflow.Home.data;
-      console.log(this.getAttribute("editorContent"));
-      this.setAttribute("editorContent", JSON.stringify(this.editor.drawflow));
-      console.log(this.getAttribute("editorContent"));
+      this.editorContent = { ...this.editor.drawflow };
 
       if (createdNode.class == "page" || createdNode.class == "origin") {
         // Create a new instance of PageContainer using the constructor, append to slot
@@ -485,23 +484,18 @@ export class WebWriterBranchingScenario extends LitElementWw {
       //TODO: make secure
       this.gamebook.removePage(id);
 
-      this.editorContent = this.editor.drawflow; //.drawflow.Home.data;ß
-      this.setAttribute("editorContent", JSON.stringify(this.editor.drawflow));
+      this.editorContent = { ...this.editor.drawflow };
     });
 
     this.editor.on("nodeMoved", (id) => {
-      this.editorContent = this.editor.drawflow;
-      this.setAttribute("editorContent", JSON.stringify(this.editor.drawflow));
+      this.editorContent = { ...this.editor.drawflow };
     });
 
     this.editor.on(
       "connectionCreated",
       ({ output_id, input_id, output_class, input_class }) => {
-        this.editorContent = this.editor.drawflow;
-        this.setAttribute(
-          "editorContent",
-          JSON.stringify(this.editor.drawflow)
-        );
+        this.editorContent = { ...this.editor.drawflow };
+        this._addLinkButtonToPageContainer(output_id, input_id);
       }
     );
   }
@@ -509,5 +503,29 @@ export class WebWriterBranchingScenario extends LitElementWw {
   private _handleGamebookTitle(event) {
     this.gamebook.title = event.target.value;
   }
-  ß;
+
+  private _addLinkButtonToPageContainer(
+    originNodeId: string,
+    sinkNodeId: string
+  ) {
+    const sinkNodeTitle = this.editor.getNodeFromId(sinkNodeId).data.title;
+
+    const pageContainer = this.pageContainers.find(
+      (pageContainer) =>
+        pageContainer.getAttribute("drawflowNodeId") == originNodeId
+    );
+
+    //TODO: This only works once. Multiple buttons can not be added. If you use connectedCallback to check when its added to DOM, the render method does not get called anymore. When you add the innerHTML programtically, css does not work anymore.
+    const button = document.createElement("link-button") as LinkButton;
+    button.setAttribute("name", sinkNodeTitle);
+    button.setAttribute("dataTargetId", sinkNodeId.toString());
+    // Ensure uniqueness by adding a unique identifier
+    button.setAttribute("uniqueId", `${sinkNodeId}-${Date.now()}`);
+    pageContainer.appendChild(button);
+
+    this.gamebook.addLinkToPage(
+      parseInt(originNodeId, 10),
+      parseInt(sinkNodeId, 10)
+    );
+  }
 }
