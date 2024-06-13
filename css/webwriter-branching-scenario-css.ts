@@ -69,7 +69,7 @@ export default css`
     flex-direction: column;
     justify-content: flex-start;
     height: 100%;
-    padding: 20px;
+    padding: 10px;
     align-items: center; /* Center items vertically */
     gap: 10px;
     font-family: "Roboto", sans-serif;

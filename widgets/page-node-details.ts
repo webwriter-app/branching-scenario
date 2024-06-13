@@ -24,6 +24,7 @@ import SlMenu from "@shoelace-style/shoelace/dist/components/menu/menu.component
 import SlMenuItem from "@shoelace-style/shoelace/dist/components/menu-item/menu-item.component.js";
 import SlSelect from "@shoelace-style/shoelace/dist/components/select/select.component.js";
 import SlOption from "@shoelace-style/shoelace/dist/components/option/option.component.js";
+import SlInput from "@shoelace-style/shoelace/dist/components/input/input.component.js";
 
 import { LinkButton } from "./link-button";
 
@@ -31,6 +32,7 @@ import { LinkButton } from "./link-button";
 import Plus from "bootstrap-icons/icons/plus.svg";
 import Dash from "bootstrap-icons/icons/dash.svg";
 import Journal from "bootstrap-icons/icons/journal.svg";
+import FileEarmark from "bootstrap-icons/icons/file-earmark.svg";
 
 //CSS
 import styles from "../css/page-node-details-css";
@@ -51,6 +53,7 @@ export class PageNodeDetails extends LitElementWw {
       "sl-menu-item": SlMenuItem,
       "sl-select": SlSelect,
       "sl-option": SlOption,
+      "sl-input": SlInput,
       "link-button": LinkButton,
     };
   }
@@ -72,6 +75,8 @@ export class PageNodeDetails extends LitElementWw {
 
   //public properties are part of the component's public API
   @property({ type: Object, attribute: false }) selectedNode?: DrawflowNode;
+  @property({ type: Number }) selectedNodeId = null;
+
   @property({ type: Object, attribute: false }) gamebook: Gamebook =
     new Gamebook();
   @property({ type: Number }) createdNodeId = null;
@@ -89,30 +94,63 @@ export class PageNodeDetails extends LitElementWw {
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("selectedNode")) {
+    if (changedProperties.has("selectedNodeId")) {
       this._resetSelect();
     }
   }
 
-  private _resetSelect() {
-    if (this.nodeSelect) {
-      this.nodeSelect.value = "";
-      this.isNodeSelected = false;
-    }
-  }
-
   render() {
-    return html`<div id="sheetControls">
+    return html`<div class="page-node-details">
+      <div class="title-bar">
+        <div class="div-icon">
+          <object type="image/svg+xml" data=${FileEarmark} class="svg"></object>
+        </div>
+        <div class="div-title">
+          <p class="title">${this.selectedNode.data.title}</p>
+          <p class="subtitle">Gamebook Page</p>
+        </div>
+
+        <div class="last-item">
+          <div class="number-input">
+            <p class="subtitle">Inputs</p>
+            <div class="horizontal">
+              <sl-icon-button
+                src=${Dash}
+                @click=${this._deleteInputOfSelectedNode}
+              >
+              </sl-icon-button>
+              <p class="number">
+                ${Object.keys(this.selectedNode.inputs).length.toString()}
+              </p>
+              <sl-icon-button
+                src=${Plus}
+                @click=${this._addInputToSelectedNode}
+              >
+              </sl-icon-button>
+            </div>
+          </div>
+          <sl-divider vertical style="height: 30px;"></sl-divider>
+          <div class="number-input">
+            <p class="subtitle">Outputs</p>
+            <div class="horizontal">
+              <sl-icon-button
+                src=${Dash}
+                @click=${this._deleteOutputOfSelectedNode}
+              >
+              </sl-icon-button>
+              <p class="number">
+                ${Object.keys(this.selectedNode.outputs).length.toString()}
+              </p>
+              <sl-icon-button
+                src=${Plus}
+                @click=${this._addOutputToSelectedNode}
+              >
+              </sl-icon-button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="controls">
-        <sl-icon-button src=${Plus} @click=${this._addInputToSelectedNode}>
-        </sl-icon-button>
-        <sl-icon-button src=${Dash} @click=${this._deleteInputOfSelectedNode}>
-        </sl-icon-button>
-        <sl-divider vertical style="height: 30px;"></sl-divider>
-        <sl-icon-button src=${Plus} @click=${this._addOutputToSelectedNode}>
-        </sl-icon-button>
-        <sl-icon-button src=${Dash} @click=${this._deleteOutputOfSelectedNode}>
-        </sl-icon-button>
         <sl-divider vertical style="height: 30px;"></sl-divider>
         <!-- TODO: This does not reset since page-node-details is always in the DOM but made hidden over CSS -->
         <sl-select
@@ -148,7 +186,6 @@ export class PageNodeDetails extends LitElementWw {
           </sl-menu>
         </sl-dropdown>
       </div>
-      <p class="title">${this.selectedNode.data.title}</p>
       <div class="page">
         <slot></slot>
       </div>
@@ -162,10 +199,12 @@ export class PageNodeDetails extends LitElementWw {
 
   private _addInputToSelectedNode() {
     this.editor.addNodeInput(this.selectedNode.id);
+    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
   private _addOutputToSelectedNode() {
     this.editor.addNodeOutput(this.selectedNode.id);
+    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
   private _deleteInputOfSelectedNode() {
@@ -173,6 +212,7 @@ export class PageNodeDetails extends LitElementWw {
     const noOfInputs = Object.keys(node.inputs).length;
     if (noOfInputs != 0) {
       this.editor.removeNodeInput(this.selectedNode.id, `input_${noOfInputs}`);
+      this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
     }
   }
 
@@ -184,6 +224,7 @@ export class PageNodeDetails extends LitElementWw {
         this.selectedNode.id,
         `output_${noOfOutputs}`
       );
+      this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
     }
   }
 
@@ -277,5 +318,12 @@ export class PageNodeDetails extends LitElementWw {
       lastOutputKey,
       lastInputKey
     );
+  }
+
+  private _resetSelect() {
+    if (this.nodeSelect) {
+      this.nodeSelect.value = "";
+      this.isNodeSelected = false;
+    }
   }
 }

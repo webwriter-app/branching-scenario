@@ -239,6 +239,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                             .nodesInEditor="${this.editorContent.drawflow.Home
                               .data}"
                             .selectedNode="${this.selectedNode}"
+                            .selectedNodeId="${this.selectedNode.id}"
                             .gamebook="${this.gamebook}"
                           >
                             <slot></slot>
@@ -434,7 +435,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
       console.log(id);
       let createdNode = this.editor.getNodeFromId(id);
       this.editorContent = this.editor.drawflow; //.drawflow.Home.data;
+      console.log(this.getAttribute("editorContent"));
       this.setAttribute("editorContent", JSON.stringify(this.editor.drawflow));
+      console.log(this.getAttribute("editorContent"));
 
       if (createdNode.class == "page" || createdNode.class == "origin") {
         // Create a new instance of PageContainer using the constructor, append to slot
@@ -473,7 +476,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.on("nodeRemoved", (id) => {
       for (let i = 0; i < this.pageContainers.length; i++) {
         const pageContainer = this.pageContainers[i] as PageContainer;
-        if (pageContainer.drawflowNodeId === id) {
+        if (pageContainer.drawflowNodeId == id) {
           pageContainer.remove();
           break;
         }
@@ -506,19 +509,5 @@ export class WebWriterBranchingScenario extends LitElementWw {
   private _handleGamebookTitle(event) {
     this.gamebook.title = event.target.value;
   }
-
-  // //TODO:
-  // handleContentChange(event) {
-  //   const { content, id } = event.detail;
-
-  //   //save the data changed by the user
-  //   const node = this.editor.getNodeFromId(id);
-
-  //   // this.editor.updateNodeDataFromId(id, {
-  //   //   title: node.data.title,
-  //   //   content: content,
-  //   // });
-
-  //   // this.gamebook.saveChangesToPageContent(id, content);
-  // }
+  ß;
 }
