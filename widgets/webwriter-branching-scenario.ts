@@ -28,7 +28,7 @@ import StopFill from "bootstrap-icons/icons/stop-fill.svg";
 import PlayFill from "bootstrap-icons/icons/play-fill.svg";
 
 //Drawflow Imports
-import Drawflow from "drawflow";
+import Drawflow, { DrawflowConnection } from "drawflow";
 import { DrawflowNode } from "drawflow";
 import { style } from "drawflow/dist/drawflow.style.js";
 
@@ -492,17 +492,69 @@ export class WebWriterBranchingScenario extends LitElementWw {
     });
 
     this.editor.on(
+      "connectionSelected",
+      ({ output_id, input_id, output_class, input_class }) => {
+        this.selectedNode = this.editor.getNodeFromId(output_id);
+        console.log(this.selectedNode);
+
+        const node = this.shadowRoot?.getElementById(`node-${output_id}`);
+        if (node) {
+          node.classList.add("selected");
+        }
+
+        this.pageContainers.forEach((pageContainer) => {
+          if (
+            (pageContainer as PageContainer).drawflowNodeId ==
+            this.selectedNode.id
+          ) {
+            (pageContainer as PageContainer).show();
+          } else {
+            (pageContainer as PageContainer).hide();
+          }
+        });
+      }
+    );
+
+    this.editor.on("connectionUnselected", (boolean) => {
+      const node = this.shadowRoot?.getElementById(
+        `node-${this.selectedNode.id}`
+      );
+      if (node) {
+        node.classList.remove("selected");
+      }
+
+      this.selectedNode = NO_NODE_SELECTED;
+
+      this.pageContainers.forEach((pageContainer) => {
+        (pageContainer as PageContainer).hide();
+      });
+    });
+
+    this.editor.on(
       "connectionCreated",
       ({ output_id, input_id, output_class, input_class }) => {
         this.editorContent = { ...this.editor.drawflow };
-        this._addLinkButtonToPageContainer(output_id, input_id);
+        this._addLinkButtonToPageContainer(
+          output_id,
+          output_class,
+          input_id,
+          input_class
+        );
       }
     );
 
     this.editor.on(
       "connectionRemoved",
       ({ output_id, input_id, output_class, input_class }) => {
-        //TODO: remove link buttons from page container
+        const identifier = `${output_id}-${output_class}-${input_id}-${input_class}`;
+        const linkButton =
+          this.shadowRoot?.querySelector(
+            `link-button[identifier="${identifier}"]`
+          ) || this.querySelector(`link-button[identifier="${identifier}"]`);
+
+        if (linkButton) {
+          linkButton.remove();
+        }
       }
     );
 
@@ -533,7 +585,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   private _addLinkButtonToPageContainer(
     originNodeId: string,
-    sinkNodeId: string
+    output_class: string,
+    sinkNodeId: string,
+    input_class: string
   ) {
     const sinkNodeTitle = this.editor.getNodeFromId(sinkNodeId).data.title;
 
@@ -546,7 +600,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
     button.setAttribute("name", sinkNodeTitle);
     button.setAttribute("dataTargetId", sinkNodeId.toString());
     // Ensure uniqueness by adding a unique identifier
-    button.setAttribute("uniqueId", `${sinkNodeId}-${Date.now()}`);
+    button.setAttribute(
+      "identifier",
+      `${originNodeId}-${output_class}-${sinkNodeId}-${input_class}`
+    );
     pageContainer.appendChild(button);
 
     //TODO: Remove this once frederic fixed this

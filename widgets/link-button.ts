@@ -15,7 +15,7 @@ import SlButton from "@shoelace-style/shoelace/dist/components/button/button.com
 export class LinkButton extends LitElementWw {
   @property({ type: String }) name: string;
   @property({ type: Number }) dataTargetId: number;
-  @property({ type: String }) uniqueId: string;
+  @property({ type: String }) identifier: string;
 
   static get scopedElements() {
     return {
