@@ -26,6 +26,7 @@ import ZoomOut from "bootstrap-icons/icons/zoom-out.svg";
 import ArrowRightCircleFill from "bootstrap-icons/icons/arrow-right-circle-fill.svg";
 import StopFill from "bootstrap-icons/icons/stop-fill.svg";
 import PlayFill from "bootstrap-icons/icons/play-fill.svg";
+import ThreeDotsVertical from "bootstrap-icons/icons/three-dots-vertical.svg";
 
 //Drawflow Imports
 import Drawflow, { DrawflowConnection } from "drawflow";
@@ -300,6 +301,63 @@ export class WebWriterBranchingScenario extends LitElementWw {
       content: `<p>Testing HTML Editing</p>`,
     };
 
+    // Create the container div
+    const containerDiv = document.createElement("div");
+
+    // Create the icon div
+    const iconDiv = document.createElement("div");
+    iconDiv.classList.add("div-page-icon");
+    iconDiv.innerHTML = FileEarmark;
+    const svgElement = iconDiv.querySelector("svg");
+    if (svgElement) {
+      svgElement.classList.add("page-svg");
+    }
+    iconDiv.appendChild(svgElement);
+    containerDiv.appendChild(iconDiv);
+
+    const contentDiv = document.createElement("div");
+    contentDiv.classList.add("content");
+
+    const badge = document.createElement("div");
+    badge.classList.add("badge");
+
+    let svgContent = ArrowRightCircleFill.split(",")[1];
+    badge.innerHTML = svgContent;
+    const arrowSVG = badge.querySelector("svg");
+    if (arrowSVG) {
+      arrowSVG.classList.add("arrow-svg");
+    }
+    badge.appendChild(arrowSVG);
+
+    const nameLabel = document.createElement("p");
+    nameLabel.textContent = "Start Page";
+    badge.appendChild(nameLabel);
+
+    const inputElement = document.createElement("input");
+    inputElement.type = "text";
+    inputElement.id = "test-textarea";
+    inputElement.placeholder = "Enter name";
+    inputElement.setAttribute("df-title", ""); // Adding df-title attribute
+    contentDiv.appendChild(badge);
+    contentDiv.appendChild(inputElement);
+
+    containerDiv.appendChild(contentDiv);
+
+    // Create the icon div
+    const threeDotsDiv = document.createElement("div");
+    threeDotsDiv.classList.add("div-threedots-icon");
+    threeDotsDiv.innerHTML = ThreeDotsVertical;
+    const threeDots = threeDotsDiv.querySelector("svg");
+    if (threeDots) {
+      threeDots.classList.add("threedots-svg");
+    }
+    threeDotsDiv.appendChild(threeDots);
+    containerDiv.appendChild(threeDotsDiv);
+
+    containerDiv.classList.add("container");
+
+    const containerHtml = containerDiv.outerHTML;
+
     this.editor.addNode(
       "First Worksheet",
       0,
@@ -308,28 +366,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       0,
       "origin",
       pageContent,
-      `
-      <div>
-        <div class="title-box">
-          <svg id="svg">${FileEarmark}</svg>
-          <p class="title">Page</p>
-          <div class="badge">
-            <div class="div-svg">
-               <svg>${ArrowRightCircleFill}</svg>
-            </div>
-            <p>Start Page</p>
-          </div>
-        </div>
-        <div class="content">
-          <p class="input-label">Name</p>
-          <input
-            type="text"
-            id="test-textarea"
-            placeholder="Enter name"
-            df-title
-          ></input>
-        </div>
-      </div>`,
+      containerHtml,
       false
     );
   }
@@ -340,6 +377,49 @@ export class WebWriterBranchingScenario extends LitElementWw {
       content: `<p>Testing Slots HTML Editing</p>`,
     };
 
+    // Create the container div
+    const containerDiv = document.createElement("div");
+
+    // Create the icon div
+    const iconDiv = document.createElement("div");
+    iconDiv.classList.add("div-page-icon");
+    iconDiv.innerHTML = FileEarmark;
+    const svgElement = iconDiv.querySelector("svg");
+    if (svgElement) {
+      svgElement.classList.add("page-svg");
+    }
+    iconDiv.appendChild(svgElement);
+    containerDiv.appendChild(iconDiv);
+
+    const contentDiv = document.createElement("div");
+    contentDiv.classList.add("content");
+    const nameLabel = document.createElement("p");
+    nameLabel.classList.add("input-label");
+    nameLabel.textContent = "Page"; // Set the text content of the label
+    const inputElement = document.createElement("input");
+    inputElement.type = "text";
+    inputElement.id = "test-textarea";
+    inputElement.placeholder = "Enter name";
+    inputElement.setAttribute("df-title", ""); // Adding df-title attribute
+    contentDiv.appendChild(nameLabel);
+    contentDiv.appendChild(inputElement);
+    containerDiv.appendChild(contentDiv);
+
+    // Create the icon div
+    const threeDotsDiv = document.createElement("div");
+    threeDotsDiv.classList.add("div-threedots-icon");
+    threeDotsDiv.innerHTML = ThreeDotsVertical;
+    const threeDots = threeDotsDiv.querySelector("svg");
+    if (threeDots) {
+      threeDots.classList.add("threedots-svg");
+    }
+    threeDotsDiv.appendChild(threeDots);
+    containerDiv.appendChild(threeDotsDiv);
+
+    containerDiv.classList.add("container");
+
+    const containerHtml = containerDiv.outerHTML;
+
     this.editor.addNode(
       title,
       0,
@@ -348,21 +428,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       0,
       "page",
       pageContent,
-      `<div>
-        <div class="title-box">
-          <svg id="svg">${FileEarmark}</svg>
-          <p class="title">Page</p>
-        </div>
-        <div class="content">
-          <p class="input-label">Name</p>
-          <input
-            type="text"
-            id="test-textarea"
-            placeholder="Enter name"
-            df-title
-          ></input>
-        </div>
-      </div>`,
+      containerHtml,
       false
     );
   }

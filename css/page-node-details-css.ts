@@ -2,9 +2,17 @@ import { css } from "lit";
 
 export default css`
   .page-node-details {
+    width: auto;
+
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
-    gap: 10px;
+
+    border-radius: 0px 0px 8px 8px;
+
+    background-color: white;
+    box-sizing: border-box;
   }
 
   .controls {
@@ -12,24 +20,44 @@ export default css`
     border-bottom: 1px solid #e4e4e4;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center; /* Center items vertically */
     gap: 10px; /* Adjust the value to your desired spacing */
-    /* padding-left: 15px;
-    padding-right: 15px; */
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
+
     font-family: "Roboto", sans-serif;
     font-size: 20px;
     font-weight: bold;
+
+    width: 100%;
+    background-color: white;
+
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .pageDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    box-sizing: border-box;
+
+    background-color: #fafafb;
+
+    padding: 10px;
   }
 
   .page {
-    height: auto;
     background-color: white;
-    padding: 10px;
     border: 1px solid #d4d4d8;
+    width: 100%;
+    min-height: 800px;
+    height: auto;
+    color: black;
   }
 
   .title-bar {
@@ -37,9 +65,14 @@ export default css`
     flex-direction: row;
     align-items: center;
     gap: 15px;
-    padding: 5px;
-    height: 50px;
+
     width: 100%;
+    height: 70px;
+    padding: 10px;
+
+    background-color: white;
+
+    box-sizing: border-box;
   }
 
   .div-icon {
@@ -109,7 +142,6 @@ export default css`
   }
 
   .icon-button {
-    padding: 0;
     margin: 0;
   }
 `;

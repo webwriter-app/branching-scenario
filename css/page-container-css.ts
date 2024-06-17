@@ -4,6 +4,7 @@ export default css`
   .page {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Adjust the value to your desired spacing */
+    gap: 10px; /* Adjust the value to your desired spacing */
+    padding: 10px;
   }
 `;

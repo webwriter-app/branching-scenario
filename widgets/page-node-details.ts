@@ -97,11 +97,12 @@ export class PageNodeDetails extends LitElementWw {
   }
 
   render() {
-    return html`<div class="page-node-details">
+    return html` <div class="page-node-details">
       <div class="title-bar">
         <div class="div-icon">
           <object type="image/svg+xml" data=${FileEarmark} class="svg"></object>
         </div>
+
         <div class="div-title">
           <p class="title">${this.selectedNode.data.title}</p>
           <p class="subtitle">Gamebook Page</p>
@@ -126,7 +127,9 @@ export class PageNodeDetails extends LitElementWw {
               </sl-icon-button>
             </div>
           </div>
+
           <sl-divider vertical style="height: 30px;"></sl-divider>
+
           <div class="number-input">
             <p class="subtitle">Outputs</p>
             <div class="horizontal">
@@ -147,8 +150,8 @@ export class PageNodeDetails extends LitElementWw {
           </div>
         </div>
       </div>
+
       <div class="controls">
-        <sl-divider vertical style="height: 30px;"></sl-divider>
         <!-- TODO: This does not reset since page-node-details is always in the DOM but made hidden over CSS -->
         <sl-select
           class="nodeSelect"
@@ -183,8 +186,10 @@ export class PageNodeDetails extends LitElementWw {
           </sl-menu>
         </sl-dropdown>
       </div>
-      <div class="page">
-        <slot></slot>
+      <div class="pageDiv">
+        <div class="page">
+          <slot></slot>
+        </div>
       </div>
     </div>`;
   }
@@ -202,6 +207,7 @@ export class PageNodeDetails extends LitElementWw {
   private _addOutputToSelectedNode() {
     this.editor.addNodeOutput(this.selectedNode.id);
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+    //TODO: somehow this does not update the output count when a connection is added via button press
   }
 
   private _deleteInputOfSelectedNode() {

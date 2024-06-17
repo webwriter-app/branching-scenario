@@ -15,6 +15,10 @@ export default css`
     background-size: 25px 25px;
     background-position: 0 0, 12.5px 12.5px;
     border-bottom: 1px solid #e4e4e4; /* You can adjust the thickness and color as needed */
+    user-select: none; /* Standard syntax */
+    -webkit-user-select: none; /* Safari/Chrome */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
   }
 
   /* ------- */
@@ -23,61 +27,88 @@ export default css`
 
   .drawflow .drawflow-node.page {
     background: #ffffff;
-    border: 1px solid #949494;
-    padding: 0px;
-    width: 280px;
+    border: 1px solid #cecece;
+
     font-family: "Roboto", sans-serif;
+
     -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
     box-shadow: 0 2px 20px 2px #d0d0d0;
+
+    padding: 0px;
+
+    align-items: center;
+
+    box-sizing: border-box;
+
+    width: 330px;
   }
 
-  .drawflow .drawflow-node:hover.page {
-    border: 1.5px solid #4ea9ff;
-  }
-
-  .drawflow .drawflow-node.selected.page {
-    background: #f4faff;
-    border: 3px solid #4ea9ff;
-    color: #215f98;
-  }
-
-  .drawflow-node.page .title-box {
-    background: #f7f7f7;
-
+  .drawflow .drawflow-node.page .container {
     display: flex;
-    align-items: center; /* Align items vertically */
-    flex-direction: row; // This is the default, but it's good to be explicit
-    justify-content: flex-start; // Aligns items to the start of the container
-    gap: 5px; //Adjust the gap between items as needed
+    flex-direction: row;
+    justify-content: center;
 
-    padding-top: 5px;
-    padding-bottom: 5px;
     padding-left: 15px;
-    padding-right: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-right: 20px;
 
-    font-weight: 600;
-  }
-  .drawflow-node.page .title-box #svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  .drawflow .drawflow-node.page .title-box .title {
-    margin: 10px;
-    margin-left: 25px;
+    gap: 10px;
+    box-sizing: border-box;
   }
 
-  .drawflow .drawflow-node.selected.page .title-box {
-    color: #22598c;
+  .drawflow .drawflow-node.page .container .div-page-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+
+    width: 60px;
+    height: 60px;
+    aspect-ratio: 1;
+
+    border-radius: 8px;
+    border: 1px solid #e4e4e4;
+
+    font-size: 0px;
+  }
+
+  .drawflow .drawflow-node.page .container .page-svg {
+    display: block;
+    fill: black;
+    aspect-ratio: 1; /* Ensure the svg is square */
+    width: 30px;
+    height: 30px;
+    pointer-events: none;
+  }
+
+  .drawflow .drawflow-node.page .container .div-threedots-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: 0px;
+    padding: 10px;
+    margin-left: auto;
+  }
+
+  .drawflow .drawflow-node.page .container .threedots-svg {
+    display: block;
+    fill: #7c7c7c;
+    aspect-ratio: 1; /* Ensure the svg is square */
+    width: 25px;
+    height: 25px;
+    pointer-events: none;
   }
 
   .drawflow-node.page .content {
-    padding: 15px;
     color: #71717a;
     display: flex;
+    width: 150px;
     flex-direction: column;
     justify-content: flex-start; /* Aligns items to the start of the container */
     gap: 0px;
+    height: 60px;
   }
 
   .drawflow-node.page .content .input-label {
@@ -93,67 +124,105 @@ export default css`
     padding: 0.5rem;
   }
 
+  .drawflow .drawflow-node:hover.page {
+    border: 1.5px solid #4ea9ff;
+  }
+
+  .drawflow .drawflow-node.selected.page {
+    background: #f4faff;
+    border: 3px solid #4ea9ff;
+    color: #215f98;
+  }
+
   /* ------- */
   /* Origin */
   /* ------- */
 
   .drawflow .drawflow-node.origin {
     background: #ffffff;
-    border: 1px solid #949494;
-    padding: 0px;
-    width: 280px;
+    border: 1px solid #cecece;
+
     font-family: "Roboto", sans-serif;
+
     -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
     box-shadow: 0 2px 20px 2px #d0d0d0;
+
+    padding: 0px;
+
+    align-items: center;
+
+    box-sizing: border-box;
+
+    width: 330px;
   }
 
-  .drawflow .drawflow-node:hover.origin {
-    border: 1.5px solid #4ea9ff;
-  }
-
-  .drawflow .drawflow-node.selected.origin {
-    background: #f4faff;
-    border: 3px solid #4ea9ff;
-    color: #215f98;
-  }
-
-  .drawflow-node.origin .title-box {
-    background: #f7f7f7;
-
+  .drawflow .drawflow-node.origin .container {
     display: flex;
-    align-items: center; /* Align items vertically */
-    flex-direction: row; // This is the default, but it's good to be explicit
-    justify-content: flex-start; // Aligns items to the start of the container
-    gap: 5px; //Adjust the gap between items as needed
+    flex-direction: row;
+    justify-content: center;
 
-    padding-top: 5px;
-    padding-bottom: 5px;
     padding-left: 15px;
-    padding-right: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-right: 20px;
 
-    font-weight: 600;
-  }
-  .drawflow-node.origin .title-box #svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  .drawflow .drawflow-node.origin .title-box .title {
-    margin: 10px;
-    margin-left: 25px;
+    gap: 10px;
+    box-sizing: border-box;
   }
 
-  .drawflow .drawflow-node.selected.origin .title-box {
-    color: #22598c;
+  .drawflow .drawflow-node.origin .container .div-page-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+
+    width: 60px;
+    height: 60px;
+    aspect-ratio: 1;
+
+    border-radius: 8px;
+    border: 1px solid #e4e4e4;
+
+    font-size: 0px;
+  }
+
+  .drawflow .drawflow-node.origin .container .page-svg {
+    display: block;
+    fill: black;
+    aspect-ratio: 1; /* Ensure the svg is square */
+    width: 30px;
+    height: 30px;
+    pointer-events: none;
+  }
+
+  .drawflow .drawflow-node.origin .container .div-threedots-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: 0px;
+    padding: 10px;
+    margin-left: auto;
+  }
+
+  .drawflow .drawflow-node.origin .container .threedots-svg {
+    display: block;
+    fill: #7c7c7c;
+    aspect-ratio: 1; /* Ensure the svg is square */
+    width: 25px;
+    height: 25px;
+    pointer-events: none;
   }
 
   .drawflow-node.origin .content {
-    padding: 15px;
     color: #71717a;
     display: flex;
+
     flex-direction: column;
     justify-content: flex-start; /* Aligns items to the start of the container */
-    gap: 0px;
+    gap: 5px;
+    width: 150px;
+    height: 60px;
   }
 
   .drawflow-node.origin .content .input-label {
@@ -169,43 +238,51 @@ export default css`
     padding: 0.5rem;
   }
 
-  .drawflow-node.origin .drawflow-delete {
-    display: none;
-  }
-
-  .badge {
+  .drawflow-node.origin .badge {
     display: flex;
-    align-items: center;
-    justify-content: center;
     flex-direction: row;
-    gap: 8px;
+    align-items: center;
+    justify-content: left;
 
     color: #0ca349;
 
+    box-sizing: border-box;
     border: 1px solid #0ca349;
     border-radius: 12px;
-    padding: 5px 10px;
-    margin-left: auto; /* Push the badge to the end of the title box */
+
+    padding: 3px 3px;
+
+    height: 25px;
+    width: 100px;
   }
 
-  .badge .div-svg {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px; /* Add padding to hug the content */
-  }
-  .badge .div-svg svg {
+  .drawflow-node.origin .badge .arrow-svg {
     display: block;
-    width: 10px;
-    height: 10px;
-    transform: translate(-30%, -30%);
-    margin: 0px;
+    fill: #0ca349;
+    aspect-ratio: 1; /* Ensure the svg is square */
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
   }
 
-  .badge p {
-    text-align: center;
-    margin: 0;
-    font-size: 12px; /* Adjust font size as needed */
+  .drawflow-node.origin .badge p {
+    font-size: 14px;
+    margin-left: 20px;
+  }
+
+  .drawflow .drawflow-node:hover.origin {
+    border: 1.5px solid #4ea9ff;
+    box-sizing: border-box;
+  }
+
+  .drawflow .drawflow-node.selected.origin {
+    background: #f4faff;
+    border: 3px solid #4ea9ff;
+    color: #215f98;
+  }
+
+  .drawflow-node.origin .drawflow-delete {
+    display: none;
   }
 
   /* ------- */
