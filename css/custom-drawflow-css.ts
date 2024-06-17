@@ -258,6 +258,7 @@ export default css`
 
   .drawflow-node.origin .badge .arrow-svg {
     display: block;
+    box-sizing: border-box;
     fill: #0ca349;
     aspect-ratio: 1; /* Ensure the svg is square */
     width: 16px;

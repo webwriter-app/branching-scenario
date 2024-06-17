@@ -85,6 +85,12 @@ export default css`
 
     font-family: "Roboto", sans-serif;
     font-size: 18px;
+  }
+
+  #no-node-selected {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     color: #a7a7a7;
   }
 

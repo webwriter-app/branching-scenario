@@ -260,7 +260,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                             <slot></slot
                           ></quiz-branch-node-details>
                         </div>`
-                      : html` <div id="selected-node-details">
+                      : html` <div id="no-node-selected">
                           <p>Select a node to edit its content</p>
                           <slot></slot>
                         </div>`}
