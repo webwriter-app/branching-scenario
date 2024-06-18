@@ -15,10 +15,14 @@ import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/i
 import SlSelect from "@shoelace-style/shoelace/dist/components/select/select.component.js";
 import SlOption from "@shoelace-style/shoelace/dist/components/option/option.component.js";
 import SlCheckbox from "@shoelace-style/shoelace/dist/components/checkbox/checkbox.component.js";
+import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
+import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
 
 //Bootstrap Icon Import
 import Trash from "bootstrap-icons/icons/trash.svg";
 import Plus from "bootstrap-icons/icons/plus.svg";
+import Dash from "bootstrap-icons/icons/dash.svg";
+import PatchQuestion from "bootstrap-icons/icons/patch-question.svg";
 
 //CSS
 import styles from "../css/quiz-branch-node-details-css";
@@ -36,6 +40,8 @@ export class QuizBranchNodeDetails extends LitElementWw {
       "sl-select": SlSelect,
       "sl-option": SlOption,
       "sl-checkbox": SlCheckbox,
+      "sl-button": SlButton,
+      "sl-icon": SlIcon,
     };
   }
 
@@ -70,60 +76,142 @@ export class QuizBranchNodeDetails extends LitElementWw {
     this.answerIdGenerator = this.selectedNode.data.answers.length;
   }
 
+  //TODO: if you drag and drop a connection from a quiz branch to a page, it will not find a pagecontainer as a quiz branch does not create a page container
+
   render() {
     return html` <div>
-      <div class="controls">
-        <sl-icon-button src=${Plus} @click=${this._addAnswerToQuizBranchNode}
-          >Add Answer
-        </sl-icon-button>
+      <div class="title-bar">
+        <div class="div-icon">
+          <object
+            type="image/svg+xml"
+            data=${PatchQuestion}
+            class="svg"
+          ></object>
+        </div>
+        <div class="div-title">
+          <p class="title">${this.selectedNode.data.title}</p>
+          <p class="subtitle">Gamebook Quiz</p>
+        </div>
+
+        <div class="last-item">
+          <div class="number-input">
+            <p class="subtitle">Inputs</p>
+            <div class="horizontal">
+              <sl-icon-button
+                src=${Dash}
+                @click=${this._deleteInputOfSelectedNode}
+              >
+              </sl-icon-button>
+              <p class="number">
+                ${Object.keys(this.selectedNode.inputs).length.toString()}
+              </p>
+              <sl-icon-button
+                src=${Plus}
+                @click=${this._addInputToSelectedNode}
+              >
+              </sl-icon-button>
+            </div>
+          </div>
+        </div>
       </div>
-      <p>Selected Quiz Branch: ${this.selectedNode.data.title}</p>
-      <sl-textarea
-        resize="none"
-        placeholder="Type in a question here"
-        size="large"
-        .value="${this.selectedNode.data.question}"
-        @input="${this._handleUserInputQuestion}"
-      ></sl-textarea>
-      <sl-divider horizontal></sl-divider>
-      <div>
+
+      <div class="question">
+        <sl-textarea
+          resize="none"
+          placeholder="Type in a question here"
+          size="medium"
+          .value="${this.selectedNode.data.question}"
+          @input="${this._handleUserInputQuestion}"
+          style="width: 100%"
+        ></sl-textarea>
+      </div>
+
+      <div class="controls">
+        <sl-button @click=${this._addAnswerToQuizBranchNode}>
+          <object slot="prefix" type="image/svg+xml" data=${Plus}></object>
+          Add Answer
+        </sl-button>
+      </div>
+
+      <div class="answersContainer">
         ${this.selectedNode.data.answers.map(
           (answer) =>
-            html`<div class="answer">
-              <sl-textarea
-                resize="none"
-                placeholder="Answer"
-                answerId="${answer.id}"
-                .value="${answer.text}"
-                @input="${this._handleUserInputAnswer}"
-              ></sl-textarea
-              ><sl-select
-                class="nodeSelect"
-                answerId="${answer.id}"
-                placeholder="Select Page"
-                @sl-input=${this._handleUserInputTargetPage}
-                .value="${answer.targetPageId}"
-              >
-                ${Object.keys(this.nodesInEditor).map(
-                  (key) =>
-                    html`<sl-option value=${this.nodesInEditor[key].id}
-                      >${this.nodesInEditor[key].data.title}</sl-option
-                    >`
-                )} </sl-select
-              ><sl-checkbox
-                answerId="${answer.id}"
-                ?checked=${answer.isCorrect}
-                @click="${this._handleUserInputCorrectness}"
-                >Correct</sl-checkbox
-              >
-              <sl-icon-button
-                src=${Trash}
-                @click=${() => this._removeAnswerFromQuizBranchNode(answer.id)}
-              ></sl-icon-button>
-            </div>`
+            html`
+              <div class="answer">
+                <sl-textarea
+                  resize="none"
+                  placeholder="Answer"
+                  answerId="${answer.id}"
+                  .value="${answer.text}"
+                  @input="${this._handleUserInputAnswer}"
+                ></sl-textarea
+                ><sl-select
+                  class="nodeSelect"
+                  answerId="${answer.id}"
+                  placeholder="Select Page"
+                  @sl-input=${this._handleUserInputTargetPage}
+                  .value="${answer.targetPageId}"
+                >
+                  ${Object.keys(this.nodesInEditor)
+                    .filter(
+                      (key) =>
+                        this.nodesInEditor[key].id !== this.selectedNode.id &&
+                        this.nodesInEditor[key].class != "quiz-branch"
+                    )
+                    .map(
+                      (key) =>
+                        html`<sl-option value=${this.nodesInEditor[key].id}
+                          >${this.nodesInEditor[key].data.title}</sl-option
+                        >`
+                    )} </sl-select
+                ><sl-checkbox
+                  answerId="${answer.id}"
+                  ?checked=${answer.isCorrect}
+                  @click="${this._handleUserInputCorrectness}"
+                  >Correct</sl-checkbox
+                >
+                <sl-icon-button
+                  src=${Trash}
+                  @click=${() =>
+                    this._removeAnswerFromQuizBranchNode(answer.id)}
+                ></sl-icon-button>
+              </div>
+            `
         )}
       </div>
     </div>`;
+  }
+
+  private _addInputToSelectedNode() {
+    this.editor.addNodeInput(this.selectedNode.id);
+    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+  }
+
+  private _addOutputToSelectedNode() {
+    this.editor.addNodeOutput(this.selectedNode.id);
+    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+    //TODO: somehow this does not update the output count when a connection is added via button press
+  }
+
+  private _deleteInputOfSelectedNode() {
+    const node = this.editor.getNodeFromId(this.selectedNode.id);
+    const noOfInputs = Object.keys(node.inputs).length;
+    if (noOfInputs != 0) {
+      this.editor.removeNodeInput(this.selectedNode.id, `input_${noOfInputs}`);
+      this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+    }
+  }
+
+  private _deleteOutputOfSelectedNode() {
+    const node = this.editor.getNodeFromId(this.selectedNode.id);
+    const noOfOutputs = Object.keys(node.outputs).length;
+    if (noOfOutputs != 0) {
+      this.editor.removeNodeOutput(
+        this.selectedNode.id,
+        `output_${noOfOutputs}`
+      );
+      this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+    }
   }
 
   private _addAnswerToQuizBranchNode() {
@@ -144,6 +232,8 @@ export class QuizBranchNodeDetails extends LitElementWw {
       answers: answerArray,
     });
 
+    this._addOutputToSelectedNode();
+
     //refresh the node such that component renders again
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
@@ -162,6 +252,8 @@ export class QuizBranchNodeDetails extends LitElementWw {
       question: this.selectedNode.data.question,
       answers: answerArray,
     });
+
+    this._deleteOutputOfSelectedNode();
 
     //refresh the node such that component renders again
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);

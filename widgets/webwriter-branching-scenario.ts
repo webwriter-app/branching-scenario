@@ -319,7 +319,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     // Create the icon div
     const iconDiv = document.createElement("div");
     iconDiv.classList.add("div-page-icon");
-    iconDiv.innerHTML = FileEarmark;
+    iconDiv.innerHTML = FileEarmark.split(",")[1];
     const svgElement = iconDiv.querySelector("svg");
     if (svgElement) {
       svgElement.classList.add("page-svg");
@@ -358,7 +358,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     // Create the icon div
     const threeDotsDiv = document.createElement("div");
     threeDotsDiv.classList.add("div-threedots-icon");
-    threeDotsDiv.innerHTML = ThreeDotsVertical;
+    threeDotsDiv.innerHTML = ThreeDotsVertical.split(",")[1];
     const threeDots = threeDotsDiv.querySelector("svg");
     if (threeDots) {
       threeDots.classList.add("threedots-svg");

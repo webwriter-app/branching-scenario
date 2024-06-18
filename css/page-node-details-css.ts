@@ -81,18 +81,20 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #e4e4e4;
+    border: 1px solid #3077ba;
     border-radius: 8px;
     height: 100%; /* Remove the fixed height */
     aspect-ratio: 1;
     background-color: #f4faff;
+    color: #3077ba;
   }
 
-  .svg {
-    fill: #3077ba;
+  .div-icon .svg {
     width: 50%;
     height: 50%;
     aspect-ratio: 1; /* Ensure the svg is square */
+    filter: invert(26%) sepia(72%) saturate(2576%) hue-rotate(178deg)
+      brightness(94%) contrast(101%);
   }
 
   .div-title {

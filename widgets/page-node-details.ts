@@ -176,14 +176,24 @@ export class PageNodeDetails extends LitElementWw {
           >Connect</sl-button
         >
         <sl-divider vertical style="height: 30px;"></sl-divider>
+
         <sl-dropdown>
-          <sl-button slot="trigger">Add Branch</sl-button>
+          <sl-button slot="trigger">
+            <object slot="prefix" type="image/svg+xml" data=${Plus}></object>
+            Branch
+          </sl-button>
           <sl-menu>
             <sl-menu-item
               @click=${() => this._addQuizBranchNodeToSelectedNode()}
-              >Quiz Branch</sl-menu-item
             >
-            <sl-menu-item>Reactive Branch</sl-menu-item>
+              <object
+                slot="prefix"
+                type="image/svg+xml"
+                data=${PatchQuestion}
+              ></object>
+              Quiz
+            </sl-menu-item>
+            <sl-menu-item>Other Types</sl-menu-item>
           </sl-menu>
         </sl-dropdown>
       </div>
@@ -270,7 +280,7 @@ export class PageNodeDetails extends LitElementWw {
     // Create the icon div
     const iconDiv = document.createElement("div");
     iconDiv.classList.add("div-page-icon");
-    iconDiv.innerHTML = PatchQuestion;
+    iconDiv.innerHTML = PatchQuestion.split(",")[1];
     const svgElement = iconDiv.querySelector("svg");
     if (svgElement) {
       svgElement.classList.add("question-svg");

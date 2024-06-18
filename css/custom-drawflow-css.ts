@@ -305,8 +305,8 @@ export default css`
 
     box-sizing: border-box;
 
-    width: 110px;
-    aspect-ratio: 1;
+    min-width: 110px;
+    min-height: 110px;
   }
 
   .drawflow .drawflow-node.quiz-branch .container {
