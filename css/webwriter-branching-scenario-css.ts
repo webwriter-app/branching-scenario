@@ -54,7 +54,7 @@ export default css`
     color: white;
   }
 
-  .bar-zoom {
+  .zoomControls {
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -76,6 +76,47 @@ export default css`
     border-right: 1px solid white;
   }
 
+  .zoomValue {
+    box-sizing: border-box;
+
+    opacity: 0;
+
+    float: right;
+    position: absolute;
+    bottom: 65px;
+    right: 10px;
+    z-index: 5;
+
+    padding-inline: 5px;
+    padding-block: 0px;
+
+    border-radius: 4px;
+
+    color: white;
+    background: #555555;
+
+    font-size: 8px;
+  }
+
+  .zoomValue.fade-in-out {
+    animation: opacityOn 2s normal forwards;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+  }
+
+  @keyframes opacityOn {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
   #selected-node-details {
     height: 100%;
     width: 100%;
@@ -92,6 +133,7 @@ export default css`
     flex-direction: column;
     align-items: center;
     color: #a7a7a7;
+    padding: 30px;
   }
 
   .dialog {

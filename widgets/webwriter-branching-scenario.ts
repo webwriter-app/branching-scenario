@@ -76,6 +76,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Object, attribute: true, reflect: true }) editorContent;
 
   //
+  @property({ type: Number, attribute: true, reflect: true }) editorZoom = -1;
+  @property({ type: String }) editorZoomString = "";
+
   @property({ type: Object, attribute: true }) selectedNode: DrawflowNode =
     NO_NODE_SELECTED;
 
@@ -122,7 +125,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor = new Drawflow(this.drawflowEditorDiv);
     this.editor.reroute = true;
     this.editor.reroute_fix_curvature = true;
-    this.editor.zoom = 0.75;
+
+    if (this.editorZoom == -1) {
+      this.editor.zoom = 0.7;
+    } else {
+      this.editor.zoom = this.editorZoom;
+    }
+
     this.editor.start();
     this.editor.zoom_refresh();
     this._registerEditorEventHandlers();
@@ -217,7 +226,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     <slot></slot>
                   </gamebook-preview>`
                 : html` <div id="drawflowEditorDiv">
-                      <div class="bar-zoom">
+                      <div class="zoomControls">
                         <sl-icon-button
                           id="zoomInBtn"
                           src=${ZoomIn}
@@ -232,6 +241,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
                           @click=${() => this.editor.zoom_out()}
                         >
                         </sl-icon-button>
+                      </div>
+                      <div class="zoomValue">
+                        <p>${this.editorZoomString}</p>
                       </div>
                     </div>
                     ${this.selectedNode.class == "page" ||
@@ -261,7 +273,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                           ></quiz-branch-node-details>
                         </div>`
                       : html` <div id="no-node-selected">
-                          <p>Select a node to edit its content</p>
+                          <p>Select a node</p>
                           <slot></slot>
                         </div>`}
 
@@ -642,6 +654,27 @@ export class WebWriterBranchingScenario extends LitElementWw {
           (pageContainer as PageContainer).hide();
         }
       });
+    });
+
+    this.editor.on("zoom", (zoom_level) => {
+      // Convert zoom level to percentage
+      this.editorZoom = zoom_level;
+
+      let normalizedZoom =
+        (zoom_level - this.editor.zoom_min) /
+        (this.editor.zoom_max - this.editor.zoom_min);
+      let percentage = (normalizedZoom * 100).toFixed(0) + "%";
+      this.editorZoomString = percentage;
+
+      const zoomValue = this.shadowRoot.querySelector(
+        ".zoomValue"
+      ) as HTMLElement;
+      if (zoomValue) {
+        zoomValue.classList.remove("fade-in-out");
+        // Trigger reflow to restart the animation
+        void zoomValue.offsetWidth;
+        zoomValue.classList.add("fade-in-out");
+      }
     });
   }
 

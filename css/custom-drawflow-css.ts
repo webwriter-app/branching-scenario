@@ -67,8 +67,8 @@ export default css`
     height: 60px;
     aspect-ratio: 1;
 
-    border-radius: 8px;
-    border: 1px solid #e4e4e4;
+    /* border-radius: 8px;
+    border: 1px solid #e4e4e4; */
 
     font-size: 0px;
   }
@@ -77,8 +77,8 @@ export default css`
     display: block;
     fill: black;
     aspect-ratio: 1; /* Ensure the svg is square */
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     pointer-events: none;
   }
 
@@ -180,8 +180,8 @@ export default css`
     height: 60px;
     aspect-ratio: 1;
 
-    border-radius: 8px;
-    border: 1px solid #e4e4e4;
+    /* border-radius: 8px;
+    border: 1px solid #e4e4e4; */
 
     font-size: 0px;
   }
@@ -190,8 +190,8 @@ export default css`
     display: block;
     fill: black;
     aspect-ratio: 1; /* Ensure the svg is square */
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     pointer-events: none;
   }
 
@@ -247,9 +247,6 @@ export default css`
     color: #0ca349;
 
     box-sizing: border-box;
-    border: 1px solid #0ca349;
-    border-radius: 12px;
-
     padding: 3px 3px;
 
     height: 25px;
@@ -355,7 +352,7 @@ export default css`
   .drawflow .drawflow-node .output {
     height: 15px;
     width: 15px;
-    border: 1px solid #dedede;
+    border: 1px solid #cdcdcd;
   }
 
   .drawflow .drawflow-node .input:hover,

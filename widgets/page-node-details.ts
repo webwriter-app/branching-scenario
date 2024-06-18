@@ -102,7 +102,6 @@ export class PageNodeDetails extends LitElementWw {
         <div class="div-icon">
           <object type="image/svg+xml" data=${FileEarmark} class="svg"></object>
         </div>
-
         <div class="div-title">
           <p class="title">${this.selectedNode.data.title}</p>
           <p class="subtitle">Gamebook Page</p>

@@ -31,7 +31,7 @@ export default css`
     width: 100%;
     background-color: white;
 
-    padding: 10px;
+    padding: 15px;
     box-sizing: border-box;
   }
 
@@ -53,11 +53,13 @@ export default css`
 
   .page {
     background-color: white;
+    box-sizing: border-box;
     border: 1px solid #d4d4d8;
     width: 100%;
     min-height: 800px;
     height: auto;
     color: black;
+    padding: 20px;
   }
 
   .title-bar {
@@ -67,8 +69,8 @@ export default css`
     gap: 15px;
 
     width: 100%;
-    height: 70px;
-    padding: 10px;
+    height: 100px;
+    padding: 20px;
 
     background-color: white;
 
@@ -83,11 +85,11 @@ export default css`
     border-radius: 8px;
     height: 100%; /* Remove the fixed height */
     aspect-ratio: 1;
+    background-color: #f4faff;
   }
 
   .svg {
-    display: block;
-    fill: black;
+    fill: #3077ba;
     width: 50%;
     height: 50%;
     aspect-ratio: 1; /* Ensure the svg is square */
@@ -103,7 +105,7 @@ export default css`
     font-family: "Roboto", sans-serif;
     font-size: 16px;
     font-weight: bold;
-    color: black;
+    color: #3077ba;
     margin: 0px;
   }
 
