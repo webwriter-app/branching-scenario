@@ -23,6 +23,7 @@ export default css`
 
   /* ------- */
   /* Page Node */
+  /* TODO: make origin of class page. just add the differing css to page class  */
   /* ------- */
 
   .drawflow .drawflow-node.page {
@@ -132,6 +133,7 @@ export default css`
     background: #f4faff;
     border: 3px solid #4ea9ff;
     color: #215f98;
+    box-sizing: content-box;
   }
 
   /* ------- */
@@ -277,6 +279,7 @@ export default css`
     background: #f4faff;
     border: 3px solid #4ea9ff;
     color: #215f98;
+    box-sizing: content-box;
   }
 
   .drawflow-node.origin .drawflow-delete {
@@ -288,43 +291,98 @@ export default css`
   /* ------- */
 
   .drawflow .drawflow-node.quiz-branch {
-    background: #f3e9ff;
-    border: 1px solid #949494;
-    padding: 0px;
-    width: auto;
-    color: black;
-    text-align: center;
+    background: #ffffff;
+    border: 1px solid #cecece;
+
     font-family: "Roboto", sans-serif;
+
     -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
     box-shadow: 0 2px 20px 2px #d0d0d0;
-    font-weight: 600;
+
+    padding: 0px;
+
+    align-items: center;
+
+    box-sizing: border-box;
+
+    width: 110px;
+    aspect-ratio: 1;
+  }
+
+  .drawflow .drawflow-node.quiz-branch .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    box-sizing: border-box;
+
+    padding: 10px;
+  }
+
+  .drawflow .drawflow-node.quiz-branch .container .div-page-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    width: 60px;
+    aspect-ratio: 1;
+
+    font-size: 0px;
+  }
+
+  .drawflow .drawflow-node.quiz-branch .container .question-svg {
+    display: block;
+    fill: black;
+    aspect-ratio: 1; /* Ensure the svg is square */
+    width: 45px;
+    height: 45px;
+    pointer-events: none;
+  }
+
+  .drawflow .drawflow-node.quiz-branch .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 0px;
+  }
+
+  .drawflow .drawflow-node.quiz-branch .content p {
+    font-size: 14px;
+    font-weight: 400;
+    height: 100%;
+    margin: 0px;
+  }
+
+  .drawflow .drawflow-node.quiz-branch .container .div-threedots-icon {
+    position: absolute;
+    bottom: 30px;
+    right: 25px;
+
+    font-size: 0px;
+  }
+
+  .drawflow .drawflow-node.quiz-branch .container .threedots-svg {
+    display: block;
+    fill: #7c7c7c;
+    aspect-ratio: 1; /* Ensure the svg is square */
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
   }
 
   .drawflow .drawflow-node.quiz-branch:hover {
-    border: 1px solid #c798ff;
+    border: 1.5px solid #c798ff;
   }
 
   .drawflow .drawflow-node.quiz-branch.selected {
-    border: 1px solid #c798ff;
-    color: #c798ff;
-  }
-
-  .drawflow-node.quiz-branch .title-box {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start; /* Centers items horizontally */
-    align-items: center; /* Centers items vertically */
-    padding: 15px;
-    width: auto;
-  }
-
-  .drawflow-node.quiz-branch .title-box #svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  .drawflow .drawflow-node.quiz-branch .title-box .title {
-    margin-left: 25px;
+    border: 3px solid #c798ff;
+    background-color: #f7efff;
+    box-sizing: content-box;
   }
 
   /* ---- */

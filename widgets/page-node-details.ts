@@ -33,6 +33,8 @@ import Plus from "bootstrap-icons/icons/plus.svg";
 import Dash from "bootstrap-icons/icons/dash.svg";
 import Journal from "bootstrap-icons/icons/journal.svg";
 import FileEarmark from "bootstrap-icons/icons/file-earmark.svg";
+import PatchQuestion from "bootstrap-icons/icons/patch-question.svg";
+import ThreeDotsVertical from "bootstrap-icons/icons/three-dots-vertical.svg";
 
 //CSS
 import styles from "../css/page-node-details-css";
@@ -262,6 +264,42 @@ export class PageNodeDetails extends LitElementWw {
       answers: [],
     };
 
+    // Create the container div
+    const containerDiv = document.createElement("div");
+
+    // Create the icon div
+    const iconDiv = document.createElement("div");
+    iconDiv.classList.add("div-page-icon");
+    iconDiv.innerHTML = PatchQuestion;
+    const svgElement = iconDiv.querySelector("svg");
+    if (svgElement) {
+      svgElement.classList.add("question-svg");
+    }
+    iconDiv.appendChild(svgElement);
+    containerDiv.appendChild(iconDiv);
+
+    const contentDiv = document.createElement("div");
+    contentDiv.classList.add("content");
+    const nameLabel = document.createElement("p");
+    nameLabel.textContent = "Quiz";
+    contentDiv.appendChild(nameLabel);
+    containerDiv.appendChild(contentDiv);
+
+    // Create the icon div
+    const threeDotsDiv = document.createElement("div");
+    threeDotsDiv.classList.add("div-threedots-icon");
+    threeDotsDiv.innerHTML = ThreeDotsVertical;
+    const threeDots = threeDotsDiv.querySelector("svg");
+    if (threeDots) {
+      threeDots.classList.add("threedots-svg");
+    }
+    threeDotsDiv.appendChild(threeDots);
+    containerDiv.appendChild(threeDotsDiv);
+
+    containerDiv.classList.add("container");
+
+    const containerHtml = containerDiv.outerHTML;
+
     this.editor.addNode(
       "Quiz Branch",
       0,
@@ -270,14 +308,7 @@ export class PageNodeDetails extends LitElementWw {
       0,
       "quiz-branch",
       data,
-      `
-        <div class="title-box">
-          <svg id="svg">
-            ${Journal}
-          </svg>
-          <div class="title">Quiz Branch</div>
-        </div>
-      `,
+      containerHtml,
       false
     );
 
