@@ -128,6 +128,9 @@ export class QuizBranchNodeDetails extends LitElementWw {
       </div>
 
       <div class="controls">
+        <p class="number">
+          ${Object.keys(this.selectedNode.outputs).length.toString()}
+        </p>
         <sl-button @click=${this._addAnswerToQuizBranchNode}>
           <object slot="prefix" type="image/svg+xml" data=${Plus}></object>
           Add Answer
@@ -291,6 +294,21 @@ export class QuizBranchNodeDetails extends LitElementWw {
 
 
   */
+  private _handleUserInputQuestion(event) {
+    this.editor.updateNodeDataFromId(this.selectedNode.id, {
+      title: this.selectedNode.data.title,
+      question: event.target.value,
+      answers: this.selectedNode.data.answers,
+    });
+
+    //refresh the node such that component renders again
+    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+  }
+
+  /*
+
+
+  */
   private _handleUserInputAnswer(event) {
     const answerId = event.target.getAttribute("answerId");
     const answerArray = this.selectedNode.data.answers;
@@ -307,21 +325,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
       title: this.selectedNode.data.title,
       question: this.selectedNode.data.question,
       answers: answerArray,
-    });
-
-    //refresh the node such that component renders again
-    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
-  }
-
-  /*
-
-
-  */
-  private _handleUserInputQuestion(event) {
-    this.editor.updateNodeDataFromId(this.selectedNode.id, {
-      title: this.selectedNode.data.title,
-      question: event.target.value,
-      answers: this.selectedNode.data.answers,
     });
 
     //refresh the node such that component renders again
@@ -359,9 +362,11 @@ export class QuizBranchNodeDetails extends LitElementWw {
 
   */
   private _handleUserInputTargetPage(event) {
+    //get the id of the answer from the sl-select
     const answerId = event.target.getAttribute("answerId");
     const answerArray = this.selectedNode.data.answers;
 
+    //find the index of the answer in the answers array and update its target page
     const index = this.selectedNode.data.answers.findIndex(
       (answer) => answer.id == answerId
     );
@@ -370,15 +375,29 @@ export class QuizBranchNodeDetails extends LitElementWw {
       answerArray[index].targetPageId = String(event.target.value);
     }
 
+    //update the quiz branch nodes data
     this.editor.updateNodeDataFromId(this.selectedNode.id, {
       title: this.selectedNode.data.title,
       question: this.selectedNode.data.question,
       answers: answerArray,
     });
 
+    //create a connection between the quizbranchnode and the selected target page id
+    this.editor.addNodeInput(event.target.value);
+    const inputNode = this.editor.getNodeFromId(event.target.value);
+    const inputIndex = Object.keys(inputNode.inputs).length - 1;
+    const input_class = Object.keys(inputNode.inputs)[inputIndex];
+
+    const output_class = Object.keys(this.selectedNode.outputs)[index];
+
+    this.editor.addConnection(
+      this.selectedNode.id,
+      event.target.value,
+      output_class,
+      input_class
+    );
+
     //refresh the node such that component renders again
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
-
-    //console.log(this.selectedNode.data.answers);
   }
 }
