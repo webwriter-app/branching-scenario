@@ -104,12 +104,6 @@ export class PageContainer extends LitElementWw {
   //console.log(newContent);
 
   // TODO: Is this appropriate ?
-  // this.dispatchEvent(
-  //   new CustomEvent("contentChangeOnPage", {
-  //     detail: { content: newContent, id: this.drawflowNodeId },
-  //     bubbles: true,
-  //     composed: true,
-  //   })
-  // );
+  //
   // }
 }

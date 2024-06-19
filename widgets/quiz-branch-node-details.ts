@@ -70,14 +70,15 @@ export class QuizBranchNodeDetails extends LitElementWw {
   @property({ type: Object, attribute: false }) gamebook: Gamebook =
     new Gamebook();
 
-  answerIdGenerator = 0;
+  /*
 
-  protected firstUpdated(_changedProperties: any): void {
-    this.answerIdGenerator = this.selectedNode.data.answers.length;
-  }
+
+  */
+  protected firstUpdated(_changedProperties: any): void {}
 
   //TODO: if you drag and drop a connection from a quiz branch to a page, it will not find a pagecontainer as a quiz branch does not create a page container
-
+  //TODO: rethink logic of how to save answers and stuff
+  //TODO: work on visualization of quiz branch node in slot system
   render() {
     return html` <div>
       <div class="title-bar">
@@ -172,8 +173,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
                 >
                 <sl-icon-button
                   src=${Trash}
-                  @click=${() =>
-                    this._removeAnswerFromQuizBranchNode(answer.id)}
+                  @click=${() => this._removeAnswerFromQuizBranchNode(answer)}
                 ></sl-icon-button>
               </div>
             `
@@ -182,17 +182,19 @@ export class QuizBranchNodeDetails extends LitElementWw {
     </div>`;
   }
 
+  /*
+
+
+  */
   private _addInputToSelectedNode() {
     this.editor.addNodeInput(this.selectedNode.id);
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
-  private _addOutputToSelectedNode() {
-    this.editor.addNodeOutput(this.selectedNode.id);
-    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
-    //TODO: somehow this does not update the output count when a connection is added via button press
-  }
+  /*
 
+
+  */
   private _deleteInputOfSelectedNode() {
     const node = this.editor.getNodeFromId(this.selectedNode.id);
     const noOfInputs = Object.keys(node.inputs).length;
@@ -202,63 +204,93 @@ export class QuizBranchNodeDetails extends LitElementWw {
     }
   }
 
-  private _deleteOutputOfSelectedNode() {
-    const node = this.editor.getNodeFromId(this.selectedNode.id);
-    const noOfOutputs = Object.keys(node.outputs).length;
-    if (noOfOutputs != 0) {
-      this.editor.removeNodeOutput(
-        this.selectedNode.id,
-        `output_${noOfOutputs}`
-      );
-      this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
-    }
+  /*
+  Adds an Output to the Quiz Branch Node and returns its class
+
+  */
+  private _addOutputToQuizBranchNode() {
+    this.editor.addNodeOutput(this.selectedNode.id);
+    //refresh reference after changes to outputs
+    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+
+    return Object.keys(this.selectedNode.outputs)[
+      Object.keys(this.selectedNode.outputs).length - 1
+    ];
   }
 
-  private _addAnswerToQuizBranchNode() {
-    const answerArray = this.selectedNode.data.answers as [Answer];
+  /*
+  
+  
+  */
+  private _deleteOutputOfQuizBranchNode(index: number) {
+    const output_class = Object.keys(this.selectedNode.outputs)[index];
+    this.editor.removeNodeOutput(this.selectedNode.id, output_class);
+    //update the selected node instance
+    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+  }
 
-    answerArray.push({
-      id: this.answerIdGenerator,
+  /*
+  
+
+  */
+  private _addAnswerToQuizBranchNode() {
+    const output_class = this._addOutputToQuizBranchNode();
+
+    const answers = this.selectedNode.data.answers as [Answer];
+    const answerId = answers.length - 1;
+
+    answers.push({
+      id: answerId,
       text: "",
       targetPageId: "undefined",
       isCorrect: null,
     });
 
-    this.answerIdGenerator += 1;
-
     this.editor.updateNodeDataFromId(this.selectedNode.id, {
       title: "Quiz Branch",
       question: this.selectedNode.data.question,
-      answers: answerArray,
+      answers: answers,
     });
-
-    this._addOutputToSelectedNode();
 
     //refresh the node such that component renders again
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
-  private _removeAnswerFromQuizBranchNode(answerId: number) {
-    const answerArray = this.selectedNode.data.answers;
-    const index = answerArray.findIndex((answer) => answer.id == answerId);
+  /*
+  
 
-    if (index !== -1) {
-      // Remove the element at the found index
-      answerArray.splice(index, 1);
+  */
+  private _removeAnswerFromQuizBranchNode(answer: Answer) {
+    const answers = this.selectedNode.data.answers;
+
+    //Find the index of the answer in the answer array
+    const index = answers.findIndex(
+      (answer_in_array) => answer_in_array.id == answer.id
+    );
+
+    //Use Index to split and merge answers array at given index
+    if (index != -1) {
+      answers.splice(index, 1);
     }
 
+    //Use the index of the answers array to remove the corresponding output
+    this._deleteOutputOfQuizBranchNode(index);
+
+    //Update the quiz branch node with the new answers array
     this.editor.updateNodeDataFromId(this.selectedNode.id, {
       title: this.selectedNode.data.title,
       question: this.selectedNode.data.question,
-      answers: answerArray,
+      answers: answers,
     });
-
-    this._deleteOutputOfSelectedNode();
 
     //refresh the node such that component renders again
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
+  /*
+
+
+  */
   private _handleUserInputAnswer(event) {
     const answerId = event.target.getAttribute("answerId");
     const answerArray = this.selectedNode.data.answers;
@@ -281,6 +313,10 @@ export class QuizBranchNodeDetails extends LitElementWw {
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
+  /*
+
+
+  */
   private _handleUserInputQuestion(event) {
     this.editor.updateNodeDataFromId(this.selectedNode.id, {
       title: this.selectedNode.data.title,
@@ -292,6 +328,10 @@ export class QuizBranchNodeDetails extends LitElementWw {
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
+  /*
+
+
+  */
   private _handleUserInputCorrectness(event) {
     const answerId = event.target.getAttribute("answerId");
     const answerArray = this.selectedNode.data.answers;
@@ -314,6 +354,10 @@ export class QuizBranchNodeDetails extends LitElementWw {
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
+  /*
+
+
+  */
   private _handleUserInputTargetPage(event) {
     const answerId = event.target.getAttribute("answerId");
     const answerArray = this.selectedNode.data.answers;

@@ -134,6 +134,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     this.editor.start();
     this.editor.zoom_refresh();
+
     this._registerEditorEventHandlers();
 
     if (this.editorContent == null) {
