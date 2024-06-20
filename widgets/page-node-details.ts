@@ -213,12 +213,26 @@ export class PageNodeDetails extends LitElementWw {
   private _addInputToSelectedNode() {
     this.editor.addNodeInput(this.selectedNode.id);
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+
+    const event = new CustomEvent("inputCreated", {
+      detail: { nodeId: this.selectedNode.id },
+      bubbles: true, // Allows the event to bubble up through the DOM
+      composed: true, // Allows the event to pass through shadow DOM boundaries
+    });
+    this.dispatchEvent(event);
   }
 
   private _addOutputToSelectedNode() {
     this.editor.addNodeOutput(this.selectedNode.id);
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
     //TODO: somehow this does not update the output count when a connection is added via button press
+
+    const event = new CustomEvent("outputCreated", {
+      detail: { nodeId: this.selectedNode.id },
+      bubbles: true, // Allows the event to bubble up through the DOM
+      composed: true, // Allows the event to pass through shadow DOM boundaries
+    });
+    this.dispatchEvent(event);
   }
 
   private _deleteInputOfSelectedNode() {
@@ -228,6 +242,13 @@ export class PageNodeDetails extends LitElementWw {
       this.editor.removeNodeInput(this.selectedNode.id, `input_${noOfInputs}`);
       this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
     }
+
+    const event = new CustomEvent("inputDeleted", {
+      detail: { nodeId: this.selectedNode.id },
+      bubbles: true, // Allows the event to bubble up through the DOM
+      composed: true, // Allows the event to pass through shadow DOM boundaries
+    });
+    this.dispatchEvent(event);
   }
 
   private _deleteOutputOfSelectedNode() {
@@ -240,6 +261,13 @@ export class PageNodeDetails extends LitElementWw {
       );
       this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
     }
+
+    const event = new CustomEvent("outputDeleted", {
+      detail: { nodeId: this.selectedNode.id },
+      bubbles: true, // Allows the event to bubble up through the DOM
+      composed: true, // Allows the event to pass through shadow DOM boundaries
+    });
+    this.dispatchEvent(event);
   }
 
   private _connectSelectedNodes() {

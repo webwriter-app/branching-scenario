@@ -67,8 +67,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
   };
 
   @property({ type: Object, attribute: false }) nodesInEditor = {};
-  @property({ type: Object, attribute: false }) gamebook: Gamebook =
-    new Gamebook();
 
   /*
 
@@ -76,9 +74,11 @@ export class QuizBranchNodeDetails extends LitElementWw {
   */
   protected firstUpdated(_changedProperties: any): void {}
 
+  /*
   //TODO: if you drag and drop a connection from a quiz branch to a page, it will not find a pagecontainer as a quiz branch does not create a page container
   //TODO: rethink logic of how to save answers and stuff
   //TODO: work on visualization of quiz branch node in slot system
+   */
   render() {
     return html` <div>
       <div class="title-bar">
@@ -191,6 +191,15 @@ export class QuizBranchNodeDetails extends LitElementWw {
   */
   private _addInputToSelectedNode() {
     this.editor.addNodeInput(this.selectedNode.id);
+
+    const event = new CustomEvent("inputCreated", {
+      detail: { nodeId: this.selectedNode.id },
+      bubbles: true, // Allows the event to bubble up through the DOM
+      composed: true, // Allows the event to pass through shadow DOM boundaries
+    });
+
+    this.dispatchEvent(event);
+
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
@@ -203,32 +212,16 @@ export class QuizBranchNodeDetails extends LitElementWw {
     const noOfInputs = Object.keys(node.inputs).length;
     if (noOfInputs != 0) {
       this.editor.removeNodeInput(this.selectedNode.id, `input_${noOfInputs}`);
-      this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
     }
-  }
 
-  /*
-  Adds an Output to the Quiz Branch Node and returns its class
+    const event = new CustomEvent("inputDeleted", {
+      detail: { nodeId: this.selectedNode.id },
+      bubbles: true, // Allows the event to bubble up through the DOM
+      composed: true, // Allows the event to pass through shadow DOM boundaries
+    });
 
-  */
-  private _addOutputToQuizBranchNode() {
-    this.editor.addNodeOutput(this.selectedNode.id);
-    //refresh reference after changes to outputs
-    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+    this.dispatchEvent(event);
 
-    return Object.keys(this.selectedNode.outputs)[
-      Object.keys(this.selectedNode.outputs).length - 1
-    ];
-  }
-
-  /*
-  
-  
-  */
-  private _deleteOutputOfQuizBranchNode(index: number) {
-    const output_class = Object.keys(this.selectedNode.outputs)[index];
-    this.editor.removeNodeOutput(this.selectedNode.id, output_class);
-    //update the selected node instance
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
@@ -237,11 +230,14 @@ export class QuizBranchNodeDetails extends LitElementWw {
 
   */
   private _addAnswerToQuizBranchNode() {
-    const output_class = this._addOutputToQuizBranchNode();
+    //add an output to the node
+    this.editor.addNodeOutput(this.selectedNode.id);
 
-    const answers = this.selectedNode.data.answers as [Answer];
-    const answerId = answers.length - 1;
+    //get the current answers existing in the node
+    const answers = this.selectedNode.data.answers;
+    const answerId = answers.length > 0 ? answers.length : 0;
 
+    //add a new answer
     answers.push({
       id: answerId,
       text: "",
@@ -249,13 +245,21 @@ export class QuizBranchNodeDetails extends LitElementWw {
       isCorrect: null,
     });
 
+    //update the nodes data, specifically the new answer in the array
     this.editor.updateNodeDataFromId(this.selectedNode.id, {
       title: "Quiz Branch",
       question: this.selectedNode.data.question,
       answers: answers,
     });
 
-    //refresh the node such that component renders again
+    const event = new CustomEvent("outputCreated", {
+      detail: { nodeId: this.selectedNode.id },
+      bubbles: true, // Allows the event to bubble up through the DOM
+      composed: true, // Allows the event to pass through shadow DOM boundaries
+    });
+    this.dispatchEvent(event);
+
+    //refresh the node the node reference
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
@@ -277,7 +281,8 @@ export class QuizBranchNodeDetails extends LitElementWw {
     }
 
     //Use the index of the answers array to remove the corresponding output
-    this._deleteOutputOfQuizBranchNode(index);
+    const output_class = Object.keys(this.selectedNode.outputs)[index];
+    this.editor.removeNodeOutput(this.selectedNode.id, output_class);
 
     //Update the quiz branch node with the new answers array
     this.editor.updateNodeDataFromId(this.selectedNode.id, {
@@ -286,7 +291,14 @@ export class QuizBranchNodeDetails extends LitElementWw {
       answers: answers,
     });
 
-    //refresh the node such that component renders again
+    const event = new CustomEvent("outputDeleted", {
+      detail: { nodeId: this.selectedNode.id },
+      bubbles: true, // Allows the event to bubble up through the DOM
+      composed: true, // Allows the event to pass through shadow DOM boundaries
+    });
+    this.dispatchEvent(event);
+
+    //refresh the node the node reference
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
@@ -295,11 +307,19 @@ export class QuizBranchNodeDetails extends LitElementWw {
 
   */
   private _handleUserInputQuestion(event) {
-    this.editor.updateNodeDataFromId(this.selectedNode.id, {
-      title: this.selectedNode.data.title,
+    const currentData = this.selectedNode.data;
+    const updatedData = {
+      ...currentData,
       question: event.target.value,
-      answers: this.selectedNode.data.answers,
+    };
+    this.editor.updateNodeDataFromId(this.selectedNode.id, updatedData);
+
+    const dispatchEvent = new CustomEvent("nodeDataUpdated", {
+      detail: { nodeId: this.selectedNode.id },
+      bubbles: true, // Allows the event to bubble up through the DOM
+      composed: true, // Allows the event to pass through shadow DOM boundaries
     });
+    this.dispatchEvent(dispatchEvent);
 
     //refresh the node such that component renders again
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
@@ -327,6 +347,13 @@ export class QuizBranchNodeDetails extends LitElementWw {
       answers: answerArray,
     });
 
+    const dispatchEvent = new CustomEvent("nodeDataUpdated", {
+      detail: { nodeId: this.selectedNode.id },
+      bubbles: true, // Allows the event to bubble up through the DOM
+      composed: true, // Allows the event to pass through shadow DOM boundaries
+    });
+    this.dispatchEvent(dispatchEvent);
+
     //refresh the node such that component renders again
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
@@ -353,6 +380,13 @@ export class QuizBranchNodeDetails extends LitElementWw {
       answers: answerArray,
     });
 
+    const dispatchEvent = new CustomEvent("nodeDataUpdated", {
+      detail: { nodeId: this.selectedNode.id },
+      bubbles: true, // Allows the event to bubble up through the DOM
+      composed: true, // Allows the event to pass through shadow DOM boundaries
+    });
+    this.dispatchEvent(dispatchEvent);
+
     //refresh the node such that component renders again
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
@@ -362,6 +396,8 @@ export class QuizBranchNodeDetails extends LitElementWw {
 
   */
   private _handleUserInputTargetPage(event) {
+    //TODO: sl-select does not reflect the selection
+    //TODO: if a connection is already exisiting, inputs and outputs should be updated and further connections should be deleted and newly added
     //get the id of the answer from the sl-select
     const answerId = event.target.getAttribute("answerId");
     const answerArray = this.selectedNode.data.answers;
@@ -382,6 +418,8 @@ export class QuizBranchNodeDetails extends LitElementWw {
       answers: answerArray,
     });
 
+    console.log(this.editor.getNodeFromId(this.selectedNode.id));
+
     //create a connection between the quizbranchnode and the selected target page id
     this.editor.addNodeInput(event.target.value);
     const inputNode = this.editor.getNodeFromId(event.target.value);
@@ -396,6 +434,13 @@ export class QuizBranchNodeDetails extends LitElementWw {
       output_class,
       input_class
     );
+
+    const dispatchEvent = new CustomEvent("nodeDataUpdated", {
+      detail: { nodeId: this.selectedNode.id },
+      bubbles: true, // Allows the event to bubble up through the DOM
+      composed: true, // Allows the event to pass through shadow DOM boundaries
+    });
+    this.dispatchEvent(dispatchEvent);
 
     //refresh the node such that component renders again
     this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);

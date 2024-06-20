@@ -268,7 +268,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
                             .nodesInEditor="${this.editorContent.drawflow.Home
                               .data}"
                             .selectedNode="${this.selectedNode}"
-                            .gamebook="${this.gamebook}"
                           >
                             <slot></slot
                           ></quiz-branch-node-details>
@@ -484,10 +483,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.gamebook.saveChangesToPageTitle(id, updatedNode.data.title);
     });
 
+    //custom event that indicates data is changed
+    this.addEventListener("nodeDataUpdated", (nodeId) => {
+      this.editorContent = { ...this.editor.drawflow };
+    });
+
     // Event listener for node click
     this.editor.on("nodeSelected", (id) => {
-      const node = this.editor.getNodeFromId(id);
-      this.selectedNode = node;
+      this.selectedNode = this.editor.getNodeFromId(id);
 
       //TODO: is this the right approach to show and hide pageContainers?
       this.pageContainers.forEach((pageContainer) => {
@@ -676,6 +679,22 @@ export class WebWriterBranchingScenario extends LitElementWw {
         void zoomValue.offsetWidth;
         zoomValue.classList.add("fade-in-out");
       }
+    });
+
+    this.addEventListener("inputCreated", (nodeId) => {
+      this.editorContent = { ...this.editor.drawflow };
+    });
+
+    this.addEventListener("inputDeleted", (nodeId) => {
+      this.editorContent = { ...this.editor.drawflow };
+    });
+
+    this.addEventListener("outputCreated", (nodeId) => {
+      this.editorContent = { ...this.editor.drawflow };
+    });
+
+    this.addEventListener("outputDeleted", (nodeId) => {
+      this.editorContent = { ...this.editor.drawflow };
     });
   }
 
