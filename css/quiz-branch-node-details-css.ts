@@ -139,4 +139,10 @@ export default css`
 
     background-color: #fafafb;
   }
+
+  sl-select input {
+    color: black;
+    visibility: 100%;
+    opacity: 1;
+  }
 `;

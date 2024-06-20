@@ -12,8 +12,7 @@ import "@shoelace-style/shoelace/dist/themes/light.css";
 import SlTextarea from "@shoelace-style/shoelace/dist/components/textarea/textarea.component.js";
 import SlDivider from "@shoelace-style/shoelace/dist/components/divider/divider.component.js";
 import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js";
-import SlSelect from "@shoelace-style/shoelace/dist/components/select/select.component.js";
-import SlOption from "@shoelace-style/shoelace/dist/components/option/option.component.js";
+import { SlOption, SlSelect } from "@shoelace-style/shoelace";
 import SlCheckbox from "@shoelace-style/shoelace/dist/components/checkbox/checkbox.component.js";
 import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
 import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
@@ -72,7 +71,13 @@ export class QuizBranchNodeDetails extends LitElementWw {
 
 
   */
-  protected firstUpdated(_changedProperties: any): void {}
+  protected firstUpdated(_changedProperties: any): void {
+    // const nodeSelect = this.shadowRoot?.getElementById(
+    //   "nodeSelect"
+    // ) as SlSelect;
+    // console.log(nodeSelect);
+    // nodeSelect.value = "option-1";
+  }
 
   /*
   //TODO: if you drag and drop a connection from a quiz branch to a page, it will not find a pagecontainer as a quiz branch does not create a page container
@@ -148,8 +153,8 @@ export class QuizBranchNodeDetails extends LitElementWw {
                   answerId="${answer.id}"
                   .value="${answer.text}"
                   @input="${this._handleUserInputAnswer}"
-                ></sl-textarea
-                ><sl-select
+                ></sl-textarea>
+                <sl-select
                   class="nodeSelect"
                   answerId="${answer.id}"
                   placeholder="Select Page"
@@ -164,11 +169,12 @@ export class QuizBranchNodeDetails extends LitElementWw {
                     )
                     .map(
                       (key) =>
-                        html`<sl-option value=${this.nodesInEditor[key].id}
+                        html`<sl-option value="${this.nodesInEditor[key].id}"
                           >${this.nodesInEditor[key].data.title}</sl-option
                         >`
-                    )} </sl-select
-                ><sl-checkbox
+                    )}
+                </sl-select>
+                <sl-checkbox
                   answerId="${answer.id}"
                   ?checked=${answer.isCorrect}
                   @click="${this._handleUserInputCorrectness}"
