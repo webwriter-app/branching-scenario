@@ -29,7 +29,6 @@ import PatchQuestion from "bootstrap-icons/icons/patch-question.svg";
 //CSS
 import styles from "../css/quiz-branch-node-details-css";
 
-//TODO: selected node should fill itself on open
 //TODO: actually insert a multiple choice dialog to the gamebook page
 @customElement("quiz-branch-node-details")
 export class QuizBranchNodeDetails extends LitElementWw {
@@ -57,18 +56,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
   //properties
   @property({ type: Object, attribute: true, reflect: true })
   selectedNode?: DrawflowNode;
-  //  = {
-  //   id: -1,
-  //   name: "unselect",
-  //   inputs: {},
-  //   outputs: {},
-  //   pos_x: 0,
-  //   pos_y: 0,
-  //   class: "unselect",
-  //   data: {},
-  //   html: "",
-  //   typenode: false,
-  // };
 
   @property({ type: Object, attribute: false }) nodesInEditor = {};
 
@@ -151,6 +138,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
                   class="nodeSelect"
                   answerId="${answer.id}"
                   placeholder="Select Page"
+                  clearable
                   @sl-input=${this._handleUserInputTargetPage}
                   .value="${answer.targetPageId}"
                 >
@@ -237,6 +225,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
       id: answerId,
       text: "",
       targetPageId: "undefined",
+      targetPageInputClass: "undefined",
       isCorrect: null,
     });
 
@@ -376,44 +365,103 @@ export class QuizBranchNodeDetails extends LitElementWw {
 
   */
   private _handleUserInputTargetPage(event) {
-    //TODO: sl-select does not reflect the selection
     //TODO: if a connection is already exisiting, inputs and outputs should be updated and further connections should be deleted and newly added
-    //get the id of the answer from the sl-select
-    //TODO: somehow i have to update this here although i update at every other call
-    //TODO: Updates inside dont update the rerender and get overriden from webwriter branching scenario i believe. maybe i should react to the events from the outside through the custom events
-    //rewrite outside such that it uses display block instead of conditional shadow tree updates.
-
     const answerId = event.target.getAttribute("answerId");
     const answerArray = this.selectedNode.data.answers;
-
-    //find the index of the answer in the answers array and update its target page
+    const answer = answerArray.find((answer) => answer.id == answerId);
     const index = answerArray.findIndex((answer) => answer.id == answerId);
 
-    if (index !== -1) {
+    if (
+      answer &&
+      answer.targetPageId == "undefined" &&
+      event.target.value != ""
+    ) {
       answerArray[index].targetPageId = String(event.target.value);
+
+      //create a connection between the quizbranchnode and the selected target page id
+      this.editor.addNodeInput(event.target.value);
+      const inputNode = this.editor.getNodeFromId(event.target.value);
+      const inputIndex = Object.keys(inputNode.inputs).length - 1;
+      const input_class = Object.keys(inputNode.inputs)[inputIndex];
+      answerArray[index].targetPageInputClass = input_class;
+
+      //get the right output using the answers index which corresponds to the output index
+      const output_class = Object.keys(this.selectedNode.outputs)[index];
+
+      this.editor.addConnection(
+        this.selectedNode.id,
+        event.target.value,
+        output_class,
+        input_class
+      );
+
+      //update the quiz branch nodes answer array with the updated answer
+      this.editor.updateNodeDataFromId(this.selectedNode.id, {
+        title: this.selectedNode.data.title,
+        question: this.selectedNode.data.question,
+        answers: answerArray,
+      });
     }
 
-    //update the quiz branch nodes data
-    this.editor.updateNodeDataFromId(this.selectedNode.id, {
-      title: this.selectedNode.data.title,
-      question: this.selectedNode.data.question,
-      answers: answerArray,
-    });
+    //change in values
+    else if (
+      answer &&
+      answer.targetPageId != "undefined" &&
+      event.target.value != ""
+    ) {
+      //remove the node input and thus the existing connection
+      this.editor.removeNodeInput(
+        answerArray[index].targetPageId,
+        answerArray[index].targetPageInputClass
+      );
 
-    //create a connection between the quizbranchnode and the selected target page id
-    this.editor.addNodeInput(event.target.value);
-    const inputNode = this.editor.getNodeFromId(event.target.value);
-    const inputIndex = Object.keys(inputNode.inputs).length - 1;
-    const input_class = Object.keys(inputNode.inputs)[inputIndex];
+      //update the answer to its new target page
+      answerArray[index].targetPageId = String(event.target.value);
 
-    const output_class = Object.keys(this.selectedNode.outputs)[index];
+      //create a connection between the quizbranchnode and the selected target page id
+      this.editor.addNodeInput(event.target.value);
+      const inputNode = this.editor.getNodeFromId(event.target.value);
+      const inputIndex = Object.keys(inputNode.inputs).length - 1;
+      const input_class = Object.keys(inputNode.inputs)[inputIndex];
+      answerArray[index].targetPageInputClass = input_class;
 
-    this.editor.addConnection(
-      this.selectedNode.id,
-      event.target.value,
-      output_class,
-      input_class
-    );
+      //get the right output using the answers index which corresponds to the output index
+      const output_class = Object.keys(this.selectedNode.outputs)[index];
+
+      //new connection
+      this.editor.addConnection(
+        this.selectedNode.id,
+        event.target.value,
+        output_class,
+        input_class
+      );
+
+      //update the quiz branch nodes data
+      this.editor.updateNodeDataFromId(this.selectedNode.id, {
+        title: this.selectedNode.data.title,
+        question: this.selectedNode.data.question,
+        answers: answerArray,
+      });
+    }
+    //sl-select got cleared
+    else {
+      //remove the node input and thus the existing connection
+      this.editor.removeNodeInput(
+        answerArray[index].targetPageId,
+        answerArray[index].targetPageInputClass
+      );
+
+      //update the answer to its new target page
+      answerArray[index].targetPageId = "undefined";
+      answerArray[index].targetPageInputClass = "undefined";
+
+      //update the quiz branch nodes data
+      this.editor.updateNodeDataFromId(this.selectedNode.id, {
+        title: this.selectedNode.data.title,
+        question: this.selectedNode.data.question,
+        answers: answerArray,
+      });
+    }
 
     const dispatchEvent = new CustomEvent("nodeDataUpdated", {
       detail: { nodeId: this.selectedNode.id },

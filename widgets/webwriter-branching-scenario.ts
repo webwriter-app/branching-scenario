@@ -61,8 +61,6 @@ const NO_NODE_SELECTED: DrawflowNode = {
 };
 
 //TODO: Main Order (Does a gamebook have an always continue button? Does one define a Flow?) and Links as additional component?
-//TODO: does it have a cover screen? an end screen?
-//TODO: how to let the area be webwriter editable?
 //TODO: write this decision making down... work visually with node inputs? have a link component?
 @customElement("webwriter-branching-scenario")
 export class WebWriterBranchingScenario extends LitElementWw {

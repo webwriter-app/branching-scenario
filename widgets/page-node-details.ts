@@ -42,7 +42,6 @@ import ThreeDotsVertical from "bootstrap-icons/icons/three-dots-vertical.svg";
 import styles from "../css/page-node-details-css";
 import { PageContainer } from "./page-container";
 
-//TODO: use slots to have actual webwriter editing capabilities
 @customElement("page-node-details")
 export class PageNodeDetails extends LitElementWw {
   //registering custom elements used in the widget
@@ -155,7 +154,6 @@ export class PageNodeDetails extends LitElementWw {
       </div>
 
       <div class="controls">
-        <!-- TODO: This does not reset since page-node-details is always in the DOM but made hidden over CSS -->
         <sl-select
           class="nodeSelect"
           placeholder="Page"
@@ -225,7 +223,6 @@ export class PageNodeDetails extends LitElementWw {
 
   private _addOutputToSelectedNode() {
     this.editor.addNodeOutput(this.selectedNode.id);
-    //TODO: somehow this does not update the output count when a connection is added via button press
 
     const event = new CustomEvent("outputCreated", {
       detail: { nodeId: this.selectedNode.id },
@@ -240,7 +237,6 @@ export class PageNodeDetails extends LitElementWw {
     const noOfInputs = Object.keys(node.inputs).length;
     if (noOfInputs != 0) {
       this.editor.removeNodeInput(this.selectedNode.id, `input_${noOfInputs}`);
-      ß;
     }
 
     const event = new CustomEvent("inputDeleted", {
