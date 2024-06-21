@@ -15,16 +15,18 @@ import { DrawflowNode } from "drawflow";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
-import SlTextarea from "@shoelace-style/shoelace/dist/components/textarea/textarea.component.js";
-import SlDivider from "@shoelace-style/shoelace/dist/components/divider/divider.component.js";
-import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js";
-import SlDropdown from "@shoelace-style/shoelace/dist/components/dropdown/dropdown.component.js";
-import SlMenu from "@shoelace-style/shoelace/dist/components/menu/menu.component.js";
-import SlMenuItem from "@shoelace-style/shoelace/dist/components/menu-item/menu-item.component.js";
-import SlSelect from "@shoelace-style/shoelace/dist/components/select/select.component.js";
-import SlOption from "@shoelace-style/shoelace/dist/components/option/option.component.js";
-import SlInput from "@shoelace-style/shoelace/dist/components/input/input.component.js";
+import {
+  SlOption,
+  SlSelect,
+  SlButton,
+  SlTextarea,
+  SlDivider,
+  SlDropdown,
+  SlMenu,
+  SlMenuItem,
+  SlIconButton,
+  SlInput,
+} from "@shoelace-style/shoelace";
 
 import { LinkButton } from "./link-button";
 
@@ -212,7 +214,6 @@ export class PageNodeDetails extends LitElementWw {
 
   private _addInputToSelectedNode() {
     this.editor.addNodeInput(this.selectedNode.id);
-    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
 
     const event = new CustomEvent("inputCreated", {
       detail: { nodeId: this.selectedNode.id },
@@ -224,7 +225,6 @@ export class PageNodeDetails extends LitElementWw {
 
   private _addOutputToSelectedNode() {
     this.editor.addNodeOutput(this.selectedNode.id);
-    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
     //TODO: somehow this does not update the output count when a connection is added via button press
 
     const event = new CustomEvent("outputCreated", {
@@ -240,7 +240,7 @@ export class PageNodeDetails extends LitElementWw {
     const noOfInputs = Object.keys(node.inputs).length;
     if (noOfInputs != 0) {
       this.editor.removeNodeInput(this.selectedNode.id, `input_${noOfInputs}`);
-      this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+      ß;
     }
 
     const event = new CustomEvent("inputDeleted", {
@@ -259,7 +259,6 @@ export class PageNodeDetails extends LitElementWw {
         this.selectedNode.id,
         `output_${noOfOutputs}`
       );
-      this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
     }
 
     const event = new CustomEvent("outputDeleted", {

@@ -9,13 +9,16 @@ import { DrawflowNode } from "drawflow";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import SlTextarea from "@shoelace-style/shoelace/dist/components/textarea/textarea.component.js";
-import SlDivider from "@shoelace-style/shoelace/dist/components/divider/divider.component.js";
-import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js";
-import { SlOption, SlSelect } from "@shoelace-style/shoelace";
-import SlCheckbox from "@shoelace-style/shoelace/dist/components/checkbox/checkbox.component.js";
-import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
-import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
+import {
+  SlOption,
+  SlSelect,
+  SlCheckbox,
+  SlButton,
+  SlIcon,
+  SlIconButton,
+  SlDivider,
+  SlTextarea,
+} from "@shoelace-style/shoelace";
 
 //Bootstrap Icon Import
 import Trash from "bootstrap-icons/icons/trash.svg";
@@ -52,32 +55,22 @@ export class QuizBranchNodeDetails extends LitElementWw {
   editor?: Drawflow;
 
   //properties
-  @property({ type: Object, attribute: false }) selectedNode: DrawflowNode = {
-    id: -1,
-    name: "unselect",
-    inputs: {},
-    outputs: {},
-    pos_x: 0,
-    pos_y: 0,
-    class: "unselect",
-    data: {},
-    html: "",
-    typenode: false,
-  };
+  @property({ type: Object, attribute: true, reflect: true })
+  selectedNode?: DrawflowNode;
+  //  = {
+  //   id: -1,
+  //   name: "unselect",
+  //   inputs: {},
+  //   outputs: {},
+  //   pos_x: 0,
+  //   pos_y: 0,
+  //   class: "unselect",
+  //   data: {},
+  //   html: "",
+  //   typenode: false,
+  // };
 
   @property({ type: Object, attribute: false }) nodesInEditor = {};
-
-  /*
-
-
-  */
-  protected firstUpdated(_changedProperties: any): void {
-    // const nodeSelect = this.shadowRoot?.getElementById(
-    //   "nodeSelect"
-    // ) as SlSelect;
-    // console.log(nodeSelect);
-    // nodeSelect.value = "option-1";
-  }
 
   /*
   //TODO: if you drag and drop a connection from a quiz branch to a page, it will not find a pagecontainer as a quiz branch does not create a page container
@@ -205,8 +198,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
     });
 
     this.dispatchEvent(event);
-
-    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
   /*
@@ -227,8 +218,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
     });
 
     this.dispatchEvent(event);
-
-    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
   /*
@@ -264,9 +253,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
       composed: true, // Allows the event to pass through shadow DOM boundaries
     });
     this.dispatchEvent(event);
-
-    //refresh the node the node reference
-    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
   /*
@@ -303,9 +289,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
       composed: true, // Allows the event to pass through shadow DOM boundaries
     });
     this.dispatchEvent(event);
-
-    //refresh the node the node reference
-    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
   /*
@@ -326,9 +309,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
       composed: true, // Allows the event to pass through shadow DOM boundaries
     });
     this.dispatchEvent(dispatchEvent);
-
-    //refresh the node such that component renders again
-    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
   /*
@@ -359,9 +339,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
       composed: true, // Allows the event to pass through shadow DOM boundaries
     });
     this.dispatchEvent(dispatchEvent);
-
-    //refresh the node such that component renders again
-    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
   /*
@@ -392,9 +369,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
       composed: true, // Allows the event to pass through shadow DOM boundaries
     });
     this.dispatchEvent(dispatchEvent);
-
-    //refresh the node such that component renders again
-    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 
   /*
@@ -405,13 +379,15 @@ export class QuizBranchNodeDetails extends LitElementWw {
     //TODO: sl-select does not reflect the selection
     //TODO: if a connection is already exisiting, inputs and outputs should be updated and further connections should be deleted and newly added
     //get the id of the answer from the sl-select
+    //TODO: somehow i have to update this here although i update at every other call
+    //TODO: Updates inside dont update the rerender and get overriden from webwriter branching scenario i believe. maybe i should react to the events from the outside through the custom events
+    //rewrite outside such that it uses display block instead of conditional shadow tree updates.
+
     const answerId = event.target.getAttribute("answerId");
     const answerArray = this.selectedNode.data.answers;
 
     //find the index of the answer in the answers array and update its target page
-    const index = this.selectedNode.data.answers.findIndex(
-      (answer) => answer.id == answerId
-    );
+    const index = answerArray.findIndex((answer) => answer.id == answerId);
 
     if (index !== -1) {
       answerArray[index].targetPageId = String(event.target.value);
@@ -423,8 +399,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
       question: this.selectedNode.data.question,
       answers: answerArray,
     });
-
-    console.log(this.editor.getNodeFromId(this.selectedNode.id));
 
     //create a connection between the quizbranchnode and the selected target page id
     this.editor.addNodeInput(event.target.value);
@@ -447,8 +421,5 @@ export class QuizBranchNodeDetails extends LitElementWw {
       composed: true, // Allows the event to pass through shadow DOM boundaries
     });
     this.dispatchEvent(dispatchEvent);
-
-    //refresh the node such that component renders again
-    this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
   }
 }

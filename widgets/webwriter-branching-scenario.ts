@@ -12,11 +12,13 @@ import { Gamebook, Page, Answer } from "./gamebook-model";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
-import SlTextarea from "@shoelace-style/shoelace/dist/components/textarea/textarea.component.js";
-import SlDivider from "@shoelace-style/shoelace/dist/components/divider/divider.component.js";
-import SlDialog from "@shoelace-style/shoelace/dist/components/dialog/dialog.component.js";
-import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js";
+import {
+  SlButton,
+  SlDialog,
+  SlIconButton,
+  SlDivider,
+  SlTextarea,
+} from "@shoelace-style/shoelace";
 
 //Bootstrap Icon Import
 import FileEarmarkPlus from "bootstrap-icons/icons/file-earmark-plus.svg";
@@ -484,8 +486,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
     });
 
     //custom event that indicates data is changed
-    this.addEventListener("nodeDataUpdated", (nodeId) => {
+    this.addEventListener("nodeDataUpdated", (event) => {
+      const nodeId = event.detail.nodeId;
       this.editorContent = { ...this.editor.drawflow };
+      this.selectedNode = this.editor.getNodeFromId(nodeId);
     });
 
     // Event listener for node click
@@ -507,7 +511,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
-      console.log("nodeUnselected");
       this.selectedNode = NO_NODE_SELECTED;
 
       this.pageContainers.forEach((pageContainer) => {
@@ -577,7 +580,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "connectionSelected",
       ({ output_id, input_id, output_class, input_class }) => {
         this.selectedNode = this.editor.getNodeFromId(output_id);
-        console.log(this.selectedNode);
 
         const node = this.shadowRoot?.getElementById(`node-${output_id}`);
         if (node) {
@@ -681,20 +683,28 @@ export class WebWriterBranchingScenario extends LitElementWw {
       }
     });
 
-    this.addEventListener("inputCreated", (nodeId) => {
+    this.addEventListener("inputCreated", (event) => {
+      const nodeId = event.detail.nodeId;
       this.editorContent = { ...this.editor.drawflow };
+      this.selectedNode = this.editor.getNodeFromId(nodeId);
     });
 
-    this.addEventListener("inputDeleted", (nodeId) => {
+    this.addEventListener("inputDeleted", (event) => {
+      const nodeId = event.detail.nodeId;
       this.editorContent = { ...this.editor.drawflow };
+      this.selectedNode = this.editor.getNodeFromId(nodeId);
     });
 
-    this.addEventListener("outputCreated", (nodeId) => {
+    this.addEventListener("outputCreated", (event) => {
+      const nodeId = event.detail.nodeId;
       this.editorContent = { ...this.editor.drawflow };
+      this.selectedNode = this.editor.getNodeFromId(nodeId);
     });
 
-    this.addEventListener("outputDeleted", (nodeId) => {
+    this.addEventListener("outputDeleted", (event) => {
+      const nodeId = event.detail.nodeId;
       this.editorContent = { ...this.editor.drawflow };
+      this.selectedNode = this.editor.getNodeFromId(nodeId);
     });
   }
 

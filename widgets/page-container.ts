@@ -12,7 +12,7 @@ import { Gamebook, Page, Answer } from "./gamebook-model";
 import { LinkButton } from "./link-button";
 
 //Shoelace
-import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
+import { SlButton } from "@shoelace-style/shoelace";
 
 //CSS
 import styles from "../css/page-container-css";

@@ -12,15 +12,17 @@ import {
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
-import SlTextarea from "@shoelace-style/shoelace/dist/components/textarea/textarea.component.js";
-import SlDivider from "@shoelace-style/shoelace/dist/components/divider/divider.component.js";
-import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js";
-import SlDropdown from "@shoelace-style/shoelace/dist/components/dropdown/dropdown.component.js";
-import SlMenu from "@shoelace-style/shoelace/dist/components/menu/menu.component.js";
-import SlMenuItem from "@shoelace-style/shoelace/dist/components/menu-item/menu-item.component.js";
-import SlSelect from "@shoelace-style/shoelace/dist/components/select/select.component.js";
-import SlOption from "@shoelace-style/shoelace/dist/components/option/option.component.js";
+import {
+  SlOption,
+  SlSelect,
+  SlButton,
+  SlTextarea,
+  SlDivider,
+  SlDropdown,
+  SlMenu,
+  SlMenuItem,
+  SlIconButton,
+} from "@shoelace-style/shoelace";
 
 import { Gamebook, Page, Answer } from "./gamebook-model";
 

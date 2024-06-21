@@ -9,8 +9,7 @@ import {
 import { LitElementWw } from "@webwriter/lit";
 
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
-import { SlOption, SlSelect } from "@shoelace-style/shoelace";
+import { SlOption, SlSelect, SlButton } from "@shoelace-style/shoelace";
 
 @customElement("link-button")
 export class LinkButton extends LitElementWw {
@@ -49,11 +48,6 @@ export class LinkButton extends LitElementWw {
         <sl-button variant="text" size="medium" style="padding: 0px;"
           >${this.name}</sl-button
         >
-        <sl-select clearable id="nodeSelect" value="option-1">
-          <sl-option value="option-1">Option 1</sl-option>
-          <sl-option value="option-2">Option 2</sl-option>
-          <sl-option value="option-3">Option 3</sl-option>
-        </sl-select>
         <input
           part="options"
           .value=${this.name}
