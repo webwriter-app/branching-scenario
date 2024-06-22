@@ -371,6 +371,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
     const answer = answerArray.find((answer) => answer.id == answerId);
     const index = answerArray.findIndex((answer) => answer.id == answerId);
 
+    //inital input
     if (
       answer &&
       answer.targetPageId == "undefined" &&
@@ -385,6 +386,13 @@ export class QuizBranchNodeDetails extends LitElementWw {
       const input_class = Object.keys(inputNode.inputs)[inputIndex];
       answerArray[index].targetPageInputClass = input_class;
 
+      //update the quiz branch nodes answer array with the updated answer
+      this.editor.updateNodeDataFromId(this.selectedNode.id, {
+        title: this.selectedNode.data.title,
+        question: this.selectedNode.data.question,
+        answers: answerArray,
+      });
+
       //get the right output using the answers index which corresponds to the output index
       const output_class = Object.keys(this.selectedNode.outputs)[index];
 
@@ -394,13 +402,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
         output_class,
         input_class
       );
-
-      //update the quiz branch nodes answer array with the updated answer
-      this.editor.updateNodeDataFromId(this.selectedNode.id, {
-        title: this.selectedNode.data.title,
-        question: this.selectedNode.data.question,
-        answers: answerArray,
-      });
     }
 
     //change in values
@@ -425,6 +426,13 @@ export class QuizBranchNodeDetails extends LitElementWw {
       const input_class = Object.keys(inputNode.inputs)[inputIndex];
       answerArray[index].targetPageInputClass = input_class;
 
+      //update the quiz branch nodes data
+      this.editor.updateNodeDataFromId(this.selectedNode.id, {
+        title: this.selectedNode.data.title,
+        question: this.selectedNode.data.question,
+        answers: answerArray,
+      });
+
       //get the right output using the answers index which corresponds to the output index
       const output_class = Object.keys(this.selectedNode.outputs)[index];
 
@@ -435,15 +443,8 @@ export class QuizBranchNodeDetails extends LitElementWw {
         output_class,
         input_class
       );
-
-      //update the quiz branch nodes data
-      this.editor.updateNodeDataFromId(this.selectedNode.id, {
-        title: this.selectedNode.data.title,
-        question: this.selectedNode.data.question,
-        answers: answerArray,
-      });
     }
-    //sl-select got cleared
+    //von clear
     else {
       //remove the node input and thus the existing connection
       this.editor.removeNodeInput(
