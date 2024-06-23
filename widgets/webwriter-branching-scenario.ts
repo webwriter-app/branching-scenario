@@ -616,26 +616,48 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "connectionCreated",
       ({ output_id, input_id, output_class, input_class }) => {
         this.editorContent = { ...this.editor.drawflow };
-        this._addLinkButtonToPageContainer(
-          output_id,
-          output_class,
-          input_id,
-          input_class
-        );
+        this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+
+        if (
+          this.editor.getNodeFromId(output_id).class == "page" ||
+          this.editor.getNodeFromId(output_id).class == "origin"
+        ) {
+          this._addLinkButtonToPageContainer(
+            output_id,
+            output_class,
+            input_id,
+            input_class
+          );
+        } else if (
+          this.editor.getNodeFromId(output_id).class == "quiz-branch"
+        ) {
+          console.log("test");
+        }
       }
     );
 
     this.editor.on(
       "connectionRemoved",
       ({ output_id, input_id, output_class, input_class }) => {
-        const identifier = `${output_id}-${output_class}-${input_id}-${input_class}`;
-        const linkButton =
-          this.shadowRoot?.querySelector(
-            `link-button[identifier="${identifier}"]`
-          ) || this.querySelector(`link-button[identifier="${identifier}"]`);
+        this.editorContent = { ...this.editor.drawflow };
+        this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
 
-        if (linkButton) {
-          linkButton.remove();
+        if (
+          this.editor.getNodeFromId(output_id).class == "page" ||
+          this.editor.getNodeFromId(output_id).class == "origin"
+        ) {
+          const identifier = `${output_id}-${output_class}-${input_id}-${input_class}`;
+          const linkButton =
+            this.shadowRoot?.querySelector(
+              `link-button[identifier="${identifier}"]`
+            ) || this.querySelector(`link-button[identifier="${identifier}"]`);
+
+          if (linkButton) {
+            linkButton.remove();
+          }
+        } else if (
+          this.editor.getNodeFromId(output_id).class == "quiz-branch"
+        ) {
         }
       }
     );

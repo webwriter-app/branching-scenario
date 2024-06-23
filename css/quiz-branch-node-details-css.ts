@@ -5,10 +5,12 @@ export default css`
     display: flex;
     flex-direction: row;
     align-items: center;
+
+    align-items: flex-start;
     gap: 15px;
 
     width: 100%;
-    height: 100px;
+    height: 150px;
     padding: 20px;
 
     background-color: white;
@@ -24,7 +26,7 @@ export default css`
     justify-content: center;
     border: 1px solid #e4e4e4;
     border-radius: 8px;
-    height: 100%; /* Remove the fixed height */
+    height: 60px; /* Remove the fixed height */
     aspect-ratio: 1;
     background-color: #f7efff;
     border: 1px solid #c798ff;
@@ -57,6 +59,7 @@ export default css`
     font-size: 12px;
     color: gray;
     margin: 0px;
+    padding: 0px;
   }
 
   .number {
@@ -73,17 +76,20 @@ export default css`
     margin-left: auto;
   }
 
-  .number-input {
+  .control-node {
     display: flex;
     flex-direction: column;
     justify-content: left;
     align-items: left;
+    height: 120px;
   }
 
   .horizontal {
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #d4d4d8;
   }
 
   .icon-button {
@@ -144,5 +150,33 @@ export default css`
     color: black;
     visibility: 100%;
     opacity: 1;
+  }
+
+  .horizontalStack {
+    display: flex;
+    flex-direction: column;
+    height: 80px;
+    width: 150px;
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+
+  .horizontalStack::-webkit-scrollbar {
+    width: 6px; /* Width of the vertical scrollbar */
+  }
+
+  .horizontalStack::-webkit-scrollbar-thumb {
+    background-color: darkgrey; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Roundness of the scrollbar thumb */
+  }
+
+  .horizontalStack::-webkit-scrollbar-track {
+    background: none; /* Color of the scrollbar track */
+  }
+
+  .horizontalStack p {
+    padding: 0px;
+    margin: 0px;
+    font-size: 12px;
   }
 `;

@@ -37,6 +37,7 @@ import Journal from "bootstrap-icons/icons/journal.svg";
 import FileEarmark from "bootstrap-icons/icons/file-earmark.svg";
 import PatchQuestion from "bootstrap-icons/icons/patch-question.svg";
 import ThreeDotsVertical from "bootstrap-icons/icons/three-dots-vertical.svg";
+import Trash from "bootstrap-icons/icons/trash.svg";
 
 //CSS
 import styles from "../css/page-node-details-css";
@@ -91,6 +92,8 @@ export class PageNodeDetails extends LitElementWw {
     this.editor.on("nodeCreated", (id) => {
       this.createdNodeId = id;
     });
+
+    console.log(this.selectedNode.inputs);
   }
 
   updated(changedProperties) {
@@ -111,43 +114,84 @@ export class PageNodeDetails extends LitElementWw {
         </div>
 
         <div class="last-item">
-          <div class="number-input">
-            <p class="subtitle">Inputs</p>
+          <div class="control-node">
             <div class="horizontal">
-              <sl-icon-button
-                src=${Dash}
-                @click=${this._deleteInputOfSelectedNode}
-              >
-              </sl-icon-button>
-              <p class="number">
-                ${Object.keys(this.selectedNode.inputs).length.toString()}
+              <p class="subtitle">
+                Inputs
+                (${Object.keys(this.selectedNode.inputs).length.toString()})
               </p>
               <sl-icon-button
+                class="last-item"
                 src=${Plus}
                 @click=${this._addInputToSelectedNode}
-              >
-              </sl-icon-button>
+              ></sl-icon-button>
+            </div>
+            <div class="horizontalStack">
+              ${Object.entries(this.selectedNode.inputs).map(
+                ([input_class, drawflowConnection], index) => html` <div
+                  class="horizontal"
+                >
+                  <p>${index + 1}</p>
+                  <p
+                    style="${drawflowConnection.connections.length > 0
+                      ? "color: black;"
+                      : "color: lightgray;"}"
+                  >
+                    ${drawflowConnection.connections.length > 0
+                      ? this.editor.getNodeFromId(
+                          drawflowConnection.connections[0].node
+                        ).data.title
+                      : "No connection"}
+                  </p>
+                  <sl-icon-button
+                    src=${Trash}
+                    @click=${() => this._deleteInputOfSelectedNode(input_class)}
+                  >
+                  </sl-icon-button>
+                </div>`
+              )}
             </div>
           </div>
 
-          <sl-divider vertical style="height: 30px;"></sl-divider>
+          <sl-divider vertical style="height: 70px;"></sl-divider>
 
-          <div class="number-input">
-            <p class="subtitle">Outputs</p>
+          <div class="control-node">
             <div class="horizontal">
-              <sl-icon-button
-                src=${Dash}
-                @click=${this._deleteOutputOfSelectedNode}
-              >
-              </sl-icon-button>
-              <p class="number">
-                ${Object.keys(this.selectedNode.outputs).length.toString()}
+              <p class="subtitle">
+                Outputs
+                (${Object.keys(this.selectedNode.outputs).length.toString()})
               </p>
               <sl-icon-button
+                class="last-item"
                 src=${Plus}
                 @click=${this._addOutputToSelectedNode}
-              >
-              </sl-icon-button>
+              ></sl-icon-button>
+            </div>
+            <div class="horizontalStack">
+              ${Object.entries(this.selectedNode.outputs).map(
+                ([output_class, drawflowConnection], index) => html` <div
+                  class="horizontal"
+                >
+                  <p>${index + 1}</p>
+                  <p
+                    style="${drawflowConnection.connections.length > 0
+                      ? "color: black;"
+                      : "color: lightgray;"}"
+                  >
+                    ${drawflowConnection.connections.length > 0
+                      ? this.editor.getNodeFromId(
+                          drawflowConnection.connections[0].node
+                        ).data.title
+                      : "No connection"}
+                  </p>
+                  <sl-icon-button
+                    src=${Trash}
+                    @click=${() =>
+                      this._deleteOutputOfSelectedNode(output_class)}
+                  >
+                  </sl-icon-button>
+                </div>`
+              )}
             </div>
           </div>
         </div>
@@ -173,7 +217,7 @@ export class PageNodeDetails extends LitElementWw {
         <sl-button
           @click=${() => this._connectSelectedNodes()}
           ?disabled=${!this.isNodeSelected}
-          >Connect</sl-button
+          >Add Connection</sl-button
         >
         <sl-divider vertical style="height: 30px;"></sl-divider>
 
@@ -232,12 +276,8 @@ export class PageNodeDetails extends LitElementWw {
     this.dispatchEvent(event);
   }
 
-  private _deleteInputOfSelectedNode() {
-    const node = this.editor.getNodeFromId(this.selectedNode.id);
-    const noOfInputs = Object.keys(node.inputs).length;
-    if (noOfInputs != 0) {
-      this.editor.removeNodeInput(this.selectedNode.id, `input_${noOfInputs}`);
-    }
+  private _deleteInputOfSelectedNode(input_class: string) {
+    this.editor.removeNodeInput(this.selectedNode.id, input_class);
 
     const event = new CustomEvent("inputDeleted", {
       detail: { nodeId: this.selectedNode.id },
@@ -247,15 +287,8 @@ export class PageNodeDetails extends LitElementWw {
     this.dispatchEvent(event);
   }
 
-  private _deleteOutputOfSelectedNode() {
-    const node = this.editor.getNodeFromId(this.selectedNode.id);
-    const noOfOutputs = Object.keys(node.outputs).length;
-    if (noOfOutputs != 0) {
-      this.editor.removeNodeOutput(
-        this.selectedNode.id,
-        `output_${noOfOutputs}`
-      );
-    }
+  private _deleteOutputOfSelectedNode(output_class: string) {
+    this.editor.removeNodeOutput(this.selectedNode.id, output_class);
 
     const event = new CustomEvent("outputDeleted", {
       detail: { nodeId: this.selectedNode.id },
