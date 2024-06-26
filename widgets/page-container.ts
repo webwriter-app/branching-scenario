@@ -33,6 +33,9 @@ export class PageContainer extends LitElementWw {
   @property({ type: Number, attribute: true, reflect: true }) drawflowNodeId =
     null;
 
+  @property({ type: Number, attribute: true, reflect: true }) originPage =
+    false;
+
   // Query the slot element
   @query("slot") slot;
 

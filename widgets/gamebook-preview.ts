@@ -31,9 +31,11 @@ import styles from "../css/gamebook-preview-css";
 import { PageContainer } from "./page-container";
 
 import { LinkButton } from "./link-button";
+import { QuizContainer } from "./quiz-container";
 
 //Define Component
 //TODO: Fix Gamebook Errors. Check other modules for proper updating. I commented out a lot for restructure!
+//TODO: employ structure such that users cannot simply change css in browser to see next slide
 @customElement("gamebook-preview")
 export class GamebookPreview extends LitElementWw {
   //registering custom elements used in the widget
@@ -58,49 +60,37 @@ export class GamebookPreview extends LitElementWw {
   @query(".pageTitle") pageTitle;
   @query(".page") page;
 
-  @state() currentPage: Page = {
-    drawflowNodeId: -1,
-    title: "undefined",
-    links: [],
-  };
-  @property({ type: Object, attribute: false })
-  gamebook: Gamebook = new Gamebook();
+  @state() currentPageId?: Number;
 
-  @queryAssignedElements({ flatten: true, selector: "page-container" })
-  pageContainers;
+  @queryAssignedElements({
+    flatten: true,
+    selector: "page-container, quiz-container",
+  })
+  gamebookContainers;
 
+  @state()
+  pageContainers: Array<PageContainer> = [];
+  @state()
+  quizContainers: Array<QuizContainer> = [];
+
+  /*
+
+
+   */
   protected firstUpdated(_changedProperties: any): void {
-    // Attach event listeners to all buttons
-    this.currentPage = this.gamebook.startGamebook();
-
-    const pageContainer = this.pageContainers.find(
-      (pageContainer) =>
-        pageContainer.getAttribute("drawflowNodeId") ==
-        this.currentPage.drawflowNodeId
-    );
-
-    pageContainer.linkButtons.forEach((button) => {
-      const targetId = parseInt(button.getAttribute("dataTargetId"), 10);
-      button.addEventListener("click", () => this._navigateToPage(targetId));
-    });
-
-    this.pageContainers.forEach((pageContainer) => {
-      if (
-        (pageContainer as PageContainer).drawflowNodeId ==
-        this.currentPage.drawflowNodeId
-      ) {
-        (pageContainer as PageContainer).show();
-      } else {
-        (pageContainer as PageContainer).hide();
-      }
-    });
+    this.currentPageId = this._resetGamebookToOrigin();
+    this._initializeLinkButtons(this.currentPageId);
   }
 
+  /*
+
+
+  */
   render() {
     return html`<div class="preview">
       <div class="gamebook">
-        <div class="gamebookTitle">${this.gamebook.title}</div>
-        <div class="pageTitle">${this.currentPage.title}</div>
+        <div class="gamebookTitle">Gamebook Title</div>
+        <div class="pageTitle">Page Title</div>
         <div class="page">
           <slot></slot>
         </div>
@@ -108,40 +98,79 @@ export class GamebookPreview extends LitElementWw {
     </div> `;
   }
 
+  /*
   //TODO: this seems to be laggy. consider saving the pagecontainer content directly into gamebook structure or drawflownode structure.
   //This would also fix the editability issue. However, I would then need to rebuild the webwriter preview view as well
-  private _navigateToPage(targetPageId: number) {
-    //console.log(this.currentPage);
+  */
+  private _navigateWithLinkButton(targetId: number) {
+    //
+    this.gamebookContainers.forEach((container) => {
+      if (container.drawflowNodeId == targetId) {
+        if (container instanceof PageContainer) {
+          this._navigateToPage(targetId);
+        } else if (container instanceof QuizContainer) {
+          this._showQuizBranchDialog(targetId);
+        }
+        // Add more conditions as needed
+      }
+    });
+  }
 
-    this.gamebook.navigateWithLink(targetPageId);
-
-    this.currentPage =
-      this.gamebook.pages[
-        this.gamebook.getPageIndex(this.gamebook.currentPageId)
-      ][1];
-
-    //console.log(this.currentPage);
-
-    this.pageContainers.forEach((pageContainer) => {
-      if (
-        (pageContainer as PageContainer).drawflowNodeId ==
-        this.currentPage.drawflowNodeId
-      ) {
-        (pageContainer as PageContainer).show();
+  private _navigateToPage(pageId: number) {
+    this.gamebookContainers.forEach((container) => {
+      if (container.drawflowNodeId == pageId) {
+        container.show();
       } else {
-        (pageContainer as PageContainer).hide();
+        container.hide();
       }
     });
 
-    const pageContainer = this.pageContainers.find(
-      (pageContainer) =>
-        pageContainer.getAttribute("drawflowNodeId") ==
-        this.currentPage.drawflowNodeId
+    this.currentPageId = pageId;
+  }
+
+  private _showQuizBranchDialog(quizId: number) {
+    this.gamebookContainers.forEach((quiz) => {
+      if (quiz.drawflowNodeId == quizId) {
+        (quiz as QuizContainer).show();
+      }
+    });
+  }
+
+  /*
+
+
+  */
+  private _resetGamebookToOrigin() {
+    const originPageContainer = this.gamebookContainers.find(
+      (container) => container.getAttribute("originPage") == 1
     );
 
-    pageContainer.linkButtons.forEach((button) => {
+    this.gamebookContainers.forEach((container) => {
+      if (container.drawflowNodeId == originPageContainer.drawflowNodeId) {
+        container.show();
+      } else {
+        container.hide();
+      }
+    });
+
+    return originPageContainer.drawflowNodeId;
+  }
+
+  /*
+
+
+  */
+  private _initializeLinkButtons(containerId: Number) {
+    const container = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == containerId
+    );
+
+    //initialise the elements on the origin page
+    container.linkButtons.forEach((button) => {
       const targetId = parseInt(button.getAttribute("dataTargetId"), 10);
-      button.addEventListener("click", () => this._navigateToPage(targetId));
+      button.addEventListener("click", () =>
+        this._navigateWithLinkButton(targetId)
+      );
     });
   }
 }

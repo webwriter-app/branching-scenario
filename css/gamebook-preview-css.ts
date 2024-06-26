@@ -47,12 +47,14 @@ export default css`
   }
 
   .page {
-    background-color: #ffffff;
-    height: auto;
     display: flex;
-    flex-direction: row;
-    justify-content: flex-start; /* Horizontally align at the start */
-    padding: 15px;
-    width: calc(100% - 30px); /* Adjust width to account for padding */
+    position: relative;
+    flex-direction: column;
+    gap: 10px; /* Adjust the value to your desired spacing */
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    background-color: white;
+    min-height: 800px;
   }
 `;

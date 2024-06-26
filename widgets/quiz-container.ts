@@ -33,25 +33,12 @@ export class QuizContainer extends LitElementWw {
   @property({ type: Number, attribute: true, reflect: true }) drawflowNodeId =
     null;
 
+  @property({ type: String, attribute: true, reflect: true }) quiz?;
+
   @query(".dialog") dialog: SlDialog;
 
   // Query the slot element
   @query("slot") slot;
-
-  constructor() {
-    super();
-  }
-
-  protected firstUpdated(_changedProperties: any): void {
-    // Ensure the dialog element is available
-    console.log(this.dialog); // Check if the dialog is defined
-  }
-
-  updated(changedProperties) {
-    super.updated(changedProperties);
-    // Check if the dialog element is ready after update
-    console.log(this.dialog); // Ensure the dialog element is accessible
-  }
 
   render() {
     return html`
@@ -61,21 +48,32 @@ export class QuizContainer extends LitElementWw {
         id="dialog"
         style="--width: 50vw;"
       >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        <slot></slot>
+        <div>
+          ${JSON.parse(this.quiz).answers.map(
+            (answer) => html`<sl-button>${(answer as Answer).text}</sl-button>`
+          )}
+        </div>
       </sl-dialog>
     `;
   }
 
   hide() {
+    this.style.display = "none";
     if (this.dialog) {
       this.dialog.hide();
     }
   }
 
   show() {
+    this.style.display = "block";
     if (this.dialog) {
       this.dialog.show();
     }
   }
 }
+
+// <div>
+//           ${this.quizObject.data.answers.map(
+//             (answer) => html`<sl-button>${(answer as Answer).text}</sl-button>`
+//           )}
+//         </div>

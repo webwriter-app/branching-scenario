@@ -143,4 +143,16 @@ export default css`
   .none {
     display: none;
   }
+
+  sl-dialog::part(base) {
+    position: absolute;
+  }
+
+  sl-dialog::part(overlay) {
+    position: absolute;
+  }
+
+  /* quiz-container {
+    position: unset;
+  } */
 `;

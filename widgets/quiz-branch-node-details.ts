@@ -395,14 +395,13 @@ export class QuizBranchNodeDetails extends LitElementWw {
     const answer = answerArray.find((answer) => answer.id == answerId);
     const index = answerArray.findIndex((answer) => answer.id == answerId);
 
+    //set initial selection
     if (
       answer &&
       Object.entries(this.selectedNode.outputs)[index][1]?.connections[0]
         ?.node == undefined &&
       event.target.value != ""
     ) {
-      console.log(event.target.value);
-
       //create a connection between the quizbranchnode and the selected target page id
       this.editor.addNodeInput(event.target.value);
       const inputNode = this.editor.getNodeFromId(event.target.value);
@@ -418,7 +417,9 @@ export class QuizBranchNodeDetails extends LitElementWw {
         output_class,
         input_class
       );
-    } else if (
+    }
+    //change existing selection
+    else if (
       answer &&
       Object.entries(this.selectedNode.outputs)[index][1]?.connections[0]
         ?.node != undefined &&
@@ -450,7 +451,9 @@ export class QuizBranchNodeDetails extends LitElementWw {
         output_class,
         new_input_class
       );
-    } else if (answer && event.target.value == "") {
+    }
+    //clear sl-select
+    else if (answer && event.target.value == "") {
       const current_input_class = Object.entries(this.selectedNode.outputs)[
         index
       ][1].connections[0].output;

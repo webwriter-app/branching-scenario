@@ -87,11 +87,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Object, attribute: true })
   gamebook: Gamebook = new Gamebook();
   //
-  @queryAssignedElements({ flatten: true, selector: "page-container" })
-  pageContainers;
-  //
-  @queryAssignedElements({ flatten: true, selector: "quiz-container" })
-  quizContainers;
+  @queryAssignedElements({
+    flatten: true,
+    selector: "page-container, quiz-container",
+  })
+  gamebookContainers;
 
   //
   @state() inPreviewMode = false;
@@ -123,8 +123,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   //Called after the component's DOM has been updated the first time
   protected firstUpdated(_changedProperties: any): void {
-    this.pageContainers.forEach((pageContainer) => {
-      (pageContainer as PageContainer).hide();
+    this.gamebookContainers.forEach((container) => {
+      container.hide();
     });
 
     this.editor = new Drawflow(this.drawflowEditorDiv);
@@ -184,11 +184,25 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 <sl-icon-button
                         src=${FileEarmarkPlus}
                         class="iconButton"
+                        style=${
+                          this.inPreviewMode
+                            ? "display: none;"
+                            : "display: block;"
+                        }
                         @click=${() => this._addPageNode("Untitled Page")}
                       >
                       </sl-icon-button>
-                      <sl-divider vertical style="height: 30px;"> </sl-divider>
+                      <sl-divider vertical style=${
+                        this.inPreviewMode
+                          ? "display: none;"
+                          : "display: block; height: 30px;"
+                      }> </sl-divider>
                       <sl-button
+                      style=${
+                        this.inPreviewMode
+                          ? "display: none;"
+                          : "display: block;"
+                      }
                         @click=${() =>
                           (
                             this.shadowRoot.getElementById("dialog") as SlDialog
@@ -200,10 +214,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
             </div>
             ${
               this.inPreviewMode
-                ? html` <gamebook-preview .gamebook="${this.gamebook}">
+                ? html` <gamebook-preview>
                     <slot></slot>
                   </gamebook-preview>`
-                : html` <div></div> `
+                : null
             } 
                <div id="drawflowEditorDiv" style=${
                  this.inPreviewMode ? "display: none;" : "display: block;"
@@ -289,9 +303,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     </sl-dialog>
               </div>
             </div>`
-        : html`<gamebook-preview .gamebook="${this.gamebook}"
-            ><slot></slot
-          ></gamebook-preview>`}
+        : html`<gamebook-preview><slot></slot></gamebook-preview>`}
     `;
   }
 
@@ -453,8 +465,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.clear();
     this.gamebook.clearPages();
     //clear all the slotted PageContainers
-    this.pageContainers.forEach((pageContainer) => {
-      pageContainer.remove();
+    this.gamebookContainers.forEach((container) => {
+      container.remove();
     });
 
     this._addOriginToGraph();
@@ -467,8 +479,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
   private _switchMode() {
     if (this.inPreviewMode == true) {
       this.inPreviewMode = false;
-      this.pageContainers.forEach((pageContainer) => {
-        (pageContainer as PageContainer).hide();
+      this.gamebookContainers.forEach((container) => {
+        container.hide();
       });
 
       const node = this.shadowRoot?.getElementById(
@@ -479,17 +491,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
       }
 
       this.selectedNode = NO_NODE_SELECTED;
-
-      //todo: cache view settings such that it is exactly the same way when you come back
-      this.pageContainers.forEach((pageContainer) => {
-        (pageContainer as PageContainer).hide();
-      });
     }
     //
     else if (this.inPreviewMode == false) {
       this.inPreviewMode = true;
-      this.pageContainers.forEach((pageContainer) => {
-        (pageContainer as PageContainer).show();
+
+      this.gamebookContainers.forEach((container) => {
+        container.hide();
       });
     }
   }
@@ -505,8 +513,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       //TODO: make this more secure!
       const updatedNode = this.editor.getNodeFromId(id);
       this.selectedNode = updatedNode;
-
-      this.gamebook.saveChangesToPageTitle(id, updatedNode.data.title);
     });
 
     //custom event that indicates data is changed
@@ -514,44 +520,52 @@ export class WebWriterBranchingScenario extends LitElementWw {
       const nodeId = event.detail.nodeId;
       this.editorContent = { ...this.editor.drawflow };
       this.selectedNode = this.editor.getNodeFromId(nodeId);
+
+      if (this.selectedNode.class == "quiz-branch") {
+        //since when this node is created the page node details are open, the page container is seen and the quizcontainer gets added into it.
+        //can I dictate on what level the quiz container in the slots should be added?
+        const quizContainer = this.gamebookContainers.find(
+          (container) =>
+            container.getAttribute("drawflowNodeId") == this.selectedNode.id &&
+            container instanceof QuizContainer
+        );
+
+        quizContainer.setAttribute(
+          "quiz",
+          JSON.stringify(this.selectedNode.data)
+        );
+      }
     });
 
     // Event listener for node click
     this.editor.on("nodeSelected", (id) => {
       this.selectedNode = this.editor.getNodeFromId(id);
 
-      //TODO: is this the right approach to show and hide pageContainers?
-      this.pageContainers.forEach((pageContainer) => {
-        if (
-          (pageContainer as PageContainer).drawflowNodeId ==
-          this.selectedNode.id
-        ) {
-          (pageContainer as PageContainer).show();
-        } else {
-          (pageContainer as PageContainer).hide();
-        }
-      });
-
-      console.log("node selected print quiz containers", this.quizContainers);
-
-      // this.quizContainers.forEach((quizContainer) => {
-      //   if (
-      //     (quizContainer as QuizContainer).drawflowNodeId ==
-      //     this.selectedNode.id
-      //   ) {
-      //     (quizContainer as QuizContainer).show();
-      //   } else {
-      //     (quizContainer as QuizContainer).hide();
-      //   }
-      // });
+      if (
+        this.selectedNode.class == "page" ||
+        this.selectedNode.class == "origin"
+      ) {
+        //TODO: is this the right approach to show and hide pageContainers?
+        this.gamebookContainers.forEach((container) => {
+          if (container.drawflowNodeId == this.selectedNode.id) {
+            container.show();
+          } else {
+            container.hide();
+          }
+        });
+      } else if (this.selectedNode.class == "quiz-branch") {
+        this.gamebookContainers.forEach((container) => {
+          container.hide();
+        });
+      }
     });
 
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
       this.selectedNode = NO_NODE_SELECTED;
 
-      this.pageContainers.forEach((pageContainer) => {
-        (pageContainer as PageContainer).hide();
+      this.gamebookContainers.forEach((container) => {
+        container.hide();
       });
     });
 
@@ -568,6 +582,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
           "page-container"
         ) as PageContainer;
         pageContainer.setAttribute("drawflowNodeId", id.toString());
+
+        if (createdNode.class == "origin") {
+          pageContainer.setAttribute("originPage", "1");
+        } else {
+          pageContainer.setAttribute("originPage", "0");
+        }
 
         const parser = new DOMParser();
         const doc = parser.parseFromString(
@@ -592,6 +612,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
         ) as QuizContainer;
         quizContainer.setAttribute("drawflowNodeId", id.toString());
 
+        const quiz = JSON.stringify(createdNode.data);
+        quizContainer.setAttribute(
+          "quiz",
+          JSON.stringify(this.selectedNode.data)
+        );
+
         //to let it access editor
         quizContainer.hide();
         this.appendChild(quizContainer);
@@ -600,24 +626,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     //Event listener for deletion of a node
     this.editor.on("nodeRemoved", (id) => {
-      for (let i = 0; i < this.pageContainers.length; i++) {
-        const pageContainer = this.pageContainers[i] as PageContainer;
-        if (pageContainer.drawflowNodeId == id) {
-          pageContainer.remove();
-          break;
+      this.gamebookContainers.forEach((container) => {
+        if (container.drawflowNodeId == id) {
+          container.remove();
         }
-      }
-
-      for (let i = 0; i < this.quizContainers.length; i++) {
-        const quizContainer = this.quizContainers[i] as QuizContainer;
-        if (quizContainer.drawflowNodeId == id) {
-          quizContainer.remove();
-          break;
-        }
-      }
-
-      //since we only add pages to the gamebook this is secure for removing other nodes than pages
-      //TODO: make secure
+      });
 
       this.editorContent = { ...this.editor.drawflow };
     });
@@ -636,14 +649,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
           node.classList.add("selected");
         }
 
-        this.pageContainers.forEach((pageContainer) => {
-          if (
-            (pageContainer as PageContainer).drawflowNodeId ==
-            this.selectedNode.id
-          ) {
-            (pageContainer as PageContainer).show();
+        this.gamebookContainers.forEach((container) => {
+          if (container.drawflowNodeId == this.selectedNode.id) {
+            container.show();
           } else {
-            (pageContainer as PageContainer).hide();
+            container.hide();
           }
         });
       }
@@ -659,8 +669,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
       this.selectedNode = NO_NODE_SELECTED;
 
-      this.pageContainers.forEach((pageContainer) => {
-        (pageContainer as PageContainer).hide();
+      this.gamebookContainers.forEach((container) => {
+        container.hide();
       });
     });
 
@@ -800,9 +810,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
   ) {
     const sinkNodeTitle = this.editor.getNodeFromId(sinkNodeId).data.title;
 
-    const pageContainer = this.pageContainers.find(
-      (pageContainer) =>
-        pageContainer.getAttribute("drawflowNodeId") == originNodeId
+    const pageContainer = this.gamebookContainers.find(
+      (container) =>
+        container.getAttribute("drawflowNodeId") == originNodeId &&
+        container instanceof PageContainer
     );
 
     const button = document.createElement("link-button") as LinkButton;
