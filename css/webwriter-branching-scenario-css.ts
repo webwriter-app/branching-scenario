@@ -128,7 +128,7 @@ export default css`
     font-size: 18px;
   }
 
-  #no-node-selected {
+  .no-node-selected {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -138,5 +138,9 @@ export default css`
 
   .dialog {
     font-family: "Roboto", sans-serif;
+  }
+
+  .none {
+    display: none;
   }
 `;

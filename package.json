@@ -17,6 +17,7 @@
   "exports": {
     "./widgets/webwriter-branching-scenario": "./widgets/webwriter-branching-scenario.ts",
     "./widgets/page-container": "./widgets/page-container.ts",
+    "./widgets/quiz-container": "./widgets/quiz-container.ts",
     "./widgets/link-button": "./widgets/link-button.ts",
     "./widgets/gamebook-preview": "./widgets/gamebook-preview.ts"
   },
@@ -26,9 +27,12 @@
   },
   "editingConfig": {
     "./widgets/webwriter-branching-scenario": {
-      "content": "page-container*"
+      "content": "flow*"
     },
     "./widgets/page-container": {
+      "content": "flow*"
+    },
+    "./widgets/quiz-container": {
       "content": "flow*"
     }
   }

@@ -190,6 +190,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
             `
         )}
       </div>
+      <slot></slot>
     </div>`;
   }
 

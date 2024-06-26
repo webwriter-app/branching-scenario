@@ -41,7 +41,6 @@ import Trash from "bootstrap-icons/icons/trash.svg";
 
 //CSS
 import styles from "../css/page-node-details-css";
-import { PageContainer } from "./page-container";
 
 @customElement("page-node-details")
 export class PageNodeDetails extends LitElementWw {
@@ -378,22 +377,25 @@ export class PageNodeDetails extends LitElementWw {
       false
     );
 
-    this.editor.addNodeInput(this.createdNodeId);
-    const inputs = this.editor.getNodeFromId(this.createdNodeId).inputs;
-    const inputKeys = Object.keys(inputs);
-    const lastInputKey = inputKeys[inputKeys.length - 1];
+    //TODO: Adding a connection (and thus a link button into a page container) somehow messes with the entire slot's shadow dom
+    //Everything is surrounded by one page conatiner and the link button and quiz-container are also surrounded by a page container
 
-    this._addOutputToSelectedNode();
-    const outputs = this.editor.getNodeFromId(this.selectedNode.id).outputs;
-    const outputKeys = Object.keys(outputs);
-    const lastOutputKey = outputKeys[outputKeys.length - 1];
+    // this.editor.addNodeInput(this.createdNodeId);
+    // const inputs = this.editor.getNodeFromId(this.createdNodeId).inputs;
+    // const inputKeys = Object.keys(inputs);
+    // const lastInputKey = inputKeys[inputKeys.length - 1];
 
-    this.editor.addConnection(
-      this.selectedNode.id,
-      this.createdNodeId,
-      lastOutputKey,
-      lastInputKey
-    );
+    // this._addOutputToSelectedNode();
+    // const outputs = this.editor.getNodeFromId(this.selectedNode.id).outputs;
+    // const outputKeys = Object.keys(outputs);
+    // const lastOutputKey = outputKeys[outputKeys.length - 1];
+
+    // this.editor.addConnection(
+    //   this.selectedNode.id,
+    //   this.createdNodeId,
+    //   lastOutputKey,
+    //   lastInputKey
+    // );
   }
 
   private _resetSelect() {
