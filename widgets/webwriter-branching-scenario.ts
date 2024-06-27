@@ -611,6 +611,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
           "quiz-container"
         ) as QuizContainer;
         quizContainer.setAttribute("drawflowNodeId", id.toString());
+        quizContainer.style.position = "unset";
 
         const quiz = JSON.stringify(createdNode.data);
         quizContainer.setAttribute(

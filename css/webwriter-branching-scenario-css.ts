@@ -152,7 +152,7 @@ export default css`
     position: absolute;
   }
 
-  /* quiz-container {
-    position: unset;
-  } */
+  quiz-container {
+    position: unset !important; /* Use !important to override any inline styles */
+  }
 `;

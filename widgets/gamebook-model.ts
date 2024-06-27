@@ -10,7 +10,7 @@ export interface Answer {
   id: number;
   text: string;
   targetPageId: string;
-  targetPageInputClass: string;
+  //targetPageInputClass: string;
   isCorrect: boolean;
 }
 

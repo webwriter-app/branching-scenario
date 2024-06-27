@@ -3,7 +3,8 @@ import { css } from "lit";
 export default css`
   .test {
     width: 100%;
-    height: 500px;
+    height: auto;
+    position: unset;
   }
 
   sl-dialog::part(base) {

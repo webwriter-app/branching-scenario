@@ -57,4 +57,8 @@ export default css`
     background-color: white;
     min-height: 800px;
   }
+
+  quiz-container {
+    position: unset !important; /* Use !important to override any inline styles */
+  }
 `;

@@ -42,18 +42,22 @@ export class QuizContainer extends LitElementWw {
 
   render() {
     return html`
-      <sl-dialog
-        label="Dialog"
-        class="dialog"
-        id="dialog"
-        style="--width: 50vw;"
-      >
-        <div>
-          ${JSON.parse(this.quiz).answers.map(
-            (answer) => html`<sl-button>${(answer as Answer).text}</sl-button>`
-          )}
-        </div>
-      </sl-dialog>
+      <div class="test">
+        <sl-dialog
+          label="Quiz"
+          class="dialog"
+          id="dialog"
+          style="--width: 50vw;"
+        >
+          <p>${JSON.parse(this.quiz).question}</p>
+          <div>
+            ${JSON.parse(this.quiz).answers.map(
+              (answer) =>
+                html`<sl-button>${(answer as Answer).text}</sl-button>`
+            )}
+          </div>
+        </sl-dialog>
+      </div>
     `;
   }
 

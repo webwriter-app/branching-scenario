@@ -350,8 +350,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
       composed: true, // Allows the event to pass through shadow DOM boundaries
     });
     this.dispatchEvent(dispatchEvent);
-
-    console.log(event.target.value);
   }
 
   /*
@@ -392,186 +390,103 @@ export class QuizBranchNodeDetails extends LitElementWw {
     //TODO: if a connection is already exisiting, inputs and outputs should be updated and further connections should be deleted and newly added
     const answerId = event.target.getAttribute("answerId");
     const answerArray = this.selectedNode.data.answers;
-    const answer = answerArray.find((answer) => answer.id == answerId);
     const index = answerArray.findIndex((answer) => answer.id == answerId);
 
-    //set initial selection
-    if (
-      answer &&
-      Object.entries(this.selectedNode.outputs)[index][1]?.connections[0]
-        ?.node == undefined &&
-      event.target.value != ""
-    ) {
-      //create a connection between the quizbranchnode and the selected target page id
-      this.editor.addNodeInput(event.target.value);
-      const inputNode = this.editor.getNodeFromId(event.target.value);
-      const inputIndex = Object.keys(inputNode.inputs).length - 1;
-      const input_class = Object.keys(inputNode.inputs)[inputIndex];
-
-      //   //get the right output using the answers index which corresponds to the output index
-      const output_class = Object.keys(this.selectedNode.outputs)[index];
-
-      this.editor.addConnection(
-        this.selectedNode.id,
-        event.target.value,
-        output_class,
-        input_class
-      );
-    }
-    //change existing selection
-    else if (
-      answer &&
-      Object.entries(this.selectedNode.outputs)[index][1]?.connections[0]
-        ?.node != undefined &&
-      event.target.value != ""
-    ) {
-      const old_input_class = Object.entries(this.selectedNode.outputs)[
-        index
-      ][1].connections[0].output;
-
-      //get the right output using the answers index which corresponds to the output index
-      const output_class = Object.keys(this.selectedNode.outputs)[index];
-
-      this.editor.removeSingleConnection(
-        this.selectedNode.id,
+    if (index != -1) {
+      //set initial selection
+      if (
         Object.entries(this.selectedNode.outputs)[index][1]?.connections[0]
-          ?.node,
-        output_class,
-        old_input_class
-      );
+          ?.node == undefined &&
+        event.target.value != ""
+      ) {
+        //create a connection between the quizbranchnode and the selected target page id
+        this.editor.addNodeInput(event.target.value);
+        const inputNode = this.editor.getNodeFromId(event.target.value);
+        const inputIndex = Object.keys(inputNode.inputs).length - 1;
+        const input_class = Object.keys(inputNode.inputs)[inputIndex];
 
-      this.editor.addNodeInput(event.target.value);
-      const inputNode = this.editor.getNodeFromId(event.target.value);
-      const inputIndex = Object.keys(inputNode.inputs).length - 1;
-      const new_input_class = Object.keys(inputNode.inputs)[inputIndex];
+        //   //get the right output using the answers index which corresponds to the output index
+        const output_class = Object.keys(this.selectedNode.outputs)[index];
 
-      this.editor.addConnection(
-        this.selectedNode.id,
-        event.target.value,
-        output_class,
-        new_input_class
-      );
-    }
-    //clear sl-select
-    else if (answer && event.target.value == "") {
-      const current_input_class = Object.entries(this.selectedNode.outputs)[
-        index
-      ][1].connections[0].output;
-
-      //get the right output using the answers index which corresponds to the output index
-      const output_class = Object.keys(this.selectedNode.outputs)[index];
-
-      this.editor.removeSingleConnection(
-        this.selectedNode.id,
+        this.editor.addConnection(
+          this.selectedNode.id,
+          event.target.value,
+          output_class,
+          input_class
+        );
+      }
+      //change existing selection
+      else if (
         Object.entries(this.selectedNode.outputs)[index][1]?.connections[0]
-          ?.node,
-        output_class,
-        current_input_class
-      );
+          ?.node != undefined &&
+        event.target.value != ""
+      ) {
+        const old_input_class = Object.entries(this.selectedNode.outputs)[
+          index
+        ][1].connections[0].output;
+
+        //get the right output using the answers index which corresponds to the output index
+        const output_class = Object.keys(this.selectedNode.outputs)[index];
+
+        this.editor.removeSingleConnection(
+          this.selectedNode.id,
+          Object.entries(this.selectedNode.outputs)[index][1]?.connections[0]
+            ?.node,
+          output_class,
+          old_input_class
+        );
+
+        this.editor.addNodeInput(event.target.value);
+        const inputNode = this.editor.getNodeFromId(event.target.value);
+        const inputIndex = Object.keys(inputNode.inputs).length - 1;
+        const new_input_class = Object.keys(inputNode.inputs)[inputIndex];
+
+        this.editor.addConnection(
+          this.selectedNode.id,
+          event.target.value,
+          output_class,
+          new_input_class
+        );
+      }
+      //clear sl-select
+      else if (event.target.value == "") {
+        const current_input_class = Object.entries(this.selectedNode.outputs)[
+          index
+        ][1].connections[0].output;
+
+        //get the right output using the answers index which corresponds to the output index
+        const output_class = Object.keys(this.selectedNode.outputs)[index];
+
+        this.editor.removeSingleConnection(
+          this.selectedNode.id,
+          Object.entries(this.selectedNode.outputs)[index][1]?.connections[0]
+            ?.node,
+          output_class,
+          current_input_class
+        );
+      }
+
+      // const connectedNode = Object.entries(this.selectedNode.outputs)[index][1]
+      //   ?.connections[0]?.node;
+
+      // if (connectedNode) {
+      //   answerArray[index].targetId = connectedNode;
+      // } else {
+      //   answerArray[index].targetId = "undefined";
+      // }
+
+      // this.editor.updateNodeDataFromId(this.selectedNode.id, {
+      //   title: this.selectedNode.data.title,
+      //   question: this.selectedNode.data.question,
+      //   answers: answerArray,
+      // });
+
+      // const dispatchEvent = new CustomEvent("nodeDataUpdated", {
+      //   detail: { nodeId: this.selectedNode.id },
+      //   bubbles: true, // Allows the event to bubble up through the DOM
+      //   composed: true, // Allows the event to pass through shadow DOM boundaries
+      // });
+      // this.dispatchEvent(dispatchEvent);
     }
-
-    // console.log(
-    //   Object.entries(this.selectedNode.outputs)[index][1].connections[0].node
-    // );
-    //inital input
-    // if (
-    //   answer &&
-    //   answer.targetPageId == "undefined" &&
-    //   event.target.value != ""
-    // ) {
-    //   answerArray[index].targetPageId = String(event.target.value);
-
-    //   //create a connection between the quizbranchnode and the selected target page id
-    //   this.editor.addNodeInput(event.target.value);
-    //   const inputNode = this.editor.getNodeFromId(event.target.value);
-    //   const inputIndex = Object.keys(inputNode.inputs).length - 1;
-    //   const input_class = Object.keys(inputNode.inputs)[inputIndex];
-
-    //   answerArray[index].targetPageInputClass = input_class;
-
-    //   //update the quiz branch nodes answer array with the updated answer
-    //   this.editor.updateNodeDataFromId(this.selectedNode.id, {
-    //     title: this.selectedNode.data.title,
-    //     question: this.selectedNode.data.question,
-    //     answers: answerArray,
-    //   });
-
-    //   //get the right output using the answers index which corresponds to the output index
-    //   const output_class = Object.keys(this.selectedNode.outputs)[index];
-
-    //   this.editor.addConnection(
-    //     this.selectedNode.id,
-    //     event.target.value,
-    //     output_class,
-    //     input_class
-    //   );
-    // }
-
-    // //change in values
-    // else if (
-    //   answer &&
-    //   answer.targetPageId != "undefined" &&
-    //   event.target.value != ""
-    // ) {
-    //   //remove the node input and thus the existing connection
-    //   this.editor.removeNodeInput(
-    //     answerArray[index].targetPageId,
-    //     answerArray[index].targetPageInputClass
-    //   );
-
-    //   //update the answer to its new target page
-    //   answerArray[index].targetPageId = String(event.target.value);
-
-    //   //create a connection between the quizbranchnode and the selected target page id
-    //   this.editor.addNodeInput(event.target.value);
-    //   const inputNode = this.editor.getNodeFromId(event.target.value);
-    //   const inputIndex = Object.keys(inputNode.inputs).length - 1;
-    //   const input_class = Object.keys(inputNode.inputs)[inputIndex];
-    //   answerArray[index].targetPageInputClass = input_class;
-
-    //   //update the quiz branch nodes data
-    //   this.editor.updateNodeDataFromId(this.selectedNode.id, {
-    //     title: this.selectedNode.data.title,
-    //     question: this.selectedNode.data.question,
-    //     answers: answerArray,
-    //   });
-
-    //   //get the right output using the answers index which corresponds to the output index
-    //   const output_class = Object.keys(this.selectedNode.outputs)[index];
-
-    //   //new connection
-    //   this.editor.addConnection(
-    //     this.selectedNode.id,
-    //     event.target.value,
-    //     output_class,
-    //     input_class
-    //   );
-    // }
-    // //von clear
-    // else {
-    //   //remove the node input and thus the existing connection
-    //   this.editor.removeNodeInput(
-    //     answerArray[index].targetPageId,
-    //     answerArray[index].targetPageInputClass
-    //   );
-
-    //   //update the answer to its new target page
-    //   answerArray[index].targetPageId = "undefined";
-    //   answerArray[index].targetPageInputClass = "undefined";
-
-    //   //update the quiz branch nodes data
-    //   this.editor.updateNodeDataFromId(this.selectedNode.id, {
-    //     title: this.selectedNode.data.title,
-    //     question: this.selectedNode.data.question,
-    //     answers: answerArray,
-    //   });
-    // }
-
-    // const dispatchEvent = new CustomEvent("nodeDataUpdated", {
-    //   detail: { nodeId: this.selectedNode.id },
-    //   bubbles: true, // Allows the event to bubble up through the DOM
-    //   composed: true, // Allows the event to pass through shadow DOM boundaries
-    // });
-    // this.dispatchEvent(dispatchEvent);
   }
 }
