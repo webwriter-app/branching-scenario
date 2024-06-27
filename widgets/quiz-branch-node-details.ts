@@ -466,27 +466,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
         );
       }
 
-      // const connectedNode = Object.entries(this.selectedNode.outputs)[index][1]
-      //   ?.connections[0]?.node;
-
-      // if (connectedNode) {
-      //   answerArray[index].targetId = connectedNode;
-      // } else {
-      //   answerArray[index].targetId = "undefined";
-      // }
-
-      // this.editor.updateNodeDataFromId(this.selectedNode.id, {
-      //   title: this.selectedNode.data.title,
-      //   question: this.selectedNode.data.question,
-      //   answers: answerArray,
-      // });
-
-      // const dispatchEvent = new CustomEvent("nodeDataUpdated", {
-      //   detail: { nodeId: this.selectedNode.id },
-      //   bubbles: true, // Allows the event to bubble up through the DOM
-      //   composed: true, // Allows the event to pass through shadow DOM boundaries
-      // });
-      // this.dispatchEvent(dispatchEvent);
+      //this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
     }
   }
 }

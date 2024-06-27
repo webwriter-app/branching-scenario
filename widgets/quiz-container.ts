@@ -6,6 +6,7 @@ import {
   query,
   state,
   queryAssignedElements,
+  queryAll,
 } from "lit/decorators.js";
 import { Gamebook, Page, Answer } from "./gamebook-model";
 
@@ -35,6 +36,8 @@ export class QuizContainer extends LitElementWw {
 
   @property({ type: String, attribute: true, reflect: true }) quiz?;
 
+  @queryAll("sl-button") answerButtons;
+
   @query(".dialog") dialog: SlDialog;
 
   // Query the slot element
@@ -53,7 +56,10 @@ export class QuizContainer extends LitElementWw {
           <div>
             ${JSON.parse(this.quiz).answers.map(
               (answer) =>
-                html`<sl-button>${(answer as Answer).text}</sl-button>`
+                html`<sl-button
+                  pageTargetId="${(answer as Answer).targetPageId}"
+                  >${(answer as Answer).text}</sl-button
+                >`
             )}
           </div>
         </sl-dialog>

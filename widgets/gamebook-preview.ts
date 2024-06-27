@@ -102,14 +102,16 @@ export class GamebookPreview extends LitElementWw {
   //TODO: this seems to be laggy. consider saving the pagecontainer content directly into gamebook structure or drawflownode structure.
   //This would also fix the editability issue. However, I would then need to rebuild the webwriter preview view as well
   */
-  private _navigateWithLinkButton(targetId: number) {
+  private _navigateTo(targetId: number) {
     //
     this.gamebookContainers.forEach((container) => {
       if (container.drawflowNodeId == targetId) {
         if (container instanceof PageContainer) {
           this._navigateToPage(targetId);
+          this._initializeLinkButtons(targetId);
         } else if (container instanceof QuizContainer) {
           this._showQuizBranchDialog(targetId);
+          this._initializeQuizButtons(targetId);
         }
         // Add more conditions as needed
       }
@@ -168,9 +170,19 @@ export class GamebookPreview extends LitElementWw {
     //initialise the elements on the origin page
     container.linkButtons.forEach((button) => {
       const targetId = parseInt(button.getAttribute("dataTargetId"), 10);
-      button.addEventListener("click", () =>
-        this._navigateWithLinkButton(targetId)
-      );
+      button.addEventListener("click", () => this._navigateTo(targetId));
+    });
+  }
+
+  private _initializeQuizButtons(containerId: Number) {
+    const container = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == containerId
+    );
+
+    //initialise the elements on the origin page
+    container.answerButtons.forEach((button) => {
+      const targetId = parseInt(button.getAttribute("pageTargetId"), 10);
+      button.addEventListener("click", () => this._navigateTo(targetId));
     });
   }
 }

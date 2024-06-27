@@ -694,7 +694,28 @@ export class WebWriterBranchingScenario extends LitElementWw {
         } else if (
           this.editor.getNodeFromId(output_id).class == "quiz-branch"
         ) {
-          console.log("test");
+          const quizBranchNode = this.editor.getNodeFromId(output_id);
+          const index = Object.keys(quizBranchNode.outputs).indexOf(
+            output_class
+          );
+
+          if (index != -1) {
+            const answerArray = quizBranchNode.data.answers;
+            answerArray[index].targetPageId = input_id;
+
+            this.editor.updateNodeDataFromId(quizBranchNode.id, {
+              title: quizBranchNode.data.title,
+              question: quizBranchNode.data.question,
+              answers: answerArray,
+            });
+
+            const dispatchEvent = new CustomEvent("nodeDataUpdated", {
+              detail: { nodeId: quizBranchNode.id },
+              bubbles: true, // Allows the event to bubble up through the DOM
+              composed: true, // Allows the event to pass through shadow DOM boundaries
+            });
+            this.dispatchEvent(dispatchEvent);
+          }
         }
       }
     );
@@ -721,6 +742,28 @@ export class WebWriterBranchingScenario extends LitElementWw {
         } else if (
           this.editor.getNodeFromId(output_id).class == "quiz-branch"
         ) {
+          const quizBranchNode = this.editor.getNodeFromId(output_id);
+          const index = Object.keys(quizBranchNode.outputs).indexOf(
+            output_class
+          );
+
+          if (index != -1) {
+            const answerArray = quizBranchNode.data.answers;
+            answerArray[index].targetPageId = "undefined";
+
+            this.editor.updateNodeDataFromId(quizBranchNode.id, {
+              title: quizBranchNode.data.title,
+              question: quizBranchNode.data.question,
+              answers: answerArray,
+            });
+
+            const dispatchEvent = new CustomEvent("nodeDataUpdated", {
+              detail: { nodeId: quizBranchNode.id },
+              bubbles: true, // Allows the event to bubble up through the DOM
+              composed: true, // Allows the event to pass through shadow DOM boundaries
+            });
+            this.dispatchEvent(dispatchEvent);
+          }
         }
       }
     );
