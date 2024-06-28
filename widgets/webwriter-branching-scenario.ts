@@ -18,17 +18,23 @@ import {
   SlIconButton,
   SlDivider,
   SlTextarea,
+  SlMenu,
+  SlMenuItem,
+  SlDropdown,
+  SlIcon,
 } from "@shoelace-style/shoelace";
 
-//Bootstrap Icon Import
-import FileEarmarkPlus from "bootstrap-icons/icons/file-earmark-plus.svg";
-import FileEarmark from "bootstrap-icons/icons/file-earmark.svg";
-import ZoomIn from "bootstrap-icons/icons/zoom-in.svg";
-import ZoomOut from "bootstrap-icons/icons/zoom-out.svg";
-import ArrowRightCircleFill from "bootstrap-icons/icons/arrow-right-circle-fill.svg";
-import StopFill from "bootstrap-icons/icons/stop-fill.svg";
-import PlayFill from "bootstrap-icons/icons/play-fill.svg";
-import ThreeDotsVertical from "bootstrap-icons/icons/three-dots-vertical.svg";
+//@tabler icons
+import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
+import filePlus from "@tabler/icons/outline/file-plus.svg";
+import playerStop from "@tabler/icons/filled/player-stop.svg";
+import playerPlay from "@tabler/icons/filled/player-play.svg";
+import file from "@tabler/icons/outline/file.svg";
+import circleArrowRight from "@tabler/icons/filled/circle-arrow-right.svg";
+import dotsVertical from "@tabler/icons/outline/dots-vertical.svg";
+import zoomIn from "@tabler/icons/outline/zoom-in.svg";
+import zoomOut from "@tabler/icons/outline/zoom-out.svg";
+import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
 
 //Drawflow Imports
 import Drawflow, { DrawflowConnection } from "drawflow";
@@ -108,6 +114,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-textarea": SlTextarea,
       "sl-divider": SlDivider,
       "sl-dialog": SlDialog,
+      "sl-icon": SlIcon,
       "sl-icon-button": SlIconButton,
       "page-node-details": PageNodeDetails,
       "quiz-branch-node-details": QuizBranchNodeDetails,
@@ -115,6 +122,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "page-container": PageContainer,
       "link-button": LinkButton,
       "quiz-container": QuizContainer,
+      "sl-menu": SlMenu,
+      "sl-menu-item": SlMenuItem,
+      "sl-dropdown": SlDropdown,
     };
   }
 
@@ -157,7 +167,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
             <div class="controls">
               <div class="first-item">
                 <sl-icon-button
-                  src=${this.inPreviewMode ? StopFill : PlayFill}
+                  src=${this.inPreviewMode ? playerStop : playerPlay}
                   class="iconButton"
                   @click=${() => this._switchMode()}
                 >
@@ -182,7 +192,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   </sl-textarea>
               </div>
                 <sl-icon-button
-                        src=${FileEarmarkPlus}
+                        src=${filePlus}
                         class="iconButton"
                         style=${
                           this.inPreviewMode
@@ -192,6 +202,25 @@ export class WebWriterBranchingScenario extends LitElementWw {
                         @click=${() => this._addPageNode("Untitled Page")}
                       >
                       </sl-icon-button>
+                      <sl-dropdown>
+          <sl-button slot="trigger">
+            <sl-icon src=${arrowsSplit2} slot="prefix"></sl-icon>
+            Add Branch
+          </sl-button>
+          <sl-menu>
+            <sl-menu-item
+              @click=${() => this._addQuizBranchNodeToSelectedNode()}
+            >
+              <object
+                slot="prefix"
+                type="image/svg+xml"
+                data=${helpSquareRounded}
+              ></object>
+              Quiz
+            </sl-menu-item>
+            <sl-menu-item>Other Types</sl-menu-item>
+          </sl-menu>
+        </sl-dropdown>
                       <sl-divider vertical style=${
                         this.inPreviewMode
                           ? "display: none;"
@@ -225,14 +254,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
                       <div class="zoomControls">
                         <sl-icon-button
                           id="zoomInBtn"
-                          src=${ZoomIn}
+                          src=${zoomIn}
                           style="font-size: auto;"
                           @click=${() => this.editor.zoom_in()}
                         >
                         </sl-icon-button>
                         <sl-icon-button
                           id="zoomOutBtn"
-                          src=${ZoomOut}
+                          src=${zoomOut}
                           style="font-size: auto;"
                           @click=${() => this.editor.zoom_out()}
                         >
@@ -321,15 +350,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
     const containerDiv = document.createElement("div");
 
     // Create the icon div
-    const iconDiv = document.createElement("div");
-    iconDiv.classList.add("div-page-icon");
-    iconDiv.innerHTML = FileEarmark.split(",")[1];
-    const svgElement = iconDiv.querySelector("svg");
-    if (svgElement) {
-      svgElement.classList.add("page-svg");
-    }
-    iconDiv.appendChild(svgElement);
-    containerDiv.appendChild(iconDiv);
+    // Create the icon div
+    const icon = document.createElement("sl-icon") as SlIcon;
+    icon.setAttribute("src", file);
+    icon.style.fontSize = "48px";
+
+    containerDiv.appendChild(icon);
 
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("content");
@@ -337,13 +363,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
     const badge = document.createElement("div");
     badge.classList.add("badge");
 
-    let svgContent = ArrowRightCircleFill.split(",")[1];
-    badge.innerHTML = svgContent;
-    const arrowSVG = badge.querySelector("svg");
-    if (arrowSVG) {
-      arrowSVG.classList.add("arrow-svg");
-    }
-    badge.appendChild(arrowSVG);
+    const arrowIcon = document.createElement("sl-icon") as SlIcon;
+    arrowIcon.setAttribute("src", circleArrowRight);
+
+    badge.appendChild(arrowIcon);
 
     const nameLabel = document.createElement("p");
     nameLabel.textContent = "Start Page";
@@ -360,15 +383,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
     containerDiv.appendChild(contentDiv);
 
     // Create the icon div
-    const threeDotsDiv = document.createElement("div");
-    threeDotsDiv.classList.add("div-threedots-icon");
-    threeDotsDiv.innerHTML = ThreeDotsVertical.split(",")[1];
-    const threeDots = threeDotsDiv.querySelector("svg");
-    if (threeDots) {
-      threeDots.classList.add("threedots-svg");
-    }
-    threeDotsDiv.appendChild(threeDots);
-    containerDiv.appendChild(threeDotsDiv);
+    const threeDotsIcon = document.createElement("sl-icon") as SlIcon;
+    threeDotsIcon.setAttribute("src", dotsVertical);
+    threeDotsIcon.style.fontSize = "48px";
+
+    containerDiv.appendChild(threeDotsIcon);
 
     containerDiv.classList.add("container");
 
@@ -401,16 +420,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
     const containerDiv = document.createElement("div");
 
     // Create the icon div
-    const iconDiv = document.createElement("div");
-    iconDiv.classList.add("div-page-icon");
-    iconDiv.innerHTML = FileEarmark;
-    const svgElement = iconDiv.querySelector("svg");
-    if (svgElement) {
-      svgElement.classList.add("page-svg");
-    }
-    iconDiv.appendChild(svgElement);
-    containerDiv.appendChild(iconDiv);
+    const icon = document.createElement("sl-icon") as SlIcon;
+    icon.setAttribute("src", file);
+    icon.style.fontSize = "48px";
 
+    containerDiv.appendChild(icon);
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("content");
     const nameLabel = document.createElement("p");
@@ -426,15 +440,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
     containerDiv.appendChild(contentDiv);
 
     // Create the icon div
-    const threeDotsDiv = document.createElement("div");
-    threeDotsDiv.classList.add("div-threedots-icon");
-    threeDotsDiv.innerHTML = ThreeDotsVertical;
-    const threeDots = threeDotsDiv.querySelector("svg");
-    if (threeDots) {
-      threeDots.classList.add("threedots-svg");
-    }
-    threeDotsDiv.appendChild(threeDots);
-    containerDiv.appendChild(threeDotsDiv);
+    const threeDotsIcon = document.createElement("sl-icon") as SlIcon;
+    threeDotsIcon.setAttribute("src", dotsVertical);
+    threeDotsIcon.style.fontSize = "48px";
+
+    containerDiv.appendChild(threeDotsIcon);
 
     containerDiv.classList.add("container");
 
@@ -878,6 +888,78 @@ export class WebWriterBranchingScenario extends LitElementWw {
     // this.gamebook.addLinkToPage(
     //   parseInt(originNodeId, 10),
     //   parseInt(sinkNodeId, 10)
+    // );
+  }
+
+  /*
+
+
+  */
+  private _addQuizBranchNodeToSelectedNode() {
+    const data = {
+      title: "Quiz Branch",
+      question: "",
+      answers: [],
+    };
+
+    // Create the container div
+    const containerDiv = document.createElement("div");
+
+    // Create the icon div
+    const icon = document.createElement("sl-icon") as SlIcon;
+    icon.setAttribute("src", helpSquareRounded);
+    icon.style.fontSize = "48px";
+
+    containerDiv.appendChild(icon);
+
+    const contentDiv = document.createElement("div");
+    contentDiv.classList.add("content");
+    const nameLabel = document.createElement("p");
+    nameLabel.textContent = "Quiz";
+    contentDiv.appendChild(nameLabel);
+    containerDiv.appendChild(contentDiv);
+
+    // Create the icon div
+    const dotsIcon = document.createElement("sl-icon") as SlIcon;
+    dotsIcon.setAttribute("src", dotsVertical);
+    dotsIcon.style.fontSize = "48px";
+
+    containerDiv.appendChild(dotsIcon);
+
+    containerDiv.classList.add("container");
+
+    const containerHtml = containerDiv.outerHTML;
+
+    this.editor.addNode(
+      "Quiz Branch",
+      0,
+      0,
+      0,
+      0,
+      "quiz-branch",
+      data,
+      containerHtml,
+      false
+    );
+
+    //TODO: Adding a connection (and thus a link button into a page container) somehow messes with the entire slot's shadow dom
+    //Everything is surrounded by one page conatiner and the link button and quiz-container are also surrounded by a page container
+
+    // this.editor.addNodeInput(this.createdNodeId);
+    // const inputs = this.editor.getNodeFromId(this.createdNodeId).inputs;
+    // const inputKeys = Object.keys(inputs);
+    // const lastInputKey = inputKeys[inputKeys.length - 1];
+
+    // this._addOutputToSelectedNode();
+    // const outputs = this.editor.getNodeFromId(this.selectedNode.id).outputs;
+    // const outputKeys = Object.keys(outputs);
+    // const lastOutputKey = outputKeys[outputKeys.length - 1];
+
+    // this.editor.addConnection(
+    //   this.selectedNode.id,
+    //   this.createdNodeId,
+    //   lastOutputKey,
+    //   lastInputKey
     // );
   }
 }

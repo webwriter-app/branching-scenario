@@ -1,7 +1,7 @@
 import { css } from "lit";
 
 export default css`
-  .test {
+  .quiz {
     width: 100%;
     height: auto;
     position: unset;
@@ -13,5 +13,11 @@ export default css`
 
   sl-dialog::part(overlay) {
     position: absolute;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 `;

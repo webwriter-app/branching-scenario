@@ -20,11 +20,11 @@ import {
   SlTextarea,
 } from "@shoelace-style/shoelace";
 
-//Bootstrap Icon Import
-import Trash from "bootstrap-icons/icons/trash.svg";
-import Plus from "bootstrap-icons/icons/plus.svg";
-import Dash from "bootstrap-icons/icons/dash.svg";
-import PatchQuestion from "bootstrap-icons/icons/patch-question.svg";
+//Tabler Icon Import
+import plus from "@tabler/icons/outline/plus.svg";
+import file from "@tabler/icons/outline/file.svg";
+import minus from "@tabler/icons/outline/minus.svg";
+import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
 
 //CSS
 import styles from "../css/quiz-branch-node-details-css";
@@ -68,11 +68,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
     return html` <div>
       <div class="title-bar">
         <div class="div-icon">
-          <object
-            type="image/svg+xml"
-            data=${PatchQuestion}
-            class="svg"
-          ></object>
+          <sl-icon src=${helpSquareRounded}></sl-icon>
         </div>
         <div class="div-title">
           <p class="title">${this.selectedNode.data.title}</p>
@@ -88,7 +84,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
               </p>
               <sl-icon-button
                 class="last-item"
-                src=${Plus}
+                src=${plus}
                 @click=${this._addInputToSelectedNode}
               ></sl-icon-button>
             </div>
@@ -110,7 +106,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
                       : "No connection"}
                   </p>
                   <sl-icon-button
-                    src=${Trash}
+                    src=${minus}
                     @click=${() => this._deleteInputOfSelectedNode(input_class)}
                   >
                   </sl-icon-button>
@@ -137,7 +133,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
           ${Object.keys(this.selectedNode.outputs).length.toString()}
         </p>
         <sl-button @click=${this._addAnswerToQuizBranchNode}>
-          <object slot="prefix" type="image/svg+xml" data=${Plus}></object>
+          <object slot="prefix" type="image/svg+xml" data=${plus}></object>
           Add Answer
         </sl-button>
       </div>
@@ -183,7 +179,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
                   >Correct</sl-checkbox
                 >
                 <sl-icon-button
-                  src=${Trash}
+                  src=${minus}
                   @click=${() => this._removeAnswerFromQuizBranchNode(answer)}
                 ></sl-icon-button>
               </div>

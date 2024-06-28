@@ -26,18 +26,19 @@ import {
   SlMenuItem,
   SlIconButton,
   SlInput,
+  SlIcon,
 } from "@shoelace-style/shoelace";
 
 import { LinkButton } from "./link-button";
 
-//Bootstrap Icon Import
-import Plus from "bootstrap-icons/icons/plus.svg";
-import Dash from "bootstrap-icons/icons/dash.svg";
-import Journal from "bootstrap-icons/icons/journal.svg";
-import FileEarmark from "bootstrap-icons/icons/file-earmark.svg";
-import PatchQuestion from "bootstrap-icons/icons/patch-question.svg";
-import ThreeDotsVertical from "bootstrap-icons/icons/three-dots-vertical.svg";
-import Trash from "bootstrap-icons/icons/trash.svg";
+//Tabler Icon Import
+import plus from "@tabler/icons/outline/plus.svg";
+import file from "@tabler/icons/outline/file.svg";
+import minus from "@tabler/icons/outline/minus.svg";
+import route2 from "@tabler/icons/outline/route-2.svg";
+
+//tabler icons
+import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 
 //CSS
 import styles from "../css/page-node-details-css";
@@ -57,6 +58,7 @@ export class PageNodeDetails extends LitElementWw {
       "sl-select": SlSelect,
       "sl-option": SlOption,
       "sl-input": SlInput,
+      "sl-icon": SlIcon,
       "link-button": LinkButton,
     };
   }
@@ -105,7 +107,7 @@ export class PageNodeDetails extends LitElementWw {
     return html` <div class="page-node-details">
       <div class="title-bar">
         <div class="div-icon">
-          <object type="image/svg+xml" data=${FileEarmark} class="svg"></object>
+          <object type="image/svg+xml" data=${file} class="svg"></object>
         </div>
         <div class="div-title">
           <p class="title">${this.selectedNode.data.title}</p>
@@ -121,7 +123,7 @@ export class PageNodeDetails extends LitElementWw {
               </p>
               <sl-icon-button
                 class="last-item"
-                src=${Plus}
+                src=${plus}
                 @click=${this._addInputToSelectedNode}
               ></sl-icon-button>
             </div>
@@ -143,7 +145,7 @@ export class PageNodeDetails extends LitElementWw {
                       : "No connection"}
                   </p>
                   <sl-icon-button
-                    src=${Trash}
+                    src=${minus}
                     @click=${() => this._deleteInputOfSelectedNode(input_class)}
                   >
                   </sl-icon-button>
@@ -162,7 +164,7 @@ export class PageNodeDetails extends LitElementWw {
               </p>
               <sl-icon-button
                 class="last-item"
-                src=${Plus}
+                src=${plus}
                 @click=${this._addOutputToSelectedNode}
               ></sl-icon-button>
             </div>
@@ -184,7 +186,7 @@ export class PageNodeDetails extends LitElementWw {
                       : "No connection"}
                   </p>
                   <sl-icon-button
-                    src=${Trash}
+                    src=${minus}
                     @click=${() =>
                       this._deleteOutputOfSelectedNode(output_class)}
                   >
@@ -216,29 +218,10 @@ export class PageNodeDetails extends LitElementWw {
         <sl-button
           @click=${() => this._connectSelectedNodes()}
           ?disabled=${!this.isNodeSelected}
-          >Add Connection</sl-button
         >
-        <sl-divider vertical style="height: 30px;"></sl-divider>
-
-        <sl-dropdown>
-          <sl-button slot="trigger">
-            <object slot="prefix" type="image/svg+xml" data=${Plus}></object>
-            Branch
-          </sl-button>
-          <sl-menu>
-            <sl-menu-item
-              @click=${() => this._addQuizBranchNodeToSelectedNode()}
-            >
-              <object
-                slot="prefix"
-                type="image/svg+xml"
-                data=${PatchQuestion}
-              ></object>
-              Quiz
-            </sl-menu-item>
-            <sl-menu-item>Other Types</sl-menu-item>
-          </sl-menu>
-        </sl-dropdown>
+          <sl-icon slot="prefix" src="${route2}"></sl-icon>
+          Connect</sl-button
+        >
       </div>
       <div class="pageDiv">
         <div class="page">
@@ -320,82 +303,6 @@ export class PageNodeDetails extends LitElementWw {
       lastOutputKey,
       lastInputKey
     );
-  }
-
-  private _addQuizBranchNodeToSelectedNode() {
-    const data = {
-      title: "Quiz Branch",
-      question: "",
-      answers: [],
-    };
-
-    // Create the container div
-    const containerDiv = document.createElement("div");
-
-    // Create the icon div
-    const iconDiv = document.createElement("div");
-    iconDiv.classList.add("div-page-icon");
-    iconDiv.innerHTML = PatchQuestion.split(",")[1];
-    const svgElement = iconDiv.querySelector("svg");
-    if (svgElement) {
-      svgElement.classList.add("question-svg");
-    }
-    iconDiv.appendChild(svgElement);
-    containerDiv.appendChild(iconDiv);
-
-    const contentDiv = document.createElement("div");
-    contentDiv.classList.add("content");
-    const nameLabel = document.createElement("p");
-    nameLabel.textContent = "Quiz";
-    contentDiv.appendChild(nameLabel);
-    containerDiv.appendChild(contentDiv);
-
-    // Create the icon div
-    const threeDotsDiv = document.createElement("div");
-    threeDotsDiv.classList.add("div-threedots-icon");
-    threeDotsDiv.innerHTML = ThreeDotsVertical;
-    const threeDots = threeDotsDiv.querySelector("svg");
-    if (threeDots) {
-      threeDots.classList.add("threedots-svg");
-    }
-    threeDotsDiv.appendChild(threeDots);
-    containerDiv.appendChild(threeDotsDiv);
-
-    containerDiv.classList.add("container");
-
-    const containerHtml = containerDiv.outerHTML;
-
-    this.editor.addNode(
-      "Quiz Branch",
-      0,
-      0,
-      0,
-      0,
-      "quiz-branch",
-      data,
-      containerHtml,
-      false
-    );
-
-    //TODO: Adding a connection (and thus a link button into a page container) somehow messes with the entire slot's shadow dom
-    //Everything is surrounded by one page conatiner and the link button and quiz-container are also surrounded by a page container
-
-    // this.editor.addNodeInput(this.createdNodeId);
-    // const inputs = this.editor.getNodeFromId(this.createdNodeId).inputs;
-    // const inputKeys = Object.keys(inputs);
-    // const lastInputKey = inputKeys[inputKeys.length - 1];
-
-    // this._addOutputToSelectedNode();
-    // const outputs = this.editor.getNodeFromId(this.selectedNode.id).outputs;
-    // const outputKeys = Object.keys(outputs);
-    // const lastOutputKey = outputKeys[outputKeys.length - 1];
-
-    // this.editor.addConnection(
-    //   this.selectedNode.id,
-    //   this.createdNodeId,
-    //   lastOutputKey,
-    //   lastInputKey
-    // );
   }
 
   private _resetSelect() {
