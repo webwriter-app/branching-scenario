@@ -13,7 +13,12 @@ import { Gamebook, Page, Answer } from "./gamebook-model";
 import { LinkButton } from "./link-button";
 
 //Shoelace
-import { SlButton, SlDialog, SlIconButton } from "@shoelace-style/shoelace";
+import {
+  SlButton,
+  SlDialog,
+  SlIcon,
+  SlIconButton,
+} from "@shoelace-style/shoelace";
 
 //CSS
 import styles from "../css/quiz-container-css";
@@ -32,6 +37,7 @@ export class QuizContainer extends LitElementWw {
       "sl-button": SlButton,
       "sl-dialog": SlDialog,
       "sl-icon-button": SlIconButton,
+      "sl-icon": SlIcon,
     };
   }
 
@@ -76,7 +82,7 @@ export class QuizContainer extends LitElementWw {
                   pageTargetId="${(answer as Answer).targetPageId}"
                 >
                   ${(answer as Answer).text}
-                  <sl-icon slot="suffix" src=${arrowRight}></sl-icon>
+                  <sl-icon slot="suffix" src="${arrowRight}"></sl-icon>
                 </sl-button>`
             )}
           </div>

@@ -211,11 +211,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
             <sl-menu-item
               @click=${() => this._addQuizBranchNodeToSelectedNode()}
             >
-              <object
+              <sl-icon
                 slot="prefix"
-                type="image/svg+xml"
-                data=${helpSquareRounded}
-              ></object>
+                src=${helpSquareRounded}
+              ></sl-icon>
               Quiz
             </sl-menu-item>
             <sl-menu-item>Other Types</sl-menu-item>

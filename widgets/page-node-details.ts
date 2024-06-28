@@ -107,7 +107,7 @@ export class PageNodeDetails extends LitElementWw {
     return html` <div class="page-node-details">
       <div class="title-bar">
         <div class="div-icon">
-          <object type="image/svg+xml" data=${file} class="svg"></object>
+          <sl-icon src=${file}></sl-icon>
         </div>
         <div class="div-title">
           <p class="title">${this.selectedNode.data.title}</p>

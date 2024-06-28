@@ -133,7 +133,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
           ${Object.keys(this.selectedNode.outputs).length.toString()}
         </p>
         <sl-button @click=${this._addAnswerToQuizBranchNode}>
-          <object slot="prefix" type="image/svg+xml" data=${plus}></object>
+          <sl-icon slot="prefix" src=${plus}></sl-icon>
           Add Answer
         </sl-button>
       </div>
