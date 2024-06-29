@@ -25,8 +25,7 @@ import {
 } from "@shoelace-style/shoelace";
 
 //@tabler icons
-import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
-import filePlus from "@tabler/icons/outline/file-plus.svg";
+import plus from "@tabler/icons/outline/plus.svg";
 import playerStop from "@tabler/icons/filled/player-stop.svg";
 import playerPlay from "@tabler/icons/filled/player-play.svg";
 import file from "@tabler/icons/outline/file.svg";
@@ -153,7 +152,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this._registerEditorEventHandlers();
 
     if (this.editorContent == null) {
-      this._addOriginToGraph();
+      this._addPageNode("First Page", true);
     } else {
       this.editor.import(this.editorContent);
     }
@@ -191,23 +190,22 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     >
                   </sl-textarea>
               </div>
-                <sl-icon-button
-                        src=${filePlus}
-                        class="iconButton"
-                        style=${
-                          this.inPreviewMode
-                            ? "display: none;"
-                            : "display: block;"
-                        }
-                        @click=${() => this._addPageNode("Untitled Page")}
-                      >
-                      </sl-icon-button>
-                      <sl-dropdown>
+            
+        <sl-dropdown style=${
+          this.inPreviewMode ? "display: none;" : "display: block;"
+        }>
           <sl-button slot="trigger">
-            <sl-icon src=${arrowsSplit2} slot="prefix"></sl-icon>
-            Add Branch
+            Add Node
+            <sl-icon src=${plus} slot="prefix" ></sl-icon>
           </sl-button>
-          <sl-menu>
+          <sl-menu style="width: 180px;">
+            <sl-menu-item @click=${() =>
+              this._addPageNode("Untitled Page", false)}><sl-icon
+                slot="prefix"
+                src=${file}
+              ></sl-icon>
+              Page
+            </sl-menu-item>
             <sl-menu-item
               @click=${() => this._addQuizBranchNodeToSelectedNode()}
             >
@@ -215,9 +213,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 slot="prefix"
                 src=${helpSquareRounded}
               ></sl-icon>
-              Quiz
+              Question
             </sl-menu-item>
-            <sl-menu-item>Other Types</sl-menu-item>
+          
           </sl-menu>
         </sl-dropdown>
                       <sl-divider vertical style=${
@@ -287,7 +285,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                             </page-node-details>
                           </div>`
                         : !this.inPreviewMode &&
-                          this.selectedNode.class == "quiz-branch"
+                          this.selectedNode.class == "question-branch"
                         ? html` <div id="selected-node-details">
                             <quiz-branch-node-details
                               .editor="${this.editor}"
@@ -339,77 +337,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
 
   */
-  private _addOriginToGraph() {
-    const pageContent = {
-      title: "First Page",
-      content: `<p>Testing HTML Editing</p>`,
-    };
-
-    // Create the container div
-    const containerDiv = document.createElement("div");
-
-    // Create the icon div
-    // Create the icon div
-    const icon = document.createElement("sl-icon") as SlIcon;
-    icon.setAttribute("src", file);
-    icon.style.fontSize = "48px";
-
-    containerDiv.appendChild(icon);
-
-    const contentDiv = document.createElement("div");
-    contentDiv.classList.add("content");
-
-    const badge = document.createElement("div");
-    badge.classList.add("badge");
-
-    const arrowIcon = document.createElement("sl-icon") as SlIcon;
-    arrowIcon.setAttribute("src", circleArrowRight);
-
-    badge.appendChild(arrowIcon);
-
-    const nameLabel = document.createElement("p");
-    nameLabel.textContent = "Start Page";
-    badge.appendChild(nameLabel);
-
-    const inputElement = document.createElement("input");
-    inputElement.type = "text";
-    inputElement.id = "test-textarea";
-    inputElement.placeholder = "Enter name";
-    inputElement.setAttribute("df-title", ""); // Adding df-title attribute
-    contentDiv.appendChild(badge);
-    contentDiv.appendChild(inputElement);
-
-    containerDiv.appendChild(contentDiv);
-
-    // Create the icon div
-    const threeDotsIcon = document.createElement("sl-icon") as SlIcon;
-    threeDotsIcon.setAttribute("src", dotsVertical);
-    threeDotsIcon.style.fontSize = "48px";
-
-    containerDiv.appendChild(threeDotsIcon);
-
-    containerDiv.classList.add("container");
-
-    const containerHtml = containerDiv.outerHTML;
-
-    this.editor.addNode(
-      "First Worksheet",
-      0,
-      0,
-      0,
-      0,
-      "origin",
-      pageContent,
-      containerHtml,
-      false
-    );
-  }
-
-  /*
-
-
-  */
-  private _addPageNode(title) {
+  private _addPageNode(title: string, isOrigin: boolean) {
     const pageContent = {
       title: title,
       content: `<p>Testing Slots HTML Editing</p>`,
@@ -417,35 +345,55 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     // Create the container div
     const containerDiv = document.createElement("div");
+    containerDiv.classList.add("container");
 
-    // Create the icon div
+    // Create page sl-icon
     const icon = document.createElement("sl-icon") as SlIcon;
     icon.setAttribute("src", file);
-    icon.style.fontSize = "48px";
-
+    icon.classList.add("pageIcon");
     containerDiv.appendChild(icon);
+
+    //
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("content");
-    const nameLabel = document.createElement("p");
-    nameLabel.classList.add("input-label");
-    nameLabel.textContent = "Page"; // Set the text content of the label
+
+    if (isOrigin) {
+      //Add Origin Page Marker
+      const badge = document.createElement("div");
+      badge.classList.add("badge");
+
+      const arrowIcon = document.createElement("sl-icon") as SlIcon;
+      arrowIcon.setAttribute("src", circleArrowRight);
+      badge.appendChild(arrowIcon);
+
+      const nameLabel = document.createElement("p");
+      nameLabel.textContent = "Start Page";
+      badge.appendChild(nameLabel);
+
+      contentDiv.appendChild(badge);
+    } else {
+      //Add label to the input for the nodes name
+      const nameLabel = document.createElement("p");
+      nameLabel.classList.add("input-label");
+      nameLabel.textContent = "Page"; // Set the text content of the label
+      contentDiv.appendChild(nameLabel);
+    }
+
+    //Add input for node name
     const inputElement = document.createElement("input");
     inputElement.type = "text";
     inputElement.id = "test-textarea";
     inputElement.placeholder = "Enter name";
     inputElement.setAttribute("df-title", ""); // Adding df-title attribute
-    contentDiv.appendChild(nameLabel);
     contentDiv.appendChild(inputElement);
+
     containerDiv.appendChild(contentDiv);
 
-    // Create the icon div
+    // Add three dots iccon
     const threeDotsIcon = document.createElement("sl-icon") as SlIcon;
     threeDotsIcon.setAttribute("src", dotsVertical);
-    threeDotsIcon.style.fontSize = "48px";
-
+    threeDotsIcon.classList.add("threeDots");
     containerDiv.appendChild(threeDotsIcon);
-
-    containerDiv.classList.add("container");
 
     const containerHtml = containerDiv.outerHTML;
 
@@ -455,7 +403,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       0,
       0,
       0,
-      "page",
+      isOrigin ? "origin" : "page",
       pageContent,
       containerHtml,
       false
@@ -478,7 +426,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       container.remove();
     });
 
-    this._addOriginToGraph();
+    this._addPageNode("First Page", true);
   }
 
   /*
@@ -530,7 +478,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.editorContent = { ...this.editor.drawflow };
       this.selectedNode = this.editor.getNodeFromId(nodeId);
 
-      if (this.selectedNode.class == "quiz-branch") {
+      if (this.selectedNode.class == "question-branch") {
         //since when this node is created the page node details are open, the page container is seen and the quizcontainer gets added into it.
         //can I dictate on what level the quiz container in the slots should be added?
         const quizContainer = this.gamebookContainers.find(
@@ -562,7 +510,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
             container.hide();
           }
         });
-      } else if (this.selectedNode.class == "quiz-branch") {
+      } else if (this.selectedNode.class == "question-branch") {
         this.gamebookContainers.forEach((container) => {
           container.hide();
         });
@@ -613,7 +561,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.appendChild(pageContainer);
       }
       //
-      else if (createdNode.class == "quiz-branch") {
+      else if (createdNode.class == "question-branch") {
         //since when this node is created the page node details are open, the page container is seen and the quizcontainer gets added into it.
         //can I dictate on what level the quiz container in the slots should be added?
         const quizContainer = document.createElement(
@@ -701,7 +649,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
             input_class
           );
         } else if (
-          this.editor.getNodeFromId(output_id).class == "quiz-branch"
+          this.editor.getNodeFromId(output_id).class == "question-branch"
         ) {
           const quizBranchNode = this.editor.getNodeFromId(output_id);
           const index = Object.keys(quizBranchNode.outputs).indexOf(
@@ -749,7 +697,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
             linkButton.remove();
           }
         } else if (
-          this.editor.getNodeFromId(output_id).class == "quiz-branch"
+          this.editor.getNodeFromId(output_id).class == "question-branch"
         ) {
           const quizBranchNode = this.editor.getNodeFromId(output_id);
           const index = Object.keys(quizBranchNode.outputs).indexOf(
@@ -883,11 +831,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
     const par = document.createElement("p");
     par.textContent = "";
     pageContainer.appendChild(par);
-
-    // this.gamebook.addLinkToPage(
-    //   parseInt(originNodeId, 10),
-    //   parseInt(sinkNodeId, 10)
-    // );
   }
 
   /*
@@ -896,69 +839,48 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   private _addQuizBranchNodeToSelectedNode() {
     const data = {
-      title: "Quiz Branch",
+      title: "Question",
       question: "",
       answers: [],
     };
 
     // Create the container div
     const containerDiv = document.createElement("div");
+    containerDiv.classList.add("container");
 
     // Create the icon div
     const icon = document.createElement("sl-icon") as SlIcon;
     icon.setAttribute("src", helpSquareRounded);
     icon.style.fontSize = "48px";
-
     containerDiv.appendChild(icon);
 
+    //
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("content");
     const nameLabel = document.createElement("p");
-    nameLabel.textContent = "Quiz";
+    nameLabel.textContent = "Question";
     contentDiv.appendChild(nameLabel);
-    containerDiv.appendChild(contentDiv);
 
     // Create the icon div
     const dotsIcon = document.createElement("sl-icon") as SlIcon;
     dotsIcon.setAttribute("src", dotsVertical);
-    dotsIcon.style.fontSize = "48px";
+    dotsIcon.classList.add("dotsIcon");
+    contentDiv.appendChild(dotsIcon);
 
-    containerDiv.appendChild(dotsIcon);
-
-    containerDiv.classList.add("container");
+    containerDiv.appendChild(contentDiv);
 
     const containerHtml = containerDiv.outerHTML;
 
     this.editor.addNode(
-      "Quiz Branch",
+      "Question Branch",
       0,
       0,
       0,
       0,
-      "quiz-branch",
+      "question-branch",
       data,
       containerHtml,
       false
     );
-
-    //TODO: Adding a connection (and thus a link button into a page container) somehow messes with the entire slot's shadow dom
-    //Everything is surrounded by one page conatiner and the link button and quiz-container are also surrounded by a page container
-
-    // this.editor.addNodeInput(this.createdNodeId);
-    // const inputs = this.editor.getNodeFromId(this.createdNodeId).inputs;
-    // const inputKeys = Object.keys(inputs);
-    // const lastInputKey = inputKeys[inputKeys.length - 1];
-
-    // this._addOutputToSelectedNode();
-    // const outputs = this.editor.getNodeFromId(this.selectedNode.id).outputs;
-    // const outputKeys = Object.keys(outputs);
-    // const lastOutputKey = outputKeys[outputKeys.length - 1];
-
-    // this.editor.addConnection(
-    //   this.selectedNode.id,
-    //   this.createdNodeId,
-    //   lastOutputKey,
-    //   lastInputKey
-    // );
   }
 }

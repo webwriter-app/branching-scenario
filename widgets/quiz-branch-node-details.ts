@@ -162,8 +162,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
                   ${Object.keys(this.nodesInEditor)
                     .filter(
                       (key) =>
-                        this.nodesInEditor[key].id !== this.selectedNode.id &&
-                        this.nodesInEditor[key].class != "quiz-branch"
+                        this.nodesInEditor[key].id !== this.selectedNode.id
                     )
                     .map(
                       (key) =>

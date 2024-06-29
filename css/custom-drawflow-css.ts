@@ -26,120 +26,7 @@ export default css`
   /* TODO: make origin of class page. just add the differing css to page class  */
   /* ------- */
 
-  .drawflow .drawflow-node.page {
-    background: #ffffff;
-    border: 1px solid #cecece;
-
-    font-family: "Roboto", sans-serif;
-
-    -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
-    box-shadow: 0 2px 20px 2px #d0d0d0;
-
-    padding: 0px;
-
-    align-items: center;
-
-    box-sizing: border-box;
-
-    width: 330px;
-  }
-
-  .drawflow .drawflow-node.page .container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-
-    padding-left: 15px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-right: 20px;
-
-    gap: 10px;
-    box-sizing: border-box;
-  }
-
-  .drawflow .drawflow-node.page .container .div-page-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-
-    width: 60px;
-    height: 60px;
-    aspect-ratio: 1;
-
-    /* border-radius: 8px;
-    border: 1px solid #e4e4e4; */
-
-    font-size: 0px;
-  }
-
-  .drawflow .drawflow-node.page .container .page-svg {
-    display: block;
-    fill: black;
-    aspect-ratio: 1; /* Ensure the svg is square */
-    width: 35px;
-    height: 35px;
-    pointer-events: none;
-  }
-
-  .drawflow .drawflow-node.page .container .div-threedots-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    font-size: 0px;
-    padding: 10px;
-    margin-left: auto;
-  }
-
-  .drawflow .drawflow-node.page .container .threedots-svg {
-    display: block;
-    fill: #7c7c7c;
-    aspect-ratio: 1; /* Ensure the svg is square */
-    width: 25px;
-    height: 25px;
-    pointer-events: none;
-  }
-
-  .drawflow-node.page .content {
-    color: #71717a;
-    display: flex;
-    width: 150px;
-    flex-direction: column;
-    justify-content: flex-start; /* Aligns items to the start of the container */
-    gap: 0px;
-    height: 60px;
-  }
-
-  .drawflow-node.page .content .input-label {
-    font-size: 14px;
-    color: #a1a1a1; /* gray tone */
-    margin: 2px;
-  }
-
-  .drawflow-node.page .content #test-textarea {
-    resize: none;
-    width: 100%;
-    text-align: left;
-    padding: 0.5rem;
-  }
-
-  .drawflow .drawflow-node:hover.page {
-    border: 1.5px solid #4ea9ff;
-  }
-
-  .drawflow .drawflow-node.selected.page {
-    background: #f4faff;
-    border: 3px solid #4ea9ff;
-    color: #215f98;
-    box-sizing: content-box;
-  }
-
-  /* ------- */
-  /* Origin */
-  /* ------- */
-
+  .drawflow .drawflow-node.page,
   .drawflow .drawflow-node.origin {
     background: #ffffff;
     border: 1px solid #cecece;
@@ -155,84 +42,55 @@ export default css`
 
     box-sizing: border-box;
 
-    width: 330px;
+    width: auto;
   }
 
-  .drawflow .drawflow-node.origin .container {
+  .drawflow-node.page .container,
+  .drawflow-node.origin .container {
     display: flex;
     flex-direction: row;
+    align-items: center;
     justify-content: center;
-
-    padding-left: 15px;
     padding-top: 15px;
     padding-bottom: 15px;
+    padding-left: 20px;
     padding-right: 20px;
 
-    gap: 10px;
+    gap: 20px;
     box-sizing: border-box;
   }
 
-  .drawflow .drawflow-node.origin .container .div-page-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-
-    width: 60px;
-    height: 60px;
-    aspect-ratio: 1;
-
-    /* border-radius: 8px;
-    border: 1px solid #e4e4e4; */
-
-    font-size: 0px;
+  .drawflow-node.page .container .threeDots,
+  .drawflow-node.origin .container .threeDots {
+    font-size: 24px;
   }
 
-  .drawflow .drawflow-node.origin .container .page-svg {
-    display: block;
-    fill: black;
-    aspect-ratio: 1; /* Ensure the svg is square */
-    width: 35px;
-    height: 35px;
-    pointer-events: none;
+  .drawflow-node.page .container .pageIcon,
+  .drawflow-node.origin .container .pageIcon {
+    font-size: 48px;
   }
 
-  .drawflow .drawflow-node.origin .container .div-threedots-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    font-size: 0px;
-    padding: 10px;
-    margin-left: auto;
-  }
-
-  .drawflow .drawflow-node.origin .container .threedots-svg {
-    display: block;
-    fill: #7c7c7c;
-    aspect-ratio: 1; /* Ensure the svg is square */
-    width: 25px;
-    height: 25px;
-    pointer-events: none;
-  }
-
+  .drawflow-node.page .content,
   .drawflow-node.origin .content {
     color: #71717a;
     display: flex;
 
     flex-direction: column;
-    justify-content: flex-start; /* Aligns items to the start of the container */
-    gap: 5px;
+    justify-content: flex-start;
     width: 150px;
+
+    gap: 3px;
     height: 60px;
   }
 
+  .drawflow-node.page .content .input-label,
   .drawflow-node.origin .content .input-label {
     font-size: 14px;
     color: #a1a1a1; /* gray tone */
     margin: 2px;
   }
 
+  .drawflow-node.page .content #test-textarea,
   .drawflow-node.origin .content #test-textarea {
     resize: none;
     width: 100%;
@@ -240,41 +98,12 @@ export default css`
     padding: 0.5rem;
   }
 
-  .drawflow-node.origin .badge {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: left;
-
-    color: #0ca349;
-
-    box-sizing: border-box;
-    padding: 3px 3px;
-
-    height: 25px;
-    width: 100px;
-  }
-
-  .drawflow-node.origin .badge .arrow-svg {
-    display: block;
-    box-sizing: border-box;
-    fill: #0ca349;
-    aspect-ratio: 1; /* Ensure the svg is square */
-    width: 16px;
-    height: 16px;
-    pointer-events: none;
-  }
-
-  .drawflow-node.origin .badge p {
-    font-size: 14px;
-    margin-left: 20px;
-  }
-
+  .drawflow .drawflow-node:hover.page,
   .drawflow .drawflow-node:hover.origin {
     border: 1.5px solid #4ea9ff;
-    box-sizing: border-box;
   }
 
+  .drawflow .drawflow-node.selected.page,
   .drawflow .drawflow-node.selected.origin {
     background: #f4faff;
     border: 3px solid #4ea9ff;
@@ -282,15 +111,36 @@ export default css`
     box-sizing: content-box;
   }
 
-  .drawflow-node.origin .drawflow-delete {
-    display: none;
+  /* ------- */
+  /* Origin */
+  /* ------- */
+
+  .drawflow-node.origin .badge {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    gap: 5px;
+
+    color: #0ca349;
+
+    box-sizing: border-box;
+    padding: 3px 3px;
+
+    height: 25px;
+    width: auto;
+  }
+
+  .drawflow-node.origin .badge p {
+    margin: 0px;
+    font-size: 14px;
   }
 
   /* ------- */
   /* BRANCHING */
   /* ------- */
 
-  .drawflow .drawflow-node.quiz-branch {
+  .drawflow .drawflow-node.question-branch {
     background: #ffffff;
     border: 1px solid #cecece;
 
@@ -309,7 +159,7 @@ export default css`
     min-height: 110px;
   }
 
-  .drawflow .drawflow-node.quiz-branch .container {
+  .drawflow .drawflow-node.question-branch .container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -321,66 +171,34 @@ export default css`
     padding: 10px;
   }
 
-  .drawflow .drawflow-node.quiz-branch .container .div-page-icon {
+  .drawflow .drawflow-node.question-branch .content {
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-
-    box-sizing: border-box;
-
-    width: 60px;
-    aspect-ratio: 1;
-
-    font-size: 0px;
+    width: 100%;
   }
 
-  .drawflow .drawflow-node.quiz-branch .container .question-svg {
-    display: block;
-    fill: black;
-    aspect-ratio: 1; /* Ensure the svg is square */
-    width: 45px;
-    height: 45px;
-    pointer-events: none;
+  .drawflow .drawflow-node.question-branch .dotsIcon {
+    position: absolute;
+    font-size: 24px;
+    right: 10px;
   }
 
-  .drawflow .drawflow-node.quiz-branch .content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    padding: 0px;
-  }
-
-  .drawflow .drawflow-node.quiz-branch .content p {
+  .drawflow .drawflow-node.question-branch p {
     font-size: 14px;
     font-weight: 400;
     height: 100%;
     margin: 0px;
   }
 
-  .drawflow .drawflow-node.quiz-branch .container .div-threedots-icon {
-    position: absolute;
-    bottom: 30px;
-    right: 25px;
-
-    font-size: 0px;
-  }
-
-  .drawflow .drawflow-node.quiz-branch .container .threedots-svg {
-    display: block;
-    fill: #7c7c7c;
-    aspect-ratio: 1; /* Ensure the svg is square */
-    width: 20px;
-    height: 20px;
-    pointer-events: none;
-  }
-
-  .drawflow .drawflow-node.quiz-branch:hover {
+  .drawflow .drawflow-node.question-branch:hover {
     border: 1.5px solid #c798ff;
   }
 
-  .drawflow .drawflow-node.quiz-branch.selected {
+  .drawflow .drawflow-node.question-branch.selected {
     border: 3px solid #c798ff;
+    color: #a152ff;
     background-color: #f7efff;
     box-sizing: content-box;
   }

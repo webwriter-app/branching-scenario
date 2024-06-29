@@ -57,7 +57,6 @@ export default css`
   .zoomControls {
     display: flex;
     flex-direction: row;
-    gap: 10px;
 
     box-sizing: border-box;
 
@@ -67,7 +66,7 @@ export default css`
     right: 10px;
     z-index: 5;
 
-    padding: 5px 10px;
+    padding: 0px;
 
     color: white;
     background: #555555;
@@ -83,7 +82,7 @@ export default css`
 
     float: right;
     position: absolute;
-    bottom: 65px;
+    bottom: 55px;
     right: 10px;
     z-index: 5;
 
