@@ -460,8 +460,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
           current_input_class
         );
       }
-
-      //this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
     }
   }
 }

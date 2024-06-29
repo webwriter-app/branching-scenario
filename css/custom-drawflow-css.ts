@@ -136,6 +136,10 @@ export default css`
     font-size: 14px;
   }
 
+  .drawflow-node.origin .drawflow-delete {
+    display: none;
+  }
+
   /* ------- */
   /* BRANCHING */
   /* ------- */

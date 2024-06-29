@@ -70,8 +70,6 @@ const NO_NODE_SELECTED: DrawflowNode = {
 //TODO: write this decision making down... work visually with node inputs? have a link component?
 @customElement("webwriter-branching-scenario")
 export class WebWriterBranchingScenario extends LitElementWw {
-  //
-
   //access nodes in the internal component DOM.
   @query("#drawflowEditorDiv")
   drawflowEditorDiv;
@@ -81,26 +79,23 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   @property({ type: Object, attribute: true, reflect: true }) editorContent;
 
-  //
   @property({ type: Number, attribute: true, reflect: true }) editorZoom = -1;
   @property({ type: String }) editorZoomString = "";
 
   @property({ type: Object, attribute: true }) selectedNode: DrawflowNode =
     NO_NODE_SELECTED;
 
-  //
   @property({ type: Object, attribute: true })
   gamebook: Gamebook = new Gamebook();
-  //
+
   @queryAssignedElements({
     flatten: true,
     selector: "page-container, quiz-container",
   })
   gamebookContainers;
 
-  //
   @state() inPreviewMode = false;
-  //
+
   static shadowRootOptions = {
     ...LitElement.shadowRootOptions,
     delegatesFocus: true,
@@ -130,7 +125,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
   //import CSS
   static styles = [style, styles, customDrawflowStyles];
 
-  //Called after the component's DOM has been updated the first time
+  /*
+  
+  */
   protected firstUpdated(_changedProperties: any): void {
     this.gamebookContainers.forEach((container) => {
       container.hide();
@@ -158,6 +155,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
   }
 
+  /*
+  
+  */
   render() {
     return html`
       ${this.isContentEditable
@@ -168,7 +168,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 <sl-icon-button
                   src=${this.inPreviewMode ? playerStop : playerPlay}
                   class="iconButton"
-                  @click=${() => this._switchMode()}
+                  @click=${() => this._togglePreviewMode()}
                 >
                   ${this.inPreviewMode ? "Cancel" : "Preview"}
                 </sl-icon-button>
@@ -207,7 +207,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
               Page
             </sl-menu-item>
             <sl-menu-item
-              @click=${() => this._addQuizBranchNodeToSelectedNode()}
+              @click=${() => this._addQuestionNode()}
             >
               <sl-icon
                 slot="prefix"
@@ -337,6 +337,389 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
 
   */
+  private _clearEditor() {
+    const dialog = this.shadowRoot.getElementById("dialog") as SlDialog;
+    dialog.hide();
+
+    this.selectedNode = NO_NODE_SELECTED;
+    this.editor.clear();
+    this.gamebook.clearPages();
+    //clear all the slotted PageContainers
+    this.gamebookContainers.forEach((container) => {
+      container.remove();
+    });
+
+    this._addPageNode("First Page", true);
+  }
+
+  /*
+
+
+  */
+  private _togglePreviewMode() {
+    if (this.inPreviewMode == true) {
+      this.inPreviewMode = false;
+      this.gamebookContainers.forEach((container) => {
+        container.hide();
+      });
+
+      const node = this.shadowRoot?.getElementById(
+        `node-${this.selectedNode.id}`
+      );
+      if (node) {
+        node.classList.remove("selected");
+      }
+
+      this.selectedNode = NO_NODE_SELECTED;
+    }
+    //
+    else if (this.inPreviewMode == false) {
+      this.inPreviewMode = true;
+
+      this.gamebookContainers.forEach((container) => {
+        container.hide();
+      });
+    }
+  }
+
+  /*
+
+
+  */
+  private _updateQuestionContainerFromQuestionNode(quizNode: DrawflowNode) {
+    const quizContainer = this.gamebookContainers.find(
+      (container) =>
+        container.getAttribute("drawflowNodeId") == quizNode.id &&
+        container instanceof QuizContainer
+    );
+
+    quizContainer.setAttribute("quiz", JSON.stringify(quizNode.data));
+  }
+
+  /*
+
+
+  */
+  private _showGamebookContainerById(nodeId: Number) {
+    this.gamebookContainers.forEach((container) => {
+      if (container.drawflowNodeId == nodeId) {
+        container.show();
+      } else {
+        container.hide();
+      }
+    });
+  }
+
+  /*
+
+
+  */
+  private _hideAllGamebookContainers() {
+    this.gamebookContainers.forEach((container) => {
+      container.hide();
+    });
+  }
+
+  /*
+
+
+  */
+  private _createPageContainerFromPageNode(pageNode: DrawflowNode) {
+    const pageContainer = document.createElement(
+      "page-container"
+    ) as PageContainer;
+    pageContainer.setAttribute("drawflowNodeId", pageNode.id.toString());
+
+    if (pageNode.class == "origin") {
+      pageContainer.setAttribute("originPage", "1");
+    } else {
+      pageContainer.setAttribute("originPage", "0");
+    }
+
+    const parser = new DOMParser();
+    const contentFromNode = parser.parseFromString(
+      pageNode.data.content,
+      "text/html"
+    );
+
+    // Loop through the child nodes of the body of the parsed document
+    contentFromNode.body.childNodes.forEach((node) => {
+      pageContainer.appendChild(node);
+    });
+
+    //to let it access editor
+    pageContainer.hide();
+    this.appendChild(pageContainer);
+  }
+
+  /* 
+  
+  
+  */
+  private _createQuestionContainerFromQuestionNode(questionNode: DrawflowNode) {
+    const quizContainer = document.createElement(
+      "quiz-container"
+    ) as QuizContainer;
+    quizContainer.setAttribute("drawflowNodeId", questionNode.id.toString());
+    quizContainer.style.position = "unset";
+
+    quizContainer.setAttribute("quiz", JSON.stringify(questionNode.data));
+
+    //to let it access editor
+    quizContainer.hide();
+    this.appendChild(quizContainer);
+  }
+
+  /* 
+  
+  
+  */
+  private _deleteGamebookContainerById(drawflowNodeId: Number) {
+    this.gamebookContainers.forEach((container) => {
+      if (container.drawflowNodeId == drawflowNodeId) {
+        container.remove();
+      }
+    });
+  }
+
+  /*
+
+
+  */
+  private _registerEditorEventHandlers() {
+    //This event only picks up data changes from elements marked with df-* in the node
+    //Currently only "page" nodes have such elements
+    this.editor.on("nodeDataChanged", (id) => {
+      this.editorContent = { ...this.editor.drawflow };
+      this.selectedNode = this.editor.getNodeFromId(id);
+    });
+
+    //custom event that indicates data is changed
+    this.addEventListener("nodeDataUpdated", (event) => {
+      this.editorContent = { ...this.editor.drawflow };
+      this.selectedNode = this.editor.getNodeFromId(event.detail.nodeId);
+
+      if (this.selectedNode.class == "question-branch") {
+        this._updateQuestionContainerFromQuestionNode(this.selectedNode);
+      }
+    });
+
+    // Event listener for node click
+    this.editor.on("nodeSelected", (id) => {
+      this.selectedNode = this.editor.getNodeFromId(id);
+
+      if (
+        this.selectedNode.class == "page" ||
+        this.selectedNode.class == "origin"
+      ) {
+        this._showGamebookContainerById(this.selectedNode.id);
+      } else if (this.selectedNode.class == "question-branch") {
+        this._hideAllGamebookContainers();
+      }
+    });
+
+    // Event listener for node unselected
+    this.editor.on("nodeUnselected", (boolean) => {
+      this.selectedNode = NO_NODE_SELECTED;
+      this._hideAllGamebookContainers();
+    });
+
+    //Event listerner for creation of a node
+    this.editor.on("nodeCreated", (id) => {
+      this.editorContent = { ...this.editor.drawflow };
+
+      let createdNode = this.editor.getNodeFromId(id);
+
+      if (createdNode.class == "page" || createdNode.class == "origin") {
+        this._createPageContainerFromPageNode(createdNode);
+      } else if (createdNode.class == "question-branch") {
+        this._createQuestionContainerFromQuestionNode(createdNode);
+      }
+    });
+
+    //Event listener for deletion of a node
+    this.editor.on("nodeRemoved", (id) => {
+      this._deleteGamebookContainerById(id);
+      this.editorContent = { ...this.editor.drawflow };
+    });
+
+    //Event listener for when a node got moved
+    this.editor.on("nodeMoved", (id) => {
+      this.editorContent = { ...this.editor.drawflow };
+    });
+
+    //Event listener for when a connection is selected
+    this.editor.on(
+      "connectionSelected",
+      ({ output_id, input_id, output_class, input_class }) => {
+        //
+        this.selectedNode = this.editor.getNodeFromId(output_id);
+        const selectedNodeInShadowRoot = this.shadowRoot?.getElementById(
+          `node-${output_id}`
+        );
+        if (selectedNodeInShadowRoot) {
+          selectedNodeInShadowRoot.classList.add("selected");
+        }
+
+        if (
+          this.selectedNode.class == "page" ||
+          this.selectedNode.class == "origin"
+        ) {
+          this._showGamebookContainerById(this.selectedNode.id);
+        } else if (this.selectedNode.class == "question-branch") {
+          this._hideAllGamebookContainers();
+        }
+
+        //
+      }
+    );
+
+    //event listener for when a connection is unselected
+    this.editor.on("connectionUnselected", (boolean) => {
+      //
+      const node = this.shadowRoot?.getElementById(
+        `node-${this.selectedNode.id}`
+      );
+      if (node) {
+        node.classList.remove("selected");
+      }
+
+      this.selectedNode = NO_NODE_SELECTED;
+
+      this._hideAllGamebookContainers();
+    });
+
+    //Event for created connections done e.g. via drag and drop
+    this.editor.on(
+      "connectionCreated",
+      ({ output_id, input_id, output_class, input_class }) => {
+        this.editorContent = { ...this.editor.drawflow };
+        this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+        const outputNode = this.editor.getNodeFromId(output_id);
+
+        if (outputNode.class == "page" || outputNode.class == "origin") {
+          this._addLinkButtonToPageContainer(
+            output_id,
+            output_class,
+            input_id,
+            input_class
+          );
+        } else if (outputNode.class == "question-branch") {
+          this._updateQuestionNodeAnswerTarget(
+            outputNode,
+            output_class,
+            input_id
+          );
+        }
+        //
+      }
+    );
+
+    //Event listener for when a connection is removed, e.g. by click in editor
+    this.editor.on(
+      "connectionRemoved",
+      ({ output_id, input_id, output_class, input_class }) => {
+        this.editorContent = { ...this.editor.drawflow };
+        this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+        const outputNode = this.editor.getNodeFromId(output_id);
+
+        if (outputNode.class == "page" || outputNode.class == "origin") {
+          const identifier = `${output_id}-${output_class}-${input_id}-${input_class}`;
+          this._removeLinkButtonFromPageContainer(identifier);
+        } else if (outputNode.class == "question-branch") {
+          this._updateQuestionNodeAnswerTarget(
+            outputNode,
+            output_class,
+            "undefined"
+          );
+        }
+      }
+    );
+
+    //Event listener for when a connection creation started via drag and drop
+    this.editor.on("connectionStart", ({ output_id, output_class }) => {
+      this.selectedNode = this.editor.getNodeFromId(output_id);
+
+      const node = this.shadowRoot?.getElementById(`node-${output_id}`);
+      if (node) {
+        node.classList.add("selected");
+      }
+
+      if (
+        this.selectedNode.class == "page" ||
+        this.selectedNode.class == "origin"
+      ) {
+        this._showGamebookContainerById(this.selectedNode.id);
+      } else if (this.selectedNode.class == "question-branch") {
+        this._hideAllGamebookContainers();
+      }
+    });
+
+    //event listener for when the user zoomed into the editor
+    this.editor.on("zoom", (zoom_level) => {
+      // Convert zoom level to percentage
+      this.editorZoom = zoom_level;
+
+      let normalizedZoom =
+        (zoom_level - this.editor.zoom_min) /
+        (this.editor.zoom_max - this.editor.zoom_min);
+      let percentage = (normalizedZoom * 100).toFixed(0) + "%";
+      this.editorZoomString = percentage;
+
+      const zoomValue = this.shadowRoot.querySelector(
+        ".zoomValue"
+      ) as HTMLElement;
+      if (zoomValue) {
+        zoomValue.classList.remove("fade-in-out");
+        // Trigger reflow to restart the animation
+        void zoomValue.offsetWidth;
+        zoomValue.classList.add("fade-in-out");
+      }
+    });
+
+    //event for when an input on a node was created
+    this.addEventListener("inputCreated", (event) => {
+      const nodeId = event.detail.nodeId;
+      this.editorContent = { ...this.editor.drawflow };
+      this.selectedNode = this.editor.getNodeFromId(nodeId);
+    });
+
+    //event for when an input of a node was deleted
+    this.addEventListener("inputDeleted", (event) => {
+      const nodeId = event.detail.nodeId;
+      this.editorContent = { ...this.editor.drawflow };
+      this.selectedNode = this.editor.getNodeFromId(nodeId);
+    });
+
+    //event for when an output on a node was created
+    this.addEventListener("outputCreated", (event) => {
+      const nodeId = event.detail.nodeId;
+      this.editorContent = { ...this.editor.drawflow };
+      this.selectedNode = this.editor.getNodeFromId(nodeId);
+    });
+
+    //event for when an output of a node was deleted
+    this.addEventListener("outputDeleted", (event) => {
+      const nodeId = event.detail.nodeId;
+      this.editorContent = { ...this.editor.drawflow };
+      this.selectedNode = this.editor.getNodeFromId(nodeId);
+    });
+
+    //TODO: event for programmatic node selection
+  }
+
+  /*
+
+
+  */
+  private _handleGamebookTitle(event) {
+    this.gamebook.title = event.target.value;
+  }
+
+  /*
+
+
+  */
   private _addPageNode(title: string, isOrigin: boolean) {
     const pageContent = {
       title: title,
@@ -414,395 +797,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
 
   */
-  private _clearEditor() {
-    const dialog = this.shadowRoot.getElementById("dialog") as SlDialog;
-    dialog.hide();
-
-    this.selectedNode = NO_NODE_SELECTED;
-    this.editor.clear();
-    this.gamebook.clearPages();
-    //clear all the slotted PageContainers
-    this.gamebookContainers.forEach((container) => {
-      container.remove();
-    });
-
-    this._addPageNode("First Page", true);
-  }
-
-  /*
-
-
-  */
-  private _switchMode() {
-    if (this.inPreviewMode == true) {
-      this.inPreviewMode = false;
-      this.gamebookContainers.forEach((container) => {
-        container.hide();
-      });
-
-      const node = this.shadowRoot?.getElementById(
-        `node-${this.selectedNode.id}`
-      );
-      if (node) {
-        node.classList.remove("selected");
-      }
-
-      this.selectedNode = NO_NODE_SELECTED;
-    }
-    //
-    else if (this.inPreviewMode == false) {
-      this.inPreviewMode = true;
-
-      this.gamebookContainers.forEach((container) => {
-        container.hide();
-      });
-    }
-  }
-
-  /*
-
-
-  */
-  private _registerEditorEventHandlers() {
-    this.editor.on("nodeDataChanged", (id) => {
-      //Event only picks up data changes from marked df-* objects in the node
-      //In this project, this only picks up name changes from on the node
-      //TODO: make this more secure!
-      const updatedNode = this.editor.getNodeFromId(id);
-      this.selectedNode = updatedNode;
-    });
-
-    //custom event that indicates data is changed
-    this.addEventListener("nodeDataUpdated", (event) => {
-      const nodeId = event.detail.nodeId;
-      this.editorContent = { ...this.editor.drawflow };
-      this.selectedNode = this.editor.getNodeFromId(nodeId);
-
-      if (this.selectedNode.class == "question-branch") {
-        //since when this node is created the page node details are open, the page container is seen and the quizcontainer gets added into it.
-        //can I dictate on what level the quiz container in the slots should be added?
-        const quizContainer = this.gamebookContainers.find(
-          (container) =>
-            container.getAttribute("drawflowNodeId") == this.selectedNode.id &&
-            container instanceof QuizContainer
-        );
-
-        quizContainer.setAttribute(
-          "quiz",
-          JSON.stringify(this.selectedNode.data)
-        );
-      }
-    });
-
-    // Event listener for node click
-    this.editor.on("nodeSelected", (id) => {
-      this.selectedNode = this.editor.getNodeFromId(id);
-
-      if (
-        this.selectedNode.class == "page" ||
-        this.selectedNode.class == "origin"
-      ) {
-        //TODO: is this the right approach to show and hide pageContainers?
-        this.gamebookContainers.forEach((container) => {
-          if (container.drawflowNodeId == this.selectedNode.id) {
-            container.show();
-          } else {
-            container.hide();
-          }
-        });
-      } else if (this.selectedNode.class == "question-branch") {
-        this.gamebookContainers.forEach((container) => {
-          container.hide();
-        });
-      }
-    });
-
-    // Event listener for node unselected
-    this.editor.on("nodeUnselected", (boolean) => {
-      this.selectedNode = NO_NODE_SELECTED;
-
-      this.gamebookContainers.forEach((container) => {
-        container.hide();
-      });
-    });
-
-    //Event listerner for creation of a node
-    this.editor.on("nodeCreated", (id) => {
-      let createdNode = this.editor.getNodeFromId(id);
-      this.editorContent = { ...this.editor.drawflow };
-
-      if (createdNode.class == "page" || createdNode.class == "origin") {
-        console.log("test this is where a pagecontainer gets added");
-        // Create a new instance of PageContainer using the constructor, append to slot
-        //use setAttribute to workaround reflective attributes
-        const pageContainer = document.createElement(
-          "page-container"
-        ) as PageContainer;
-        pageContainer.setAttribute("drawflowNodeId", id.toString());
-
-        if (createdNode.class == "origin") {
-          pageContainer.setAttribute("originPage", "1");
-        } else {
-          pageContainer.setAttribute("originPage", "0");
-        }
-
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(
-          createdNode.data.content,
-          "text/html"
-        );
-        // Loop through the child nodes of the body of the parsed document
-        doc.body.childNodes.forEach((node) => {
-          pageContainer.appendChild(node);
-        });
-
-        //to let it access editor
-        pageContainer.hide();
-        this.appendChild(pageContainer);
-      }
-      //
-      else if (createdNode.class == "question-branch") {
-        //since when this node is created the page node details are open, the page container is seen and the quizcontainer gets added into it.
-        //can I dictate on what level the quiz container in the slots should be added?
-        const quizContainer = document.createElement(
-          "quiz-container"
-        ) as QuizContainer;
-        quizContainer.setAttribute("drawflowNodeId", id.toString());
-        quizContainer.style.position = "unset";
-
-        const quiz = JSON.stringify(createdNode.data);
-        quizContainer.setAttribute(
-          "quiz",
-          JSON.stringify(this.selectedNode.data)
-        );
-
-        //to let it access editor
-        quizContainer.hide();
-        this.appendChild(quizContainer);
-      }
-    });
-
-    //Event listener for deletion of a node
-    this.editor.on("nodeRemoved", (id) => {
-      this.gamebookContainers.forEach((container) => {
-        if (container.drawflowNodeId == id) {
-          container.remove();
-        }
-      });
-
-      this.editorContent = { ...this.editor.drawflow };
-    });
-
-    this.editor.on("nodeMoved", (id) => {
-      this.editorContent = { ...this.editor.drawflow };
-    });
-
-    this.editor.on(
-      "connectionSelected",
-      ({ output_id, input_id, output_class, input_class }) => {
-        this.selectedNode = this.editor.getNodeFromId(output_id);
-
-        const node = this.shadowRoot?.getElementById(`node-${output_id}`);
-        if (node) {
-          node.classList.add("selected");
-        }
-
-        this.gamebookContainers.forEach((container) => {
-          if (container.drawflowNodeId == this.selectedNode.id) {
-            container.show();
-          } else {
-            container.hide();
-          }
-        });
-      }
-    );
-
-    this.editor.on("connectionUnselected", (boolean) => {
-      const node = this.shadowRoot?.getElementById(
-        `node-${this.selectedNode.id}`
-      );
-      if (node) {
-        node.classList.remove("selected");
-      }
-
-      this.selectedNode = NO_NODE_SELECTED;
-
-      this.gamebookContainers.forEach((container) => {
-        container.hide();
-      });
-    });
-
-    this.editor.on(
-      "connectionCreated",
-      ({ output_id, input_id, output_class, input_class }) => {
-        this.editorContent = { ...this.editor.drawflow };
-        this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
-
-        if (
-          this.editor.getNodeFromId(output_id).class == "page" ||
-          this.editor.getNodeFromId(output_id).class == "origin"
-        ) {
-          this._addLinkButtonToPageContainer(
-            output_id,
-            output_class,
-            input_id,
-            input_class
-          );
-        } else if (
-          this.editor.getNodeFromId(output_id).class == "question-branch"
-        ) {
-          const quizBranchNode = this.editor.getNodeFromId(output_id);
-          const index = Object.keys(quizBranchNode.outputs).indexOf(
-            output_class
-          );
-
-          if (index != -1) {
-            const answerArray = quizBranchNode.data.answers;
-            answerArray[index].targetPageId = input_id;
-
-            this.editor.updateNodeDataFromId(quizBranchNode.id, {
-              title: quizBranchNode.data.title,
-              question: quizBranchNode.data.question,
-              answers: answerArray,
-            });
-
-            const dispatchEvent = new CustomEvent("nodeDataUpdated", {
-              detail: { nodeId: quizBranchNode.id },
-              bubbles: true, // Allows the event to bubble up through the DOM
-              composed: true, // Allows the event to pass through shadow DOM boundaries
-            });
-            this.dispatchEvent(dispatchEvent);
-          }
-        }
-      }
-    );
-
-    this.editor.on(
-      "connectionRemoved",
-      ({ output_id, input_id, output_class, input_class }) => {
-        this.editorContent = { ...this.editor.drawflow };
-        this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
-
-        if (
-          this.editor.getNodeFromId(output_id).class == "page" ||
-          this.editor.getNodeFromId(output_id).class == "origin"
-        ) {
-          const identifier = `${output_id}-${output_class}-${input_id}-${input_class}`;
-          const linkButton =
-            this.shadowRoot?.querySelector(
-              `link-button[identifier="${identifier}"]`
-            ) || this.querySelector(`link-button[identifier="${identifier}"]`);
-
-          if (linkButton) {
-            linkButton.remove();
-          }
-        } else if (
-          this.editor.getNodeFromId(output_id).class == "question-branch"
-        ) {
-          const quizBranchNode = this.editor.getNodeFromId(output_id);
-          const index = Object.keys(quizBranchNode.outputs).indexOf(
-            output_class
-          );
-
-          if (index != -1) {
-            const answerArray = quizBranchNode.data.answers;
-            answerArray[index].targetPageId = "undefined";
-
-            this.editor.updateNodeDataFromId(quizBranchNode.id, {
-              title: quizBranchNode.data.title,
-              question: quizBranchNode.data.question,
-              answers: answerArray,
-            });
-
-            const dispatchEvent = new CustomEvent("nodeDataUpdated", {
-              detail: { nodeId: quizBranchNode.id },
-              bubbles: true, // Allows the event to bubble up through the DOM
-              composed: true, // Allows the event to pass through shadow DOM boundaries
-            });
-            this.dispatchEvent(dispatchEvent);
-          }
-        }
-      }
-    );
-
-    this.editor.on("connectionStart", ({ output_id, output_class }) => {
-      this.selectedNode = this.editor.getNodeFromId(output_id);
-
-      const node = this.shadowRoot?.getElementById(`node-${output_id}`);
-      if (node) {
-        node.classList.add("selected");
-      }
-
-      this.pageContainers.forEach((pageContainer) => {
-        if (
-          (pageContainer as PageContainer).drawflowNodeId ==
-          this.selectedNode.id
-        ) {
-          (pageContainer as PageContainer).show();
-        } else {
-          (pageContainer as PageContainer).hide();
-        }
-      });
-    });
-
-    this.editor.on("zoom", (zoom_level) => {
-      // Convert zoom level to percentage
-      this.editorZoom = zoom_level;
-
-      let normalizedZoom =
-        (zoom_level - this.editor.zoom_min) /
-        (this.editor.zoom_max - this.editor.zoom_min);
-      let percentage = (normalizedZoom * 100).toFixed(0) + "%";
-      this.editorZoomString = percentage;
-
-      const zoomValue = this.shadowRoot.querySelector(
-        ".zoomValue"
-      ) as HTMLElement;
-      if (zoomValue) {
-        zoomValue.classList.remove("fade-in-out");
-        // Trigger reflow to restart the animation
-        void zoomValue.offsetWidth;
-        zoomValue.classList.add("fade-in-out");
-      }
-    });
-
-    this.addEventListener("inputCreated", (event) => {
-      const nodeId = event.detail.nodeId;
-      this.editorContent = { ...this.editor.drawflow };
-      this.selectedNode = this.editor.getNodeFromId(nodeId);
-    });
-
-    this.addEventListener("inputDeleted", (event) => {
-      const nodeId = event.detail.nodeId;
-      this.editorContent = { ...this.editor.drawflow };
-      this.selectedNode = this.editor.getNodeFromId(nodeId);
-    });
-
-    this.addEventListener("outputCreated", (event) => {
-      const nodeId = event.detail.nodeId;
-      this.editorContent = { ...this.editor.drawflow };
-      this.selectedNode = this.editor.getNodeFromId(nodeId);
-    });
-
-    this.addEventListener("outputDeleted", (event) => {
-      const nodeId = event.detail.nodeId;
-      this.editorContent = { ...this.editor.drawflow };
-      this.selectedNode = this.editor.getNodeFromId(nodeId);
-    });
-  }
-
-  /*
-
-
-  */
-  private _handleGamebookTitle(event) {
-    this.gamebook.title = event.target.value;
-  }
-
-  /*
-
-
-  */
   private _addLinkButtonToPageContainer(
     originNodeId: string,
     output_class: string,
@@ -837,7 +831,52 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
 
   */
-  private _addQuizBranchNodeToSelectedNode() {
+  private _removeLinkButtonFromPageContainer(identifier: string) {
+    const linkButton =
+      this.shadowRoot?.querySelector(
+        `link-button[identifier="${identifier}"]`
+      ) || this.querySelector(`link-button[identifier="${identifier}"]`);
+
+    if (linkButton) {
+      linkButton.remove();
+    }
+  }
+
+  /*
+
+
+  */
+  private _updateQuestionNodeAnswerTarget(
+    quizNode: DrawflowNode,
+    answer_output_class: string,
+    target_node_id: string
+  ) {
+    const index = Object.keys(quizNode.outputs).indexOf(answer_output_class);
+
+    if (index != -1) {
+      const answerArray = quizNode.data.answers;
+      answerArray[index].targetPageId = target_node_id;
+
+      this.editor.updateNodeDataFromId(quizNode.id, {
+        title: quizNode.data.title,
+        question: quizNode.data.question,
+        answers: answerArray,
+      });
+
+      const dispatchEvent = new CustomEvent("nodeDataUpdated", {
+        detail: { nodeId: quizNode.id },
+        bubbles: true, // Allows the event to bubble up through the DOM
+        composed: true, // Allows the event to pass through shadow DOM boundaries
+      });
+      this.dispatchEvent(dispatchEvent);
+    }
+  }
+
+  /*
+
+
+  */
+  private _addQuestionNode() {
     const data = {
       title: "Question",
       question: "",
