@@ -26,6 +26,9 @@ import styles from "../css/quiz-container-css";
 //Bootstrap Icon Import
 import arrowRight from "@tabler/icons/outline/arrow-right.svg";
 
+//Drawflow Imports
+import { DrawflowNode } from "drawflow";
+
 @customElement("quiz-container")
 export class QuizContainer extends LitElementWw {
   //import CSS
@@ -44,15 +47,18 @@ export class QuizContainer extends LitElementWw {
   @property({ type: Number, attribute: true, reflect: true }) drawflowNodeId =
     null;
 
+  @property({ type: Object, attribute: true, reflect: true }) questionNode;
+
   @property({ type: String, attribute: true, reflect: true }) quiz?;
 
   @queryAll("sl-button") answerButtons;
 
   @query(".dialog") dialog: SlDialog;
 
-  // Query the slot element
-  @query("slot") slot;
+  /*
 
+
+  */
   protected firstUpdated(_changedProperties: any): void {
     // Prevent the dialog from closing when the user clicks on the overlay
     this.dialog.addEventListener("sl-request-close", (event) => {
@@ -62,6 +68,10 @@ export class QuizContainer extends LitElementWw {
     });
   }
 
+  /*
+
+
+  */
   render() {
     return html`
       <div class="quiz">
@@ -91,6 +101,10 @@ export class QuizContainer extends LitElementWw {
     `;
   }
 
+  /*
+
+
+  */
   hide() {
     this.style.display = "none";
     if (this.dialog) {
@@ -98,16 +112,22 @@ export class QuizContainer extends LitElementWw {
     }
   }
 
+  /*
+
+
+  */
   show() {
     this.style.display = "block";
     if (this.dialog) {
       this.dialog.show();
     }
   }
-}
 
-// <div>
-//           ${this.quizObject.data.answers.map(
-//             (answer) => html`<sl-button>${(answer as Answer).text}</sl-button>`
-//           )}
-//         </div>
+  /*
+
+
+  */
+  public updateFromQuestionNode(quizNode: DrawflowNode) {
+    this.quiz = JSON.stringify(quizNode.data);
+  }
+}

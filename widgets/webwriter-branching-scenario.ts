@@ -382,18 +382,28 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
   }
 
+  /* 
+  
+  
+  */
+  private _deleteGamebookContainersById(drawflowNodeId: Number) {
+    this.gamebookContainers.forEach((container) => {
+      if (container.drawflowNodeId == drawflowNodeId) {
+        container.remove();
+      }
+    });
+  }
+
   /*
 
 
   */
-  private _updateQuestionContainerFromQuestionNode(quizNode: DrawflowNode) {
-    const quizContainer = this.gamebookContainers.find(
-      (container) =>
-        container.getAttribute("drawflowNodeId") == quizNode.id &&
-        container instanceof QuizContainer
+  private _getContainerByDrawflowNodeId(id: string) {
+    const container = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == id
     );
 
-    quizContainer.setAttribute("quiz", JSON.stringify(quizNode.data));
+    return container;
   }
 
   /*
@@ -421,8 +431,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
   }
 
   /*
-
-
+  TODO: Figure out how to put this into a constructor
+  Also remove the node data adding 
   */
   private _createPageContainerFromPageNode(pageNode: DrawflowNode) {
     const pageContainer = document.createElement(
@@ -470,18 +480,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.appendChild(quizContainer);
   }
 
-  /* 
-  
-  
-  */
-  private _deleteGamebookContainerById(drawflowNodeId: Number) {
-    this.gamebookContainers.forEach((container) => {
-      if (container.drawflowNodeId == drawflowNodeId) {
-        container.remove();
-      }
-    });
-  }
-
   /*
 
 
@@ -500,7 +498,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.selectedNode = this.editor.getNodeFromId(event.detail.nodeId);
 
       if (this.selectedNode.class == "question-branch") {
-        this._updateQuestionContainerFromQuestionNode(this.selectedNode);
+        const container = this._getContainerByDrawflowNodeId(
+          this.selectedNode.id.toString()
+        );
+        container.updateFromQuestionNode(this.selectedNode);
       }
     });
 
@@ -539,7 +540,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     //Event listener for deletion of a node
     this.editor.on("nodeRemoved", (id) => {
-      this._deleteGamebookContainerById(id);
+      this._deleteGamebookContainersById(id);
       this.editorContent = { ...this.editor.drawflow };
     });
 
@@ -596,12 +597,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.editorContent = { ...this.editor.drawflow };
         this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
         const outputNode = this.editor.getNodeFromId(output_id);
+        const inputNode = this.editor.getNodeFromId(input_id);
 
         if (outputNode.class == "page" || outputNode.class == "origin") {
-          this._addLinkButtonToPageContainer(
-            output_id,
+          const pageContainer = this._getContainerByDrawflowNodeId(output_id);
+          pageContainer.addLinkButtonToPageContainer(
+            outputNode,
+            inputNode,
             output_class,
-            input_id,
             input_class
           );
         } else if (outputNode.class == "question-branch") {
@@ -624,8 +627,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
         const outputNode = this.editor.getNodeFromId(output_id);
 
         if (outputNode.class == "page" || outputNode.class == "origin") {
+          const pageContainer = this._getContainerByDrawflowNodeId(output_id);
           const identifier = `${output_id}-${output_class}-${input_id}-${input_class}`;
-          this._removeLinkButtonFromPageContainer(identifier);
+          pageContainer.removeLinkButtonFromPageContainer(identifier);
         } else if (outputNode.class == "question-branch") {
           this._updateQuestionNodeAnswerTarget(
             outputNode,
@@ -797,85 +801,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
 
   */
-  private _addLinkButtonToPageContainer(
-    originNodeId: string,
-    output_class: string,
-    sinkNodeId: string,
-    input_class: string
-  ) {
-    const sinkNodeTitle = this.editor.getNodeFromId(sinkNodeId).data.title;
-
-    const pageContainer = this.gamebookContainers.find(
-      (container) =>
-        container.getAttribute("drawflowNodeId") == originNodeId &&
-        container instanceof PageContainer
-    );
-
-    const button = document.createElement("link-button") as LinkButton;
-    button.setAttribute("name", sinkNodeTitle);
-    button.setAttribute("dataTargetId", sinkNodeId.toString());
-    // Ensure uniqueness by adding a unique identifier
-    button.setAttribute(
-      "identifier",
-      `${originNodeId}-${output_class}-${sinkNodeId}-${input_class}`
-    );
-    pageContainer.appendChild(button);
-
-    //TODO: Remove this once frederic fixed this
-    const par = document.createElement("p");
-    par.textContent = "";
-    pageContainer.appendChild(par);
-  }
-
-  /*
-
-
-  */
-  private _removeLinkButtonFromPageContainer(identifier: string) {
-    const linkButton =
-      this.shadowRoot?.querySelector(
-        `link-button[identifier="${identifier}"]`
-      ) || this.querySelector(`link-button[identifier="${identifier}"]`);
-
-    if (linkButton) {
-      linkButton.remove();
-    }
-  }
-
-  /*
-
-
-  */
-  private _updateQuestionNodeAnswerTarget(
-    quizNode: DrawflowNode,
-    answer_output_class: string,
-    target_node_id: string
-  ) {
-    const index = Object.keys(quizNode.outputs).indexOf(answer_output_class);
-
-    if (index != -1) {
-      const answerArray = quizNode.data.answers;
-      answerArray[index].targetPageId = target_node_id;
-
-      this.editor.updateNodeDataFromId(quizNode.id, {
-        title: quizNode.data.title,
-        question: quizNode.data.question,
-        answers: answerArray,
-      });
-
-      const dispatchEvent = new CustomEvent("nodeDataUpdated", {
-        detail: { nodeId: quizNode.id },
-        bubbles: true, // Allows the event to bubble up through the DOM
-        composed: true, // Allows the event to pass through shadow DOM boundaries
-      });
-      this.dispatchEvent(dispatchEvent);
-    }
-  }
-
-  /*
-
-
-  */
   private _addQuestionNode() {
     const data = {
       title: "Question",
@@ -921,5 +846,35 @@ export class WebWriterBranchingScenario extends LitElementWw {
       containerHtml,
       false
     );
+  }
+
+  /*
+
+
+  */
+  private _updateQuestionNodeAnswerTarget(
+    quizNode: DrawflowNode,
+    answer_output_class: string,
+    target_node_id: string
+  ) {
+    const index = Object.keys(quizNode.outputs).indexOf(answer_output_class);
+
+    if (index != -1) {
+      const answerArray = quizNode.data.answers;
+      answerArray[index].targetPageId = target_node_id;
+
+      this.editor.updateNodeDataFromId(quizNode.id, {
+        title: quizNode.data.title,
+        question: quizNode.data.question,
+        answers: answerArray,
+      });
+
+      const dispatchEvent = new CustomEvent("nodeDataUpdated", {
+        detail: { nodeId: quizNode.id },
+        bubbles: true, // Allows the event to bubble up through the DOM
+        composed: true, // Allows the event to pass through shadow DOM boundaries
+      });
+      this.dispatchEvent(dispatchEvent);
+    }
   }
 }
