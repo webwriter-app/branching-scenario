@@ -68,11 +68,6 @@ export class GamebookPreview extends LitElementWw {
   })
   gamebookContainers;
 
-  @state()
-  pageContainers: Array<PageContainer> = [];
-  @state()
-  quizContainers: Array<QuizContainer> = [];
-
   /*
 
 

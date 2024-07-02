@@ -93,8 +93,6 @@ export class PageNodeDetails extends LitElementWw {
     this.editor.on("nodeCreated", (id) => {
       this.createdNodeId = id;
     });
-
-    console.log(this.selectedNode.inputs);
   }
 
   updated(changedProperties) {
