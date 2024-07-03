@@ -72,7 +72,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
         </div>
         <div class="div-title">
           <p class="title">${this.selectedNode.data.title}</p>
-          <p class="subtitle">Gamebook Quiz</p>
+          <p class="subtitle">Question</p>
         </div>
 
         <div class="last-item">

@@ -279,7 +279,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
                                 .data}"
                               .selectedNode="${this.selectedNode}"
                               .selectedNodeId="${this.selectedNode.id}"
-                              .gamebook="${this.gamebook}"
                             >
                               <slot></slot>
                             </page-node-details>
@@ -343,7 +342,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     this.selectedNode = NO_NODE_SELECTED;
     this.editor.clear();
-    this.gamebook.clearPages();
     //clear all the slotted PageContainers
     this.gamebookContainers.forEach((container) => {
       container.remove();

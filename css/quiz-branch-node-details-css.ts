@@ -47,7 +47,7 @@ export default css`
     font-family: "Roboto", sans-serif;
     font-size: 16px;
     font-weight: bold;
-    color: #c798ff;
+    color: #a152ff;
     margin: 0px;
   }
 
