@@ -24,8 +24,6 @@ import {
   SlIconButton,
 } from "@shoelace-style/shoelace";
 
-import { Gamebook, Page, Answer } from "./model";
-
 //Import Styles
 import styles from "../css/gamebook-preview-css";
 
@@ -36,8 +34,8 @@ import { PageContainer } from "./gamebook-container/page-container";
 //Define Component
 //TODO: Fix Gamebook Errors. Check other modules for proper updating. I commented out a lot for restructure!
 //TODO: employ structure such that users cannot simply change css in browser to see next slide
-@customElement("gamebook-preview")
-export class GamebookPreview extends LitElementWw {
+@customElement("gamebook-viewer")
+export class GamebookViewer extends LitElementWw {
   //registering custom elements used in the widget
   static get scopedElements() {
     return {
@@ -57,10 +55,10 @@ export class GamebookPreview extends LitElementWw {
   //import CSS
   static styles = [styles];
 
-  @query(".pageTitle") pageTitle;
-  @query(".page") page;
-
   @state() currentPageId?: Number;
+
+  @property({ type: String }) gamebookTitle = "undefined";
+  @property({ type: String }) pageTitle;
 
   @queryAssignedElements({
     flatten: true,
@@ -84,8 +82,8 @@ export class GamebookPreview extends LitElementWw {
   render() {
     return html`<div class="preview">
       <div class="gamebook">
-        <div class="gamebookTitle">Gamebook Title</div>
-        <div class="pageTitle">Page Title</div>
+        <div class="gamebookTitle">${this.gamebookTitle}</div>
+        <div class="pageTitle">${this.pageTitle}</div>
         <div class="page">
           <slot></slot>
         </div>
@@ -117,6 +115,7 @@ export class GamebookPreview extends LitElementWw {
     this.gamebookContainers.forEach((container) => {
       if (container.drawflowNodeId == pageId) {
         container.show();
+        this.pageTitle = container.pageTitle;
       } else {
         container.hide();
       }
@@ -141,6 +140,8 @@ export class GamebookPreview extends LitElementWw {
     const originPageContainer = this.gamebookContainers.find(
       (container) => container.getAttribute("originPage") == 1
     );
+
+    this.pageTitle = originPageContainer.pageTitle;
 
     this.gamebookContainers.forEach((container) => {
       if (container.drawflowNodeId == originPageContainer.drawflowNodeId) {

@@ -248,7 +248,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
 
     //update the nodes data, specifically the new answer in the array
     this.editor.updateNodeDataFromId(this.selectedNode.id, {
-      title: "Quiz Branch",
+      title: "Question Branch",
       question: this.selectedNode.data.question,
       answers: answers,
     });

@@ -33,12 +33,8 @@ export class PageContainer extends LitElementWw {
   //associated node id
   @property({ type: Number, attribute: true, reflect: true }) drawflowNodeId =
     null;
-
-  @property({ type: Number, attribute: true, reflect: true }) originPage =
-    false;
-
-  // Query the slot element
-  @query("slot") slot;
+  @property({ type: String, attribute: true, reflect: true }) pageTitle = "";
+  @property({ type: Number, attribute: true, reflect: true }) originPage = 0;
 
   @queryAssignedElements({ flatten: true, selector: "link-button" })
   linkButtons;

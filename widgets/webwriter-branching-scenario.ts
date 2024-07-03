@@ -8,7 +8,6 @@ import {
   queryAll,
   queryAssignedElements,
 } from "lit/decorators.js";
-import { Gamebook, Page, Answer } from "./model";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -47,7 +46,7 @@ import customDrawflowStyles from "../css/custom-drawflow-css";
 //Import Sub Components
 import { PageNodeDetails } from "./page-node-details";
 import { QuizBranchNodeDetails } from "./quiz-branch-node-details";
-import { GamebookPreview } from "./gamebook-preview";
+import { GamebookViewer } from "./gamebook-viewer";
 import { PageContainer } from "./gamebook-container/page-container";
 import { QuizContainer } from "./gamebook-container/quiz-container";
 import { LinkButton } from "./components/link-button";
@@ -85,8 +84,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Object, attribute: true }) selectedNode: DrawflowNode =
     NO_NODE_SELECTED;
 
-  @property({ type: Object, attribute: true })
-  gamebook: Gamebook = new Gamebook();
+  @property({ type: String, attribute: true, reflect: true })
+  gamebookTitle = "";
 
   @queryAssignedElements({
     flatten: true,
@@ -112,7 +111,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-icon-button": SlIconButton,
       "page-node-details": PageNodeDetails,
       "quiz-branch-node-details": QuizBranchNodeDetails,
-      "gamebook-preview": GamebookPreview,
+      "gamebook-viewer": GamebookViewer,
       "page-container": PageContainer,
       "link-button": LinkButton,
       "quiz-container": QuizContainer,
@@ -183,7 +182,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     resize="none"
                     placeholder="Gamebook Name"
                     @input="${this._handleGamebookTitle}"
-                    .value="${this.gamebook.title}"
+                    .value="${this.gamebookTitle}"
                     style=${
                       this.inPreviewMode ? "display: none;" : "display: block;"
                     }
@@ -240,9 +239,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
             </div>
             ${
               this.inPreviewMode
-                ? html` <gamebook-preview>
+                ? html` <gamebook-viewer
+                    gamebookTitle=${this.gamebookTitle != ""
+                      ? this.gamebookTitle
+                      : "undefined"}
+                  >
                     <slot></slot>
-                  </gamebook-preview>`
+                  </gamebook-viewer>`
                 : null
             } 
                <div id="drawflowEditorDiv" style=${
@@ -328,7 +331,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     </sl-dialog>
               </div>
             </div>`
-        : html`<gamebook-preview><slot></slot></gamebook-preview>`}
+        : html`<gamebook-viewer
+            gamebookTitle=${this.gamebookTitle != ""
+              ? this.gamebookTitle
+              : "undefined"}
+            ><slot></slot
+          ></gamebook-viewer>`}
     `;
   }
 
@@ -341,6 +349,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     dialog.hide();
 
     this.selectedNode = NO_NODE_SELECTED;
+    this.gamebookTitle = "";
     this.editor.clear();
     //clear all the slotted PageContainers
     this.gamebookContainers.forEach((container) => {
@@ -437,6 +446,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "page-container"
     ) as PageContainer;
     pageContainer.setAttribute("drawflowNodeId", pageNode.id.toString());
+    pageContainer.setAttribute("pageTitle", pageNode.data.title);
 
     if (pageNode.class == "origin") {
       pageContainer.setAttribute("originPage", "1");
@@ -488,6 +498,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.on("nodeDataChanged", (id) => {
       this.editorContent = { ...this.editor.drawflow };
       this.selectedNode = this.editor.getNodeFromId(id);
+      const container = this._getContainerByDrawflowNodeId(id);
+      (container as PageContainer).pageTitle = this.selectedNode.data.title;
     });
 
     //custom event that indicates data is changed
@@ -715,7 +727,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   */
   private _handleGamebookTitle(event) {
-    this.gamebook.title = event.target.value;
+    this.gamebookTitle = event.target.value;
   }
 
   /*
@@ -801,7 +813,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   private _addQuestionNode() {
     const data = {
-      title: "Question",
+      title: "Question Branch",
       question: "",
       answers: [],
     };

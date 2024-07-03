@@ -7,7 +7,6 @@ import {
   state,
   queryAssignedElements,
 } from "lit/decorators.js";
-import { Gamebook, Page, Answer } from "./model";
 
 //Drawflow Imports
 import Drawflow from "drawflow";
@@ -79,8 +78,6 @@ export class PageNodeDetails extends LitElementWw {
   @property({ type: Object, attribute: false }) selectedNode?: DrawflowNode;
   @property({ type: Number }) selectedNodeId = null;
 
-  @property({ type: Object, attribute: false }) gamebook: Gamebook =
-    new Gamebook();
   @property({ type: Number }) createdNodeId = null;
   @property({ type: Object, attribute: false }) nodesInEditor = {};
 
