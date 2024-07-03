@@ -90,12 +90,9 @@ export default css`
     color: #3077ba;
   }
 
-  .div-icon .svg {
-    width: 50%;
-    height: 50%;
-    aspect-ratio: 1; /* Ensure the svg is square */
-    filter: invert(26%) sepia(72%) saturate(2576%) hue-rotate(178deg)
-      brightness(94%) contrast(101%);
+  .div-icon sl-icon {
+    width: 60%;
+    height: 60%;
   }
 
   .div-title {

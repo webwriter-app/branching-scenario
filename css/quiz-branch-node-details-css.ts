@@ -24,20 +24,17 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #e4e4e4;
+    border: 1px solid #a152ff;
     border-radius: 8px;
-    height: 60px; /* Remove the fixed height */
+    height: 65px; /* Remove the fixed height */
     aspect-ratio: 1;
     background-color: #f7efff;
-    border: 1px solid #c798ff;
+    color: #a152ff;
   }
 
-  .svg {
-    width: 50%;
-    height: 50%;
-    aspect-ratio: 1; /* Ensure the svg is square */
-    filter: brightness(0) saturate(100%) invert(70%) sepia(12%) saturate(6869%)
-      hue-rotate(212deg) brightness(103%) contrast(102%);
+  .div-icon sl-icon {
+    width: 65%;
+    height: 65%;
   }
 
   .div-title {
