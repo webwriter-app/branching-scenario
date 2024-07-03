@@ -498,7 +498,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.on("nodeDataChanged", (id) => {
       this.editorContent = { ...this.editor.drawflow };
       this.selectedNode = this.editor.getNodeFromId(id);
-      const container = this._getContainerByDrawflowNodeId(id);
+      const container = this._getContainerByDrawflowNodeId(id.toString());
       (container as PageContainer).pageTitle = this.selectedNode.data.title;
     });
 
@@ -717,6 +717,24 @@ export class WebWriterBranchingScenario extends LitElementWw {
       const nodeId = event.detail.nodeId;
       this.editorContent = { ...this.editor.drawflow };
       this.selectedNode = this.editor.getNodeFromId(nodeId);
+    });
+
+    this.addEventListener("linkButtonDeleted", (event) => {
+      const identifier = event.detail.identifier as string;
+      const parts = identifier.split("-");
+      const parsed = {
+        outputNodeId: parseInt(parts[0]),
+        outputClass: parts[1],
+        inputNodeId: parseInt(parts[2]),
+        inputClass: parts[3],
+      };
+
+      this.editor.removeSingleConnection(
+        parsed.outputNodeId,
+        parsed.inputNodeId,
+        parsed.outputClass,
+        parsed.inputClass
+      );
     });
 
     //TODO: event for programmatic node selection

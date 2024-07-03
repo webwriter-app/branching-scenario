@@ -25,29 +25,13 @@ export class LinkButton extends LitElementWw {
     };
   }
 
-  // connectedCallback() {
-  //   console.log("LinkButton added to the DOM");
-  //   this.innerHTML = `
-  //     <div>
-  //       <sl-button variant="text" size="medium" style="padding: 0px;"
-  //         >${this.name}</sl-button
-  //       >
-  //       <input
-  //         part="options"
-  //         .value=${this.name}
-  //         @change=${(e) => (this.name = e.target.value)}
-  //       />
-  //     </div>
-  //   `;
-  // }
-
   //TODO: Focus is messed up, when clicking on the input, the focus shifts away from the button
   render() {
     return html`
       <div>
-        <sl-button variant="text" size="medium" style="padding: 0px;"
-          >${this.name}</sl-button
-        >
+        <sl-button size="medium" style="padding: 0px;">
+          <p>${this.name}</p>
+        </sl-button>
         <input
           part="options"
           .value=${this.name}

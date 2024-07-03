@@ -7,7 +7,6 @@ import {
   state,
   queryAssignedElements,
 } from "lit/decorators.js";
-import { Gamebook, Page, Answer } from "./model";
 import { DrawflowNode } from "drawflow";
 
 import { LinkButton } from "../components/link-button";
@@ -39,6 +38,28 @@ export class PageContainer extends LitElementWw {
   @queryAssignedElements({ flatten: true, selector: "link-button" })
   linkButtons;
 
+  // Create an observer instance linked to the callback function
+  private mutationObserver: MutationObserver;
+
+  /* 
+  
+  
+  */
+  constructor() {
+    super();
+    this.mutationObserver = new MutationObserver(this.mutationCallback);
+  }
+
+  /* 
+  
+  
+  */
+  protected firstUpdated(_changedProperties: any): void {
+    // Options for the observer (which mutations to observe)
+    const config = { attributes: true, childList: true, subtree: true };
+    // Start observing the target node for configured mutations
+    this.mutationObserver.observe(this, config);
+  }
   /*
 
 
@@ -103,4 +124,32 @@ export class PageContainer extends LitElementWw {
       linkButton.remove();
     }
   }
+
+  /*
+
+
+  */
+  private mutationCallback = (mutationList: MutationRecord[]) => {
+    mutationList.forEach((mutation) => {
+      if (mutation.type == "childList") {
+        mutation.addedNodes.forEach((node) => {
+          if ((node as Element).nodeName.toLowerCase() == "link-button") {
+            console.log("LinkButton added:", node);
+          }
+        });
+        mutation.removedNodes.forEach((node) => {
+          if ((node as HTMLElement).nodeName.toLowerCase() == "link-button") {
+            if ((node as HTMLElement).classList.contains("ww-widget")) {
+              const event = new CustomEvent("linkButtonDeleted", {
+                detail: { identifier: (node as LinkButton).identifier },
+                bubbles: true, // Allows the event to bubble up through the DOM
+                composed: true, // Allows the event to pass through shadow DOM boundaries
+              });
+              this.dispatchEvent(event);
+            }
+          }
+        });
+      }
+    });
+  };
 }

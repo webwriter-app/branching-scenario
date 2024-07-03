@@ -8,7 +8,6 @@ import {
   queryAssignedElements,
   queryAll,
 } from "lit/decorators.js";
-import { Gamebook, Page, Answer } from "./model";
 
 //Shoelace
 import {
@@ -17,6 +16,8 @@ import {
   SlIcon,
   SlIconButton,
 } from "@shoelace-style/shoelace";
+
+import { Answer } from "../model";
 
 //CSS
 import styles from "../../css/quiz-container-css";
