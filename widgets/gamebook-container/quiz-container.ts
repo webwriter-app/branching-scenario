@@ -8,9 +8,7 @@ import {
   queryAssignedElements,
   queryAll,
 } from "lit/decorators.js";
-import { Gamebook, Page, Answer } from "./gamebook-model";
-
-import { LinkButton } from "./link-button";
+import { Gamebook, Page, Answer } from "./model";
 
 //Shoelace
 import {
@@ -21,7 +19,7 @@ import {
 } from "@shoelace-style/shoelace";
 
 //CSS
-import styles from "../css/quiz-container-css";
+import styles from "../../css/quiz-container-css";
 
 //Bootstrap Icon Import
 import arrowRight from "@tabler/icons/outline/arrow-right.svg";

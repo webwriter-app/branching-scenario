@@ -8,7 +8,7 @@ import {
   queryAll,
   queryAssignedElements,
 } from "lit/decorators.js";
-import { Gamebook, Page, Answer } from "./gamebook-model";
+import { Gamebook, Page, Answer } from "./model";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -48,9 +48,9 @@ import customDrawflowStyles from "../css/custom-drawflow-css";
 import { PageNodeDetails } from "./page-node-details";
 import { QuizBranchNodeDetails } from "./quiz-branch-node-details";
 import { GamebookPreview } from "./gamebook-preview";
-import { PageContainer } from "./page-container";
-import { QuizContainer } from "./quiz-container";
-import { LinkButton } from "./link-button";
+import { PageContainer } from "./gamebook-container/page-container";
+import { QuizContainer } from "./gamebook-container/quiz-container";
+import { LinkButton } from "./components/link-button";
 
 // Declare global variable of type DrawflowNode
 const NO_NODE_SELECTED: DrawflowNode = {

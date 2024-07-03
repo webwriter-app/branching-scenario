@@ -12,8 +12,8 @@ import {
 //Drawflow Imports
 import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
 
-import { PageContainer } from "./page-container";
-import { QuizContainer } from "./quiz-container";
+import { PageContainer } from "../gamebook-container/page-container";
+import { QuizContainer } from "../gamebook-container/quiz-container";
 
 @customElement("gamebook-container-manager")
 export class GamebookContainerManager extends LitElement {

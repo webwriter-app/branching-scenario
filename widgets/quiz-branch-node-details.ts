@@ -1,7 +1,7 @@
 import { html, css, LitElement, unsafeCSS } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, query, state } from "lit/decorators.js";
-import { Gamebook, Page, Answer } from "./gamebook-model";
+import { Gamebook, Page, Answer } from "./model";
 
 //Drawflow Imports
 import Drawflow from "drawflow";

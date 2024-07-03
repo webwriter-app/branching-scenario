@@ -7,7 +7,7 @@ import {
   state,
   queryAssignedElements,
 } from "lit/decorators.js";
-import { Gamebook, Page, Answer } from "./gamebook-model";
+import { Gamebook, Page, Answer } from "./model";
 
 //Drawflow Imports
 import Drawflow from "drawflow";
@@ -29,16 +29,13 @@ import {
   SlIcon,
 } from "@shoelace-style/shoelace";
 
-import { LinkButton } from "./link-button";
+import { LinkButton } from "./components/link-button";
 
 //Tabler Icon Import
 import plus from "@tabler/icons/outline/plus.svg";
 import file from "@tabler/icons/outline/file.svg";
 import minus from "@tabler/icons/outline/minus.svg";
 import route2 from "@tabler/icons/outline/route-2.svg";
-
-//tabler icons
-import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 
 //CSS
 import styles from "../css/page-node-details-css";

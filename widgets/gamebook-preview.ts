@@ -24,14 +24,14 @@ import {
   SlIconButton,
 } from "@shoelace-style/shoelace";
 
-import { Gamebook, Page, Answer } from "./gamebook-model";
+import { Gamebook, Page, Answer } from "./model";
 
 //Import Styles
 import styles from "../css/gamebook-preview-css";
-import { PageContainer } from "./page-container";
 
-import { LinkButton } from "./link-button";
-import { QuizContainer } from "./quiz-container";
+import { LinkButton } from "./components/link-button";
+import { QuizContainer } from "./gamebook-container/quiz-container";
+import { PageContainer } from "./gamebook-container/page-container";
 
 //Define Component
 //TODO: Fix Gamebook Errors. Check other modules for proper updating. I commented out a lot for restructure!

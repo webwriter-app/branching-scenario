@@ -7,16 +7,16 @@ import {
   state,
   queryAssignedElements,
 } from "lit/decorators.js";
-import { Gamebook, Page, Answer } from "./gamebook-model";
+import { Gamebook, Page, Answer } from "./model";
 import { DrawflowNode } from "drawflow";
 
-import { LinkButton } from "./link-button";
+import { LinkButton } from "../components/link-button";
 
 //Shoelace
 import { SlButton } from "@shoelace-style/shoelace";
 
 //CSS
-import styles from "../css/page-container-css";
+import styles from "../../css/page-container-css";
 
 @customElement("page-container")
 export class PageContainer extends LitElementWw {
