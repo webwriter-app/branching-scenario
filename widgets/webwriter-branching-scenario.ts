@@ -47,9 +47,9 @@ import customDrawflowStyles from "../css/custom-drawflow-css";
 import { PageNodeDetails } from "./page-node-details";
 import { QuizBranchNodeDetails } from "./quiz-branch-node-details";
 import { GamebookViewer } from "./gamebook-viewer";
-import { PageContainer } from "./gamebook-container/page-container";
-import { QuizContainer } from "./gamebook-container/quiz-container";
-import { LinkButton } from "./components/link-button";
+import { PageContainer } from "./gamebook-components/page-container";
+import { QuizContainer } from "./gamebook-components/quiz-container";
+import { LinkButton } from "./gamebook-components/link-button";
 
 // Declare global variable of type DrawflowNode
 const NO_NODE_SELECTED: DrawflowNode = {
@@ -94,6 +94,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
   gamebookContainers;
 
   @state() inPreviewMode = false;
+
+  // focus(options: FocusOptions) {
+  //   console.log("test");
+  //   //this.classList.add("ww-selected");
+  // }
 
   static shadowRootOptions = {
     ...LitElement.shadowRootOptions,
@@ -152,6 +157,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
     } else {
       this.editor.import(this.editorContent);
     }
+
+    // Adding the click event listener to set focus on the component
+    // this.addEventListener("click", () => {
+    //   console.log("test");
+    //   this.focus();
+    //   focus;
+    // });
   }
 
   /*
@@ -159,8 +171,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   render() {
     return html`
-      ${this.isContentEditable
-        ? html` 
+      <div>
+        ${this.isContentEditable
+          ? html` 
           <div id="widget">
             <div class="controls">
               <div class="first-item">
@@ -331,12 +344,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     </sl-dialog>
               </div>
             </div>`
-        : html`<gamebook-viewer
-            gamebookTitle=${this.gamebookTitle != ""
-              ? this.gamebookTitle
-              : "undefined"}
-            ><slot></slot
-          ></gamebook-viewer>`}
+          : html`<gamebook-viewer
+              gamebookTitle=${this.gamebookTitle != ""
+                ? this.gamebookTitle
+                : "undefined"}
+              ><slot></slot
+            ></gamebook-viewer>`}
+      </div>
     `;
   }
 
@@ -505,7 +519,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //custom event that indicates data is changed
     this.addEventListener("nodeDataUpdated", (event) => {
       this.editorContent = { ...this.editor.drawflow };
-      this.selectedNode = this.editor.getNodeFromId(event.detail.nodeId);
+      this.selectedNode = this.editor.getNodeFromId(
+        (event as CustomEvent).detail.nodeId
+      );
 
       if (this.selectedNode.class == "question-branch") {
         const container = this._getContainerByDrawflowNodeId(
@@ -693,34 +709,34 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     //event for when an input on a node was created
     this.addEventListener("inputCreated", (event) => {
-      const nodeId = event.detail.nodeId;
+      const nodeId = (event as CustomEvent).detail.nodeId;
       this.editorContent = { ...this.editor.drawflow };
       this.selectedNode = this.editor.getNodeFromId(nodeId);
     });
 
     //event for when an input of a node was deleted
     this.addEventListener("inputDeleted", (event) => {
-      const nodeId = event.detail.nodeId;
+      const nodeId = (event as CustomEvent).detail.nodeId;
       this.editorContent = { ...this.editor.drawflow };
       this.selectedNode = this.editor.getNodeFromId(nodeId);
     });
 
     //event for when an output on a node was created
     this.addEventListener("outputCreated", (event) => {
-      const nodeId = event.detail.nodeId;
+      const nodeId = (event as CustomEvent).detail.nodeId;
       this.editorContent = { ...this.editor.drawflow };
       this.selectedNode = this.editor.getNodeFromId(nodeId);
     });
 
     //event for when an output of a node was deleted
     this.addEventListener("outputDeleted", (event) => {
-      const nodeId = event.detail.nodeId;
+      const nodeId = (event as CustomEvent).detail.nodeId;
       this.editorContent = { ...this.editor.drawflow };
       this.selectedNode = this.editor.getNodeFromId(nodeId);
     });
 
     this.addEventListener("linkButtonDeleted", (event) => {
-      const identifier = event.detail.identifier as string;
+      const identifier = (event as CustomEvent).detail.identifier as string;
       const parts = identifier.split("-");
       const parsed = {
         outputNodeId: parseInt(parts[0]),

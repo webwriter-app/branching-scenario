@@ -27,9 +27,9 @@ import {
 //Import Styles
 import styles from "../css/gamebook-preview-css";
 
-import { LinkButton } from "./components/link-button";
-import { QuizContainer } from "./gamebook-container/quiz-container";
-import { PageContainer } from "./gamebook-container/page-container";
+import { LinkButton } from "./gamebook-components/link-button";
+import { QuizContainer } from "./gamebook-components/quiz-container";
+import { PageContainer } from "./gamebook-components/page-container";
 
 //Define Component
 //TODO: Fix Gamebook Errors. Check other modules for proper updating. I commented out a lot for restructure!

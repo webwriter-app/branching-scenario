@@ -1,10 +1,14 @@
 import { html, css, LitElement, unsafeCSS } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, query, state } from "lit/decorators.js";
-import { Gamebook, Page, Answer } from "./model";
+import { Answer } from "./model";
 
 //Drawflow Imports
-import Drawflow from "drawflow";
+import Drawflow, {
+  DrawflowConnection,
+  DrawflowConnectionDetail,
+  DrawflowModuleData,
+} from "drawflow";
 import { DrawflowNode } from "drawflow";
 
 //Shoelace Imports
@@ -107,7 +111,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
                   </p>
                   <sl-icon-button
                     src=${minus}
-                    @click=${() => this._deleteInputOfSelectedNode(input_class)}
+                    @click=${() => this._deleteInputOfSelectedNode()}
                   >
                   </sl-icon-button>
                 </div>`
@@ -416,9 +420,10 @@ export class QuizBranchNodeDetails extends LitElementWw {
           ?.node != undefined &&
         event.target.value != ""
       ) {
-        const old_input_class = Object.entries(this.selectedNode.outputs)[
-          index
-        ][1].connections[0].output;
+        const old_input_class = (
+          Object.entries(this.selectedNode.outputs)[index][1]
+            .connections[0] as unknown as { output: string; node: string }
+        ).output;
 
         //get the right output using the answers index which corresponds to the output index
         const output_class = Object.keys(this.selectedNode.outputs)[index];
@@ -445,9 +450,10 @@ export class QuizBranchNodeDetails extends LitElementWw {
       }
       //clear sl-select
       else if (event.target.value == "") {
-        const current_input_class = Object.entries(this.selectedNode.outputs)[
-          index
-        ][1].connections[0].output;
+        const current_input_class = (
+          Object.entries(this.selectedNode.outputs)[index][1]
+            .connections[0] as unknown as { output: string; node: string }
+        ).output;
 
         //get the right output using the answers index which corresponds to the output index
         const output_class = Object.keys(this.selectedNode.outputs)[index];

@@ -59,7 +59,6 @@ export default css`
     min-height: 800px;
     height: auto;
     color: black;
-    padding: 20px;
   }
 
   .title-bar {

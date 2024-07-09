@@ -28,7 +28,7 @@ import {
   SlIcon,
 } from "@shoelace-style/shoelace";
 
-import { LinkButton } from "./components/link-button";
+import { LinkButton } from "./gamebook-components/link-button";
 
 //Tabler Icon Import
 import plus from "@tabler/icons/outline/plus.svg";

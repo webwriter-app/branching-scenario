@@ -9,7 +9,7 @@ import {
 } from "lit/decorators.js";
 import { DrawflowNode } from "drawflow";
 
-import { LinkButton } from "../components/link-button";
+import { LinkButton } from "./link-button";
 
 //Shoelace
 import { SlButton } from "@shoelace-style/shoelace";

@@ -17,9 +17,9 @@
   },
   "exports": {
     "./widgets/webwriter-branching-scenario": "./widgets/webwriter-branching-scenario.ts",
-    "./widgets/page-container": "./widgets/gamebook-container/page-container.ts",
-    "./widgets/quiz-container": "./widgets/gamebook-container/quiz-container.ts",
-    "./widgets/link-button": "./widgets/components/link-button.ts",
+    "./widgets/page-container": "./widgets/gamebook-components/page-container.ts",
+    "./widgets/quiz-container": "./widgets/gamebook-components/quiz-container.ts",
+    "./widgets/link-button": "./widgets/gamebook-components/link-button.ts",
     "./widgets/gamebook-viewer": "./widgets/gamebook-viewer.ts"
   },
   "devDependencies": {

@@ -11,12 +11,11 @@ import {
 
 //Drawflow Imports
 import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
-
-import { PageContainer } from "../gamebook-container/page-container";
-import { QuizContainer } from "../gamebook-container/quiz-container";
+import { PageContainer } from "../gamebook-components/page-container";
+import { QuizContainer } from "../gamebook-components/quiz-container";
 
 @customElement("gamebook-container-manager")
-export class GamebookContainerManager extends LitElement {
+export class GamebookContainerManager extends LitElementWw {
   //
   @property({ type: Function }) appendToShadowDom = (
     element: HTMLElement

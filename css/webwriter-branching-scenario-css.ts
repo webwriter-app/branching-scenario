@@ -1,6 +1,15 @@
 import { css } from "lit";
 
 export default css`
+  :host {
+    display: inline-block;
+    outline: none;
+  }
+
+  :host(.ww-beforeprint) {
+    display: inline-block;
+  }
+
   #widget {
     display: flex;
     flex-direction: column;
