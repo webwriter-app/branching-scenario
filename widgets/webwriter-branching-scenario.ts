@@ -44,8 +44,7 @@ import styles from "../css/webwriter-branching-scenario-css";
 import customDrawflowStyles from "../css/custom-drawflow-css";
 
 //Import Sub Components
-import { PageNodeDetails } from "./page-node-details";
-import { QuizBranchNodeDetails } from "./quiz-branch-node-details";
+import { SelectedNodeDetails } from "./selected-node-details";
 import { GamebookViewer } from "./gamebook-viewer";
 import { PageContainer } from "./gamebook-components/page-container";
 import { QuizContainer } from "./gamebook-components/quiz-container";
@@ -114,8 +113,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-dialog": SlDialog,
       "sl-icon": SlIcon,
       "sl-icon-button": SlIconButton,
-      "page-node-details": PageNodeDetails,
-      "quiz-branch-node-details": QuizBranchNodeDetails,
+      "selected-node-details": SelectedNodeDetails,
       "gamebook-viewer": GamebookViewer,
       "page-container": PageContainer,
       "link-button": LinkButton,
@@ -255,7 +253,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 ? html` <gamebook-viewer
                     gamebookTitle=${this.gamebookTitle != ""
                       ? this.gamebookTitle
-                      : "undefined"}
+                      : "No Name"}
                   >
                     <slot></slot>
                   </gamebook-viewer>`
@@ -284,42 +282,21 @@ export class WebWriterBranchingScenario extends LitElementWw {
                         <p>${this.editorZoomString}</p>
                       </div>
                     </div>
+
                     ${
-                      !this.inPreviewMode &&
-                      (this.selectedNode.class == "page" ||
-                        this.selectedNode.class == "origin")
-                        ? html` <div id="selected-node-details">
-                            <page-node-details
-                              .editor="${this.editor}"
-                              .nodesInEditor="${this.editorContent.drawflow.Home
-                                .data}"
-                              .selectedNode="${this.selectedNode}"
-                              .selectedNodeId="${this.selectedNode.id}"
-                            >
-                              <slot></slot>
-                            </page-node-details>
-                          </div>`
-                        : !this.inPreviewMode &&
-                          this.selectedNode.class == "question-branch"
-                        ? html` <div id="selected-node-details">
-                            <quiz-branch-node-details
-                              .editor="${this.editor}"
-                              .nodesInEditor="${this.editorContent.drawflow.Home
-                                .data}"
-                              .selectedNode="${this.selectedNode}"
-                            >
-                              <slot></slot
-                            ></quiz-branch-node-details>
-                          </div>`
-                        : html` <div
-                            class=${this.inPreviewMode
-                              ? "none"
-                              : "no-node-selected"}
+                      !this.inPreviewMode
+                        ? html`<selected-node-details
+                            .selectedNode=${this.selectedNode}
+                            .editor=${this.editor}
+                            .editorContent=${this.editorContent}
                           >
-                            <p>Select a node</p>
                             <slot></slot>
-                          </div>`
+                          </selected-node-details>`
+                        : null
                     }
+                    
+                  <slot></slot>
+                  </selected-node-details>
 
                     <sl-dialog label="Clear graph" class="dialog" id="dialog">
                       Do you want to clear the graph? All your progress will be
@@ -347,7 +324,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
           : html`<gamebook-viewer
               gamebookTitle=${this.gamebookTitle != ""
                 ? this.gamebookTitle
-                : "undefined"}
+                : "No Name"}
               ><slot></slot
             ></gamebook-viewer>`}
       </div>
