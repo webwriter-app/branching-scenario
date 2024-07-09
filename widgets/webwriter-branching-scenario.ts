@@ -294,10 +294,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                           </selected-node-details>`
                         : null
                     }
-                    
-                  <slot></slot>
-                  </selected-node-details>
-
+          
                     <sl-dialog label="Clear graph" class="dialog" id="dialog">
                       Do you want to clear the graph? All your progress will be
                       lost.

@@ -46,6 +46,9 @@ const NO_NODE_SELECTED: DrawflowNode = {
   typenode: false,
 };
 
+//Import Styles
+import styles from "../css/selected-node-details-css";
+
 @customElement("selected-node-details")
 export class SelectedNodeDetails extends LitElementWw {
   @property({ type: Object, attribute: true }) selectedNode: DrawflowNode =
@@ -75,6 +78,9 @@ export class SelectedNodeDetails extends LitElementWw {
     };
   }
 
+  //import CSS
+  static styles = [styles];
+
   render() {
     return html`
       <div>
@@ -100,7 +106,7 @@ export class SelectedNodeDetails extends LitElementWw {
                 <slot></slot
               ></quiz-branch-node-details>
             </div>`
-          : html` <div>
+          : html` <div class="no-node-selected">
               <p>Select a node</p>
               <slot></slot>
             </div>`}
