@@ -103,8 +103,8 @@ export class SelectedNodeDetails extends LitElementWw {
                 .nodesInEditor="${this.editorContent.drawflow.Home.data}"
                 .selectedNode="${this.selectedNode}"
               >
-                <slot></slot
-              ></quiz-branch-node-details>
+                <slot></slot>
+              </quiz-branch-node-details>
             </div>`
           : html` <div class="no-node-selected">
               <p>Select a node</p>

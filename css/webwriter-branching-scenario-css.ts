@@ -26,7 +26,7 @@ export default css`
     flex-direction: row;
     justify-content: flex-end;
     align-items: center; /* Center items vertically */
-    gap: 10px; /* Adjust the value to your desired spacing */
+
     width: 100%;
 
     box-sizing: border-box;
@@ -47,7 +47,6 @@ export default css`
     flex-direction: row;
     justify-content: start;
     align-items: center; /* Center items vertically */
-    gap: 10px;
 
     margin-right: auto; // Push this item to the start
   }
@@ -82,6 +81,13 @@ export default css`
 
     border-radius: 4px;
     border-right: 1px solid white;
+  }
+
+  .exportButton {
+    float: right;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
   }
 
   .zoomValue {

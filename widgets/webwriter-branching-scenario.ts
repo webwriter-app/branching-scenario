@@ -33,6 +33,8 @@ import dotsVertical from "@tabler/icons/outline/dots-vertical.svg";
 import zoomIn from "@tabler/icons/outline/zoom-in.svg";
 import zoomOut from "@tabler/icons/outline/zoom-out.svg";
 import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
+import schema from "@tabler/icons/outline/schema.svg";
+import questionMark from "@tabler/icons/outline/question-mark.svg";
 
 //Drawflow Imports
 import Drawflow, { DrawflowConnection } from "drawflow";
@@ -49,6 +51,9 @@ import { GamebookViewer } from "./gamebook-viewer";
 import { PageContainer } from "./gamebook-components/page-container";
 import { QuizContainer } from "./gamebook-components/quiz-container";
 import { LinkButton } from "./gamebook-components/link-button";
+
+//import Examples
+import { gamebookExamples } from "./gamebookExamples";
 
 // Declare global variable of type DrawflowNode
 const NO_NODE_SELECTED: DrawflowNode = {
@@ -171,22 +176,24 @@ export class WebWriterBranchingScenario extends LitElementWw {
     return html`
       <div>
         ${this.isContentEditable
-          ? html` 
-          <div id="widget">
-            <div class="controls">
-              <div class="first-item">
-                <sl-icon-button
-                  src=${this.inPreviewMode ? playerStop : playerPlay}
-                  class="iconButton"
-                  @click=${() => this._togglePreviewMode()}
-                >
-                  ${this.inPreviewMode ? "Cancel" : "Preview"}
-                </sl-icon-button>
-                  <sl-divider vertical style=${
-                    this.inPreviewMode
-                      ? "display: none;"
-                      : "display: block; height: 30px;"
-                  }></sl-divider>
+          ? html` <div id="widget">
+              <div class="controls">
+                <div class="first-item">
+                  <sl-icon-button
+                    src=${this.inPreviewMode ? playerStop : playerPlay}
+                    class="iconButton"
+                    @click=${() => this._togglePreviewMode()}
+                  >
+                    ${this.inPreviewMode ? "Cancel" : "Preview"}
+                  </sl-icon-button>
+                  <sl-divider
+                    vertical
+                    style=${
+                      this.inPreviewMode
+                        ? "display: none;"
+                        : "display: block; height: 30px;"
+                    }
+                  ></sl-divider>
                   <sl-textarea
                     id="gamebookTitle"
                     rows="1"
@@ -197,125 +204,148 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     style=${
                       this.inPreviewMode ? "display: none;" : "display: block;"
                     }
-                    >
-                  </sl-textarea>
-              </div>
-            
-        <sl-dropdown style=${
-          this.inPreviewMode ? "display: none;" : "display: block;"
-        }>
-          <sl-button slot="trigger">
-            Add Node
-            <sl-icon src=${plus} slot="prefix" ></sl-icon>
-          </sl-button>
-          <sl-menu style="width: 180px;">
-            <sl-menu-item @click=${() =>
-              this._addPageNode("Untitled Page", false)}><sl-icon
-                slot="prefix"
-                src=${file}
-              ></sl-icon>
-              Page
-            </sl-menu-item>
-            <sl-menu-item
-              @click=${() => this._addQuestionNode()}
-            >
-              <sl-icon
-                slot="prefix"
-                src=${helpSquareRounded}
-              ></sl-icon>
-              Question
-            </sl-menu-item>
-          
-          </sl-menu>
-        </sl-dropdown>
-                      <sl-divider vertical style=${
-                        this.inPreviewMode
-                          ? "display: none;"
-                          : "display: block; height: 30px;"
-                      }> </sl-divider>
-                      <sl-button
-                      style=${
-                        this.inPreviewMode
-                          ? "display: none;"
-                          : "display: block;"
-                      }
-                        @click=${() =>
-                          (
-                            this.shadowRoot.getElementById("dialog") as SlDialog
-                          ).show()}
-                      >
-                        Clear
-                      </sl-button>
-              
-            </div>
-            ${
-              this.inPreviewMode
-                ? html` <gamebook-viewer
-                    gamebookTitle=${this.gamebookTitle != ""
-                      ? this.gamebookTitle
-                      : "No Name"}
                   >
-                    <slot></slot>
-                  </gamebook-viewer>`
-                : null
-            } 
-               <div id="drawflowEditorDiv" style=${
-                 this.inPreviewMode ? "display: none;" : "display: block;"
-               }>
-                      <div class="zoomControls">
-                        <sl-icon-button
-                          id="zoomInBtn"
-                          src=${zoomIn}
-                          style="font-size: auto;"
-                          @click=${() => this.editor.zoom_in()}
-                        >
-                        </sl-icon-button>
-                        <sl-icon-button
-                          id="zoomOutBtn"
-                          src=${zoomOut}
-                          style="font-size: auto;"
-                          @click=${() => this.editor.zoom_out()}
-                        >
-                        </sl-icon-button>
-                      </div>
-                      <div class="zoomValue">
-                        <p>${this.editorZoomString}</p>
-                      </div>
-                    </div>
+                  </sl-textarea>
+                </div>
 
-                    ${
-                      !this.inPreviewMode
-                        ? html`<selected-node-details
-                            .selectedNode=${this.selectedNode}
-                            .editor=${this.editor}
-                            .editorContent=${this.editorContent}
-                          >
-                            <slot></slot>
-                          </selected-node-details>`
-                        : null
-                    }
-          
-                    <sl-dialog label="Clear graph" class="dialog" id="dialog">
-                      Do you want to clear the graph? All your progress will be
-                      lost.
-                      <sl-button
-                        slot="footer"
-                        variant="primary"
-                        outline
-                        @click=${() =>
-                          (
-                            this.shadowRoot.getElementById("dialog") as SlDialog
-                          ).hide()}
-                        >Cancel</sl-button
+                <sl-dropdown
+                  style=${
+                    this.inPreviewMode ? "display: none;" : "display: block;"
+                  }
+                >
+                  <sl-button slot="trigger">
+                    Import
+                    <sl-icon src=${schema} slot="prefix"></sl-icon>
+                  </sl-button>
+                  <sl-menu style="width: 180px;">
+                    <sl-menu-item @click=${() =>
+                      console.log(this._importExample(0))}
+                      ><sl-icon slot="prefix" src=${questionMark}></sl-icon>
+                      Quiz Example
+                    </sl-menu-item>
+                  </sl-menu>
+                </sl-dropdown>
+                <sl-divider
+                  vertical
+                  style=${
+                    this.inPreviewMode
+                      ? "display: none;"
+                      : "display: block; height: 30px;"
+                  }
+                ></sl-divider>
+                <sl-dropdown
+                  style=${
+                    this.inPreviewMode ? "display: none;" : "display: block;"
+                  }
+                >
+                  <sl-button slot="trigger">
+                    Add Node
+                    <sl-icon src=${plus} slot="prefix"></sl-icon>
+                  </sl-button>
+                  <sl-menu style="width: 180px;">
+                    <sl-menu-item
+                      @click=${() => this._addPageNode("Untitled Page", false)}
+                      ><sl-icon slot="prefix" src=${file}></sl-icon>
+                      Page
+                    </sl-menu-item>
+                    <sl-menu-item @click=${() => this._addQuestionNode()}>
+                      <sl-icon slot="prefix" src=${helpSquareRounded}></sl-icon>
+                      Question
+                    </sl-menu-item>
+                  </sl-menu>
+                </sl-dropdown>
+                <sl-divider
+                  vertical
+                  style=${
+                    this.inPreviewMode
+                      ? "display: none;"
+                      : "display: block; height: 30px;"
+                  }
+                >
+                </sl-divider>
+                <sl-button
+                  style=${
+                    this.inPreviewMode ? "display: none;" : "display: block;"
+                  }
+                  @click=${() =>
+                    (
+                      this.shadowRoot.getElementById("dialog") as SlDialog
+                    ).show()}
+                >
+                  Clear
+                </sl-button>
+              </div>
+              ${
+                this.inPreviewMode
+                  ? html` <gamebook-viewer
+                      gamebookTitle=${this.gamebookTitle != ""
+                        ? this.gamebookTitle
+                        : "No Name"}
+                    >
+                      <slot></slot>
+                    </gamebook-viewer>`
+                  : null
+              }
+              <div
+                id="drawflowEditorDiv"
+                style=${
+                  this.inPreviewMode ? "display: none;" : "display: block;"
+                }
+              >
+                <div class="zoomControls">
+                  <sl-icon-button
+                    id="zoomInBtn"
+                    src=${zoomIn}
+                    style="font-size: auto;"
+                    @click=${() => this.editor.zoom_in()}
+                  >
+                  </sl-icon-button>
+                  <sl-icon-button
+                    id="zoomOutBtn"
+                    src=${zoomOut}
+                    style="font-size: auto;"
+                    @click=${() => this.editor.zoom_out()}
+                  >
+                  </sl-icon-button>
+                </div>
+                <div class="zoomValue">
+                  <p>${this.editorZoomString}</p>
+                </div>
+                </div>
+
+                ${
+                  !this.inPreviewMode
+                    ? html`<selected-node-details
+                        .selectedNode=${this.selectedNode}
+                        .editor=${this.editor}
+                        .editorContent=${this.editorContent}
                       >
-                      <sl-button
-                        slot="footer"
-                        variant="danger"
-                        outline
-                        @click=${() => this._clearEditor()}
-                        >Clear</sl-button
-                      >
-                    </sl-dialog>
+                        <slot></slot>
+                      </selected-node-details>`
+                    : null
+                }
+
+                <sl-dialog label="Clear graph" class="dialog" id="dialog">
+                  Do you want to clear the graph? All your progress will be
+                  lost.
+                  <sl-button
+                    slot="footer"
+                    variant="primary"
+                    outline
+                    @click=${() =>
+                      (
+                        this.shadowRoot.getElementById("dialog") as SlDialog
+                      ).hide()}
+                    >Cancel</sl-button
+                  >
+                  <sl-button
+                    slot="footer"
+                    variant="danger"
+                    outline
+                    @click=${() => this._clearEditor()}
+                    >Clear</sl-button
+                  >
+                </sl-dialog>
               </div>
             </div>`
           : html`<gamebook-viewer
@@ -894,5 +924,56 @@ export class WebWriterBranchingScenario extends LitElementWw {
       });
       this.dispatchEvent(dispatchEvent);
     }
+  }
+
+  //TODO: remove, just keep this for making a string for examples
+  private domElementReplacer(key, value) {
+    if (value instanceof HTMLElement) {
+      return {
+        tagName: value.tagName,
+        attributes: [...value.attributes].map((attr) => ({
+          name: attr.name,
+          value: attr.value,
+        })),
+        innerHTML: value.innerHTML,
+      };
+    }
+    return value;
+  }
+
+  private createElementFromInfo(info) {
+    let element = document.createElement(info.tagName);
+    info.attributes.forEach((attr) => {
+      element.setAttribute(attr.name, attr.value);
+    });
+    element.innerHTML = info.innerHTML;
+    return element;
+  }
+
+  /*
+
+ //TODO: will images be saved and imported back? how does frederic do this when closing an reopening webwriter?
+  */
+  private _importExample(index: Number) {
+    this.editor.clear();
+    this.editor.import(gamebookExamples.gamebookExamples[0].drawflow);
+
+    this.selectedNode = NO_NODE_SELECTED;
+    this.gamebookTitle = "";
+
+    //clear all the slotted PageContainers
+    this.gamebookContainers.forEach((container) => {
+      container.remove();
+    });
+
+    let containers = gamebookExamples.gamebookExamples[0].containers.map(
+      (info) => this.createElementFromInfo(info)
+    );
+
+    containers.forEach((container) => {
+      this.appendChild(container);
+    });
+
+    this.editorContent = { ...this.editor.drawflow };
   }
 }
