@@ -311,6 +311,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 <div class="zoomValue">
                   <p>${this.editorZoomString}</p>
                 </div>
+
+                <sl-button class="exportButton" @click=${() =>
+                  this.testOutput()}>Export</sl-button>
                 </div>
 
                 ${
@@ -924,6 +927,24 @@ export class WebWriterBranchingScenario extends LitElementWw {
       });
       this.dispatchEvent(dispatchEvent);
     }
+  }
+
+  private testOutput() {
+    console.log(this.gamebookContainers);
+
+    this.gamebookContainers.forEach((container) => {
+      if (container instanceof PageContainer) {
+        // Assuming PageContainer has a method or property to access its child elements
+        const childElements = container.childNodes; // Adjust this to how you get child elements in your PageContainer
+
+        childElements.forEach((child) => {
+          if ((child as HTMLElement).tagName.toLowerCase() === "picture") {
+            const dataUrl = (child as HTMLElement).getAttribute("dataURl"); // Assuming dataURl is an attribute
+            console.log(dataUrl);
+          }
+        });
+      }
+    });
   }
 
   //TODO: remove, just keep this for making a string for examples
