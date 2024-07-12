@@ -5,22 +5,6 @@ export default css`
   /* Editor */
   /* ------- */
 
-  #drawflowEditorDiv {
-    display: block;
-    position: relative;
-    width: 100%;
-    height: 300px;
-    background-color: #fafafb;
-    background-image: radial-gradient(circle, #dedede, 1px, transparent 1px);
-    background-size: 25px 25px;
-    background-position: 0 0, 12.5px 12.5px;
-    border-bottom: 1px solid #e4e4e4; /* You can adjust the thickness and color as needed */
-    user-select: none; /* Standard syntax */
-    -webkit-user-select: none; /* Safari/Chrome */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-  }
-
   /* ------- */
   /* Page Node */
   /* TODO: make origin of class page. just add the differing css to page class  */
@@ -43,6 +27,8 @@ export default css`
     box-sizing: border-box;
 
     width: auto;
+
+    user-select: none;
   }
 
   .drawflow-node.page .container,
@@ -58,6 +44,8 @@ export default css`
 
     gap: 20px;
     box-sizing: border-box;
+
+    user-select: none;
   }
 
   .drawflow-node.page .container .threeDots,
