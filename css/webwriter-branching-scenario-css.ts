@@ -2,12 +2,22 @@ import { css } from "lit";
 
 export default css`
   :host {
-    display: inline-block;
+    display: flex;
+    box-sizing: border-box;
     outline: none;
+    user-select: none;
+  }
+
+  ::after {
+    user-select: none;
   }
 
   :host(.ww-beforeprint) {
     display: inline-block;
+  }
+
+  :host(.ww-selected) {
+    border: 2px solid orange;
   }
 
   #widget {

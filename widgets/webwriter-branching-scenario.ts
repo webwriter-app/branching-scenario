@@ -165,7 +165,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
     // this.addEventListener("click", () => {
     //   console.log("test");
     //   this.focus();
-    //   focus;
     // });
   }
 
@@ -174,9 +173,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   render() {
     return html`
-      <div>
+      <div id="widget">
         ${this.isContentEditable
-          ? html` <div id="widget">
+          ? html` 
               <div class="controls">
                 <div class="first-item">
                   <sl-icon-button
@@ -312,8 +311,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   <p>${this.editorZoomString}</p>
                 </div>
 
-                <sl-button class="exportButton" @click=${() =>
-                  this.testOutput()}>Export</sl-button>
+                <!-- <sl-button class="exportButton" @click=${() =>
+                  this.testOutput()}>Export</sl-button> -->
                 </div>
 
                 ${
@@ -350,7 +349,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   >
                 </sl-dialog>
               </div>
-            </div>`
+            `
           : html`<gamebook-viewer
               gamebookTitle=${this.gamebookTitle != ""
                 ? this.gamebookTitle

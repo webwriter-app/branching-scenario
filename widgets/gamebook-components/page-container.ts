@@ -41,6 +41,11 @@ export class PageContainer extends LitElementWw {
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
 
+  static shadowRootOptions = {
+    ...LitElement.shadowRootOptions,
+    delegatesFocus: true,
+  };
+
   /* 
   
   
@@ -59,6 +64,11 @@ export class PageContainer extends LitElementWw {
     const config = { attributes: true, childList: true, subtree: true };
     // Start observing the target node for configured mutations
     this.mutationObserver.observe(this, config);
+
+    this.addEventListener("click", () => {
+      console.log("page Container clicked");
+      this.focus();
+    });
   }
   /*
 
