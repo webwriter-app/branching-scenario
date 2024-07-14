@@ -25,11 +25,11 @@ import {
 } from "@shoelace-style/shoelace";
 
 //Import Styles
-import styles from "../css/gamebook-preview-css";
+import styles from "../../css/gamebook-preview-css";
 
-import { LinkButton } from "./gamebook-components/link-button";
-import { QuizContainer } from "./gamebook-components/quiz-container";
-import { PageContainer } from "./gamebook-components/page-container";
+import { LinkButton } from "./link-button";
+import { QuizContainer } from "./quiz-container";
+import { PageContainer } from "./page-container";
 
 //Define Component
 //TODO: Fix Gamebook Errors. Check other modules for proper updating. I commented out a lot for restructure!

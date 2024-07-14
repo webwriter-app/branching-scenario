@@ -27,8 +27,6 @@ export default css`
     box-sizing: border-box;
 
     width: auto;
-
-    user-select: none;
   }
 
   .drawflow-node.page .container,
@@ -44,8 +42,6 @@ export default css`
 
     gap: 20px;
     box-sizing: border-box;
-
-    user-select: none;
   }
 
   .drawflow-node.page .container .threeDots,

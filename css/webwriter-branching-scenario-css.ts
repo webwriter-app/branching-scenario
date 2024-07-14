@@ -31,42 +31,6 @@ export default css`
     border-color: #e4e4e4;
   }
 
-  .controls {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center; /* Center items vertically */
-
-    width: 100%;
-
-    box-sizing: border-box;
-    border-bottom: 1px solid #e4e4e4;
-
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-
-    font-family: "Roboto", sans-serif;
-    font-size: 20px;
-    font-weight: bold;
-  }
-
-  .controls .first-item {
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: center; /* Center items vertically */
-
-    margin-right: auto; // Push this item to the start
-  }
-
-  .iconButton {
-    border: 1px solid #cecece;
-    border-radius: 4px;
-    font-size: auto;
-  }
-
   #zoomInBtn,
   #zoomOutBtn {
     color: white;
@@ -171,17 +135,7 @@ export default css`
     background-size: 25px 25px;
     background-position: 0 0, 12.5px 12.5px;
     border-bottom: 1px solid #e4e4e4; /* You can adjust the thickness and color as needed */
-
-    user-select: none; /* Standard syntax */
-    -webkit-user-select: none; /* Safari/Chrome */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
   }
-
-  #drawflowEditorDiv * {
-    user-select: none;
-  }
-
   #drawflowEditorDiv ::selection {
     background: transparent;
     color: inherit;

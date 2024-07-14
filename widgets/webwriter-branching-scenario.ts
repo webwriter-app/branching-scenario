@@ -24,17 +24,12 @@ import {
 } from "@shoelace-style/shoelace";
 
 //@tabler icons
-import plus from "@tabler/icons/outline/plus.svg";
-import playerStop from "@tabler/icons/filled/player-stop.svg";
-import playerPlay from "@tabler/icons/filled/player-play.svg";
 import file from "@tabler/icons/outline/file.svg";
 import circleArrowRight from "@tabler/icons/filled/circle-arrow-right.svg";
 import dotsVertical from "@tabler/icons/outline/dots-vertical.svg";
 import zoomIn from "@tabler/icons/outline/zoom-in.svg";
 import zoomOut from "@tabler/icons/outline/zoom-out.svg";
 import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
-import schema from "@tabler/icons/outline/schema.svg";
-import questionMark from "@tabler/icons/outline/question-mark.svg";
 
 //Drawflow Imports
 import Drawflow, { DrawflowConnection } from "drawflow";
@@ -47,13 +42,15 @@ import customDrawflowStyles from "../css/custom-drawflow-css";
 
 //Import Sub Components
 import { SelectedNodeDetails } from "./selected-node-details";
-import { GamebookViewer } from "./gamebook-viewer";
+import { GamebookViewer } from "./gamebook-components/gamebook-viewer";
 import { PageContainer } from "./gamebook-components/page-container";
 import { QuizContainer } from "./gamebook-components/quiz-container";
 import { LinkButton } from "./gamebook-components/link-button";
+import { BranchingControls } from "./branching-controls";
 
 //import Examples
 import { gamebookExamples } from "./gamebookExamples";
+import { GamebookContainerManager } from "./gamebook-components/gamebook-container-manager";
 
 // Declare global variable of type DrawflowNode
 const NO_NODE_SELECTED: DrawflowNode = {
@@ -97,12 +94,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
   })
   gamebookContainers;
 
-  @state() inPreviewMode = false;
+  @query("gamebook-container-manager")
+  gamebookContainerManager;
 
-  // focus(options: FocusOptions) {
-  //   console.log("test");
-  //   //this.classList.add("ww-selected");
-  // }
+  @state() inPreviewMode = false;
 
   static shadowRootOptions = {
     ...LitElement.shadowRootOptions,
@@ -126,6 +121,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-menu": SlMenu,
       "sl-menu-item": SlMenuItem,
       "sl-dropdown": SlDropdown,
+      "gamebook-container-manager": GamebookContainerManager,
+      "branching-controls": BranchingControls,
     };
   }
 
@@ -160,12 +157,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
     } else {
       this.editor.import(this.editorContent);
     }
-
-    // Adding the click event listener to set focus on the component
-    // this.addEventListener("click", () => {
-    //   console.log("test");
-    //   this.focus();
-    // });
   }
 
   /*
@@ -176,104 +167,18 @@ export class WebWriterBranchingScenario extends LitElementWw {
       <div id="widget">
         ${this.isContentEditable
           ? html` 
-              <div class="controls">
-                <div class="first-item">
-                  <sl-icon-button
-                    src=${this.inPreviewMode ? playerStop : playerPlay}
-                    class="iconButton"
-                    @click=${() => this._togglePreviewMode()}
-                  >
-                    ${this.inPreviewMode ? "Cancel" : "Preview"}
-                  </sl-icon-button>
-                  <sl-divider
-                    vertical
-                    style=${
-                      this.inPreviewMode
-                        ? "display: none;"
-                        : "display: block; height: 30px;"
-                    }
-                  ></sl-divider>
-                  <sl-textarea
-                    id="gamebookTitle"
-                    rows="1"
-                    resize="none"
-                    placeholder="Gamebook Name"
-                    @input="${this._handleGamebookTitle}"
-                    .value="${this.gamebookTitle}"
-                    style=${
-                      this.inPreviewMode ? "display: none;" : "display: block;"
-                    }
-                  >
-                  </sl-textarea>
-                </div>
-
-                <sl-dropdown
-                  style=${
-                    this.inPreviewMode ? "display: none;" : "display: block;"
-                  }
-                >
-                  <sl-button slot="trigger">
-                    Import
-                    <sl-icon src=${schema} slot="prefix"></sl-icon>
-                  </sl-button>
-                  <sl-menu style="width: 180px;">
-                    <sl-menu-item @click=${() =>
-                      console.log(this._importExample(0))}
-                      ><sl-icon slot="prefix" src=${questionMark}></sl-icon>
-                      Quiz Example
-                    </sl-menu-item>
-                  </sl-menu>
-                </sl-dropdown>
-                <sl-divider
-                  vertical
-                  style=${
-                    this.inPreviewMode
-                      ? "display: none;"
-                      : "display: block; height: 30px;"
-                  }
-                ></sl-divider>
-                <sl-dropdown
-                  style=${
-                    this.inPreviewMode ? "display: none;" : "display: block;"
-                  }
-                >
-                  <sl-button slot="trigger">
-                    Add Node
-                    <sl-icon src=${plus} slot="prefix"></sl-icon>
-                  </sl-button>
-                  <sl-menu style="width: 180px;">
-                    <sl-menu-item
-                      @click=${() => this._addPageNode("Untitled Page", false)}
-                      ><sl-icon slot="prefix" src=${file}></sl-icon>
-                      Page
-                    </sl-menu-item>
-                    <sl-menu-item @click=${() => this._addQuestionNode()}>
-                      <sl-icon slot="prefix" src=${helpSquareRounded}></sl-icon>
-                      Question
-                    </sl-menu-item>
-                  </sl-menu>
-                </sl-dropdown>
-                <sl-divider
-                  vertical
-                  style=${
-                    this.inPreviewMode
-                      ? "display: none;"
-                      : "display: block; height: 30px;"
-                  }
-                >
-                </sl-divider>
-                <sl-button
-                  style=${
-                    this.inPreviewMode ? "display: none;" : "display: block;"
-                  }
-                  @click=${() =>
-                    (
-                      this.shadowRoot.getElementById("dialog") as SlDialog
-                    ).show()}
-                >
-                  Clear
-                </sl-button>
-              </div>
+            <branching-controls 
+            .inPreviewMode=${this.inPreviewMode}
+            .gamebookTitle=${this.gamebookTitle} 
+            ._togglePreviewMode=${() => this._togglePreviewMode()} 
+            ._importExample=${(number) => this._importExample(number)} 
+            ._addPageNode=${(string, boolean) =>
+              this._addPageNode(string, boolean)} 
+            ._addQuestionNode=${() => this._addQuestionNode}
+            ._handleGamebookTitle=${(event) =>
+              this._handleGamebookTitle(event)}>
+          </branching-controls>
+          <!-- TODO: Delete this once contentEditable works perfectly -->
               ${
                 this.inPreviewMode
                   ? html` <gamebook-viewer
@@ -322,7 +227,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
                         .editor=${this.editor}
                         .editorContent=${this.editorContent}
                       >
-                        <slot></slot>
+                        <gamebook-container-manager
+                          .appendToShadowDom=${(container) =>
+                            this._addContainerCallback(container)}
+                        >
+                          <slot></slot>
+                        </gamebook-container-manager>
                       </selected-node-details>`
                     : null
                 }
@@ -409,105 +319,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
   }
 
-  /* 
-  
-  
-  */
-  private _deleteGamebookContainersById(drawflowNodeId: Number) {
-    this.gamebookContainers.forEach((container) => {
-      if (container.drawflowNodeId == drawflowNodeId) {
-        container.remove();
-      }
-    });
-  }
-
-  /*
-
-
-  */
-  private _getContainerByDrawflowNodeId(id: string) {
-    const container = this.gamebookContainers.find(
-      (container) => container.getAttribute("drawflowNodeId") == id
-    );
-
-    return container;
-  }
-
-  /*
-
-
-  */
-  private _showGamebookContainerById(nodeId: Number) {
-    this.gamebookContainers.forEach((container) => {
-      if (container.drawflowNodeId == nodeId) {
-        container.show();
-      } else {
-        container.hide();
-      }
-    });
-  }
-
-  /*
-
-
-  */
-  private _hideAllGamebookContainers() {
-    this.gamebookContainers.forEach((container) => {
-      container.hide();
-    });
-  }
-
-  /*
-  TODO: Figure out how to put this into a constructor
-  Also remove the node data adding 
-  */
-  private _createPageContainerFromPageNode(pageNode: DrawflowNode) {
-    const pageContainer = document.createElement(
-      "page-container"
-    ) as PageContainer;
-    pageContainer.setAttribute("drawflowNodeId", pageNode.id.toString());
-    pageContainer.setAttribute("pageTitle", pageNode.data.title);
-
-    if (pageNode.class == "origin") {
-      pageContainer.setAttribute("originPage", "1");
-    } else {
-      pageContainer.setAttribute("originPage", "0");
-    }
-
-    const parser = new DOMParser();
-    const contentFromNode = parser.parseFromString(
-      pageNode.data.content,
-      "text/html"
-    );
-
-    // Loop through the child nodes of the body of the parsed document
-    contentFromNode.body.childNodes.forEach((node) => {
-      pageContainer.appendChild(node);
-    });
-
-    //to let it access editor
-    pageContainer.hide();
-    this.appendChild(pageContainer);
-  }
-
-  /* 
-  
-  
-  */
-  private _createQuestionContainerFromQuestionNode(questionNode: DrawflowNode) {
-    const quizContainer = document.createElement(
-      "quiz-container"
-    ) as QuizContainer;
-    quizContainer.setAttribute("drawflowNodeId", questionNode.id.toString());
-    quizContainer.style.position = "unset";
-
-    quizContainer.setAttribute("quiz", JSON.stringify(questionNode.data));
-
-    //to let it access editor
-    quizContainer.hide();
-    this.appendChild(quizContainer);
-  }
-
   /*
 
 
@@ -518,8 +329,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.on("nodeDataChanged", (id) => {
       this.editorContent = { ...this.editor.drawflow };
       this.selectedNode = this.editor.getNodeFromId(id);
-      const container = this._getContainerByDrawflowNodeId(id.toString());
-      (container as PageContainer).pageTitle = this.selectedNode.data.title;
+
+      this.gamebookContainerManager._renameContainer(
+        id.toString(),
+        this.selectedNode.data.title
+      );
     });
 
     //custom event that indicates data is changed
@@ -530,9 +344,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
       );
 
       if (this.selectedNode.class == "question-branch") {
-        const container = this._getContainerByDrawflowNodeId(
-          this.selectedNode.id.toString()
-        );
+        const container =
+          this.gamebookContainerManager._getContainerByDrawflowNodeId(
+            this.selectedNode.id.toString()
+          );
         container.updateFromQuestionNode(this.selectedNode);
       }
     });
@@ -545,16 +360,18 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.selectedNode.class == "page" ||
         this.selectedNode.class == "origin"
       ) {
-        this._showGamebookContainerById(this.selectedNode.id);
+        this.gamebookContainerManager._showGamebookContainerById(
+          this.selectedNode.id
+        );
       } else if (this.selectedNode.class == "question-branch") {
-        this._hideAllGamebookContainers();
+        this.gamebookContainerManager._hideAllGamebookContainers();
       }
     });
 
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
       this.selectedNode = NO_NODE_SELECTED;
-      this._hideAllGamebookContainers();
+      this.gamebookContainerManager._hideAllGamebookContainers();
     });
 
     //Event listerner for creation of a node
@@ -564,15 +381,19 @@ export class WebWriterBranchingScenario extends LitElementWw {
       let createdNode = this.editor.getNodeFromId(id);
 
       if (createdNode.class == "page" || createdNode.class == "origin") {
-        this._createPageContainerFromPageNode(createdNode);
+        this.gamebookContainerManager._createPageContainerFromPageNode(
+          createdNode
+        );
       } else if (createdNode.class == "question-branch") {
-        this._createQuestionContainerFromQuestionNode(createdNode);
+        this.gamebookContainerManager._createQuestionContainerFromQuestionNode(
+          createdNode
+        );
       }
     });
 
     //Event listener for deletion of a node
     this.editor.on("nodeRemoved", (id) => {
-      this._deleteGamebookContainersById(id);
+      this.gamebookContainerManager._deleteGamebookContainersById(id);
       this.editorContent = { ...this.editor.drawflow };
     });
 
@@ -598,9 +419,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
           this.selectedNode.class == "page" ||
           this.selectedNode.class == "origin"
         ) {
-          this._showGamebookContainerById(this.selectedNode.id);
+          this.gamebookContainerManager._showGamebookContainerById(
+            this.selectedNode.id
+          );
         } else if (this.selectedNode.class == "question-branch") {
-          this._hideAllGamebookContainers();
+          this.gamebookContainerManager._hideAllGamebookContainers();
         }
 
         //
@@ -619,7 +442,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
       this.selectedNode = NO_NODE_SELECTED;
 
-      this._hideAllGamebookContainers();
+      this.gamebookContainerManager._hideAllGamebookContainers();
     });
 
     //Event for created connections done e.g. via drag and drop
@@ -632,7 +455,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
         const inputNode = this.editor.getNodeFromId(input_id);
 
         if (outputNode.class == "page" || outputNode.class == "origin") {
-          const pageContainer = this._getContainerByDrawflowNodeId(output_id);
+          const pageContainer =
+            this.gamebookContainerManager._getContainerByDrawflowNodeId(
+              output_id
+            );
           pageContainer.addLinkButtonToPageContainer(
             outputNode,
             inputNode,
@@ -659,7 +485,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
         const outputNode = this.editor.getNodeFromId(output_id);
 
         if (outputNode.class == "page" || outputNode.class == "origin") {
-          const pageContainer = this._getContainerByDrawflowNodeId(output_id);
+          const pageContainer =
+            this.gamebookContainerManager._getContainerByDrawflowNodeId(
+              output_id
+            );
           const identifier = `${output_id}-${output_class}-${input_id}-${input_class}`;
           pageContainer.removeLinkButtonFromPageContainer(identifier);
         } else if (outputNode.class == "question-branch") {
@@ -685,9 +514,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.selectedNode.class == "page" ||
         this.selectedNode.class == "origin"
       ) {
-        this._showGamebookContainerById(this.selectedNode.id);
+        this.gamebookContainerManager._showGamebookContainerById(
+          this.selectedNode.id
+        );
       } else if (this.selectedNode.class == "question-branch") {
-        this._hideAllGamebookContainers();
+        this.gamebookContainerManager._hideAllGamebookContainers();
       }
     });
 
@@ -928,6 +759,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
   }
 
+  /*
+
+
+  */
   private testOutput() {
     console.log(this.gamebookContainers);
 
@@ -946,7 +781,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
     });
   }
 
-  //TODO: remove, just keep this for making a string for examples
+  /*
+
+
+  */ //TODO: remove, just keep this for making a string for examples
   private domElementReplacer(key, value) {
     if (value instanceof HTMLElement) {
       return {
@@ -995,5 +833,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
     });
 
     this.editorContent = { ...this.editor.drawflow };
+  }
+
+  private _addContainerCallback(container: Node) {
+    console.log(container);
+    this.appendChild(container);
   }
 }

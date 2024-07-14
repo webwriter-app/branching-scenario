@@ -20,7 +20,7 @@
     "./widgets/page-container": "./widgets/gamebook-components/page-container.ts",
     "./widgets/quiz-container": "./widgets/gamebook-components/quiz-container.ts",
     "./widgets/link-button": "./widgets/gamebook-components/link-button.ts",
-    "./widgets/gamebook-viewer": "./widgets/gamebook-viewer.ts"
+    "./widgets/gamebook-viewer": "./widgets/gamebook-components/gamebook-viewer.ts"
   },
   "devDependencies": {
     "@types/drawflow": "^0.0.11",

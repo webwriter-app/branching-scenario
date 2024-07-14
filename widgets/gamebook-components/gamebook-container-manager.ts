@@ -21,8 +21,8 @@ export class GamebookContainerManager extends LitElementWw {
     element: HTMLElement
   ) => {};
 
-  @property({ type: Object, attribute: true })
-  gamebookContainers = [];
+  @queryAssignedElements({ flatten: true })
+  gamebookContainers;
 
   static get scopedElements() {
     return {
@@ -32,12 +32,15 @@ export class GamebookContainerManager extends LitElementWw {
   }
 
   protected firstUpdated(_changedProperties: any): void {
-    // console.log("test");
-    // console.log(this.gamebookContainers);
+    console.log("container manager update");
+  }
+
+  handleSlotChange() {
+    console.log("slot change");
   }
 
   render() {
-    return html` <slot></slot> `;
+    return html` <slot @slotchange=${this.handleSlotChange}></slot> `;
   }
 
   /* 
@@ -76,12 +79,27 @@ export class GamebookContainerManager extends LitElementWw {
 
   /*
 
+  */
+  public _renameContainer(id: string, title: string) {
+    const container = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == id
+    );
+
+    (container as PageContainer).pageTitle = title;
+  }
+
+  /*
+
 
   */
   public _showGamebookContainerById(nodeId: Number) {
+    console.log("iteration");
     this.gamebookContainers.forEach((container) => {
+      console.log("iteration");
       if (container.drawflowNodeId == nodeId) {
+        console.log("enter");
         container.show();
+        console.log(container);
       } else {
         container.hide();
       }
@@ -108,6 +126,7 @@ export class GamebookContainerManager extends LitElementWw {
       "page-container"
     ) as PageContainer;
     pageContainer.setAttribute("drawflowNodeId", pageNode.id.toString());
+    pageContainer.setAttribute("pageTitle", pageNode.data.title);
 
     if (pageNode.class == "origin") {
       pageContainer.setAttribute("originPage", "1");
@@ -128,11 +147,7 @@ export class GamebookContainerManager extends LitElementWw {
 
     //to let it access editor
     pageContainer.hide();
-    //this.appendChild(pageContainer);
     this.appendToShadowDom(pageContainer);
-
-    // console.log(this.childNodes);
-    // console.log(this);
   }
 
   /* 
@@ -150,7 +165,6 @@ export class GamebookContainerManager extends LitElementWw {
 
     //to let it access editor
     quizContainer.hide();
-    //this.appendChild(quizContainer);
     this.appendToShadowDom(quizContainer);
   }
 }
