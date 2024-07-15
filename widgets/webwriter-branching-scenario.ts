@@ -739,12 +739,20 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     const containerHtml = containerDiv.outerHTML;
 
+    //get current center of drawflow div
+    const rect = this.drawflowEditorDiv.getBoundingClientRect();
+    const zoom = this.editor.zoom;
+
+    //center of canvas - translation of canvas / zoom - node dimension center
+    const centerX = rect.width / 2 - this.editor.canvas_x / zoom - 110 / 2;
+    const centerY = rect.height / 2 - this.editor.canvas_y / zoom - 110 / 2;
+
     this.editor.addNode(
       "Question Branch",
       0,
       0,
-      0,
-      0,
+      centerX,
+      centerY,
       "question-branch",
       data,
       containerHtml,

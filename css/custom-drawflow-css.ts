@@ -21,8 +21,8 @@ export default css`
 
     box-sizing: border-box;
 
-    width: 302px;
-    height: 90px;
+    min-width: 302px;
+    min-height: 90px;
   }
 
   .drawflow-node.page .container,
