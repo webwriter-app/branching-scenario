@@ -64,8 +64,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
   @property({ type: Object, attribute: false }) nodesInEditor = {};
 
   /*
-  //TODO: if you drag and drop a connection from a quiz branch to a page, it will not find a pagecontainer as a quiz branch does not create a page container
-  //TODO: rethink logic of how to save answers and stuff
   //TODO: work on visualization of quiz branch node in slot system
    */
   render() {
@@ -386,7 +384,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
 
   */
   private _handleUserInputTargetPage(event) {
-    //TODO: if a connection is already exisiting, inputs and outputs should be updated and further connections should be deleted and newly added
     const answerId = event.target.getAttribute("answerId");
     const answerArray = this.selectedNode.data.answers;
     const index = answerArray.findIndex((answer) => answer.id == answerId);

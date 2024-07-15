@@ -2,12 +2,7 @@ import { css } from "lit";
 
 export default css`
   /* ------- */
-  /* Editor */
-  /* ------- */
-
-  /* ------- */
   /* Page Node */
-  /* TODO: make origin of class page. just add the differing css to page class  */
   /* ------- */
 
   .drawflow .drawflow-node.page,
@@ -26,7 +21,8 @@ export default css`
 
     box-sizing: border-box;
 
-    width: auto;
+    width: 302px;
+    height: 90px;
   }
 
   .drawflow-node.page .container,

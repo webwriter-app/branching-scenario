@@ -32,11 +32,11 @@ export class GamebookContainerManager extends LitElementWw {
   }
 
   protected firstUpdated(_changedProperties: any): void {
-    console.log("container manager update");
+    //console.log("container manager update");
   }
 
   handleSlotChange() {
-    console.log("slot change");
+    //console.log("slot change");
   }
 
   render() {
@@ -93,13 +93,13 @@ export class GamebookContainerManager extends LitElementWw {
 
   */
   public _showGamebookContainerById(nodeId: Number) {
-    console.log("iteration");
+    //console.log("iteration");
     this.gamebookContainers.forEach((container) => {
-      console.log("iteration");
+      //console.log("iteration");
       if (container.drawflowNodeId == nodeId) {
-        console.log("enter");
+        //console.log("enter");
         container.show();
-        console.log(container);
+        //console.log(container);
       } else {
         container.hide();
       }
@@ -121,7 +121,7 @@ export class GamebookContainerManager extends LitElementWw {
   Also remove the node data adding 
   */
   public _createPageContainerFromPageNode(pageNode: DrawflowNode) {
-    console.log(this.gamebookContainers);
+    //console.log(this.gamebookContainers);
     const pageContainer = document.createElement(
       "page-container"
     ) as PageContainer;

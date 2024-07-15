@@ -68,6 +68,7 @@ export class BranchingControls extends LitElementWw {
     isOrigin: boolean
   ) => {};
   @property({ type: Function }) _addQuestionNode = () => {};
+  @property({ type: Function }) _showDialog = () => {};
 
   protected render() {
     return html`
@@ -146,8 +147,7 @@ export class BranchingControls extends LitElementWw {
         </sl-divider>
         <sl-button
           style=${this.inPreviewMode ? "display: none;" : "display: block;"}
-          @click=${() =>
-            (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
+          @click=${() => this._showDialog()}
         >
           Clear
         </sl-button>

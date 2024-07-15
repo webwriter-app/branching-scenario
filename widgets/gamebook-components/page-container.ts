@@ -66,7 +66,7 @@ export class PageContainer extends LitElementWw {
     this.mutationObserver.observe(this, config);
 
     this.addEventListener("click", () => {
-      console.log("page Container clicked");
+      //console.log("page Container clicked");
       this.focus();
     });
   }
@@ -114,7 +114,7 @@ export class PageContainer extends LitElementWw {
     );
     this.appendChild(linkButton);
 
-    //TODO: Remove this once frederic fixed this
+    //TODO: Remove this once frederic fixed appending of children
     const par = document.createElement("p");
     par.textContent = "";
     this.appendChild(par);

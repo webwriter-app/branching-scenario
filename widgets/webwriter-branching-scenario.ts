@@ -1,11 +1,10 @@
-import { html, css, LitElement, unsafeCSS } from "lit";
+import { html, css, LitElement } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
   property,
   query,
   state,
-  queryAll,
   queryAssignedElements,
 } from "lit/decorators.js";
 
@@ -32,7 +31,7 @@ import zoomOut from "@tabler/icons/outline/zoom-out.svg";
 import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
 
 //Drawflow Imports
-import Drawflow, { DrawflowConnection } from "drawflow";
+import Drawflow from "drawflow";
 import { DrawflowNode } from "drawflow";
 import { style } from "drawflow/dist/drawflow.style.js";
 
@@ -174,9 +173,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
             ._importExample=${(number) => this._importExample(number)} 
             ._addPageNode=${(string, boolean) =>
               this._addPageNode(string, boolean)} 
-            ._addQuestionNode=${() => this._addQuestionNode}
-            ._handleGamebookTitle=${(event) =>
-              this._handleGamebookTitle(event)}>
+            ._addQuestionNode=${() => this._addQuestionNode()}
+            ._handleGamebookTitle=${(event) => this._handleGamebookTitle(event)}
+            ._showDialog=${() =>
+              (this.shadowRoot.getElementById("dialog") as SlDialog).show()}>
           </branching-controls>
           <!-- TODO: Delete this once contentEditable works perfectly -->
               ${
@@ -590,6 +590,21 @@ export class WebWriterBranchingScenario extends LitElementWw {
       );
     });
 
+    //event listener for when the user zoomed into the editor
+    this.editor.on("translate", ({ x, y }) => {
+      console.log("canvas", this.editor.canvas_x, this.editor.canvas_y);
+      console.log("pos", this.editor.pos_x, this.editor.pos_y);
+      console.log("start", this.editor.pos_x_start, this.editor.pos_y_start);
+      console.log("translate", x, y);
+      console.log("");
+    });
+
+    //event listener for when the user zoomed into the editor
+    this.editor.on("mouseMove", ({ x, y }) => {
+      // console.log("mouseMove", x, y);
+      // console.log("");
+    });
+
     //TODO: event for programmatic node selection
   }
 
@@ -665,12 +680,20 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     const containerHtml = containerDiv.outerHTML;
 
+    //get current center of drawflow div
+    const rect = this.drawflowEditorDiv.getBoundingClientRect();
+    const zoom = this.editor.zoom;
+
+    //center of canvas - translation of canvas / zoom - node dimension center
+    const centerX = rect.width / 2 - this.editor.canvas_x / zoom - 302 / 2;
+    const centerY = rect.height / 2 - this.editor.canvas_y / zoom - 90 / 2;
+
     this.editor.addNode(
       title,
       0,
       0,
-      0,
-      0,
+      centerX,
+      centerY,
       isOrigin ? "origin" : "page",
       pageContent,
       containerHtml,
@@ -764,7 +787,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   */
   private testOutput() {
-    console.log(this.gamebookContainers);
+    //console.log(this.gamebookContainers);
 
     this.gamebookContainers.forEach((container) => {
       if (container instanceof PageContainer) {
@@ -774,7 +797,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
         childElements.forEach((child) => {
           if ((child as HTMLElement).tagName.toLowerCase() === "picture") {
             const dataUrl = (child as HTMLElement).getAttribute("dataURl"); // Assuming dataURl is an attribute
-            console.log(dataUrl);
+            //console.log(dataUrl);
           }
         });
       }
@@ -810,7 +833,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   /*
 
- //TODO: will images be saved and imported back? how does frederic do this when closing an reopening webwriter?
   */
   private _importExample(index: Number) {
     this.editor.clear();
@@ -836,7 +858,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   }
 
   private _addContainerCallback(container: Node) {
-    console.log(container);
+    //console.log(container);
     this.appendChild(container);
   }
 }

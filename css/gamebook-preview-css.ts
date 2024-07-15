@@ -5,9 +5,12 @@ export default css`
     display: flex;
     flex-direction: column;
     align-items: center; /* Center items vertically */
-    background-color: #f7f7f7;
+    box-sizing: border-box;
+    background-color: white;
+
     height: auto;
-    padding: 10px;
+    width: auto;
+    margin: 10px;
   }
 
   .gamebook {
@@ -15,8 +18,10 @@ export default css`
     flex-direction: column;
     align-items: flex-start; /* Center items vertically */
     gap: 0px;
-    -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
-    box-shadow: 0 2px 20px 2px #d0d0d0;
+    //-webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
+    //box-shadow: 0 2px 20px 2px #d0d0d0;
+    border: 1px solid#e4e4e4;
+    box-sizing: border-box;
     width: 100%;
   }
 
@@ -24,26 +29,36 @@ export default css`
     font-family: "Roboto", sans-serif;
     font-weight: 600;
     background-color: #f7f7f7;
+    box-sizing: border-box;
+
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+
     height: auto;
+
     display: flex;
     align-items: center; /* Vertically center */
     justify-content: flex-start; /* Horizontally align at the start */
-    padding-top: 10px;
-    padding-left: 15px;
-    width: calc(100% - 20px); /* Adjust width to account for padding */
+
+    width: 100%;
   }
 
   .pageTitle {
     font-family: "Roboto", sans-serif;
     font-size: 14px;
+
     background-color: #f7f7f7;
+
     height: auto;
     display: flex;
     align-items: center; /* Vertically center */
     justify-content: flex-start; /* Horizontally align at the start */
-    padding-left: 15px;
+    box-sizing: border-box;
+
+    width: 100%; /* Adjust width to account for padding */
+    padding-left: 10px;
     padding-bottom: 10px;
-    width: calc(100% - 20px); /* Adjust width to account for padding */
   }
 
   .page {
@@ -51,7 +66,6 @@ export default css`
     position: relative;
     flex-direction: column;
     gap: 10px; /* Adjust the value to your desired spacing */
-    padding: 10px;
     box-sizing: border-box;
     width: 100%;
     background-color: white;
