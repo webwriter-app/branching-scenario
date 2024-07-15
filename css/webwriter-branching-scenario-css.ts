@@ -125,19 +125,43 @@ export default css`
     position: unset !important; /* Use !important to override any inline styles */
   }
 
+  #test {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* Ensure position relative for child positioning */
+  }
+
   #drawflowEditorDiv {
     display: block;
     position: relative;
     width: 100%;
     height: 300px;
-    background-color: #fafafb;
-    background-image: radial-gradient(circle, #dedede, 1px, transparent 1px);
-    background-size: 25px 25px;
-    background-position: 0 0, 12.5px 12.5px;
-    border-bottom: 1px solid #e4e4e4; /* You can adjust the thickness and color as needed */
+
+    border-bottom: 1px solid #e4e4e4; //You can adjust the thickness and color as needed
   }
+
   #drawflowEditorDiv ::selection {
     background: transparent;
     color: inherit;
+  }
+
+  #background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0; /* Place background behind #drawflowEditorDiv */
+
+    background-color: #fafafb;
+    background-image: radial-gradient(circle, #dedede, 1px, transparent 1px);
+    background-size: 25px 25px;
+    background-position: 0 10;
   }
 `;

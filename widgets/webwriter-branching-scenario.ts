@@ -190,36 +190,38 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     </gamebook-viewer>`
                   : null
               }
-              <div
-                id="drawflowEditorDiv"
-                style=${
-                  this.inPreviewMode ? "display: none;" : "display: block;"
-                }
-              >
-                <div class="zoomControls">
-                  <sl-icon-button
-                    id="zoomInBtn"
-                    src=${zoomIn}
-                    style="font-size: auto;"
-                    @click=${() => this.editor.zoom_in()}
-                  >
-                  </sl-icon-button>
-                  <sl-icon-button
-                    id="zoomOutBtn"
-                    src=${zoomOut}
-                    style="font-size: auto;"
-                    @click=${() => this.editor.zoom_out()}
-                  >
-                  </sl-icon-button>
-                </div>
-                <div class="zoomValue">
-                  <p>${this.editorZoomString}</p>
-                </div>
+              <div id="test">
+                <div id="background"></div>
+                <div
+                  id="drawflowEditorDiv"
+                  style=${
+                    this.inPreviewMode ? "display: none;" : "display: block;"
+                  }
+                >
+                  <div class="zoomControls">
+                    <sl-icon-button
+                      id="zoomInBtn"
+                      src=${zoomIn}
+                      style="font-size: auto;"
+                      @click=${() => this.editor.zoom_in()}
+                    >
+                    </sl-icon-button>
+                    <sl-icon-button
+                      id="zoomOutBtn"
+                      src=${zoomOut}
+                      style="font-size: auto;"
+                      @click=${() => this.editor.zoom_out()}
+                    >
+                    </sl-icon-button>
+                  </div>
+                  <div class="zoomValue">
+                    <p>${this.editorZoomString}</p>
+                  </div>
 
-                <!-- <sl-button class="exportButton" @click=${() =>
-                  this.testOutput()}>Export</sl-button> -->
-                </div>
-
+                  <!-- <sl-button class="exportButton" @click=${() =>
+                    this.testOutput()}>Export</sl-button> -->
+                  </div>
+              </div>
                 ${
                   !this.inPreviewMode
                     ? html`<selected-node-details
@@ -592,17 +594,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     //event listener for when the user zoomed into the editor
     this.editor.on("translate", ({ x, y }) => {
-      console.log("canvas", this.editor.canvas_x, this.editor.canvas_y);
-      console.log("pos", this.editor.pos_x, this.editor.pos_y);
-      console.log("start", this.editor.pos_x_start, this.editor.pos_y_start);
-      console.log("translate", x, y);
-      console.log("");
-    });
+      const offsetX = x; // Adjust multiplier as needed
+      const offsetY = y; // Adjust multiplier as needed
 
-    //event listener for when the user zoomed into the editor
-    this.editor.on("mouseMove", ({ x, y }) => {
-      // console.log("mouseMove", x, y);
-      // console.log("");
+      (
+        this.shadowRoot.querySelector("#background") as HTMLElement
+      ).style.backgroundPosition = `${x} ${y}`;
     });
 
     //TODO: event for programmatic node selection
