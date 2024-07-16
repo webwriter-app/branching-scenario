@@ -160,7 +160,7 @@ export default css`
     z-index: 0; /* Place background behind #drawflowEditorDiv */
 
     background-color: #fafafb;
-    background-image: radial-gradient(circle, #dedede, 1px, transparent 1px);
+    background-image: radial-gradient(circle, #d6d6d6, 1px, transparent 1px);
     background-size: 60px 60px;
     background-position: 0 10;
   }

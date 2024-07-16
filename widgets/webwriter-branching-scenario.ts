@@ -140,8 +140,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.reroute = true;
     this.editor.reroute_fix_curvature = true;
 
+    this.editor.zoom_max = 0.7;
+    this.editor.zoom_min = 0.2;
+
     if (this.editorZoom == -1) {
-      this.editor.zoom = 0.7;
+      this.editor.zoom = 0.4;
     } else {
       this.editor.zoom = this.editorZoom;
     }
@@ -526,23 +529,36 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     //event listener for when the user zoomed into the editor
     this.editor.on("zoom", (zoom_level) => {
+      console.log(zoom_level);
+
+      const tolerance = 1e-10; // Small tolerance for floating-point comparison
+
+      // Adjust value to handle precision issues
+      if (Math.abs(zoom_level - this.editor.zoom_min) < tolerance) {
+        zoom_level = this.editor.zoom_min;
+      } else if (Math.abs(zoom_level - this.editor.zoom_max) < tolerance) {
+        zoom_level = this.editor.zoom_max;
+      }
+
       // Convert zoom level to percentage
       this.editorZoom = zoom_level;
 
-      let normalizedZoom =
-        (zoom_level - this.editor.zoom_min) /
-        (this.editor.zoom_max - this.editor.zoom_min);
-
-      let percentage = (normalizedZoom * 100).toFixed(0);
+      const range = this.editor.zoom_max - this.editor.zoom_min;
+      const percentage = (
+        ((zoom_level - this.editor.zoom_min) / range) *
+        100
+      ).toFixed(0);
 
       // // Step 2: Increase the width and height by 3px
-      let newWidth = 139 * (parseFloat(percentage) / 100);
-      let newHeight = 139 * (parseFloat(percentage) / 100);
+      let newSize =
+        180 * (parseFloat(percentage) / 100) != 0
+          ? 180 * (parseFloat(percentage) / 100)
+          : 15;
 
-      console.log(newWidth);
+      //console.log(newSize);
       (
         this.shadowRoot.querySelector("#background") as HTMLElement
-      ).style.backgroundSize = `${newWidth}px ${newHeight}px`;
+      ).style.backgroundSize = `${newSize}px ${newSize}px`;
 
       this.editorZoomString = percentage + "%";
 
