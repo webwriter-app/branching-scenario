@@ -161,7 +161,7 @@ export default css`
 
     background-color: #fafafb;
     background-image: radial-gradient(circle, #dedede, 1px, transparent 1px);
-    background-size: 25px 25px;
+    background-size: 60px 60px;
     background-position: 0 10;
   }
 `;

@@ -532,8 +532,19 @@ export class WebWriterBranchingScenario extends LitElementWw {
       let normalizedZoom =
         (zoom_level - this.editor.zoom_min) /
         (this.editor.zoom_max - this.editor.zoom_min);
-      let percentage = (normalizedZoom * 100).toFixed(0) + "%";
-      this.editorZoomString = percentage;
+
+      let percentage = (normalizedZoom * 100).toFixed(0);
+
+      // // Step 2: Increase the width and height by 3px
+      let newWidth = 139 * (parseFloat(percentage) / 100);
+      let newHeight = 139 * (parseFloat(percentage) / 100);
+
+      console.log(newWidth);
+      (
+        this.shadowRoot.querySelector("#background") as HTMLElement
+      ).style.backgroundSize = `${newWidth}px ${newHeight}px`;
+
+      this.editorZoomString = percentage + "%";
 
       const zoomValue = this.shadowRoot.querySelector(
         ".zoomValue"
@@ -594,9 +605,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     //event listener for when the user zoomed into the editor
     this.editor.on("translate", ({ x, y }) => {
-      const offsetX = x; // Adjust multiplier as needed
-      const offsetY = y; // Adjust multiplier as needed
-
       (
         this.shadowRoot.querySelector("#background") as HTMLElement
       ).style.backgroundPosition = `${x} ${y}`;
