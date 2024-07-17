@@ -142,6 +142,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     this.editor.zoom_max = 0.7;
     this.editor.zoom_min = 0.2;
+    this.editor.zoom_value = 0.01;
 
     if (this.editorZoom == -1) {
       this.editor.zoom = 0.4;
@@ -219,6 +220,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   </div>
                   <div class="zoomValue">
                     <p>${this.editorZoomString}</p>
+                  </div>
+
+                  <div>
+
                   </div>
 
                   <!-- <sl-button class="exportButton" @click=${() =>
@@ -531,23 +536,21 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.on("zoom", (zoom_level) => {
       console.log(zoom_level);
 
-      const tolerance = 1e-10; // Small tolerance for floating-point comparison
-
-      // Adjust value to handle precision issues
-      if (Math.abs(zoom_level - this.editor.zoom_min) < tolerance) {
-        zoom_level = this.editor.zoom_min;
-      } else if (Math.abs(zoom_level - this.editor.zoom_max) < tolerance) {
-        zoom_level = this.editor.zoom_max;
-      }
-
       // Convert zoom level to percentage
       this.editorZoom = zoom_level;
 
-      const range = this.editor.zoom_max - this.editor.zoom_min;
-      const percentage = (
-        ((zoom_level - this.editor.zoom_min) / range) *
-        100
-      ).toFixed(0);
+      console.log(
+        "diff",
+        `${zoom_level} - ${this.editor.zoom_min}`,
+        zoom_level - this.editor.zoom_min
+      );
+
+      console.log("");
+
+      //Attention: Due to floating errors in the drawflow framework, we hardcoded the actual zoom_min of 0.1.
+      //Although it is set to 0.2 in the firstUpdated() method, values of 0.1 are produced
+      const range = this.editor.zoom_max - 0.1;
+      const percentage = (((zoom_level - 0.1) / range) * 100).toFixed(0);
 
       // // Step 2: Increase the width and height by 3px
       let newSize =
