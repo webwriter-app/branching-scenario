@@ -51,7 +51,8 @@ export default css`
     padding: 0px;
 
     color: white;
-    background: #555555;
+    background-color: black;
+    opacity: 70%;
 
     border-radius: 4px;
     border-right: 1px solid white;
@@ -162,6 +163,6 @@ export default css`
     background-color: #fafafb;
     background-image: radial-gradient(circle, #d6d6d6, 1px, transparent 1px);
     background-size: 60px 60px;
-    background-position: 0 10;
+    background-position: 0 0;
   }
 `;

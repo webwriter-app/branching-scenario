@@ -50,6 +50,7 @@ import { BranchingControls } from "./branching-controls";
 //import Examples
 import { gamebookExamples } from "./gamebookExamples";
 import { GamebookContainerManager } from "./gamebook-components/gamebook-container-manager";
+import { HelpEditorControls } from "./help-editor-controls";
 
 // Declare global variable of type DrawflowNode
 const NO_NODE_SELECTED: DrawflowNode = {
@@ -122,6 +123,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-dropdown": SlDropdown,
       "gamebook-container-manager": GamebookContainerManager,
       "branching-controls": BranchingControls,
+      "help-editor-controls": HelpEditorControls,
     };
   }
 
@@ -169,20 +171,22 @@ export class WebWriterBranchingScenario extends LitElementWw {
     return html`
       <div id="widget">
         ${this.isContentEditable
-          ? html` 
-            <branching-controls 
-            .inPreviewMode=${this.inPreviewMode}
-            .gamebookTitle=${this.gamebookTitle} 
-            ._togglePreviewMode=${() => this._togglePreviewMode()} 
-            ._importExample=${(number) => this._importExample(number)} 
-            ._addPageNode=${(string, boolean) =>
-              this._addPageNode(string, boolean)} 
-            ._addQuestionNode=${() => this._addQuestionNode()}
-            ._handleGamebookTitle=${(event) => this._handleGamebookTitle(event)}
-            ._showDialog=${() =>
-              (this.shadowRoot.getElementById("dialog") as SlDialog).show()}>
-          </branching-controls>
-          <!-- TODO: Delete this once contentEditable works perfectly -->
+          ? html`
+              <branching-controls
+                .inPreviewMode=${this.inPreviewMode}
+                .gamebookTitle=${this.gamebookTitle}
+                ._togglePreviewMode=${() => this._togglePreviewMode()}
+                ._importExample=${(number) => this._importExample(number)}
+                ._addPageNode=${(string, boolean) =>
+                  this._addPageNode(string, boolean)}
+                ._addQuestionNode=${() => this._addQuestionNode()}
+                ._handleGamebookTitle=${(event) =>
+                  this._handleGamebookTitle(event)}
+                ._showDialog=${() =>
+                  (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
+              >
+              </branching-controls>
+              <!-- TODO: Delete this once contentEditable works perfectly -->
               ${
                 this.inPreviewMode
                   ? html` <gamebook-viewer
@@ -221,15 +225,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   <div class="zoomValue">
                     <p>${this.editorZoomString}</p>
                   </div>
+                  <help-editor-controls></help-editor-controls>
 
-                  <div>
+                  
 
+                    <!-- <sl-button class="exportButton" @click=${() =>
+                      this.testOutput()}>Export</sl-button> -->
                   </div>
-
-                  <!-- <sl-button class="exportButton" @click=${() =>
-                    this.testOutput()}>Export</sl-button> -->
-                  </div>
-              </div>
+                </div>
                 ${
                   !this.inPreviewMode
                     ? html`<selected-node-details
