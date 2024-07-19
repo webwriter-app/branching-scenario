@@ -51,6 +51,7 @@ import { BranchingControls } from "./branching-controls";
 import { gamebookExamples } from "./gamebookExamples";
 import { GamebookContainerManager } from "./gamebook-components/gamebook-container-manager";
 import { HelpEditorControls } from "./help-editor-controls";
+import { DrawflowBackground } from "./drawflow-background";
 
 // Declare global variable of type DrawflowNode
 const NO_NODE_SELECTED: DrawflowNode = {
@@ -104,6 +105,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
     delegatesFocus: true,
   };
 
+  //TODO: double click to reroute still works
+
   //registering custom elements used in the widget
   static get scopedElements() {
     return {
@@ -124,6 +127,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "gamebook-container-manager": GamebookContainerManager,
       "branching-controls": BranchingControls,
       "help-editor-controls": HelpEditorControls,
+      "drawflow-background": DrawflowBackground,
     };
   }
 
@@ -142,12 +146,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.reroute = true;
     this.editor.reroute_fix_curvature = true;
 
-    this.editor.zoom_max = 0.7;
-    this.editor.zoom_min = 0.2;
-    this.editor.zoom_value = 0.01;
+    //max scale
+    this.editor.zoom_max = 0.8;
+    //min scale
+    this.editor.zoom_min = 0.25;
+    //scale factor
+    this.editor.zoom_value = 0.05;
 
     if (this.editorZoom == -1) {
-      this.editor.zoom = 0.4;
+      this.editor.zoom = 0.45;
     } else {
       this.editor.zoom = this.editorZoom;
     }
@@ -156,6 +163,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editor.zoom_refresh();
 
     this._registerEditorEventHandlers();
+
+    this._registerBackground();
 
     if (this.editorContent == null) {
       this._addPageNode("First Page", true);
@@ -198,15 +207,18 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     </gamebook-viewer>`
                   : null
               }
-              <div id="test">
-                <div id="background"></div>
+           
+              <div id="nodeEditor">
+                <drawflow-background .nodeSelected=${
+                  this.selectedNode != NO_NODE_SELECTED
+                }></drawflow-background>
                 <div
                   id="drawflowEditorDiv"
                   style=${
                     this.inPreviewMode ? "display: none;" : "display: block;"
                   }
                 >
-                  <div class="zoomControls">
+                  <div class="zoomControls"> 
                     <sl-icon-button
                       id="zoomInBtn"
                       src=${zoomIn}
@@ -535,50 +547,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       }
     });
 
-    //event listener for when the user zoomed into the editor
-    this.editor.on("zoom", (zoom_level) => {
-      console.log(zoom_level);
-
-      // Convert zoom level to percentage
-      this.editorZoom = zoom_level;
-
-      console.log(
-        "diff",
-        `${zoom_level} - ${this.editor.zoom_min}`,
-        zoom_level - this.editor.zoom_min
-      );
-
-      console.log("");
-
-      //Attention: Due to floating errors in the drawflow framework, we hardcoded the actual zoom_min of 0.1.
-      //Although it is set to 0.2 in the firstUpdated() method, values of 0.1 are produced
-      const range = this.editor.zoom_max - 0.1;
-      const percentage = (((zoom_level - 0.1) / range) * 100).toFixed(0);
-
-      // // Step 2: Increase the width and height by 3px
-      let newSize =
-        180 * (parseFloat(percentage) / 100) != 0
-          ? 180 * (parseFloat(percentage) / 100)
-          : 15;
-
-      //console.log(newSize);
-      (
-        this.shadowRoot.querySelector("#background") as HTMLElement
-      ).style.backgroundSize = `${newSize}px ${newSize}px`;
-
-      this.editorZoomString = percentage + "%";
-
-      const zoomValue = this.shadowRoot.querySelector(
-        ".zoomValue"
-      ) as HTMLElement;
-      if (zoomValue) {
-        zoomValue.classList.remove("fade-in-out");
-        // Trigger reflow to restart the animation
-        void zoomValue.offsetWidth;
-        zoomValue.classList.add("fade-in-out");
-      }
-    });
-
     //event for when an input on a node was created
     this.addEventListener("inputCreated", (event) => {
       const nodeId = (event as CustomEvent).detail.nodeId;
@@ -626,10 +594,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
     });
 
     //event listener for when the user zoomed into the editor
-    this.editor.on("translate", ({ x, y }) => {
+    this.editor.on("zoom", (zoom_level) => {
+      //TODO: drawflow has an error
       (
-        this.shadowRoot.querySelector("#background") as HTMLElement
-      ).style.backgroundPosition = `${x} ${y}`;
+        this.shadowRoot.querySelector(
+          "drawflow-background"
+        ) as DrawflowBackground
+      ).onZoom(zoom_level, 0.2, this.editor.zoom_max);
     });
 
     //TODO: event for programmatic node selection
@@ -895,5 +866,89 @@ export class WebWriterBranchingScenario extends LitElementWw {
   private _addContainerCallback(container: Node) {
     //console.log(container);
     this.appendChild(container);
+  }
+
+  private _registerBackground() {
+    // Select the elements
+    const drawflowEditorDiv =
+      this.shadowRoot.querySelector("#drawflowEditorDiv");
+
+    const drawflowBackground = this.shadowRoot.querySelector(
+      "drawflow-background"
+    ) as DrawflowBackground;
+
+    console.log(drawflowBackground);
+
+    // List of events you want to propagate
+    const eventsToPropagate = [
+      "mousemove",
+      "mousedown",
+      "mouseup",
+      //"wheel",
+      "mouseleave",
+    ];
+
+    const insideEditorControls = [
+      "#zoomInBtn",
+      "#zoomOutBtn",
+      "help-editor-controls",
+    ];
+
+    // Function to check if the event target is inside any of the specified controls
+    const isEventInsideControls = (event) => {
+      return insideEditorControls.some((selector) => {
+        const element = this.shadowRoot.querySelector(selector);
+        return element && element.contains(event.target);
+      });
+    };
+
+    // Event handler function
+    const propagateEvent = (event) => {
+      if (isEventInsideControls(event)) {
+        // Stop propagation if the event target is inside one of the controls
+        return;
+      }
+
+      const eventInit = {
+        bubbles: event.bubbles,
+        cancelable: event.cancelable,
+        composed: event.composed,
+        clientX: event.clientX,
+        clientY: event.clientY,
+        screenX: event.screenX,
+        screenY: event.screenY,
+        ctrlKey: event.ctrlKey,
+        shiftKey: event.shiftKey,
+        altKey: event.altKey,
+        metaKey: event.metaKey,
+      };
+
+      let newEvent;
+      if (event.type === "wheel") {
+        newEvent = new WheelEvent(event.type, {
+          ...eventInit,
+          deltaX: event.deltaX,
+          deltaY: event.deltaY,
+          deltaZ: event.deltaZ,
+          deltaMode: event.deltaMode,
+        });
+      } else {
+        newEvent = new MouseEvent(event.type, {
+          ...eventInit,
+          button: event.button,
+          buttons: event.buttons,
+          movementX: event.movementX,
+          movementY: event.movementY,
+        });
+      }
+
+      // Dispatch the new event to drawflow-background
+      drawflowBackground.dispatchEvent(newEvent);
+    };
+
+    // Add event listeners
+    eventsToPropagate.forEach((eventType) => {
+      drawflowEditorDiv.addEventListener(eventType, propagateEvent);
+    });
   }
 }
