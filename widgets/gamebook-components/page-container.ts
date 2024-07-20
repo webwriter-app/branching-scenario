@@ -144,7 +144,7 @@ export class PageContainer extends LitElementWw {
       if (mutation.type == "childList") {
         mutation.addedNodes.forEach((node) => {
           if ((node as Element).nodeName.toLowerCase() == "link-button") {
-            console.log("LinkButton added:", node);
+            //console.log("LinkButton added:", node);
           }
         });
         mutation.removedNodes.forEach((node) => {

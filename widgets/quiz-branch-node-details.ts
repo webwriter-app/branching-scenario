@@ -4,11 +4,7 @@ import { customElement, property, query, state } from "lit/decorators.js";
 import { Answer } from "./model";
 
 //Drawflow Imports
-import Drawflow, {
-  DrawflowConnection,
-  DrawflowConnectionDetail,
-  DrawflowModuleData,
-} from "drawflow";
+import Drawflow from "drawflow";
 import { DrawflowNode } from "drawflow";
 
 //Shoelace Imports
@@ -26,7 +22,6 @@ import {
 
 //Tabler Icon Import
 import plus from "@tabler/icons/outline/plus.svg";
-import file from "@tabler/icons/outline/file.svg";
 import minus from "@tabler/icons/outline/minus.svg";
 import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
 
@@ -388,27 +383,22 @@ export class QuizBranchNodeDetails extends LitElementWw {
     const answerArray = this.selectedNode.data.answers;
     const index = answerArray.findIndex((answer) => answer.id == answerId);
 
+    //Check if the answer exists
     if (index != -1) {
-      //set initial selection
+      //
       if (
         Object.entries(this.selectedNode.outputs)[index][1]?.connections[0]
           ?.node == undefined &&
         event.target.value != ""
       ) {
-        //create a connection between the quizbranchnode and the selected target page id
-        this.editor.addNodeInput(event.target.value);
-        const inputNode = this.editor.getNodeFromId(event.target.value);
-        const inputIndex = Object.keys(inputNode.inputs).length - 1;
-        const input_class = Object.keys(inputNode.inputs)[inputIndex];
-
-        //   //get the right output using the answers index which corresponds to the output index
+        //get the right output using the answers index which corresponds to the output index
         const output_class = Object.keys(this.selectedNode.outputs)[index];
 
         this.editor.addConnection(
           this.selectedNode.id,
           event.target.value,
           output_class,
-          input_class
+          "input_1"
         );
       }
       //change existing selection
@@ -433,25 +423,15 @@ export class QuizBranchNodeDetails extends LitElementWw {
           old_input_class
         );
 
-        this.editor.addNodeInput(event.target.value);
-        const inputNode = this.editor.getNodeFromId(event.target.value);
-        const inputIndex = Object.keys(inputNode.inputs).length - 1;
-        const new_input_class = Object.keys(inputNode.inputs)[inputIndex];
-
         this.editor.addConnection(
           this.selectedNode.id,
           event.target.value,
           output_class,
-          new_input_class
+          "input_1"
         );
       }
       //clear sl-select
       else if (event.target.value == "") {
-        const current_input_class = (
-          Object.entries(this.selectedNode.outputs)[index][1]
-            .connections[0] as unknown as { output: string; node: string }
-        ).output;
-
         //get the right output using the answers index which corresponds to the output index
         const output_class = Object.keys(this.selectedNode.outputs)[index];
 
@@ -460,7 +440,7 @@ export class QuizBranchNodeDetails extends LitElementWw {
           Object.entries(this.selectedNode.outputs)[index][1]?.connections[0]
             ?.node,
           output_class,
-          current_input_class
+          "input_1"
         );
       }
     }

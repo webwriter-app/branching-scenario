@@ -170,6 +170,25 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this._addPageNode("First Page", true);
     } else {
       this.editor.import(this.editorContent);
+
+      //import looses .css classes associated with output nodes
+      //re-add .css class that makes outputs that have a connection already un-interactable
+      const data = this.editor.drawflow.drawflow.Home.data;
+
+      Object.entries(data).forEach(([node_key, node]) => {
+        const outputs = node.outputs;
+        //Add output disabled class such that new connections can be drawn
+        const outputNodeDiv = this.shadowRoot.querySelector(`#node-${node.id}`);
+
+        Object.entries(outputs).forEach(([output_key, object]) => {
+          if (object.connections.length > 0) {
+            const outputDiv = outputNodeDiv.querySelector(
+              `.output.${output_key}`
+            );
+            outputDiv.classList.add("output-disabled");
+          }
+        });
+      });
     }
   }
 
@@ -477,6 +496,16 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.editorContent = { ...this.editor.drawflow };
         this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
         const outputNode = this.editor.getNodeFromId(output_id);
+
+        //Add output disabled class such that new connections can be drawn
+        const outputNodeDiv = this.shadowRoot.querySelector(
+          `#node-${output_id}`
+        );
+        const outputDiv = outputNodeDiv.querySelector(
+          `.output.${output_class}`
+        );
+        outputDiv.classList.add("output-disabled");
+
         const inputNode = this.editor.getNodeFromId(input_id);
 
         if (outputNode.class == "page" || outputNode.class == "origin") {
@@ -509,6 +538,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
         const outputNode = this.editor.getNodeFromId(output_id);
 
+        //Remove the output disabled class such that new connections can be drawn
+        const outputNodeDiv = this.shadowRoot.querySelector(
+          `#node-${output_id}`
+        );
+        const outputDiv = outputNodeDiv.querySelector(
+          `.output.${output_class}`
+        );
+        outputDiv.classList.remove("output-disabled");
+
         if (outputNode.class == "page" || outputNode.class == "origin") {
           const pageContainer =
             this.gamebookContainerManager._getContainerByDrawflowNodeId(
@@ -528,22 +566,31 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     //Event listener for when a connection creation started via drag and drop
     this.editor.on("connectionStart", ({ output_id, output_class }) => {
-      this.selectedNode = this.editor.getNodeFromId(output_id);
-
-      const node = this.shadowRoot?.getElementById(`node-${output_id}`);
-      if (node) {
-        node.classList.add("selected");
-      }
+      const connectionNode = this.editor.getNodeFromId(output_id);
+      const index = Object.keys(connectionNode.outputs).indexOf(output_class);
 
       if (
-        this.selectedNode.class == "page" ||
-        this.selectedNode.class == "origin"
+        Object.entries(connectionNode.outputs)[index][1].connections.length == 0
       ) {
-        this.gamebookContainerManager._showGamebookContainerById(
-          this.selectedNode.id
-        );
-      } else if (this.selectedNode.class == "question-branch") {
-        this.gamebookContainerManager._hideAllGamebookContainers();
+        //Visually mark it as selected, and select it as the node
+        this.selectedNode = this.editor.getNodeFromId(output_id);
+
+        const node = this.shadowRoot?.getElementById(`node-${output_id}`);
+
+        if (node) {
+          node.classList.add("selected");
+        }
+
+        if (
+          this.selectedNode.class == "page" ||
+          this.selectedNode.class == "origin"
+        ) {
+          this.gamebookContainerManager._showGamebookContainerById(
+            this.selectedNode.id
+          );
+        } else if (this.selectedNode.class == "question-branch") {
+          this.gamebookContainerManager._hideAllGamebookContainers();
+        }
       }
     });
 
@@ -575,6 +622,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.selectedNode = this.editor.getNodeFromId(nodeId);
     });
 
+    //
     this.addEventListener("linkButtonDeleted", (event) => {
       const identifier = (event as CustomEvent).detail.identifier as string;
       const parts = identifier.split("-");
@@ -595,12 +643,31 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     //event listener for when the user zoomed into the editor
     this.editor.on("zoom", (zoom_level) => {
-      //TODO: drawflow has an error
+      //NOTE: Usually this.editor.zoom_min should have been supplied here, however drawflow has an error in which the minimum gets undercut.
+      //This results in faulty calculation for zooming into the background, so we hardcode it here.
+      //Issue report drawflow: https://github.com/jerosoler/Drawflow/issues/883#issuecomment-2238986045
       (
         this.shadowRoot.querySelector(
           "drawflow-background"
         ) as DrawflowBackground
       ).onZoom(zoom_level, 0.2, this.editor.zoom_max);
+
+      //Attention: Due to floating errors in the drawflow framework, we hardcoded the actual zoom_min of 0.1.
+      //Although it is set to 0.2 in the firstUpdated() method, values of 0.1 are produced
+      const range = this.editor.zoom_max - 0.2;
+      const percentage = (((zoom_level - 0.2) / range) * 100).toFixed(0);
+
+      this.editorZoomString = percentage + "%";
+
+      const zoomValue = this.shadowRoot.querySelector(
+        ".zoomValue"
+      ) as HTMLElement;
+      if (zoomValue) {
+        zoomValue.classList.remove("fade-in-out");
+        // Trigger reflow to restart the animation
+        void zoomValue.offsetWidth;
+        zoomValue.classList.add("fade-in-out");
+      }
     });
 
     //TODO: event for programmatic node selection
@@ -688,7 +755,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     this.editor.addNode(
       title,
-      0,
+      1,
       0,
       centerX,
       centerY,
@@ -747,7 +814,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     this.editor.addNode(
       "Question Branch",
-      0,
+      1,
       0,
       centerX,
       centerY,
@@ -793,8 +860,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   */
   private testOutput() {
-    //console.log(this.gamebookContainers);
-
     this.gamebookContainers.forEach((container) => {
       if (container instanceof PageContainer) {
         // Assuming PageContainer has a method or property to access its child elements
@@ -803,7 +868,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
         childElements.forEach((child) => {
           if ((child as HTMLElement).tagName.toLowerCase() === "picture") {
             const dataUrl = (child as HTMLElement).getAttribute("dataURl"); // Assuming dataURl is an attribute
-            //console.log(dataUrl);
           }
         });
       }
@@ -828,6 +892,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
     return value;
   }
 
+  /*
+
+  */
   private createElementFromInfo(info) {
     let element = document.createElement(info.tagName);
     info.attributes.forEach((attr) => {
@@ -863,11 +930,16 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editorContent = { ...this.editor.drawflow };
   }
 
+  /*
+
+  */
   private _addContainerCallback(container: Node) {
-    //console.log(container);
     this.appendChild(container);
   }
 
+  /*
+
+  */
   private _registerBackground() {
     // Select the elements
     const drawflowEditorDiv =
@@ -877,14 +949,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "drawflow-background"
     ) as DrawflowBackground;
 
-    console.log(drawflowBackground);
-
     // List of events you want to propagate
     const eventsToPropagate = [
       "mousemove",
       "mousedown",
       "mouseup",
-      //"wheel",
       "mouseleave",
     ];
 

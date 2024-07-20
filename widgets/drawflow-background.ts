@@ -92,11 +92,10 @@ export class DrawflowBackground extends LitElementWw {
   }
 
   private onMouseLeave() {
-    this.isDragging = false;
+    //this.isDragging = false;
   }
 
   public onZoom(zoom_value: number, min_zoom: number, max_zoom: number) {
-    console.log(zoom_value, "min", min_zoom);
     const rect =
       this.shadowRoot!.querySelector(
         ".grid-container"

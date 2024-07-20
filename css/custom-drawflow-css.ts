@@ -234,6 +234,11 @@ export default css`
     background: white;
   }
 
+  .drawflow .drawflow-node .output.output-disabled {
+    pointer-events: none;
+    background: grey;
+  }
+
   /* ---- */
   /* CONNECTIONS */
   /* ---- */

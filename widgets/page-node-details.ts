@@ -276,24 +276,18 @@ export class PageNodeDetails extends LitElementWw {
     //Get the node to be connected from the sl-select "nodeSelect"
     const nodeToBeConnectedId = this.nodeSelect.value;
 
-    //Add an input to said node and get the input id
-    this.editor.addNodeInput(nodeToBeConnectedId);
-    const inputs = this.editor.getNodeFromId(nodeToBeConnectedId).inputs;
-    const inputKeys = Object.keys(inputs);
-    const lastInputKey = inputKeys[inputKeys.length - 1];
-
     //add output to the selected node and get output id
     this._addOutputToSelectedNode();
     const outputs = this.editor.getNodeFromId(this.selectedNode.id).outputs;
     const outputKeys = Object.keys(outputs);
     const lastOutputKey = outputKeys[outputKeys.length - 1];
 
-    //connect the nodes
+    //Use the main input to connect the selected Nodes
     this.editor.addConnection(
       this.selectedNode.id,
       nodeToBeConnectedId,
       lastOutputKey,
-      lastInputKey
+      "input_1"
     );
   }
 
