@@ -222,7 +222,7 @@ export default css`
 
   .drawflow .drawflow-node .input:active,
   .drawflow .drawflow-node .output:active {
-    background: red;
+    background: #b2b2b2;
   }
 
   .drawflow .drawflow-node .output {
@@ -234,9 +234,23 @@ export default css`
     background: white;
   }
 
-  .drawflow .drawflow-node .output.output-disabled {
+  .drawflow .drawflow-node .output.output-in-use {
     pointer-events: none;
-    background: grey;
+    background: #eeeeee;
+    border-color: #d7d7d7;
+  }
+
+  .drawflow .drawflow-node .input.input-in-use {
+    background: #eeeeee;
+    border-color: #d7d7d7;
+  }
+
+  .drawflow .drawflow-node .output.selected {
+    background: #2d99ff;
+  }
+
+  .drawflow .drawflow-node .input.selected {
+    background: #2d99ff;
   }
 
   /* ---- */
@@ -244,7 +258,7 @@ export default css`
   /* ---- */
 
   .drawflow .connection .main-path {
-    stroke: #949494;
+    stroke: #d7d7d7;
     stroke-width: 2px;
   }
 
@@ -254,7 +268,7 @@ export default css`
   }
 
   .drawflow .connection .main-path.selected {
-    stroke: #2576c0;
+    stroke: #2d99ff;
     stroke-width: 2px;
     -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
     box-shadow: 0 2px 20px 2px #d0d0d0;
