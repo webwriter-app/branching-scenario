@@ -566,6 +566,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
         const inputNode = this.editor.getNodeFromId(input_id);
 
+        const svg = this.shadowRoot.querySelector(
+          `svg[class="connection node_in_node-${input_id} node_out_node-${output_id} ${output_class} ${input_class}"]`
+        );
+        const path = svg.querySelector("path");
+        path.classList.remove("creating");
+
         if (outputNode.class == "page" || outputNode.class == "origin") {
           const pageContainer =
             this.gamebookContainerManager._getContainerByDrawflowNodeId(
@@ -595,6 +601,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.editorContent = { ...this.editor.drawflow };
         this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
         const outputNode = this.editor.getNodeFromId(output_id);
+        const inputNode = this.editor.getNodeFromId(input_id);
 
         //Remove the output disabled class such that new connections can be drawn
         const outputNodeDiv = this.shadowRoot.querySelector(
@@ -604,6 +611,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
           `.output.${output_class}`
         );
         outputDiv.classList.remove("output-in-use");
+        outputDiv.classList.remove("selected");
+
+        const inputNodeDiv = this.shadowRoot.querySelector(`#node-${input_id}`);
+        const inputDiv = inputNodeDiv.querySelector(`.input.${input_class}`);
+        console.log(inputNode.inputs.input_1.connections.length);
+        inputDiv.classList.remove("selected");
+        if (inputNode.inputs.input_1.connections.length == 0) {
+          inputDiv.classList.remove("input-in-use");
+        }
 
         if (outputNode.class == "page" || outputNode.class == "origin") {
           const pageContainer =
@@ -625,31 +641,35 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //Event listener for when a connection creation started via drag and drop
     this.editor.on("connectionStart", ({ output_id, output_class }) => {
       const connectionNode = this.editor.getNodeFromId(output_id);
-      const index = Object.keys(connectionNode.outputs).indexOf(output_class);
+      // const index = Object.keys(connectionNode.outputs).indexOf(output_class);
+
+      // if (
+      //   Object.entries(connectionNode.outputs)[index][1].connections.length == 0
+      // ) {
+      //Visually mark it as selected, and select it as the node
+      this.selectedNode = this.editor.getNodeFromId(output_id);
+
+      const node = this.shadowRoot?.getElementById(`node-${output_id}`);
+
+      if (node) {
+        node.classList.add("selected");
+      }
+
+      const svg = this.shadowRoot.querySelector('svg[class="connection"]');
+      const path = svg.querySelector("path");
+      path.classList.add("creating");
 
       if (
-        Object.entries(connectionNode.outputs)[index][1].connections.length == 0
+        this.selectedNode.class == "page" ||
+        this.selectedNode.class == "origin"
       ) {
-        //Visually mark it as selected, and select it as the node
-        this.selectedNode = this.editor.getNodeFromId(output_id);
-
-        const node = this.shadowRoot?.getElementById(`node-${output_id}`);
-
-        if (node) {
-          node.classList.add("selected");
-        }
-
-        if (
-          this.selectedNode.class == "page" ||
-          this.selectedNode.class == "origin"
-        ) {
-          this.gamebookContainerManager._showGamebookContainerById(
-            this.selectedNode.id
-          );
-        } else if (this.selectedNode.class == "question-branch") {
-          this.gamebookContainerManager._hideAllGamebookContainers();
-        }
+        this.gamebookContainerManager._showGamebookContainerById(
+          this.selectedNode.id
+        );
+      } else if (this.selectedNode.class == "question-branch") {
+        this.gamebookContainerManager._hideAllGamebookContainers();
       }
+      // }
     });
 
     //event for when an input on a node was created

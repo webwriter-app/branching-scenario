@@ -222,7 +222,7 @@ export default css`
 
   .drawflow .drawflow-node .input:active,
   .drawflow .drawflow-node .output:active {
-    background: #b2b2b2;
+    background: #2d99ff;
   }
 
   .drawflow .drawflow-node .output {
@@ -259,6 +259,11 @@ export default css`
 
   .drawflow .connection .main-path {
     stroke: #d7d7d7;
+    stroke-width: 2px;
+  }
+
+  .drawflow .connection .main-path.creating {
+    stroke: #4ea9ff;
     stroke-width: 2px;
   }
 
