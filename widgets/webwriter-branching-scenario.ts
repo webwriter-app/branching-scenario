@@ -1039,6 +1039,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "#zoomInBtn",
       "#zoomOutBtn",
       "help-editor-controls",
+      ".input",
     ];
 
     // Function to check if the event target is inside any of the specified controls

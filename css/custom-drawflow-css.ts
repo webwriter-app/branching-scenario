@@ -215,12 +215,10 @@ export default css`
     border: 1px solid #cdcdcd;
   }
 
-  .drawflow .drawflow-node .input:hover,
   .drawflow .drawflow-node .output:hover {
     background: #4ea9ff;
   }
 
-  .drawflow .drawflow-node .input:active,
   .drawflow .drawflow-node .output:active {
     background: #2d99ff;
   }
