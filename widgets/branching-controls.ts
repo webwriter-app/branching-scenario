@@ -60,15 +60,15 @@ export class BranchingControls extends LitElementWw {
   gamebookTitle = "";
 
   //
-  @property({ type: Function }) _togglePreviewMode = () => {};
-  @property({ type: Function }) _handleGamebookTitle = (event: Event) => {};
-  @property({ type: Function }) _importExample = (number: number) => {};
-  @property({ type: Function }) _addPageNode = (
+  @property({ type: Function }) togglePreviewMode = () => {};
+  @property({ type: Function }) handleGamebookTitle = (event: Event) => {};
+  @property({ type: Function }) importExample = (number: number) => {};
+  @property({ type: Function }) addPageNode = (
     title: string,
     isOrigin: boolean
   ) => {};
-  @property({ type: Function }) _addQuestionNode = () => {};
-  @property({ type: Function }) _showDialog = () => {};
+  @property({ type: Function }) addQuestionNode = () => {};
+  @property({ type: Function }) showDialog = () => {};
 
   protected render() {
     return html`
@@ -77,7 +77,7 @@ export class BranchingControls extends LitElementWw {
           <sl-icon-button
             src=${this.inPreviewMode ? playerStop : playerPlay}
             class="iconButton"
-            @click=${() => this._togglePreviewMode()}
+            @click=${() => this.togglePreviewMode()}
           >
             ${this.inPreviewMode ? "Cancel" : "Preview"}
           </sl-icon-button>
@@ -107,7 +107,7 @@ export class BranchingControls extends LitElementWw {
             <sl-icon src=${schema} slot="prefix"></sl-icon>
           </sl-button>
           <sl-menu style="width: 180px;">
-            <sl-menu-item @click=${() => console.log(this._importExample(0))}
+            <sl-menu-item @click=${() => console.log(this.importExample(0))}
               ><sl-icon slot="prefix" src=${questionMark}></sl-icon>
               Quiz Example
             </sl-menu-item>
@@ -128,11 +128,11 @@ export class BranchingControls extends LitElementWw {
           </sl-button>
           <sl-menu style="width: 180px;">
             <sl-menu-item
-              @click=${() => this._addPageNode("Untitled Page", false)}
+              @click=${() => this.addPageNode("Untitled Page", false)}
               ><sl-icon slot="prefix" src=${file}></sl-icon>
               Page
             </sl-menu-item>
-            <sl-menu-item @click=${() => this._addQuestionNode()}>
+            <sl-menu-item @click=${() => this.addQuestionNode()}>
               <sl-icon slot="prefix" src=${helpSquareRounded}></sl-icon>
               Question
             </sl-menu-item>
@@ -147,7 +147,7 @@ export class BranchingControls extends LitElementWw {
         </sl-divider>
         <sl-button
           style=${this.inPreviewMode ? "display: none;" : "display: block;"}
-          @click=${() => this._showDialog()}
+          @click=${() => this.showDialog()}
         >
           Clear
         </sl-button>
@@ -160,6 +160,6 @@ export class BranchingControls extends LitElementWw {
 
   */
   private textAreaInputChanged(event) {
-    this._handleGamebookTitle(event);
+    this.handleGamebookTitle(event);
   }
 }

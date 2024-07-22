@@ -142,7 +142,7 @@ export default css`
     display: block;
     position: relative;
     width: 100%;
-    height: 450px;
+    height: 400px;
 
     border-bottom: 1px solid #e4e4e4; //You can adjust the thickness and color as needed
   }

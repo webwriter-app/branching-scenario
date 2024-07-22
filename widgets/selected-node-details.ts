@@ -60,6 +60,9 @@ export class SelectedNodeDetails extends LitElementWw {
 
   @property({ type: Object, attribute: false }) editorContent;
 
+  @property({ type: Function }) _hoverConnection = (string) => {};
+  @property({ type: Function }) _unhoverConnection = (string) => {};
+
   static get scopedElements() {
     return {
       "sl-button": SlButton,
@@ -92,6 +95,10 @@ export class SelectedNodeDetails extends LitElementWw {
                 .nodesInEditor="${this.editorContent.drawflow.Home.data}"
                 .selectedNode="${this.selectedNode}"
                 .selectedNodeId="${this.selectedNode.id}"
+                ._hoverConnection=${(identifier) =>
+                  this._hoverConnection(identifier)}
+                ._unhoverConnection=${(identifier) =>
+                  this._unhoverConnection(identifier)}
               >
                 <slot></slot>
               </page-node-details>

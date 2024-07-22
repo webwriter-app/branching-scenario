@@ -31,7 +31,7 @@ import zoomOut from "@tabler/icons/outline/zoom-out.svg";
 import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
 
 //Drawflow Imports
-import Drawflow, { DrawflowNode } from "drawflow";
+import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
 import { style } from "drawflow/dist/drawflow.style.js";
 
 //Import Styles
@@ -88,6 +88,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   @property({ type: String, attribute: true, reflect: true })
   gamebookTitle = "";
+
+  @property({ type: Boolean }) stopPropagation = false;
 
   @queryAssignedElements({
     flatten: true,
@@ -165,36 +167,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this._registerBackground();
 
     if (this.editorContent == null) {
-      this._addPageNode("First Page", true);
+      this.addPageNode("First Page", true);
     } else {
       this.editor.import(this.editorContent);
-
-      //import looses .css classes associated with output nodes
-      //re-add .css class that makes outputs that have a connection already un-interactable
-      const nodes = this.editor.drawflow.drawflow.Home.data;
-
-      Object.entries(nodes).forEach(([node_key, node]) => {
-        const outputs = node.outputs;
-        const inputs = node.inputs;
-        //Add output disabled class such that new connections can be drawn
-        const outputNodeDiv = this.shadowRoot.querySelector(`#node-${node.id}`);
-
-        Object.entries(outputs).forEach(([output_key, object]) => {
-          if (object.connections.length > 0) {
-            const outputDiv = outputNodeDiv.querySelector(
-              `.output.${output_key}`
-            );
-            outputDiv.classList.add("output-in-use");
-          }
-        });
-
-        Object.entries(inputs).forEach(([input_key, object]) => {
-          if (object.connections.length > 0) {
-            const inputDiv = outputNodeDiv.querySelector(`.input.${input_key}`);
-            inputDiv.classList.add("input-in-use");
-          }
-        });
-      });
     }
   }
 
@@ -209,14 +184,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
               <branching-controls
                 .inPreviewMode=${this.inPreviewMode}
                 .gamebookTitle=${this.gamebookTitle}
-                ._togglePreviewMode=${() => this._togglePreviewMode()}
-                ._importExample=${(number) => this._importExample(number)}
-                ._addPageNode=${(string, boolean) =>
-                  this._addPageNode(string, boolean)}
-                ._addQuestionNode=${() => this._addQuestionNode()}
-                ._handleGamebookTitle=${(event) =>
-                  this._handleGamebookTitle(event)}
-                ._showDialog=${() =>
+                .togglePreviewMode=${() => this.togglePreviewMode()}
+                .importExample=${(number) => this.importExample(number)}
+                .addPageNode=${(string, boolean) =>
+                  this.addPageNode(string, boolean)}
+                .addQuestionNode=${() => this.addQuestionNode()}
+                .handleGamebookTitle=${(event) =>
+                  this.handleGamebookTitle(event)}
+                .showDialog=${() =>
                   (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
               >
               </branching-controls>
@@ -276,6 +251,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
                         .selectedNode=${this.selectedNode}
                         .editor=${this.editor}
                         .editorContent=${this.editorContent}
+                        ._hoverConnection=${(identifier) =>
+                          this._hoverConnection(identifier)}
+                        ._unhoverConnection=${(identifier) =>
+                          this._unhoverConnection(identifier)}
                       >
                         <gamebook-container-manager
                           .appendToShadowDom=${(container) =>
@@ -336,14 +315,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
       container.remove();
     });
 
-    this._addPageNode("First Page", true);
+    this.addPageNode("First Page", true);
   }
 
   /*
 
 
   */
-  private _togglePreviewMode() {
+  private togglePreviewMode() {
     if (this.inPreviewMode == true) {
       this.inPreviewMode = false;
       this.gamebookContainers.forEach((container) => {
@@ -394,11 +373,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
       );
 
       if (this.selectedNode.class == "question-branch") {
-        const container =
-          this.gamebookContainerManager._getContainerByDrawflowNodeId(
-            this.selectedNode.id.toString()
-          );
-        container.updateFromQuestionNode(this.selectedNode);
+        this.gamebookContainerManager
+          ._getContainerByDrawflowNodeId(this.selectedNode.id.toString())
+          .updateFromQuestionNode(this.selectedNode);
       }
     });
 
@@ -452,94 +429,45 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.editorContent = { ...this.editor.drawflow };
     });
 
+    //Event listener for when a connection creation started via drag and drop
+    this.editor.on("connectionStart", ({ output_id, output_class }) => {
+      this.selectedNode = this.editor.getNodeFromId(output_id);
+
+      this.shadowRoot
+        ?.getElementById(`node-${output_id}`)
+        ?.classList.add("selected");
+
+      this.shadowRoot
+        .querySelector('svg[class="connection"]')
+        ?.querySelector("path")
+        ?.classList.add("creating");
+
+      if (
+        this.selectedNode.class == "page" ||
+        this.selectedNode.class == "origin"
+      ) {
+        this.gamebookContainerManager._showGamebookContainerById(
+          this.selectedNode.id
+        );
+      } else if (this.selectedNode.class == "question-branch") {
+        this.gamebookContainerManager._hideAllGamebookContainers();
+      }
+      // }
+    });
+
     //Event listener for when a connection is selected
     this.editor.on(
       "connectionSelected",
       ({ output_id, input_id, output_class, input_class }) => {
         this.selectedConnection = `${output_id}-${output_class}-${input_id}-${input_class}`;
-
-        this.selectedNode = this.editor.getNodeFromId(output_id);
-        const outputNodeDiv = this.shadowRoot?.getElementById(
-          `node-${output_id}`
-        );
-
-        if (outputNodeDiv) {
-          outputNodeDiv.classList.add("selected");
-          const outputDiv = outputNodeDiv.querySelector(
-            `.output.${output_class}`
-          );
-          outputDiv.classList.add("selected");
-        }
-
-        const inputNodeDiv = this.shadowRoot?.getElementById(
-          `node-${input_id}`
-        );
-
-        if (inputNodeDiv) {
-          const inputDiv = inputNodeDiv.querySelector(`.input.${input_class}`);
-          inputDiv.classList.add("selected");
-        }
-
-        //
-
-        if (
-          this.selectedNode.class == "page" ||
-          this.selectedNode.class == "origin"
-        ) {
-          this.gamebookContainerManager._showGamebookContainerById(
-            this.selectedNode.id
-          );
-        } else if (this.selectedNode.class == "question-branch") {
-          this.gamebookContainerManager._hideAllGamebookContainers();
-        }
-
-        //
+        this._selectConnection(this.selectedConnection);
       }
     );
 
     //event listener for when a connection is unselected
     this.editor.on("connectionUnselected", (boolean) => {
-      //
-      const parts = this.selectedConnection.split("-");
-      const parsed = {
-        outputNodeId: parseInt(parts[0]),
-        outputClass: parts[1],
-        inputNodeId: parseInt(parts[2]),
-        inputClass: parts[3],
-      };
-
-      const node = this.shadowRoot?.getElementById(
-        `node-${this.selectedNode.id}`
-      );
-      if (node) {
-        node.classList.remove("selected");
-      }
-
-      this.selectedNode = NO_NODE_SELECTED;
-
-      const outputNodeDiv = this.shadowRoot?.getElementById(
-        `node-${parsed.outputNodeId}`
-      );
-
-      if (outputNodeDiv) {
-        const outputDiv = outputNodeDiv.querySelector(
-          `.output.${parsed.outputClass}`
-        );
-        outputDiv.classList.remove("selected");
-      }
-
-      const inputNodeDiv = this.shadowRoot?.getElementById(
-        `node-${parsed.inputNodeId}`
-      );
-
-      if (inputNodeDiv) {
-        const inputDiv = inputNodeDiv.querySelector(
-          `.input.${parsed.inputClass}`
-        );
-        inputDiv.classList.remove("selected");
-      }
-
-      this.gamebookContainerManager._hideAllGamebookContainers();
+      this._unselectConnection(this.selectedConnection);
+      this.selectedConnection = NO_CONNECTION_SELECTED;
     });
 
     //Event for created connections done e.g. via drag and drop
@@ -549,28 +477,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.editorContent = { ...this.editor.drawflow };
         this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
         const outputNode = this.editor.getNodeFromId(output_id);
-
-        //Add output disabled class such that new connections can be drawn
-        const outputNodeDiv = this.shadowRoot.querySelector(
-          `#node-${output_id}`
-        );
-        const outputDiv = outputNodeDiv.querySelector(
-          `.output.${output_class}`
-        );
-        outputDiv.classList.add("output-in-use");
-
-        //
-        const inputNodeDiv = this.shadowRoot.querySelector(`#node-${input_id}`);
-        const inputDiv = inputNodeDiv.querySelector(`.input.${input_class}`);
-        inputDiv.classList.add("input-in-use");
-
         const inputNode = this.editor.getNodeFromId(input_id);
 
-        const svg = this.shadowRoot.querySelector(
-          `svg[class="connection node_in_node-${input_id} node_out_node-${output_id} ${output_class} ${input_class}"]`
-        );
-        const path = svg.querySelector("path");
-        path.classList.remove("creating");
+        this.shadowRoot
+          .querySelector(
+            `svg[class="connection node_in_node-${input_id} node_out_node-${output_id} ${output_class} ${input_class}"]`
+          )
+          ?.querySelector("path")
+          ?.classList.remove("creating");
 
         if (outputNode.class == "page" || outputNode.class == "origin") {
           const pageContainer =
@@ -590,7 +504,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
             input_id
           );
         }
-        //
       }
     );
 
@@ -599,77 +512,58 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "connectionRemoved",
       ({ output_id, input_id, output_class, input_class }) => {
         this.editorContent = { ...this.editor.drawflow };
-        this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+        //this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
+
+        this._unselectConnection(this.selectedConnection);
+        this.selectedConnection = NO_CONNECTION_SELECTED;
+
         const outputNode = this.editor.getNodeFromId(output_id);
-        const inputNode = this.editor.getNodeFromId(input_id);
 
-        //Remove the output disabled class such that new connections can be drawn
-        const outputNodeDiv = this.shadowRoot.querySelector(
-          `#node-${output_id}`
-        );
-        const outputDiv = outputNodeDiv.querySelector(
-          `.output.${output_class}`
-        );
-        outputDiv.classList.remove("output-in-use");
-        outputDiv.classList.remove("selected");
-
-        const inputNodeDiv = this.shadowRoot.querySelector(`#node-${input_id}`);
-        const inputDiv = inputNodeDiv.querySelector(`.input.${input_class}`);
-        console.log(inputNode.inputs.input_1.connections.length);
-        inputDiv.classList.remove("selected");
-        if (inputNode.inputs.input_1.connections.length == 0) {
-          inputDiv.classList.remove("input-in-use");
-        }
-
-        if (outputNode.class == "page" || outputNode.class == "origin") {
+        if (
+          (outputNode.class == "page" || outputNode.class == "origin") &&
+          !this.stopPropagation
+        ) {
           const pageContainer =
             this.gamebookContainerManager._getContainerByDrawflowNodeId(
               output_id
             );
-          const identifier = `${output_id}-${output_class}-${input_id}-${input_class}`;
+          const identifier = `${output_id}-${output_class}-${input_id}-input_1`;
+          console.log(
+            "connection removed, remove link button with identifier: ",
+            identifier
+          );
+
           pageContainer.removeLinkButtonFromPageContainer(identifier);
-        } else if (outputNode.class == "question-branch") {
+        }
+        //
+        else if (outputNode.class == "question-branch") {
           this._updateQuestionNodeAnswerTarget(
             outputNode,
             output_class,
             "undefined"
           );
         }
+        this.stopPropagation = false;
       }
     );
 
-    //Event listener for when a connection creation started via drag and drop
-    this.editor.on("connectionStart", ({ output_id, output_class }) => {
-      const connectionNode = this.editor.getNodeFromId(output_id);
-      // const index = Object.keys(connectionNode.outputs).indexOf(output_class);
-
-      // if (
-      //   Object.entries(connectionNode.outputs)[index][1].connections.length == 0
-      // ) {
-      //Visually mark it as selected, and select it as the node
-      this.selectedNode = this.editor.getNodeFromId(output_id);
-
-      const node = this.shadowRoot?.getElementById(`node-${output_id}`);
-
-      if (node) {
-        node.classList.add("selected");
-      }
-
-      const svg = this.shadowRoot.querySelector('svg[class="connection"]');
-      const path = svg.querySelector("path");
-      path.classList.add("creating");
-
-      if (
-        this.selectedNode.class == "page" ||
-        this.selectedNode.class == "origin"
-      ) {
-        this.gamebookContainerManager._showGamebookContainerById(
-          this.selectedNode.id
+    //
+    this.addEventListener("userDeleteLinkButton", (event) => {
+      this.stopPropagation = true;
+      const { outputNodeId, outputClass, inputNodeId, inputClass } =
+        this.parseConnectionIdentifier(
+          (event as CustomEvent).detail.identifier
         );
-      } else if (this.selectedNode.class == "question-branch") {
-        this.gamebookContainerManager._hideAllGamebookContainers();
-      }
-      // }
+
+      this.editor.removeNodeOutput(outputNodeId, outputClass);
+      const pageContainer =
+        this.gamebookContainerManager._getContainerByDrawflowNodeId(
+          outputNodeId
+        );
+      pageContainer.updateLinkButtonIds(outputClass);
+
+      this.editorContent = { ...this.editor.drawflow };
+      this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
     });
 
     //event for when an input on a node was created
@@ -698,25 +592,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       const nodeId = (event as CustomEvent).detail.nodeId;
       this.editorContent = { ...this.editor.drawflow };
       this.selectedNode = this.editor.getNodeFromId(nodeId);
-    });
-
-    //
-    this.addEventListener("linkButtonDeleted", (event) => {
-      const identifier = (event as CustomEvent).detail.identifier as string;
-      const parts = identifier.split("-");
-      const parsed = {
-        outputNodeId: parseInt(parts[0]),
-        outputClass: parts[1],
-        inputNodeId: parseInt(parts[2]),
-        inputClass: parts[3],
-      };
-
-      this.editor.removeSingleConnection(
-        parsed.outputNodeId,
-        parsed.inputNodeId,
-        parsed.outputClass,
-        parsed.inputClass
-      );
     });
 
     //event listener for when the user zoomed into the editor
@@ -755,7 +630,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
 
   */
-  private _handleGamebookTitle(event) {
+  private handleGamebookTitle(event) {
     this.gamebookTitle = event.target.value;
   }
 
@@ -763,7 +638,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
 
   */
-  private _addPageNode(title: string, isOrigin: boolean) {
+  private addPageNode(title: string, isOrigin: boolean) {
     const pageContent = {
       title: title,
       content: `<p>Testing Slots HTML Editing</p>`,
@@ -848,7 +723,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
 
   */
-  private _addQuestionNode() {
+  private addQuestionNode() {
     const data = {
       title: "Question Branch",
       question: "",
@@ -914,22 +789,21 @@ export class WebWriterBranchingScenario extends LitElementWw {
   ) {
     const index = Object.keys(quizNode.outputs).indexOf(answer_output_class);
 
-    if (index != -1) {
-      const answerArray = quizNode.data.answers;
-      answerArray[index].targetPageId = target_node_id;
+    if (index !== -1) {
+      quizNode.data.answers[index].targetPageId = target_node_id;
 
       this.editor.updateNodeDataFromId(quizNode.id, {
-        title: quizNode.data.title,
-        question: quizNode.data.question,
-        answers: answerArray,
+        ...quizNode.data,
+        answers: quizNode.data.answers,
       });
 
-      const dispatchEvent = new CustomEvent("nodeDataUpdated", {
-        detail: { nodeId: quizNode.id },
-        bubbles: true, // Allows the event to bubble up through the DOM
-        composed: true, // Allows the event to pass through shadow DOM boundaries
-      });
-      this.dispatchEvent(dispatchEvent);
+      this.dispatchEvent(
+        new CustomEvent("nodeDataUpdated", {
+          detail: { nodeId: quizNode.id },
+          bubbles: true,
+          composed: true,
+        })
+      );
     }
   }
 
@@ -982,12 +856,107 @@ export class WebWriterBranchingScenario extends LitElementWw {
     return element;
   }
 
+  private parseConnectionIdentifier(identifier) {
+    const parts = identifier.split("-");
+    const parsed = {
+      outputNodeId: parseInt(parts[0]),
+      outputClass: parts[1],
+      inputNodeId: parseInt(parts[2]),
+      inputClass: parts[3],
+    };
+
+    return parsed;
+  }
   /*
 
   */
-  private _importExample(index: Number) {
+  private _hoverConnection(identifier) {
+    const { inputNodeId, outputNodeId, outputClass, inputClass } =
+      this.parseConnectionIdentifier(identifier);
+
+    const svg = this.shadowRoot.querySelector(
+      `svg.connection.node_in_node-${inputNodeId}.node_out_node-${outputNodeId}.${outputClass}.${inputClass}`
+    );
+    svg.querySelector("path").classList.add("creating");
+
+    [
+      this.shadowRoot?.getElementById(`node-${outputNodeId}`),
+      this.shadowRoot?.getElementById(`node-${inputNodeId}`),
+    ].forEach((nodeDiv, i) => {
+      if (nodeDiv) {
+        const type = i === 0 ? "output" : "input";
+        nodeDiv
+          .querySelector(`.${type}.${i === 0 ? outputClass : inputClass}`)
+          .classList.add("selected");
+      }
+    });
+  }
+
+  /*
+
+  */
+  private _unhoverConnection(identifier) {
+    const { inputNodeId, outputNodeId, outputClass, inputClass } =
+      this.parseConnectionIdentifier(identifier);
+
+    const svg = this.shadowRoot.querySelector(
+      `svg.connection.node_in_node-${inputNodeId}.node_out_node-${outputNodeId}.${outputClass}.${inputClass}`
+    );
+    svg.querySelector("path").classList.remove("creating");
+
+    [
+      ["output", outputNodeId, outputClass],
+      ["input", inputNodeId, inputClass],
+    ].forEach(([type, nodeId, cls]) => {
+      const nodeDiv = this.shadowRoot?.getElementById(`node-${nodeId}`);
+      if (nodeDiv) {
+        nodeDiv.querySelector(`.${type}.${cls}`).classList.remove("selected");
+      }
+    });
+  }
+
+  /*
+
+  */
+  private _selectConnection(identifier) {
+    const { outputNodeId, outputClass, inputNodeId, inputClass } =
+      this.parseConnectionIdentifier(identifier);
+
+    [
+      ["output", outputNodeId, outputClass],
+      ["input", inputNodeId, inputClass],
+    ].forEach(([type, nodeId, cls]) => {
+      const nodeDiv = this.shadowRoot?.getElementById(`node-${nodeId}`);
+      if (nodeDiv) {
+        nodeDiv.querySelector(`.${type}.${cls}`).classList.add("selected");
+      }
+    });
+  }
+
+  /*
+
+  */
+  private _unselectConnection(identifier) {
+    const { outputNodeId, outputClass, inputNodeId, inputClass } =
+      this.parseConnectionIdentifier(identifier);
+
+    [
+      ["output", outputNodeId, outputClass],
+      ["input", inputNodeId, inputClass],
+    ].forEach(([type, nodeId, cls]) => {
+      const nodeDiv = this.shadowRoot?.getElementById(`node-${nodeId}`);
+      if (nodeDiv) {
+        nodeDiv.querySelector(`.${type}.${cls}`).classList.remove("selected");
+      }
+    });
+  }
+
+  /*
+
+  */
+  private importExample(index: number) {
     this.editor.clear();
-    this.editor.import(gamebookExamples.gamebookExamples[0].drawflow);
+    this.editor.import(gamebookExamples.gamebookExamples[index].drawflow);
 
     this.selectedNode = NO_NODE_SELECTED;
     this.gamebookTitle = "";
@@ -1022,19 +991,17 @@ export class WebWriterBranchingScenario extends LitElementWw {
     // Select the elements
     const drawflowEditorDiv =
       this.shadowRoot.querySelector("#drawflowEditorDiv");
-
     const drawflowBackground = this.shadowRoot.querySelector(
       "drawflow-background"
-    ) as DrawflowBackground;
+    );
 
-    // List of events you want to propagate
+    // List of events to propagate and controls to check
     const eventsToPropagate = [
       "mousemove",
       "mousedown",
       "mouseup",
       "mouseleave",
     ];
-
     const insideEditorControls = [
       "#zoomInBtn",
       "#zoomOutBtn",
@@ -1042,20 +1009,16 @@ export class WebWriterBranchingScenario extends LitElementWw {
       ".input",
     ];
 
-    // Function to check if the event target is inside any of the specified controls
-    const isEventInsideControls = (event) => {
-      return insideEditorControls.some((selector) => {
+    // Check if the event target is inside specified controls
+    const isEventInsideControls = (event) =>
+      insideEditorControls.some((selector) => {
         const element = this.shadowRoot.querySelector(selector);
         return element && element.contains(event.target);
       });
-    };
 
-    // Event handler function
+    // Propagate event to drawflow-background if not inside controls
     const propagateEvent = (event) => {
-      if (isEventInsideControls(event)) {
-        // Stop propagation if the event target is inside one of the controls
-        return;
-      }
+      if (isEventInsideControls(event)) return;
 
       const eventInit = {
         bubbles: event.bubbles,
@@ -1071,30 +1034,27 @@ export class WebWriterBranchingScenario extends LitElementWw {
         metaKey: event.metaKey,
       };
 
-      let newEvent;
-      if (event.type === "wheel") {
-        newEvent = new WheelEvent(event.type, {
-          ...eventInit,
-          deltaX: event.deltaX,
-          deltaY: event.deltaY,
-          deltaZ: event.deltaZ,
-          deltaMode: event.deltaMode,
-        });
-      } else {
-        newEvent = new MouseEvent(event.type, {
-          ...eventInit,
-          button: event.button,
-          buttons: event.buttons,
-          movementX: event.movementX,
-          movementY: event.movementY,
-        });
-      }
+      const newEvent =
+        event.type === "wheel"
+          ? new WheelEvent(event.type, {
+              ...eventInit,
+              deltaX: event.deltaX,
+              deltaY: event.deltaY,
+              deltaZ: event.deltaZ,
+              deltaMode: event.deltaMode,
+            })
+          : new MouseEvent(event.type, {
+              ...eventInit,
+              button: event.button,
+              buttons: event.buttons,
+              movementX: event.movementX,
+              movementY: event.movementY,
+            });
 
-      // Dispatch the new event to drawflow-background
       drawflowBackground.dispatchEvent(newEvent);
     };
 
-    // Add event listeners
+    // Add event listeners to propagate events
     eventsToPropagate.forEach((eventType) => {
       drawflowEditorDiv.addEventListener(eventType, propagateEvent);
     });

@@ -243,10 +243,7 @@ export default css`
     border-color: #d7d7d7;
   }
 
-  .drawflow .drawflow-node .output.selected {
-    background: #2d99ff;
-  }
-
+  .drawflow .drawflow-node .output.selected,
   .drawflow .drawflow-node .input.selected {
     background: #2d99ff;
   }
@@ -273,8 +270,6 @@ export default css`
   .drawflow .connection .main-path.selected {
     stroke: #2d99ff;
     stroke-width: 2px;
-    -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
-    box-shadow: 0 2px 20px 2px #d0d0d0;
   }
 
   .drawflow .connection .point {

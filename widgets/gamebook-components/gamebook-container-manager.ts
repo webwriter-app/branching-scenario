@@ -147,6 +147,8 @@ export class GamebookContainerManager extends LitElementWw {
 
     //to let it access editor
     pageContainer.hide();
+
+    //
     this.appendToShadowDom(pageContainer);
   }
 

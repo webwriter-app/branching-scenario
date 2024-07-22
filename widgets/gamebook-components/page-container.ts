@@ -34,6 +34,7 @@ export class PageContainer extends LitElementWw {
     null;
   @property({ type: String, attribute: true, reflect: true }) pageTitle = "";
   @property({ type: Number, attribute: true, reflect: true }) originPage = 0;
+  @property({ type: Boolean }) linkButtonRemoval = false;
 
   @queryAssignedElements({ flatten: true, selector: "link-button" })
   linkButtons;
@@ -131,6 +132,15 @@ export class PageContainer extends LitElementWw {
       ) || this.querySelector(`link-button[identifier="${identifier}"]`);
 
     if (linkButton) {
+      const parts = (linkButton as LinkButton).identifier.split("-");
+      const parsed = {
+        outputNodeId: parseInt(parts[0]),
+        outputClass: parts[1],
+        inputNodeId: parseInt(parts[2]),
+        inputClass: parts[3],
+      };
+      this.updateLinkButtonIds(parsed.outputClass);
+      linkButton.setAttribute("identifier", "x");
       linkButton.remove();
     }
   }
@@ -150,16 +160,53 @@ export class PageContainer extends LitElementWw {
         mutation.removedNodes.forEach((node) => {
           if ((node as HTMLElement).nodeName.toLowerCase() == "link-button") {
             if ((node as HTMLElement).classList.contains("ww-widget")) {
-              const event = new CustomEvent("linkButtonDeleted", {
-                detail: { identifier: (node as LinkButton).identifier },
-                bubbles: true, // Allows the event to bubble up through the DOM
-                composed: true, // Allows the event to pass through shadow DOM boundaries
-              });
-              this.dispatchEvent(event);
+              //make sure link button did not get deleted programtically
+              let linkButton = node as LinkButton;
+              if (linkButton.identifier != "x") {
+                const event = new CustomEvent("userDeleteLinkButton", {
+                  detail: { identifier: (node as LinkButton).identifier },
+                  bubbles: true, // Allows the event to bubble up through the DOM
+                  composed: true, // Allows the event to pass through shadow DOM boundaries
+                });
+                this.dispatchEvent(event);
+              }
             }
           }
         });
       }
     });
   };
+
+  /*
+
+
+  */
+  public updateLinkButtonIds(removed_output_class: string) {
+    // Extract the number from the output_class parameter
+    const removedOutputClassNumber = parseInt(
+      removed_output_class.split("_")[1],
+      10
+    );
+
+    // Iterate over each linkButton to update its identifier
+    this.linkButtons.forEach((linkButton) => {
+      const [output_id, output_class, input_id] =
+        linkButton.identifier.split("-");
+      const linkButtonOutputClassNumber = parseInt(
+        output_class.split("_")[1],
+        10
+      );
+
+      // Check if the linkButton should be updated
+      if (linkButtonOutputClassNumber > removedOutputClassNumber) {
+        // Generate the new identifier with incremented output_class
+        const newIdentifier = `${output_id}-output_${
+          linkButtonOutputClassNumber - 1
+        }-${input_id}-input_1`;
+
+        // Update the identifier
+        linkButton.setAttribute("identifier", newIdentifier);
+      }
+    });
+  }
 }

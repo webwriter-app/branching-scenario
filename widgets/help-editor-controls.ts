@@ -103,10 +103,10 @@ export class HelpEditorControls extends LitElementWw {
         </div>
 
         <div class="column">
-            <div class="help-item"><p class="label">Select Node</p></div>
+            <div class="help-item"><p class="label">Select</p></div>
 
             <div class="help-item"><p class="label">Drag Connection</p></div>
-            <div class="help-item"><p class="label">Delete Node</p></div>
+            <div class="help-item"><p class="label">Delete</p></div>
             <div class="help-item"><p class="label">Zoom In/Out</p></div>
         </div>
       </div>

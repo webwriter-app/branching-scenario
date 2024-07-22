@@ -15,7 +15,8 @@ import { SlOption, SlSelect, SlButton } from "@shoelace-style/shoelace";
 export class LinkButton extends LitElementWw {
   @property({ type: String }) name: string;
   @property({ type: Number }) dataTargetId: number;
-  @property({ type: String }) identifier: string;
+  @property({ type: String, attribute: true })
+  identifier: string;
 
   static get scopedElements() {
     return {
