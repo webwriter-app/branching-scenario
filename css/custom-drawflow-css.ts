@@ -23,6 +23,8 @@ export default css`
 
     min-width: 302px;
     min-height: 90px;
+
+    border-radius: 8px;
   }
 
   .drawflow-node.page .container,
@@ -139,34 +141,53 @@ export default css`
 
     box-sizing: border-box;
 
-    min-width: 110px;
-    min-height: 110px;
+    border-radius: 8px;
+
+    min-width: 302px;
+    min-height: 90px;
   }
 
   .drawflow .drawflow-node.question-branch .container {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-
-    box-sizing: border-box;
-
-    padding: 10px;
-  }
-
-  .drawflow .drawflow-node.question-branch .content {
-    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    gap: 20px;
+    box-sizing: border-box;
   }
 
-  .drawflow .drawflow-node.question-branch .dotsIcon {
-    position: absolute;
+  .drawflow .drawflow-node.question-branch .content {
+    color: #71717a;
+    display: flex;
+
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 150px;
+
+    gap: 3px;
+    height: 60px;
+  }
+
+  .drawflow-node.question-branch .content .input-label {
+    font-size: 14px;
+    color: #a1a1a1; /* gray tone */
+    margin: 3px;
+  }
+
+  .drawflow-node.question-branch .content #test-textarea {
+    resize: none;
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem;
+  }
+
+  .drawflow .drawflow-node.question-branch .threeDots {
     font-size: 24px;
-    right: 10px;
   }
 
   .drawflow .drawflow-node.question-branch p {
@@ -291,7 +312,7 @@ export default css`
   border: 2px solid #b94543;
   background: #ffe9e8;
   color: #b94543;
-} */
+} 
 
   /* ------- */
   /* MODAL */

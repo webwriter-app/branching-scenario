@@ -22,6 +22,7 @@ import {
   SlTextarea,
   SlMenu,
   SlMenuItem,
+  SlMenuLabel,
   SlDropdown,
   SlIcon,
 } from "@shoelace-style/shoelace";
@@ -49,6 +50,7 @@ export class BranchingControls extends LitElementWw {
       "sl-menu": SlMenu,
       "sl-menu-item": SlMenuItem,
       "sl-dropdown": SlDropdown,
+      "sl-menu-label": SlMenuLabel,
     };
   }
 
@@ -126,15 +128,18 @@ export class BranchingControls extends LitElementWw {
             Add Node
             <sl-icon src=${plus} slot="prefix"></sl-icon>
           </sl-button>
-          <sl-menu style="width: 180px;">
+          <sl-menu style="width: 200px;">
+            <sl-menu-label>Gamebook</sl-menu-label>
             <sl-menu-item
               @click=${() => this.addPageNode("Untitled Page", false)}
               ><sl-icon slot="prefix" src=${file}></sl-icon>
               Page
             </sl-menu-item>
+            <sl-divider></sl-divider>
+            <sl-menu-label>Branch</sl-menu-label>
             <sl-menu-item @click=${() => this.addQuestionNode()}>
               <sl-icon slot="prefix" src=${helpSquareRounded}></sl-icon>
-              Question
+              Dialog Question
             </sl-menu-item>
           </sl-menu>
         </sl-dropdown>

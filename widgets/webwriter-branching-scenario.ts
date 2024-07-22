@@ -745,15 +745,23 @@ export class WebWriterBranchingScenario extends LitElementWw {
     contentDiv.classList.add("content");
     const nameLabel = document.createElement("p");
     nameLabel.textContent = "Question";
+    nameLabel.classList.add("input-label");
     contentDiv.appendChild(nameLabel);
 
-    // Create the icon div
-    const dotsIcon = document.createElement("sl-icon") as SlIcon;
-    dotsIcon.setAttribute("src", dotsVertical);
-    dotsIcon.classList.add("dotsIcon");
-    contentDiv.appendChild(dotsIcon);
+    const inputElement = document.createElement("input");
+    inputElement.type = "text";
+    inputElement.id = "test-textarea";
+    inputElement.placeholder = "Enter name";
+    inputElement.setAttribute("df-title", ""); // Adding df-title attribute
+    contentDiv.appendChild(inputElement);
 
     containerDiv.appendChild(contentDiv);
+
+    // Create the icon div
+    const threeDotsIcon = document.createElement("sl-icon") as SlIcon;
+    threeDotsIcon.setAttribute("src", dotsVertical);
+    threeDotsIcon.classList.add("threeDots");
+    containerDiv.appendChild(threeDotsIcon);
 
     const containerHtml = containerDiv.outerHTML;
 
@@ -856,6 +864,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
     return element;
   }
 
+  /*
+
+  */
   private parseConnectionIdentifier(identifier) {
     const parts = identifier.split("-");
     const parsed = {

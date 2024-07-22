@@ -14,7 +14,7 @@ export class DrawflowBackground extends LitElementWw {
       height: 400px;
       background-image: radial-gradient(circle, #dedede, 1px, transparent 1px);
       background-size: ${GRID_SIZE}px ${GRID_SIZE}px;
-      background-color: transparent;
+      background-color: #fbfbfb;
       position: absolute;
       cursor: grab;
     }
