@@ -1,7 +1,7 @@
 import { css } from "lit";
 
 export default css`
-  :host {
+  /* :host {
     display: flex;
     box-sizing: border-box;
     outline: none;
@@ -17,8 +17,9 @@ export default css`
   }
 
   :host(.ww-selected) {
-    border: 2px solid orange;
-  }
+    //border: 2px solid orange;
+    background-color: transparent;
+  } */
 
   #widget {
     display: flex;

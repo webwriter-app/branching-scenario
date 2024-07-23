@@ -36,8 +36,8 @@ import questionMark from "@tabler/icons/outline/question-mark.svg";
 import file from "@tabler/icons/outline/file.svg";
 import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
 
-@customElement("branching-controls")
-export class BranchingControls extends LitElementWw {
+@customElement("controls-bar")
+export class ControlsBar extends LitElementWw {
   //registering custom elements used in the widget
   static get scopedElements() {
     return {
@@ -76,19 +76,6 @@ export class BranchingControls extends LitElementWw {
     return html`
       <div class="controls">
         <div class="first-item">
-          <sl-icon-button
-            src=${this.inPreviewMode ? playerStop : playerPlay}
-            class="iconButton"
-            @click=${() => this.togglePreviewMode()}
-          >
-            ${this.inPreviewMode ? "Cancel" : "Preview"}
-          </sl-icon-button>
-          <sl-divider
-            vertical
-            style=${this.inPreviewMode
-              ? "display: none;"
-              : "display: block; height: 30px;"}
-          ></sl-divider>
           <sl-textarea
             id="gamebookTitle"
             rows="1"

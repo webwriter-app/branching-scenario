@@ -66,10 +66,10 @@ export class PageContainer extends LitElementWw {
     // Start observing the target node for configured mutations
     this.mutationObserver.observe(this, config);
 
-    this.addEventListener("click", () => {
-      //console.log("page Container clicked");
-      this.focus();
-    });
+    // this.addEventListener("click", () => {
+    //   console.log("page Container clicked");
+    //   this.focus();
+    // });
   }
   /*
 

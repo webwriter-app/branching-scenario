@@ -29,8 +29,8 @@ export class LinkButton extends LitElementWw {
   //TODO: Focus is messed up, when clicking on the input, the focus shifts away from the button
   render() {
     return html`
-      <div>
-        <sl-button size="medium" style="padding: 0px;">
+      <div style="width: 100%">
+        <sl-button size="medium" style="padding: 0px; width: 100%;">
           <p>${this.name}</p>
         </sl-button>
         <input

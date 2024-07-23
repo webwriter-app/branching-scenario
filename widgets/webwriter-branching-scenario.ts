@@ -40,11 +40,11 @@ import customDrawflowStyles from "../css/custom-drawflow-css";
 
 //Import Sub Components
 import { SelectedNodeDetails } from "./selected-node-details";
-import { GamebookViewer } from "./gamebook-components/gamebook-viewer";
+import { WebWriterGamebook } from "./gamebook-components/webwriter-gamebook";
 import { PageContainer } from "./gamebook-components/page-container";
 import { QuizContainer } from "./gamebook-components/quiz-container";
 import { LinkButton } from "./gamebook-components/link-button";
-import { BranchingControls } from "./branching-controls";
+import { ControlsBar } from "./controls-bar";
 import { gamebookExamples } from "./gamebookExamples";
 import { GamebookContainerManager } from "./gamebook-components/gamebook-container-manager";
 import { HelpEditorControls } from "./help-editor-controls";
@@ -100,8 +100,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @query("gamebook-container-manager")
   gamebookContainerManager;
 
-  @state() inPreviewMode = false;
-
   static shadowRootOptions = {
     ...LitElement.shadowRootOptions,
     delegatesFocus: true,
@@ -117,7 +115,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-icon": SlIcon,
       "sl-icon-button": SlIconButton,
       "selected-node-details": SelectedNodeDetails,
-      "gamebook-viewer": GamebookViewer,
+      "webwriter-gamebook": WebWriterGamebook,
       "page-container": PageContainer,
       "link-button": LinkButton,
       "quiz-container": QuizContainer,
@@ -125,7 +123,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-menu-item": SlMenuItem,
       "sl-dropdown": SlDropdown,
       "gamebook-container-manager": GamebookContainerManager,
-      "branching-controls": BranchingControls,
+      "controls-bar": ControlsBar,
       "help-editor-controls": HelpEditorControls,
       "drawflow-background": DrawflowBackground,
     };
@@ -181,10 +179,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
       <div id="widget">
         ${this.isContentEditable
           ? html`
-              <branching-controls
-                .inPreviewMode=${this.inPreviewMode}
+              <controls-bar
                 .gamebookTitle=${this.gamebookTitle}
-                .togglePreviewMode=${() => this.togglePreviewMode()}
                 .importExample=${(number) => this.importExample(number)}
                 .addPageNode=${(string, boolean) =>
                   this.addPageNode(string, boolean)}
@@ -194,29 +190,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 .showDialog=${() =>
                   (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
               >
-              </branching-controls>
-              <!-- TODO: Delete this once contentEditable works perfectly -->
-              ${
-                this.inPreviewMode
-                  ? html` <gamebook-viewer
-                      gamebookTitle=${this.gamebookTitle != ""
-                        ? this.gamebookTitle
-                        : "No Name"}
-                    >
-                      <slot></slot>
-                    </gamebook-viewer>`
-                  : null
-              }
-           
+              </controls-bar>    
               <div id="nodeEditor">
                 <drawflow-background .nodeSelected=${
                   this.selectedNode != NO_NODE_SELECTED
                 }></drawflow-background>
                 <div
                   id="drawflowEditorDiv"
-                  style=${
-                    this.inPreviewMode ? "display: none;" : "display: block;"
-                  }
                 >
                   <div class="zoomControls"> 
                     <sl-icon-button
@@ -238,16 +218,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     <p>${this.editorZoomString}</p>
                   </div>
                   <help-editor-controls></help-editor-controls>
-
-                  
-
                     <!-- <sl-button class="exportButton" @click=${() =>
                       this.testOutput()}>Export</sl-button> -->
                   </div>
                 </div>
-                ${
-                  !this.inPreviewMode
-                    ? html`<selected-node-details
+<selected-node-details
                         .selectedNode=${this.selectedNode}
                         .editor=${this.editor}
                         .editorContent=${this.editorContent}
@@ -262,10 +237,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                         >
                           <slot></slot>
                         </gamebook-container-manager>
-                      </selected-node-details>`
-                    : null
-                }
-
+                      </selected-node-details>
                 <sl-dialog label="Clear graph" class="dialog" id="dialog">
                   Do you want to clear the graph? All your progress will be
                   lost.
@@ -289,12 +261,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 </sl-dialog>
               </div>
             `
-          : html`<gamebook-viewer
+          : html`<webwriter-gamebook
               gamebookTitle=${this.gamebookTitle != ""
                 ? this.gamebookTitle
                 : "No Name"}
               ><slot></slot
-            ></gamebook-viewer>`}
+            ></webwriter-gamebook>`}
       </div>
     `;
   }
@@ -316,36 +288,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
     });
 
     this.addPageNode("First Page", true);
-  }
-
-  /*
-
-
-  */
-  private togglePreviewMode() {
-    if (this.inPreviewMode == true) {
-      this.inPreviewMode = false;
-      this.gamebookContainers.forEach((container) => {
-        container.hide();
-      });
-
-      const node = this.shadowRoot?.getElementById(
-        `node-${this.selectedNode.id}`
-      );
-      if (node) {
-        node.classList.remove("selected");
-      }
-
-      this.selectedNode = NO_NODE_SELECTED;
-    }
-    //
-    else if (this.inPreviewMode == false) {
-      this.inPreviewMode = true;
-
-      this.gamebookContainers.forEach((container) => {
-        container.hide();
-      });
-    }
   }
 
   /*

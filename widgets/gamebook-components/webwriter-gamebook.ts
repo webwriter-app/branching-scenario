@@ -34,8 +34,8 @@ import { PageContainer } from "./page-container";
 //Define Component
 //TODO: Fix Gamebook Errors. Check other modules for proper updating. I commented out a lot for restructure!
 //TODO: employ structure such that users cannot simply change css in browser to see next slide
-@customElement("gamebook-viewer")
-export class GamebookViewer extends LitElementWw {
+@customElement("webwriter-gamebook")
+export class WebWriterGamebook extends LitElementWw {
   //registering custom elements used in the widget
   static get scopedElements() {
     return {
@@ -71,16 +71,23 @@ export class GamebookViewer extends LitElementWw {
 
    */
   protected firstUpdated(_changedProperties: any): void {
+    const slot = this.shadowRoot.querySelector("slot");
+    if (slot) {
+      slot.addEventListener("slotchange", () => this._handleSlotChange());
+    }
+  }
+
+  _handleSlotChange() {
+    console.log(this.gamebookContainers);
     this.currentPageId = this._resetGamebookToOrigin();
     this._initializeLinkButtons(this.currentPageId);
   }
-
   /*
 
 
   */
   render() {
-    return html`<div class="preview">
+    return html`
       <div class="gamebook">
         <div class="gamebookTitle">${this.gamebookTitle}</div>
         <div class="pageTitle">${this.pageTitle}</div>
@@ -88,7 +95,7 @@ export class GamebookViewer extends LitElementWw {
           <slot></slot>
         </div>
       </div>
-    </div> `;
+    `;
   }
 
   /*

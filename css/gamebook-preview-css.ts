@@ -1,18 +1,6 @@
 import { css } from "lit";
 
 export default css`
-  .preview {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center items vertically */
-    box-sizing: border-box;
-    background-color: white;
-
-    height: auto;
-    width: auto;
-    margin: 10px;
-  }
-
   .gamebook {
     display: flex;
     flex-direction: column;
@@ -20,7 +8,7 @@ export default css`
     gap: 0px;
     //-webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
     //box-shadow: 0 2px 20px 2px #d0d0d0;
-    border: 1px solid#e4e4e4;
+
     box-sizing: border-box;
     width: 100%;
   }
