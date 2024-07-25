@@ -39,16 +39,16 @@ import styles from "../css/webwriter-branching-scenario-css";
 import customDrawflowStyles from "../css/custom-drawflow-css";
 
 //Import Sub Components
-import { SelectedNodeDetails } from "./selected-node-details";
-import { WebWriterGamebook } from "./gamebook-components/webwriter-gamebook";
-import { PageContainer } from "./gamebook-components/page-container";
-import { QuizContainer } from "./gamebook-components/quiz-container";
-import { LinkButton } from "./gamebook-components/link-button";
-import { ControlsBar } from "./controls-bar";
-import { gamebookExamples } from "./gamebookExamples";
-import { GamebookContainerManager } from "./gamebook-components/gamebook-container-manager";
-import { HelpEditorControls } from "./help-editor-controls";
-import { DrawflowBackground } from "./drawflow-background";
+import { SelectedNodeViewRenderer } from "./selected-node-view-renderer";
+import { WebWriterGamebook } from "./gamebook";
+import { WebWriterGamebookPageContainer } from "./webwriter-gamebook-page-container";
+import { QuizContainer } from "./quiz-container";
+import { ControlsBar } from "./node-editor-control-bar";
+import { gamebookExamples } from "./gamebook-examples";
+import { GamebookContainerManager } from "./gamebook-container-manager";
+import { DrawflowHelpPopUpControls } from "./node-editor-help-popup-controls";
+import { DrawflowBackground } from "./node-editor-background";
+import { WebWriterConnectionButton } from "./webwriter-connection-button";
 
 // Declare global variable of type DrawflowNode
 const NO_NODE_SELECTED: DrawflowNode = {
@@ -93,7 +93,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   @queryAssignedElements({
     flatten: true,
-    selector: "page-container, quiz-container",
+    selector: "webwriter-gamebook-page-container, quiz-container",
   })
   gamebookContainers;
 
@@ -102,7 +102,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   static shadowRootOptions = {
     ...LitElement.shadowRootOptions,
-    delegatesFocus: true,
+    //delegatesFocus: true,
   };
 
   //registering custom elements used in the widget
@@ -114,18 +114,19 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-dialog": SlDialog,
       "sl-icon": SlIcon,
       "sl-icon-button": SlIconButton,
-      "selected-node-details": SelectedNodeDetails,
-      "webwriter-gamebook": WebWriterGamebook,
-      "page-container": PageContainer,
-      "link-button": LinkButton,
-      "quiz-container": QuizContainer,
       "sl-menu": SlMenu,
       "sl-menu-item": SlMenuItem,
       "sl-dropdown": SlDropdown,
-      "gamebook-container-manager": GamebookContainerManager,
+      //
+      "webwriter-gamebook": WebWriterGamebook,
+      "webwriter-connection-button": WebWriterConnectionButton,
+      "webwriter-gamebook-page-container": WebWriterGamebookPageContainer,
+      "quiz-container": QuizContainer,
       "controls-bar": ControlsBar,
-      "help-editor-controls": HelpEditorControls,
+      "gamebook-container-manager": GamebookContainerManager,
+      "drawflow-help-popup-controls": DrawflowHelpPopUpControls,
       "drawflow-background": DrawflowBackground,
+      "selected-node-view-renderer": SelectedNodeViewRenderer,
     };
   }
 
@@ -169,6 +170,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
     } else {
       this.editor.import(this.editorContent);
     }
+
+    // this.addEventListener("click", () => {
+    //   console.log("click");
+    //   this.focus();
+    // });
+
+    // //this.tabIndex = -1;
+    // this.setAttribute("tabIndex", "-1");
   }
 
   /*
@@ -217,12 +226,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   <div class="zoomValue">
                     <p>${this.editorZoomString}</p>
                   </div>
-                  <help-editor-controls></help-editor-controls>
+                  <drawflow-help-popup-controls></drawflow-help-popup-controls>
                     <!-- <sl-button class="exportButton" @click=${() =>
                       this.testOutput()}>Export</sl-button> -->
                   </div>
                 </div>
-<selected-node-details
+                      <selected-node-view-renderer
                         .selectedNode=${this.selectedNode}
                         .editor=${this.editor}
                         .editorContent=${this.editorContent}
@@ -237,7 +246,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                         >
                           <slot></slot>
                         </gamebook-container-manager>
-                      </selected-node-details>
+                      </selected-node-view-renderer>
                 <sl-dialog label="Clear graph" class="dialog" id="dialog">
                   Do you want to clear the graph? All your progress will be
                   lost.
@@ -273,7 +282,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   /*
 
-
+TODO: On clear editor, the slot gets fucked
   */
   private _clearEditor() {
     const dialog = this.shadowRoot.getElementById("dialog") as SlDialog;
@@ -433,7 +442,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
             this.gamebookContainerManager._getContainerByDrawflowNodeId(
               output_id
             );
-          pageContainer.addLinkButtonToPageContainer(
+          pageContainer.addConnectionButtonToPageContainer(
             outputNode,
             inputNode,
             output_class,
@@ -470,12 +479,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
               output_id
             );
           const identifier = `${output_id}-${output_class}-${input_id}-input_1`;
-          console.log(
-            "connection removed, remove link button with identifier: ",
-            identifier
-          );
+          // console.log(
+          //   "connection removed, remove link button with identifier: ",
+          //   identifier
+          // );
 
-          pageContainer.removeLinkButtonFromPageContainer(identifier);
+          pageContainer.removeConnectionButtonFromPageContainer(identifier);
         }
         //
         else if (outputNode.class == "question-branch") {
@@ -490,7 +499,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     );
 
     //
-    this.addEventListener("userDeleteLinkButton", (event) => {
+    this.addEventListener("userDeleteConnectionButton", (event) => {
       this.stopPropagation = true;
       const { outputNodeId, outputClass, inputNodeId, inputClass } =
         this.parseConnectionIdentifier(
@@ -502,7 +511,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.gamebookContainerManager._getContainerByDrawflowNodeId(
           outputNodeId
         );
-      pageContainer.updateLinkButtonIds(outputClass);
+      pageContainer.updateConnectionButtonIds(outputClass);
 
       this.editorContent = { ...this.editor.drawflow };
       this.selectedNode = this.editor.getNodeFromId(this.selectedNode.id);
@@ -527,6 +536,17 @@ export class WebWriterBranchingScenario extends LitElementWw {
       const nodeId = (event as CustomEvent).detail.nodeId;
       this.editorContent = { ...this.editor.drawflow };
       this.selectedNode = this.editor.getNodeFromId(nodeId);
+
+      // const div = this.shadowRoot.querySelector(`#node-${nodeId}`);
+      // console.log(div);
+
+      // const output = div.querySelector(".output.output_1");
+      // console.log(output);
+
+      // const par = document.createElement("p");
+
+      // par.textContent = "1";
+      // output.appendChild(par);
     });
 
     //event for when an output of a node was deleted
@@ -763,7 +783,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   private testOutput() {
     this.gamebookContainers.forEach((container) => {
-      if (container instanceof PageContainer) {
+      if (container instanceof WebWriterGamebookPageContainer) {
         // Assuming PageContainer has a method or property to access its child elements
         const childElements = container.childNodes; // Adjust this to how you get child elements in your PageContainer
 

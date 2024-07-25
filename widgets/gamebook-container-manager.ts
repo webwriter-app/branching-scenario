@@ -11,8 +11,8 @@ import {
 
 //Drawflow Imports
 import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
-import { PageContainer } from "../gamebook-components/page-container";
-import { QuizContainer } from "../gamebook-components/quiz-container";
+import { WebWriterGamebookPageContainer } from "./webwriter-gamebook-page-container";
+import { QuizContainer } from "./quiz-container";
 
 @customElement("gamebook-container-manager")
 export class GamebookContainerManager extends LitElementWw {
@@ -21,12 +21,15 @@ export class GamebookContainerManager extends LitElementWw {
     element: HTMLElement
   ) => {};
 
-  @queryAssignedElements({ flatten: true })
+  @queryAssignedElements({
+    flatten: true,
+    selector: "webwriter-gamebook-page-container, quiz-container",
+  })
   gamebookContainers;
 
   static get scopedElements() {
     return {
-      "page-container": PageContainer,
+      "webwriter-gamebook-page-container": WebWriterGamebookPageContainer,
       "quiz-container": QuizContainer,
     };
   }
@@ -85,7 +88,7 @@ export class GamebookContainerManager extends LitElementWw {
       (container) => container.getAttribute("drawflowNodeId") == id
     );
 
-    (container as PageContainer).pageTitle = title;
+    (container as WebWriterGamebookPageContainer).pageTitle = title;
   }
 
   /*
@@ -95,6 +98,7 @@ export class GamebookContainerManager extends LitElementWw {
   public _showGamebookContainerById(nodeId: Number) {
     //console.log("iteration");
     this.gamebookContainers.forEach((container) => {
+      console.log(container);
       //console.log("iteration");
       if (container.drawflowNodeId == nodeId) {
         //console.log("enter");
@@ -123,8 +127,9 @@ export class GamebookContainerManager extends LitElementWw {
   public _createPageContainerFromPageNode(pageNode: DrawflowNode) {
     //console.log(this.gamebookContainers);
     const pageContainer = document.createElement(
-      "page-container"
-    ) as PageContainer;
+      "webwriter-gamebook-page-container"
+    ) as WebWriterGamebookPageContainer;
+    console.log(pageContainer);
     pageContainer.setAttribute("drawflowNodeId", pageNode.id.toString());
     pageContainer.setAttribute("pageTitle", pageNode.data.title);
 

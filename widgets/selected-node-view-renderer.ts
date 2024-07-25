@@ -29,8 +29,8 @@ import Drawflow, { DrawflowNode } from "drawflow";
 //Import Sub Components
 import { PageNodeDetails } from "./page-node-details";
 import { QuizBranchNodeDetails } from "./quiz-branch-node-details";
-import { PageContainer } from "./gamebook-components/page-container";
-import { QuizContainer } from "./gamebook-components/quiz-container";
+import { WebWriterGamebookPageContainer } from "./webwriter-gamebook-page-container";
+import { QuizContainer } from "./quiz-container";
 
 // Declare global variable of type DrawflowNode
 const NO_NODE_SELECTED: DrawflowNode = {
@@ -49,8 +49,8 @@ const NO_NODE_SELECTED: DrawflowNode = {
 //Import Styles
 import styles from "../css/selected-node-details-css";
 
-@customElement("selected-node-details")
-export class SelectedNodeDetails extends LitElementWw {
+@customElement("node-details-selector")
+export class SelectedNodeViewRenderer extends LitElementWw {
   @property({ type: Object, attribute: true }) selectedNode: DrawflowNode =
     NO_NODE_SELECTED;
 
@@ -73,7 +73,7 @@ export class SelectedNodeDetails extends LitElementWw {
       "sl-icon-button": SlIconButton,
       "page-node-details": PageNodeDetails,
       "quiz-branch-node-details": QuizBranchNodeDetails,
-      "page-container": PageContainer,
+      "webwriter-gamebook-page-container": WebWriterGamebookPageContainer,
       "quiz-container": QuizContainer,
       "sl-menu": SlMenu,
       "sl-menu-item": SlMenuItem,

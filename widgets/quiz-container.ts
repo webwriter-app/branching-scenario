@@ -17,10 +17,10 @@ import {
   SlIconButton,
 } from "@shoelace-style/shoelace";
 
-import { Answer } from "../model";
+import { Answer } from "./model";
 
 //CSS
-import styles from "../../css/quiz-container-css";
+import styles from "../css/quiz-container-css";
 
 //Bootstrap Icon Import
 import arrowRight from "@tabler/icons/outline/arrow-right.svg";

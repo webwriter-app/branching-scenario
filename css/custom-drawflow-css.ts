@@ -231,9 +231,17 @@ export default css`
 
   .drawflow .drawflow-node .input,
   .drawflow .drawflow-node .output {
-    height: 15px;
-    width: 15px;
+    height: 20px;
+    width: 20px;
     border: 1px solid #cdcdcd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .drawflow .drawflow-node .input *,
+  .drawflow .drawflow-node .output * {
+    pointer-events: none;
   }
 
   .drawflow .drawflow-node .output:hover {

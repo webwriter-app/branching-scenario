@@ -29,12 +29,11 @@ import {
 
 //@tabler icons
 import plus from "@tabler/icons/outline/plus.svg";
-import playerStop from "@tabler/icons/filled/player-stop.svg";
-import playerPlay from "@tabler/icons/filled/player-play.svg";
 import schema from "@tabler/icons/outline/schema.svg";
 import questionMark from "@tabler/icons/outline/question-mark.svg";
 import file from "@tabler/icons/outline/file.svg";
 import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
+import directions from "@tabler/icons/outline/directions.svg";
 
 @customElement("controls-bar")
 export class ControlsBar extends LitElementWw {
@@ -112,21 +111,37 @@ export class ControlsBar extends LitElementWw {
           style=${this.inPreviewMode ? "display: none;" : "display: block;"}
         >
           <sl-button slot="trigger">
-            Add Node
+            Add
             <sl-icon src=${plus} slot="prefix"></sl-icon>
           </sl-button>
           <sl-menu style="width: 200px;">
-            <sl-menu-label>Gamebook</sl-menu-label>
+            <sl-menu-label>Blank</sl-menu-label>
             <sl-menu-item
               @click=${() => this.addPageNode("Untitled Page", false)}
               ><sl-icon slot="prefix" src=${file}></sl-icon>
               Page
             </sl-menu-item>
+
+            <sl-menu-item @click=${() => console.log("TODO")}
+              ><svg
+                slot="prefix"
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill="#3F3F46"
+                  d="M16 2H7.979C6.88 2 6 2.88 6 3.98V12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2m0 10H8V4h8zM4 10H2v6c0 1.1.9 2 2 2h6v-2H4z"
+                />
+              </svg>
+              Popup
+            </sl-menu-item>
             <sl-divider></sl-divider>
-            <sl-menu-label>Branch</sl-menu-label>
+            <sl-menu-label>Template</sl-menu-label>
             <sl-menu-item @click=${() => this.addQuestionNode()}>
-              <sl-icon slot="prefix" src=${helpSquareRounded}></sl-icon>
-              Dialog Question
+              <sl-icon slot="prefix" src=${directions}></sl-icon>
+              Decision Popup
             </sl-menu-item>
           </sl-menu>
         </sl-dropdown>

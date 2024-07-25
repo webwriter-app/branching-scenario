@@ -16,8 +16,8 @@ import { SlIcon, SlIconButton } from "@shoelace-style/shoelace";
 //Import Styles
 import styles from "../css/help-editor-controls-css";
 
-@customElement("help-editor-controls")
-export class HelpEditorControls extends LitElementWw {
+@customElement("drawflow-help-popup-controls")
+export class DrawflowHelpPopUpControls extends LitElementWw {
   //import CSS
   static styles = [styles];
 

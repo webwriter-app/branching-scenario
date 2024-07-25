@@ -28,7 +28,7 @@ import {
   SlIcon,
 } from "@shoelace-style/shoelace";
 
-import { LinkButton } from "./gamebook-components/link-button";
+import { WebWriterConnectionButton } from "./webwriter-connection-button";
 
 //Tabler Icon Import
 import plus from "@tabler/icons/outline/plus.svg";
@@ -55,7 +55,7 @@ export class PageNodeDetails extends LitElementWw {
       "sl-option": SlOption,
       "sl-input": SlInput,
       "sl-icon": SlIcon,
-      "link-button": LinkButton,
+      "webwriter-connection-button": WebWriterConnectionButton,
     };
   }
 
@@ -237,6 +237,7 @@ export class PageNodeDetails extends LitElementWw {
           Connect</sl-button
         >
       </div>
+
       <div class="pageDiv">
         <div class="page">
           <slot></slot>

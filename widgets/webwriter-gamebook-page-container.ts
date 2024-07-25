@@ -9,16 +9,16 @@ import {
 } from "lit/decorators.js";
 import { DrawflowNode } from "drawflow";
 
-import { LinkButton } from "./link-button";
+import { WebWriterConnectionButton } from "./webwriter-connection-button";
 
 //Shoelace
 import { SlButton } from "@shoelace-style/shoelace";
 
 //CSS
-import styles from "../../css/page-container-css";
+import styles from "../css/page-container-css";
 
-@customElement("page-container")
-export class PageContainer extends LitElementWw {
+@customElement("webwriter-gamebook-page-container")
+export class WebWriterGamebookPageContainer extends LitElementWw {
   //import CSS
   static styles = [styles];
 
@@ -26,7 +26,7 @@ export class PageContainer extends LitElementWw {
   static get scopedElements() {
     return {
       "sl-button": SlButton,
-      "link-button": LinkButton,
+      "webwriter-connection-button": WebWriterConnectionButton,
     };
   }
   //associated node id
@@ -34,10 +34,12 @@ export class PageContainer extends LitElementWw {
     null;
   @property({ type: String, attribute: true, reflect: true }) pageTitle = "";
   @property({ type: Number, attribute: true, reflect: true }) originPage = 0;
-  @property({ type: Boolean }) linkButtonRemoval = false;
 
-  @queryAssignedElements({ flatten: true, selector: "link-button" })
-  linkButtons;
+  @queryAssignedElements({
+    flatten: true,
+    selector: "webwriter-connection-button",
+  })
+  connectionButtons;
 
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
@@ -99,49 +101,51 @@ export class PageContainer extends LitElementWw {
 
 
   */
-  public addLinkButtonToPageContainer(
+  public addConnectionButtonToPageContainer(
     outputNode: DrawflowNode,
     inputNode: DrawflowNode,
     output_class: string,
     input_class: string
   ) {
-    const linkButton = document.createElement("link-button") as LinkButton;
-    linkButton.setAttribute("name", inputNode.data.title);
-    linkButton.setAttribute("dataTargetId", inputNode.id.toString());
+    const connButton = document.createElement(
+      "webwriter-connection-button"
+    ) as WebWriterConnectionButton;
+    connButton.setAttribute("name", inputNode.data.title);
+    connButton.setAttribute("dataTargetId", inputNode.id.toString());
     // Ensure uniqueness by adding a unique identifier
-    linkButton.setAttribute(
+    connButton.setAttribute(
       "identifier",
       `${outputNode.id}-${output_class}-${inputNode.id}-${input_class}`
     );
-    this.appendChild(linkButton);
-
-    //TODO: Remove this once frederic fixed appending of children
-    const par = document.createElement("p");
-    par.textContent = "";
-    this.appendChild(par);
+    this.appendChild(connButton);
   }
 
   /*
 
 
   */
-  public removeLinkButtonFromPageContainer(identifier: string) {
-    const linkButton =
+  public removeConnectionButtonFromPageContainer(identifier: string) {
+    const connButton =
       this.shadowRoot?.querySelector(
-        `link-button[identifier="${identifier}"]`
-      ) || this.querySelector(`link-button[identifier="${identifier}"]`);
+        `webwriter-connection-button[identifier="${identifier}"]`
+      ) ||
+      this.querySelector(
+        `webwriter-connection-button[identifier="${identifier}"]`
+      );
 
-    if (linkButton) {
-      const parts = (linkButton as LinkButton).identifier.split("-");
+    if (connButton) {
+      const parts = (connButton as WebWriterConnectionButton).identifier.split(
+        "-"
+      );
       const parsed = {
         outputNodeId: parseInt(parts[0]),
         outputClass: parts[1],
         inputNodeId: parseInt(parts[2]),
         inputClass: parts[3],
       };
-      this.updateLinkButtonIds(parsed.outputClass);
-      linkButton.setAttribute("identifier", "x");
-      linkButton.remove();
+      this.updateConnectionButtonIds(parsed.outputClass);
+      connButton.setAttribute("identifier", "x");
+      connButton.remove();
     }
   }
 
@@ -153,18 +157,26 @@ export class PageContainer extends LitElementWw {
     mutationList.forEach((mutation) => {
       if (mutation.type == "childList") {
         mutation.addedNodes.forEach((node) => {
-          if ((node as Element).nodeName.toLowerCase() == "link-button") {
+          if (
+            (node as Element).nodeName.toLowerCase() ==
+            "webwriter-connection-button"
+          ) {
             //console.log("LinkButton added:", node);
           }
         });
         mutation.removedNodes.forEach((node) => {
-          if ((node as HTMLElement).nodeName.toLowerCase() == "link-button") {
+          if (
+            (node as HTMLElement).nodeName.toLowerCase() ==
+            "webwriter-connection-button"
+          ) {
             if ((node as HTMLElement).classList.contains("ww-widget")) {
               //make sure link button did not get deleted programtically
-              let linkButton = node as LinkButton;
-              if (linkButton.identifier != "x") {
-                const event = new CustomEvent("userDeleteLinkButton", {
-                  detail: { identifier: (node as LinkButton).identifier },
+              let connButton = node as WebWriterConnectionButton;
+              if (connButton.identifier != "x") {
+                const event = new CustomEvent("userDeleteConnectionButton", {
+                  detail: {
+                    identifier: (node as WebWriterConnectionButton).identifier,
+                  },
                   bubbles: true, // Allows the event to bubble up through the DOM
                   composed: true, // Allows the event to pass through shadow DOM boundaries
                 });
@@ -181,7 +193,7 @@ export class PageContainer extends LitElementWw {
 
 
   */
-  public updateLinkButtonIds(removed_output_class: string) {
+  public updateConnectionButtonIds(removed_output_class: string) {
     // Extract the number from the output_class parameter
     const removedOutputClassNumber = parseInt(
       removed_output_class.split("_")[1],
@@ -189,23 +201,23 @@ export class PageContainer extends LitElementWw {
     );
 
     // Iterate over each linkButton to update its identifier
-    this.linkButtons.forEach((linkButton) => {
+    this.connectionButtons.forEach((connButton) => {
       const [output_id, output_class, input_id] =
-        linkButton.identifier.split("-");
-      const linkButtonOutputClassNumber = parseInt(
+        connButton.identifier.split("-");
+      const connButtonOutputClassNumber = parseInt(
         output_class.split("_")[1],
         10
       );
 
       // Check if the linkButton should be updated
-      if (linkButtonOutputClassNumber > removedOutputClassNumber) {
+      if (connButtonOutputClassNumber > removedOutputClassNumber) {
         // Generate the new identifier with incremented output_class
         const newIdentifier = `${output_id}-output_${
-          linkButtonOutputClassNumber - 1
+          connButtonOutputClassNumber - 1
         }-${input_id}-input_1`;
 
         // Update the identifier
-        linkButton.setAttribute("identifier", newIdentifier);
+        connButton.setAttribute("identifier", newIdentifier);
       }
     });
   }

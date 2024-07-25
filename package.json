@@ -17,10 +17,10 @@
   },
   "exports": {
     "./widgets/webwriter-branching-scenario": "./widgets/webwriter-branching-scenario.ts",
-    "./widgets/page-container": "./widgets/gamebook-components/page-container.ts",
-    "./widgets/quiz-container": "./widgets/gamebook-components/quiz-container.ts",
-    "./widgets/link-button": "./widgets/gamebook-components/link-button.ts",
-    "./widgets/webwriter-gamebook": "./widgets/gamebook-components/webwriter-gamebook.ts"
+    "./widgets/webwriter-gamebook-page-container": "./widgets/webwriter-gamebook-page-container.ts",
+    "./widgets/quiz-container": "./widgets/quiz-container.ts",
+    "./widgets/webwriter-connection-button": "./widgets/webwriter-connection-button.ts",
+    "./widgets/webwriter-gamebook": "./widgets/gamebook.ts"
   },
   "devDependencies": {
     "@types/drawflow": "^0.0.11",
@@ -33,7 +33,7 @@
     "./widgets/webwriter-gamebook": {
       "content": "flow*"
     },
-    "./widgets/page-container": {
+    "./widgets/webwriter-gamebook-page-container": {
       "content": "flow*"
     },
     "./widgets/quiz-container": {

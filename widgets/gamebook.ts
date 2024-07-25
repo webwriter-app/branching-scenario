@@ -25,11 +25,11 @@ import {
 } from "@shoelace-style/shoelace";
 
 //Import Styles
-import styles from "../../css/gamebook-preview-css";
+import styles from "../css/gamebook-preview-css";
 
-import { LinkButton } from "./link-button";
+import { WebWriterConnectionButton } from "./webwriter-connection-button";
 import { QuizContainer } from "./quiz-container";
-import { PageContainer } from "./page-container";
+import { WebWriterGamebookPageContainer } from "./webwriter-gamebook-page-container";
 
 //Define Component
 //TODO: Fix Gamebook Errors. Check other modules for proper updating. I commented out a lot for restructure!
@@ -48,7 +48,7 @@ export class WebWriterGamebook extends LitElementWw {
       "sl-menu-item": SlMenuItem,
       "sl-select": SlSelect,
       "sl-option": SlOption,
-      "link-button": LinkButton,
+      "webwriter-connection-button": WebWriterConnectionButton,
     };
   }
 
@@ -62,7 +62,7 @@ export class WebWriterGamebook extends LitElementWw {
 
   @queryAssignedElements({
     flatten: true,
-    selector: "page-container, quiz-container",
+    selector: "webwriter-gamebook-page-container, quiz-container",
   })
   gamebookContainers;
 
@@ -80,7 +80,7 @@ export class WebWriterGamebook extends LitElementWw {
   _handleSlotChange() {
     console.log(this.gamebookContainers);
     this.currentPageId = this._resetGamebookToOrigin();
-    this._initializeLinkButtons(this.currentPageId);
+    this._initializeConnectionButtons(this.currentPageId);
   }
   /*
 
@@ -106,9 +106,9 @@ export class WebWriterGamebook extends LitElementWw {
     //
     this.gamebookContainers.forEach((container) => {
       if (container.drawflowNodeId == targetId) {
-        if (container instanceof PageContainer) {
+        if (container instanceof WebWriterGamebookPageContainer) {
           this._navigateToPage(targetId);
-          this._initializeLinkButtons(targetId);
+          this._initializeConnectionButtons(targetId);
         } else if (container instanceof QuizContainer) {
           this._showQuizBranchDialog(targetId);
           this._initializeQuizButtons(targetId);
@@ -165,13 +165,13 @@ export class WebWriterGamebook extends LitElementWw {
 
 
   */
-  private _initializeLinkButtons(containerId: Number) {
+  private _initializeConnectionButtons(containerId: Number) {
     const container = this.gamebookContainers.find(
       (container) => container.getAttribute("drawflowNodeId") == containerId
     );
 
     //initialise the elements on the origin page
-    container.linkButtons.forEach((button) => {
+    container.connectionButtons.forEach((button) => {
       const targetId = parseInt(button.getAttribute("dataTargetId"), 10);
       button.addEventListener("click", () => this._navigateTo(targetId));
     });
