@@ -8,48 +8,50 @@ export default css`
   .drawflow .drawflow-node.page,
   .drawflow .drawflow-node.origin {
     background: #ffffff;
-    border: 1px solid #cecece;
-
-    font-family: "Roboto", sans-serif;
+    border: 1.5px solid #cecece;
 
     -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
     box-shadow: 0 2px 20px 2px #d0d0d0;
 
     padding: 0px;
-
     align-items: center;
 
     box-sizing: border-box;
 
-    min-width: 302px;
-    min-height: 90px;
-
     border-radius: 8px;
+
+    min-width: 320px;
+    min-height: 90px;
   }
 
   .drawflow-node.page .container,
   .drawflow-node.origin .container {
     display: flex;
     flex-direction: row;
+    gap: 20px;
     align-items: center;
     justify-content: center;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-left: 20px;
-    padding-right: 20px;
-
-    gap: 20px;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
     box-sizing: border-box;
   }
 
-  .drawflow-node.page .container .threeDots,
-  .drawflow-node.origin .container .threeDots {
-    font-size: 24px;
+  .drawflow-node.page .container .iconDiv,
+  .drawflow-node.origin .container .iconDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #3077ba;
+    border-radius: 8px;
+    min-width: 65px;
+    min-height: 65px;
   }
 
   .drawflow-node.page .container .pageIcon,
   .drawflow-node.origin .container .pageIcon {
     font-size: 48px;
+    color: white;
   }
 
   .drawflow-node.page .content,
@@ -58,7 +60,7 @@ export default css`
     display: flex;
 
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     width: 150px;
 
     gap: 3px;
@@ -67,17 +69,32 @@ export default css`
 
   .drawflow-node.page .content .input-label,
   .drawflow-node.origin .content .input-label {
-    font-size: 14px;
+    font-size: 16px;
     color: #a1a1a1; /* gray tone */
-    margin: 2px;
+    padding: 0px;
+    margin: 0px;
   }
 
-  .drawflow-node.page .content #test-textarea,
-  .drawflow-node.origin .content #test-textarea {
-    resize: none;
-    width: 100%;
+  .drawflow-node.page .content #title,
+  .drawflow-node.origin .content #title {
+    padding: 0px;
+    margin: 0px;
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    color: #3f3f46;
+    pointer-events: none;
     text-align: left;
-    padding: 0.5rem;
+    border: none;
+    background-color: transparent;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .drawflow-node.page .container .threeDots,
+  .drawflow-node.origin .container .threeDots {
+    font-size: 28px;
   }
 
   .drawflow .drawflow-node:hover.page,
@@ -111,11 +128,14 @@ export default css`
 
     height: 25px;
     width: auto;
+
+    padding: 0px;
   }
 
   .drawflow-node.origin .badge p {
     margin: 0px;
-    font-size: 14px;
+    padding: 0px;
+    font-size: 16px;
   }
 
   .drawflow-node.origin .drawflow-delete {

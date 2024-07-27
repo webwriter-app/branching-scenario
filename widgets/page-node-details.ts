@@ -33,7 +33,7 @@ import { ToggleableInput } from "./toggleable-input";
 
 //Tabler Icon Import
 import plus from "@tabler/icons/outline/plus.svg";
-import file from "@tabler/icons/outline/file.svg";
+import file from "@tabler/icons/filled/file.svg";
 import minus from "@tabler/icons/outline/minus.svg";
 import route2 from "@tabler/icons/outline/route-2.svg";
 import pencil from "@tabler/icons/outline/pencil.svg";
@@ -109,12 +109,12 @@ export class PageNodeDetails extends LitElementWw {
           <sl-icon src=${file}></sl-icon>
         </div>
         <div class="div-title">
-          <p class="subtitle">Page</p>
           <!-- <p class="title">${this.selectedNode.data.title}</p> -->
           <toggleable-input
             .text=${this.selectedNode.data.title}
             .saveChanges=${(string) => this.renameNode(string)}
           ></toggleable-input>
+          <p class="subtitle">Page</p>
         </div>
 
         <div class="last-item">

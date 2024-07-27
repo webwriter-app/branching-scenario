@@ -81,17 +81,16 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #3077ba;
     border-radius: 8px;
     height: 65px; /* Remove the fixed height */
     aspect-ratio: 1;
-    background-color: #f4faff;
-    color: #3077ba;
+    background-color: #3077ba;
   }
 
   .div-icon sl-icon {
-    width: 60%;
-    height: 60%;
+    width: 42px;
+    height: 42px;
+    color: white;
   }
 
   .div-title {

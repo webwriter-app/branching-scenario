@@ -35,8 +35,8 @@ import file from "@tabler/icons/outline/file.svg";
 import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
 import directions from "@tabler/icons/outline/directions.svg";
 
-@customElement("controls-bar")
-export class ControlsBar extends LitElementWw {
+@customElement("node-edtior-controls-bar")
+export class NodeEditorControlsBar extends LitElementWw {
   //registering custom elements used in the widget
   static get scopedElements() {
     return {

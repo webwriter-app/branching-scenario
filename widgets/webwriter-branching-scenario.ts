@@ -20,10 +20,11 @@ import {
   SlMenuItem,
   SlDropdown,
   SlIcon,
+  SlResizeObserver,
 } from "@shoelace-style/shoelace";
 
 //@tabler icons
-import file from "@tabler/icons/outline/file.svg";
+import file from "@tabler/icons/filled/file.svg";
 import circleArrowRight from "@tabler/icons/filled/circle-arrow-right.svg";
 import dotsVertical from "@tabler/icons/outline/dots-vertical.svg";
 import zoomIn from "@tabler/icons/outline/zoom-in.svg";
@@ -43,7 +44,7 @@ import { SelectedNodeViewRenderer } from "./selected-node-view-renderer";
 import { WebWriterGamebook } from "./gamebook";
 import { WebWriterGamebookPageContainer } from "./webwriter-gamebook-page-container";
 import { QuizContainer } from "./quiz-container";
-import { ControlsBar } from "./node-editor-control-bar";
+import { NodeEditorControlsBar } from "./node-editor-control-bar";
 import { gamebookExamples } from "./gamebook-examples";
 import { GamebookContainerManager } from "./gamebook-container-manager";
 import { DrawflowHelpPopUpControls } from "./node-editor-help-popup-controls";
@@ -117,12 +118,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-menu": SlMenu,
       "sl-menu-item": SlMenuItem,
       "sl-dropdown": SlDropdown,
+      "sl-resize-observer": SlResizeObserver,
       //
       "webwriter-gamebook": WebWriterGamebook,
       "webwriter-connection-button": WebWriterConnectionButton,
       "webwriter-gamebook-page-container": WebWriterGamebookPageContainer,
       "quiz-container": QuizContainer,
-      "controls-bar": ControlsBar,
+      "node-editor-controls-bar": NodeEditorControlsBar,
       "gamebook-container-manager": GamebookContainerManager,
       "drawflow-help-popup-controls": DrawflowHelpPopUpControls,
       "drawflow-background": DrawflowBackground,
@@ -188,7 +190,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       <div id="widget">
         ${this.isContentEditable
           ? html`
-              <controls-bar
+           <node-editor-controls-bar
                 .gamebookTitle=${this.gamebookTitle}
                 .importExample=${(number) => this.importExample(number)}
                 .addPageNode=${(string, boolean) =>
@@ -199,8 +201,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 .showDialog=${() =>
                   (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
               >
-              </controls-bar>    
+              </node-editor-controls-bar>    
               <div id="nodeEditor">
+                <sl-resize-observer>
+               
                 <drawflow-background .nodeSelected=${
                   this.selectedNode != NO_NODE_SELECTED
                 }></drawflow-background>
@@ -230,6 +234,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     <!-- <sl-button class="exportButton" @click=${() =>
                       this.testOutput()}>Export</sl-button> -->
                   </div>
+                  </sl-resize-observer>
                 </div>
                       <selected-node-view-renderer
                         .selectedNode=${this.selectedNode}
@@ -611,14 +616,23 @@ TODO: On clear editor, the slot gets fucked
     containerDiv.classList.add("container");
 
     // Create page sl-icon
+    const iconDiv = document.createElement("div");
+    iconDiv.classList.add("iconDiv");
     const icon = document.createElement("sl-icon") as SlIcon;
     icon.setAttribute("src", file);
     icon.classList.add("pageIcon");
-    containerDiv.appendChild(icon);
+
+    iconDiv.appendChild(icon);
+    containerDiv.appendChild(iconDiv);
 
     //
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("content");
+
+    const input = document.createElement("input");
+    input.id = "title";
+    input.setAttribute("df-title", ""); // Adding df-title attribute
+    contentDiv.appendChild(input);
 
     if (isOrigin) {
       //Add Origin Page Marker
@@ -641,14 +655,6 @@ TODO: On clear editor, the slot gets fucked
       nameLabel.textContent = "Page"; // Set the text content of the label
       contentDiv.appendChild(nameLabel);
     }
-
-    //Add input for node name
-    const inputElement = document.createElement("input");
-    inputElement.type = "text";
-    inputElement.id = "test-textarea";
-    inputElement.placeholder = "Enter name";
-    inputElement.setAttribute("df-title", ""); // Adding df-title attribute
-    contentDiv.appendChild(inputElement);
 
     containerDiv.appendChild(contentDiv);
 

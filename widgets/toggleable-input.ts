@@ -35,19 +35,20 @@ export class ToggleableInput extends LitElementWw {
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 10px;
+        gap: 5px;
       }
 
       input {
         font-family: "Roboto", sans-serif;
         font-size: 16px;
         font-weight: bold;
-        color: darkslategray;
+        color: #3f3f46;
         margin: 0;
         padding: 0;
         border: none;
         border-bottom: 1px solid #d4d4d8;
-        width: 200px;
+        width: 180px;
+        box-sizing: border-box;
       }
 
       input.error {
@@ -58,10 +59,10 @@ export class ToggleableInput extends LitElementWw {
         font-family: "Roboto", sans-serif;
         font-size: 16px;
         font-weight: bold;
-        color: black;
+        color: #3f3f46;
         margin: 0;
         padding: 0;
-        max-width: 200px;
+        max-width: 180px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

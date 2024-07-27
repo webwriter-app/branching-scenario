@@ -8,6 +8,7 @@ export default css`
     align-items: center; /* Center items vertically */
 
     width: 100%;
+    background-color: white;
 
     box-sizing: border-box;
     border-bottom: 1px solid #e4e4e4;

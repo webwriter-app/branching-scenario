@@ -134,9 +134,15 @@ export default css`
     width: 100%;
     overflow: hidden;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative; /* Ensure position relative for child positioning */
+  }
+
+  node-editor-controls-bar {
+    z-index: 2;
+    width: 100%;
   }
 
   #drawflowEditorDiv {
