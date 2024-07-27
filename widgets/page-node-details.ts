@@ -29,12 +29,15 @@ import {
 } from "@shoelace-style/shoelace";
 
 import { WebWriterConnectionButton } from "./webwriter-connection-button";
+import { ToggleableInput } from "./toggleable-input";
 
 //Tabler Icon Import
 import plus from "@tabler/icons/outline/plus.svg";
 import file from "@tabler/icons/outline/file.svg";
 import minus from "@tabler/icons/outline/minus.svg";
 import route2 from "@tabler/icons/outline/route-2.svg";
+import pencil from "@tabler/icons/outline/pencil.svg";
+import check from "@tabler/icons/outline/check.svg";
 
 //CSS
 import styles from "../css/page-node-details-css";
@@ -56,6 +59,7 @@ export class PageNodeDetails extends LitElementWw {
       "sl-input": SlInput,
       "sl-icon": SlIcon,
       "webwriter-connection-button": WebWriterConnectionButton,
+      "toggleable-input": ToggleableInput,
     };
   }
 
@@ -105,8 +109,12 @@ export class PageNodeDetails extends LitElementWw {
           <sl-icon src=${file}></sl-icon>
         </div>
         <div class="div-title">
-          <p class="title">${this.selectedNode.data.title}</p>
-          <p class="subtitle">Gamebook Page</p>
+          <p class="subtitle">Page</p>
+          <!-- <p class="title">${this.selectedNode.data.title}</p> -->
+          <toggleable-input
+            .text=${this.selectedNode.data.title}
+            .saveChanges=${(string) => this.renameNode(string)}
+          ></toggleable-input>
         </div>
 
         <div class="last-item">
@@ -317,5 +325,24 @@ export class PageNodeDetails extends LitElementWw {
       this.nodeSelect.value = "";
       this.isNodeSelected = false;
     }
+  }
+
+  /*
+
+
+  */
+  private renameNode(text: String) {
+    this.editor.updateNodeDataFromId(this.selectedNode.id, {
+      ...this.selectedNode.data,
+      title: text,
+    });
+
+    this.dispatchEvent(
+      new CustomEvent("nodeDataUpdated", {
+        detail: { nodeId: this.selectedNode.id },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 }
