@@ -57,7 +57,7 @@ export class WebWriterGamebook extends LitElementWw {
 
   @state() currentPageId?: Number;
 
-  @property({ type: String }) gamebookTitle = "undefined";
+  @property({ type: String }) gamebookTitle;
   @property({ type: String }) pageTitle;
 
   @queryAssignedElements({
@@ -78,7 +78,6 @@ export class WebWriterGamebook extends LitElementWw {
   }
 
   _handleSlotChange() {
-    console.log(this.gamebookContainers);
     this.currentPageId = this._resetGamebookToOrigin();
     this._initializeConnectionButtons(this.currentPageId);
   }

@@ -10,6 +10,7 @@ export default css`
 
     font-family: "Roboto", sans-serif;
     font-size: 18px;
+    background-color: white;
   }
 
   .no-node-selected {
@@ -18,5 +19,7 @@ export default css`
     align-items: center;
     color: #a7a7a7;
     padding: 30px;
+    background-color: white;
+    height: 100%;
   }
 `;

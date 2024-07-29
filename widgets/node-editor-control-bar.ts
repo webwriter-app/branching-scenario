@@ -25,11 +25,13 @@ import {
   SlMenuLabel,
   SlDropdown,
   SlIcon,
+  SlInput,
 } from "@shoelace-style/shoelace";
 
 //@tabler icons
 import plus from "@tabler/icons/outline/plus.svg";
 import schema from "@tabler/icons/outline/schema.svg";
+import book from "@tabler/icons/outline/book.svg";
 import questionMark from "@tabler/icons/outline/question-mark.svg";
 import file from "@tabler/icons/outline/file.svg";
 import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
@@ -50,6 +52,7 @@ export class NodeEditorControlsBar extends LitElementWw {
       "sl-menu-item": SlMenuItem,
       "sl-dropdown": SlDropdown,
       "sl-menu-label": SlMenuLabel,
+      "sl-input": SlInput,
     };
   }
 
@@ -61,7 +64,6 @@ export class NodeEditorControlsBar extends LitElementWw {
   gamebookTitle = "";
 
   //
-  @property({ type: Function }) togglePreviewMode = () => {};
   @property({ type: Function }) handleGamebookTitle = (event: Event) => {};
   @property({ type: Function }) importExample = (number: number) => {};
   @property({ type: Function }) addPageNode = (
@@ -75,19 +77,20 @@ export class NodeEditorControlsBar extends LitElementWw {
     return html`
       <div class="controls">
         <div class="first-item">
-          <sl-textarea
+          <sl-input
             id="gamebookTitle"
             rows="1"
             resize="none"
-            placeholder="Gamebook Name"
+            placeholder="Gamebook Title"
             @input="${this.textAreaInputChanged}"
             .value="${this.gamebookTitle}"
             style=${this.inPreviewMode ? "display: none;" : "display: block;"}
           >
-          </sl-textarea>
+            <sl-icon slot="prefix" src=${book}></sl-icon>
+          </sl-input>
         </div>
 
-        <sl-dropdown
+        <!-- <sl-dropdown
           style=${this.inPreviewMode ? "display: none;" : "display: block;"}
         >
           <sl-button slot="trigger">
@@ -104,9 +107,9 @@ export class NodeEditorControlsBar extends LitElementWw {
         <sl-divider
           vertical
           style=${this.inPreviewMode
-            ? "display: none;"
-            : "display: block; height: 30px;"}
-        ></sl-divider>
+          ? "display: none;"
+          : "display: block; height: 30px;"}
+        ></sl-divider>-->
         <sl-dropdown
           style=${this.inPreviewMode ? "display: none;" : "display: block;"}
         >

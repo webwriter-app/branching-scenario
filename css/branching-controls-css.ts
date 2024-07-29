@@ -8,7 +8,6 @@ export default css`
     align-items: center; /* Center items vertically */
 
     width: 100%;
-    background-color: white;
 
     box-sizing: border-box;
     border-bottom: 1px solid #e4e4e4;
@@ -22,6 +21,13 @@ export default css`
     font-size: 20px;
     font-weight: bold;
     user-select: none;
+
+    background-color: rgba(
+      255,
+      255,
+      255,
+      0.95
+    ); /* Set background color with 50% opacity */
   }
 
   .controls .first-item {

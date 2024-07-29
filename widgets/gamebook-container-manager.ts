@@ -17,7 +17,7 @@ import { QuizContainer } from "./quiz-container";
 @customElement("gamebook-container-manager")
 export class GamebookContainerManager extends LitElementWw {
   //
-  @property({ type: Function }) appendToShadowDom = (
+  @property({ attribute: false }) appendToShadowDom = (
     element: HTMLElement
   ) => {};
 
@@ -98,7 +98,6 @@ export class GamebookContainerManager extends LitElementWw {
   public _showGamebookContainerById(nodeId: Number) {
     //console.log("iteration");
     this.gamebookContainers.forEach((container) => {
-      console.log(container);
       //console.log("iteration");
       if (container.drawflowNodeId == nodeId) {
         //console.log("enter");
@@ -115,6 +114,7 @@ export class GamebookContainerManager extends LitElementWw {
 
   */
   public _hideAllGamebookContainers() {
+    console.log(this.gamebookContainers);
     this.gamebookContainers.forEach((container) => {
       container.hide();
     });
@@ -129,7 +129,6 @@ export class GamebookContainerManager extends LitElementWw {
     const pageContainer = document.createElement(
       "webwriter-gamebook-page-container"
     ) as WebWriterGamebookPageContainer;
-    console.log(pageContainer);
     pageContainer.setAttribute("drawflowNodeId", pageNode.id.toString());
     pageContainer.setAttribute("pageTitle", pageNode.data.title);
 

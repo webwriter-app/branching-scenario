@@ -172,6 +172,7 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
             if ((node as HTMLElement).classList.contains("ww-widget")) {
               //make sure link button did not get deleted programtically
               let connButton = node as WebWriterConnectionButton;
+
               if (connButton.identifier != "x") {
                 const event = new CustomEvent("userDeleteConnectionButton", {
                   detail: {

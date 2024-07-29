@@ -127,9 +127,9 @@ export class ToggleableInput extends LitElementWw {
       "#pageNameInput"
     ) as HTMLInputElement;
     if (this.validate(input.value)) {
-      this.saveChanges(input.value);
       this.isEditable = false;
       this.hasError = false;
+      this.saveChanges(input.value);
     } else {
       this.hasError = true;
     }

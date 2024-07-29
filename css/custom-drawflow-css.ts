@@ -121,7 +121,7 @@ export default css`
     justify-content: left;
     gap: 5px;
 
-    color: #0ca349;
+    color: #50b478;
 
     box-sizing: border-box;
     padding: 3px 3px;
