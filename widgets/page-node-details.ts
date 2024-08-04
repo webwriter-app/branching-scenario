@@ -90,7 +90,8 @@ export class PageNodeDetails extends LitElementWw {
     inputNode?,
     outputNode?,
     inputClass?,
-    outputClass?
+    outputClass?,
+    outputHadConnections?
   ) => {};
 
   protected firstUpdated(_changedProperties: any): void {
@@ -190,14 +191,29 @@ export class PageNodeDetails extends LitElementWw {
   }
 
   /*
-
-
+      //TODO: make node preview part of selectednodeviewrenderer
+      //TODO: use selects on outputs to redo connections
+      //TODO: move quick connect to part options
+      //TODO: find error with clear and slots
   */
   private _deleteOutputFromNode(output_id: number, output_class: string) {
+    let outputHadConnections =
+      (this.nodeEditor.editor.getNodeFromId(output_id) as DrawflowNode).outputs[
+        output_class
+      ].connections.length != 0;
+
     this.nodeEditor.editor.removeNodeOutput(output_id, output_class);
+
     this.changeInEditorCallback(
       { ...this.nodeEditor.editor.drawflow },
-      "outputDeleted"
+      "outputDeleted",
+      null,
+      null,
+      null,
+      null,
+      null,
+      output_class,
+      outputHadConnections
     );
   }
 

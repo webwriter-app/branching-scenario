@@ -95,7 +95,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   inputNode,
                   outputNode,
                   inputClass,
-                  outputClass
+                  outputClass,
+                  outputHadConnections
                 ) => {
                   this.updateGamebookContainers(
                     drawflow,
@@ -105,7 +106,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     inputNode,
                     outputNode,
                     inputClass,
-                    outputClass
+                    outputClass,
+                    outputHadConnections
                   );
                 }}
                 .updateSelectedNodeCallback=${(id) => {
@@ -127,7 +129,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   inputNode,
                   outputNode,
                   inputClass,
-                  outputClass
+                  outputClass,
+                  outputHadConnections
                 ) => {
                   this.updateGamebookContainers(
                     drawflow,
@@ -137,7 +140,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     inputNode,
                     outputNode,
                     inputClass,
-                    outputClass
+                    outputClass,
+                    outputHadConnections
                   );
                 }}
               >
@@ -171,7 +175,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
     inputNode?: DrawflowNode,
     outputNode?: DrawflowNode,
     inputClass?: String,
-    outputClass?: String
+    outputClass?: String,
+    outputHadConnections?: Boolean
   ) {
     this.editorContent = drawflow;
 
@@ -232,23 +237,28 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
     //
     else if (updateType == "connectionRemoved") {
+      //if a connection is removed by the user, remove the corresponding button
       if (this.reactToChanges) {
         if (outputNode.class == "page" || outputNode.class == "origin") {
-          //if a connection is removed by the user, remove the corresponding button
+          console.log("deletes connection button");
           const pageContainer =
             this.gamebookContainerManager._getContainerByDrawflowNodeId(
               outputNode.id
             );
           const identifier = `${outputNode.id}-${outputClass}-${inputNode.id}-input_1`;
           pageContainer.removeConnectionButtonFromPageContainer(identifier);
-        } else if (outputNode.class == "question-branch") {
+        }
+        //
+        else if (outputNode.class == "question-branch") {
           this._updateQuestionNodeAnswerTarget(
             outputNode,
             outputClass.toString(),
             "undefined"
           );
         }
-      } else {
+      }
+      //if a button was removed by the user
+      else {
         this.reactToChanges = true;
       }
     }
@@ -258,7 +268,22 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.updateSelectedNode("-1");
     }
     //
-    else if (updateType == "outputCreated" || updateType == "outputDeleted") {
+    else if (updateType == "outputCreated") {
+      this.updateSelectedNode(this.selectedNode.id.toString());
+    }
+    //
+    else if (updateType == "outputDeleted") {
+      console.log("callback output deleted");
+      const pageContainer =
+        this.gamebookContainerManager._getContainerByDrawflowNodeId(
+          this.selectedNode.id
+        );
+
+      //Updat the Connection Button Id's only if the output had no connection, because connection removal also updates conneciton button ids
+      if (!outputHadConnections) {
+        pageContainer.updateConnectionButtonIds(outputClass);
+      }
+
       this.updateSelectedNode(this.selectedNode.id.toString());
     }
   }
@@ -293,9 +318,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   */
   private updateSelectedNode(id: String) {
-    console.log("update Selected Node to", id);
+    //console.log("update Selected Node to", id);
     if (id != "-1") {
       this.selectedNode = this.nodeEditor.editor.getNodeFromId(id);
+      //console.log(this.nodeEditor.editor.getNodeFromId(this.selectedNode.id));
       if (
         this.selectedNode.class == "page" ||
         this.selectedNode.class == "origin"

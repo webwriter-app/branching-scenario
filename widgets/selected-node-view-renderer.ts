@@ -36,7 +36,8 @@ export class SelectedNodeViewRenderer extends LitElementWw {
     inputNode?,
     outputNode?,
     inputClass?,
-    outputClass?
+    outputClass?,
+    outputHadConnections?
   ) => {};
 
   static get scopedElements() {
@@ -68,7 +69,8 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                   inputNode,
                   outputNode,
                   inputClass,
-                  outputClass
+                  outputClass,
+                  outputHadConnections
                 ) => {
                   this.changeInEditorCallback(
                     drawflow,
@@ -78,7 +80,8 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                     inputNode,
                     outputNode,
                     inputClass,
-                    outputClass
+                    outputClass,
+                    outputHadConnections
                   );
                 }}
               >

@@ -174,6 +174,7 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
               let connButton = node as WebWriterConnectionButton;
 
               if (connButton.identifier != "x") {
+                console.log("in mutation observer here");
                 const event = new CustomEvent("userDeleteConnectionButton", {
                   detail: {
                     identifier: (node as WebWriterConnectionButton).identifier,

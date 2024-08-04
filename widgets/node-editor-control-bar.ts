@@ -34,7 +34,7 @@ import schema from "@tabler/icons/outline/schema.svg";
 import book from "@tabler/icons/outline/book.svg";
 import questionMark from "@tabler/icons/outline/question-mark.svg";
 import file from "@tabler/icons/outline/file.svg";
-import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
+import squares from "@tabler/icons/outline/squares.svg";
 import directions from "@tabler/icons/outline/directions.svg";
 
 @customElement("node-edtior-controls-bar")
@@ -70,6 +70,7 @@ export class NodeEditorControlsBar extends LitElementWw {
     title: string,
     isOrigin: boolean
   ) => {};
+  @property({ type: Function }) addPopUpNode = (title: string) => {};
   @property({ type: Function }) addQuestionNode = () => {};
   @property({ type: Function }) showDialog = () => {};
 
@@ -125,19 +126,8 @@ export class NodeEditorControlsBar extends LitElementWw {
               Page
             </sl-menu-item>
 
-            <sl-menu-item @click=${() => console.log("TODO")}
-              ><svg
-                slot="prefix"
-                xmlns="http://www.w3.org/2000/svg"
-                width="1em"
-                height="1em"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fill="#3F3F46"
-                  d="M16 2H7.979C6.88 2 6 2.88 6 3.98V12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2m0 10H8V4h8zM4 10H2v6c0 1.1.9 2 2 2h6v-2H4z"
-                />
-              </svg>
+            <sl-menu-item @click=${() => this.addPopUpNode("Untitled Popup")}>
+              <sl-icon slot="prefix" src=${squares}></sl-icon>
               Popup
             </sl-menu-item>
             <sl-divider></sl-divider>

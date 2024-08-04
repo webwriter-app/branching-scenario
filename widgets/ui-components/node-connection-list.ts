@@ -54,7 +54,6 @@ export class NodeConnectionList extends LitElementWw {
         border-bottom: 1px solid gray;
         height: 20px;
         padding-bottom: 5px;
-        margin-bottom: 5px;
       }
 
       .titlebar p {
@@ -78,11 +77,12 @@ export class NodeConnectionList extends LitElementWw {
       }
 
       .item {
+        box-sizing: border-box;
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: 10px;
-        height: 20px;
+        height: 30px;
         width: 170px;
 
         border-bottom: 1px solid #d4d4d8;

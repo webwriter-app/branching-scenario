@@ -2,11 +2,12 @@ import { css } from "lit";
 
 export default css`
   /* ------- */
-  /* Page Node */
+  /*  Nodes  */
   /* ------- */
 
   .drawflow .drawflow-node.page,
-  .drawflow .drawflow-node.origin {
+  .drawflow .drawflow-node.origin,
+  .drawflow .drawflow-node.popup {
     background: #ffffff;
     border: 1.5px solid #cecece;
 
@@ -25,7 +26,8 @@ export default css`
   }
 
   .drawflow-node.page .container,
-  .drawflow-node.origin .container {
+  .drawflow-node.origin .container,
+  .drawflow-node.popup .container {
     display: flex;
     flex-direction: row;
     gap: 20px;
@@ -37,25 +39,16 @@ export default css`
     box-sizing: border-box;
   }
 
-  .drawflow-node.page .container .iconDiv,
-  .drawflow-node.origin .container .iconDiv {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #3077ba;
-    border-radius: 8px;
-    min-width: 65px;
-    min-height: 65px;
-  }
-
   .drawflow-node.page .container .pageIcon,
-  .drawflow-node.origin .container .pageIcon {
+  .drawflow-node.origin .container .pageIcon,
+  .drawflow-node.popup .container .pageIcon {
     font-size: 48px;
     color: white;
   }
 
   .drawflow-node.page .content,
-  .drawflow-node.origin .content {
+  .drawflow-node.origin .content,
+  .drawflow-node.popup .content {
     color: #71717a;
     display: flex;
 
@@ -68,7 +61,8 @@ export default css`
   }
 
   .drawflow-node.page .content .input-label,
-  .drawflow-node.origin .content .input-label {
+  .drawflow-node.origin .content .input-label,
+  .drawflow-node.popup .content .input-label {
     font-size: 16px;
     color: #a1a1a1; /* gray tone */
     padding: 0px;
@@ -76,7 +70,8 @@ export default css`
   }
 
   .drawflow-node.page .content #title,
-  .drawflow-node.origin .content #title {
+  .drawflow-node.origin .content #title,
+  .drawflow-node.popup .content #title {
     padding: 0px;
     margin: 0px;
     font-family: "Roboto", sans-serif;
@@ -93,8 +88,24 @@ export default css`
   }
 
   .drawflow-node.page .container .threeDots,
-  .drawflow-node.origin .container .threeDots {
+  .drawflow-node.origin .container .threeDots,
+  .drawflow-node.popup .container .threeDots {
     font-size: 28px;
+  }
+
+  /* ------- */
+  /* PAGE/ORIGIN */
+  /* ------- */
+
+  .drawflow-node.page .container .iconDiv,
+  .drawflow-node.origin .container .iconDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #3077ba;
+    border-radius: 8px;
+    min-width: 65px;
+    min-height: 65px;
   }
 
   .drawflow .drawflow-node:hover.page,
@@ -111,7 +122,32 @@ export default css`
   }
 
   /* ------- */
-  /* Origin */
+  /* Popup   */
+  /* ------- */
+
+  .drawflow-node.popup .container .iconDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #9762b4;
+    border-radius: 8px;
+    min-width: 65px;
+    min-height: 65px;
+  }
+
+  .drawflow .drawflow-node:hover.popup {
+    border: 1.5px solid #bd7ee0;
+  }
+
+  .drawflow .drawflow-node.selected.popup {
+    background: #fbf4fe;
+    border: 3px solid #cf7dff;
+    color: #9762b4;
+    box-sizing: content-box;
+  }
+
+  /* ------- */
+  /* Origin  */
   /* ------- */
 
   .drawflow-node.origin .badge {
