@@ -50,11 +50,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
   gamebookTitle = "Untitled Gamebook";
   @property({ type: Boolean }) reactToCallbackFromNodeEditor = true;
 
-  static shadowRootOptions = {
-    ...LitElement.shadowRootOptions,
-    //delegatesFocus: true,
-  };
-
   //registering custom elements used in the widget
   static get scopedElements() {
     return {

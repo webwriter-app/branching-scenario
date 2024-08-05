@@ -114,6 +114,17 @@ export default css`
     min-height: 65px;
   }
 
+  .drawflow .drawflow-node:hover.branch {
+    border: 1.5px solid #05ae9e;
+  }
+
+  .drawflow .drawflow-node.selected.branch {
+    background: #f4fffe;
+    border: 3px solid #05ae9e;
+    color: #058b7f;
+    box-sizing: content-box;
+  }
+
   /* ------- */
   /* PAGE/ORIGIN */
   /* ------- */

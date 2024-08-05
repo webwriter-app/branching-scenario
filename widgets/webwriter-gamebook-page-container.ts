@@ -14,13 +14,22 @@ import { WebWriterConnectionButton } from "./webwriter-connection-button";
 //Shoelace
 import { SlButton } from "@shoelace-style/shoelace";
 
-//CSS
-import styles from "../css/page-container-css";
-
 @customElement("webwriter-gamebook-page-container")
 export class WebWriterGamebookPageContainer extends LitElementWw {
   //import CSS
-  static styles = [styles];
+  static get styles() {
+    return css`
+      .page {
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* Adjust the value to your desired spacing */
+        padding: 20px;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+      }
+    `;
+  }
 
   //registering custom elements used in the widget
   static get scopedElements() {
