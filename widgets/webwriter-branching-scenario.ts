@@ -35,7 +35,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @query("node-editor") nodeEditor;
   @queryAssignedElements({
     flatten: true,
-    selector: "webwriter-gamebook-page-container, quiz-container",
+    selector:
+      "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, quiz-container",
   })
   gamebookContainers;
 
@@ -202,7 +203,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
     else if (updateType == "nodeCreated") {
       if (node.class == "page" || node.class == "origin") {
         this.gamebookContainerManager._createPageContainerFromPageNode(node);
-      } else if (node.class == "question-branch") {
+      }
+      //
+      else if (node.class == "popup") {
+        this.gamebookContainerManager._createPopupContainerFromPopupNode(node);
+      }
+      //
+      else if (node.class == "question-branch") {
         this.gamebookContainerManager._createQuestionContainerFromQuestionNode(
           node
         );
@@ -227,7 +234,22 @@ export class WebWriterBranchingScenario extends LitElementWw {
           outputClass,
           inputClass
         );
-      } else if (outputNode.class == "question-branch") {
+      }
+      //
+      else if (outputNode.class == "popup") {
+        const popupContainer =
+          this.gamebookContainerManager._getContainerByDrawflowNodeId(
+            outputNode.id
+          );
+        popupContainer.addConnectionButtonToPopupContainer(
+          outputNode,
+          inputNode,
+          outputClass,
+          inputClass
+        );
+      }
+      //
+      else if (outputNode.class == "question-branch") {
         this._updateQuestionNodeAnswerTarget(
           outputNode,
           outputClass.toString(),
@@ -324,7 +346,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
       //console.log(this.nodeEditor.editor.getNodeFromId(this.selectedNode.id));
       if (
         this.selectedNode.class == "page" ||
-        this.selectedNode.class == "origin"
+        this.selectedNode.class == "origin" ||
+        this.selectedNode.class == "popup"
       ) {
         this.gamebookContainerManager._showGamebookContainerById(
           this.selectedNode.id

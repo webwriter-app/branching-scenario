@@ -7,7 +7,8 @@ export default css`
 
   .drawflow .drawflow-node.page,
   .drawflow .drawflow-node.origin,
-  .drawflow .drawflow-node.popup {
+  .drawflow .drawflow-node.popup,
+  .drawflow .drawflow-node.branch {
     background: #ffffff;
     border: 1.5px solid #cecece;
 
@@ -27,7 +28,8 @@ export default css`
 
   .drawflow-node.page .container,
   .drawflow-node.origin .container,
-  .drawflow-node.popup .container {
+  .drawflow-node.popup .container,
+  .drawflow-node.branch .container {
     display: flex;
     flex-direction: row;
     gap: 20px;
@@ -41,14 +43,16 @@ export default css`
 
   .drawflow-node.page .container .pageIcon,
   .drawflow-node.origin .container .pageIcon,
-  .drawflow-node.popup .container .pageIcon {
+  .drawflow-node.popup .container .pageIcon,
+  .drawflow-node.branch .container .pageIcon {
     font-size: 48px;
     color: white;
   }
 
   .drawflow-node.page .content,
   .drawflow-node.origin .content,
-  .drawflow-node.popup .content {
+  .drawflow-node.popup .content,
+  .drawflow-node.branch .content {
     color: #71717a;
     display: flex;
 
@@ -62,7 +66,8 @@ export default css`
 
   .drawflow-node.page .content .input-label,
   .drawflow-node.origin .content .input-label,
-  .drawflow-node.popup .content .input-label {
+  .drawflow-node.popup .content .input-label,
+  .drawflow-node.branch .content .input-label {
     font-size: 16px;
     color: #a1a1a1; /* gray tone */
     padding: 0px;
@@ -71,7 +76,8 @@ export default css`
 
   .drawflow-node.page .content #title,
   .drawflow-node.origin .content #title,
-  .drawflow-node.popup .content #title {
+  .drawflow-node.popup .content #title,
+  .drawflow-node.branch .content #title {
     padding: 0px;
     margin: 0px;
     font-family: "Roboto", sans-serif;
@@ -89,8 +95,23 @@ export default css`
 
   .drawflow-node.page .container .threeDots,
   .drawflow-node.origin .container .threeDots,
-  .drawflow-node.popup .container .threeDots {
+  .drawflow-node.popup .container .threeDots,
+  .drawflow-node.branch .container .threeDots {
     font-size: 28px;
+  }
+
+  /* ------- */
+  /* Branch  */
+  /* ------- */
+
+  .drawflow-node.branch .container .iconDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #05ae9e;
+    border-radius: 8px;
+    min-width: 65px;
+    min-height: 65px;
   }
 
   /* ------- */

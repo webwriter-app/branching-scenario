@@ -12,6 +12,7 @@ import {
 //Drawflow Imports
 import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
 import { WebWriterGamebookPageContainer } from "./webwriter-gamebook-page-container";
+import { WebWriterGamebookPopupContainer } from "./webwriter-gamebook-popup-container";
 import { QuizContainer } from "./quiz-container";
 
 @customElement("gamebook-container-manager")
@@ -23,13 +24,15 @@ export class GamebookContainerManager extends LitElementWw {
 
   @queryAssignedElements({
     flatten: true,
-    selector: "webwriter-gamebook-page-container, quiz-container",
+    selector:
+      "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, quiz-container",
   })
   gamebookContainers;
 
   static get scopedElements() {
     return {
       "webwriter-gamebook-page-container": WebWriterGamebookPageContainer,
+      "webwriter-gamebook-popup-container": WebWriterGamebookPopupContainer,
       "quiz-container": QuizContainer,
     };
   }
@@ -153,6 +156,36 @@ export class GamebookContainerManager extends LitElementWw {
 
     //
     this.appendToShadowDom(pageContainer);
+  }
+
+  /*
+
+
+  */
+  public _createPopupContainerFromPopupNode(popupNode: DrawflowNode) {
+    //console.log(this.gamebookContainers);
+    const popupContainer = document.createElement(
+      "webwriter-gamebook-popup-container"
+    ) as WebWriterGamebookPageContainer;
+    popupContainer.setAttribute("drawflowNodeId", popupNode.id.toString());
+    popupContainer.setAttribute("pageTitle", popupNode.data.title);
+
+    const parser = new DOMParser();
+    const contentFromNode = parser.parseFromString(
+      popupNode.data.content,
+      "text/html"
+    );
+
+    // Loop through the child nodes of the body of the parsed document
+    contentFromNode.body.childNodes.forEach((node) => {
+      popupContainer.appendChild(node);
+    });
+
+    //to let it access editor
+    popupContainer.hide();
+
+    //
+    this.appendToShadowDom(popupContainer);
   }
 
   /* 

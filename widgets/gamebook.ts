@@ -30,6 +30,7 @@ import styles from "../css/gamebook-preview-css";
 import { WebWriterConnectionButton } from "./webwriter-connection-button";
 import { QuizContainer } from "./quiz-container";
 import { WebWriterGamebookPageContainer } from "./webwriter-gamebook-page-container";
+import { WebWriterGamebookPopupContainer } from "./webwriter-gamebook-popup-container";
 
 //Define Component
 //TODO: Fix Gamebook Errors. Check other modules for proper updating. I commented out a lot for restructure!
@@ -62,7 +63,8 @@ export class WebWriterGamebook extends LitElementWw {
 
   @queryAssignedElements({
     flatten: true,
-    selector: "webwriter-gamebook-page-container, quiz-container",
+    selector:
+      "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, quiz-container",
   })
   gamebookContainers;
 
@@ -77,10 +79,15 @@ export class WebWriterGamebook extends LitElementWw {
     }
   }
 
+  /*
+
+
+   */
   _handleSlotChange() {
     this.currentPageId = this._resetGamebookToOrigin();
     this._initializeConnectionButtons(this.currentPageId);
   }
+
   /*
 
 
@@ -108,7 +115,14 @@ export class WebWriterGamebook extends LitElementWw {
         if (container instanceof WebWriterGamebookPageContainer) {
           this._navigateToPage(targetId);
           this._initializeConnectionButtons(targetId);
-        } else if (container instanceof QuizContainer) {
+        }
+        //
+        else if (container instanceof WebWriterGamebookPopupContainer) {
+          this._showPopupContainerDialog(targetId);
+          this._initializeConnectionButtons(targetId);
+        }
+        //
+        else if (container instanceof QuizContainer) {
           this._showQuizBranchDialog(targetId);
           this._initializeQuizButtons(targetId);
         }
@@ -117,19 +131,45 @@ export class WebWriterGamebook extends LitElementWw {
     });
   }
 
+  /*
+
+
+  */
   private _navigateToPage(pageId: number) {
     this.gamebookContainers.forEach((container) => {
       if (container.drawflowNodeId == pageId) {
         container.show();
         this.pageTitle = container.pageTitle;
       } else {
-        container.hide();
+        if (container instanceof WebWriterGamebookPopupContainer) {
+          container.hideDialog();
+        }
+        //
+        else {
+          container.hide();
+        }
       }
     });
 
     this.currentPageId = pageId;
   }
 
+  /*
+
+
+  */
+  private _showPopupContainerDialog(containerId: number) {
+    this.gamebookContainers.forEach((popup) => {
+      if (popup.drawflowNodeId == containerId) {
+        (popup as WebWriterGamebookPopupContainer).showDialog();
+      }
+    });
+  }
+
+  /*
+
+
+  */
   private _showQuizBranchDialog(quizId: number) {
     this.gamebookContainers.forEach((quiz) => {
       if (quiz.drawflowNodeId == quizId) {
@@ -176,6 +216,10 @@ export class WebWriterGamebook extends LitElementWw {
     });
   }
 
+  /*
+
+
+  */
   private _initializeQuizButtons(containerId: Number) {
     const container = this.gamebookContainers.find(
       (container) => container.getAttribute("drawflowNodeId") == containerId

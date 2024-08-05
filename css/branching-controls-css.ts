@@ -22,12 +22,7 @@ export default css`
     font-weight: bold;
     user-select: none;
 
-    background-color: rgba(
-      255,
-      255,
-      255,
-      0.95
-    ); /* Set background color with 50% opacity */
+    background-color: rgba(255, 255, 255, 0.95);
   }
 
   .controls .first-item {

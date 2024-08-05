@@ -21,6 +21,7 @@ const NO_NODE_SELECTED: DrawflowNode = {
 
 //Import Styles
 import styles from "../css/selected-node-details-css";
+import { PopupNodeDetails } from "./popup-node-details";
 
 @customElement("node-details-selector")
 export class SelectedNodeViewRenderer extends LitElementWw {
@@ -43,6 +44,7 @@ export class SelectedNodeViewRenderer extends LitElementWw {
   static get scopedElements() {
     return {
       "page-node-details": PageNodeDetails,
+      "popup-node-details": PopupNodeDetails,
       "quiz-branch-node-details": QuizBranchNodeDetails,
     };
   }
@@ -55,7 +57,7 @@ export class SelectedNodeViewRenderer extends LitElementWw {
       <div>
         ${this.selectedNode.class == "page" ||
         this.selectedNode.class == "origin"
-          ? html` <div id="selected-node-details">
+          ? html`
               <page-node-details
                 .nodeEditor="${this.nodeEditor}"
                 .nodesInEditor="${this.editorContent.drawflow.Home.data}"
@@ -87,7 +89,7 @@ export class SelectedNodeViewRenderer extends LitElementWw {
               >
                 <slot></slot>
               </page-node-details>
-            </div>`
+            `
           : this.selectedNode.class == "question-branch"
           ? html` <div id="selected-node-details">
               <quiz-branch-node-details
@@ -98,6 +100,40 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                 <slot></slot>
               </quiz-branch-node-details>
             </div>`
+          : this.selectedNode.class == "popup"
+          ? html`
+              <popup-node-details
+                .nodeEditor="${this.nodeEditor}"
+                .nodesInEditor="${this.editorContent.drawflow.Home.data}"
+                .selectedNode="${this.selectedNode}"
+                .selectedNodeId="${this.selectedNode.id}"
+                .changeInEditorCallback=${(
+                  drawflow,
+                  updateType,
+                  node,
+                  removedNodeId,
+                  inputNode,
+                  outputNode,
+                  inputClass,
+                  outputClass,
+                  outputHadConnections
+                ) => {
+                  this.changeInEditorCallback(
+                    drawflow,
+                    updateType,
+                    node,
+                    removedNodeId,
+                    inputNode,
+                    outputNode,
+                    inputClass,
+                    outputClass,
+                    outputHadConnections
+                  );
+                }}
+              >
+                <slot></slot>
+              </popup-node-details>
+            `
           : html` <div class="no-node-selected">
               <p>Select a node</p>
               <slot></slot>

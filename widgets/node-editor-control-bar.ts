@@ -36,6 +36,7 @@ import questionMark from "@tabler/icons/outline/question-mark.svg";
 import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 import directions from "@tabler/icons/outline/directions.svg";
+import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 
 @customElement("node-edtior-controls-bar")
 export class NodeEditorControlsBar extends LitElementWw {
@@ -71,6 +72,7 @@ export class NodeEditorControlsBar extends LitElementWw {
     isOrigin: boolean
   ) => {};
   @property({ type: Function }) addPopUpNode = (title: string) => {};
+  @property({ type: Function }) addBranchNode = () => {};
   @property({ type: Function }) addQuestionNode = () => {};
   @property({ type: Function }) showDialog = () => {};
 
@@ -125,10 +127,13 @@ export class NodeEditorControlsBar extends LitElementWw {
               ><sl-icon slot="prefix" src=${file}></sl-icon>
               Page
             </sl-menu-item>
-
             <sl-menu-item @click=${() => this.addPopUpNode("Untitled Popup")}>
               <sl-icon slot="prefix" src=${squares}></sl-icon>
               Popup
+            </sl-menu-item>
+            <sl-menu-item @click=${() => this.addBranchNode()}>
+              <sl-icon slot="prefix" src=${arrowsSplit2}></sl-icon>
+              Smart Branch
             </sl-menu-item>
             <sl-divider></sl-divider>
             <sl-menu-label>Template</sl-menu-label>

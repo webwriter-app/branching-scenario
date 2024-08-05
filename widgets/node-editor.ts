@@ -25,6 +25,7 @@ import dotsVertical from "@tabler/icons/outline/dots-vertical.svg";
 import zoomIn from "@tabler/icons/outline/zoom-in.svg";
 import zoomOut from "@tabler/icons/outline/zoom-out.svg";
 import squares from "@tabler/icons/filled/squares.svg";
+import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 
 //Drawflow Imports
 import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
@@ -155,6 +156,7 @@ export class NodeEditor extends LitElementWw {
           .addPageNode=${(string, boolean) => this.addPageNode(string, boolean)}
           .addPopUpNode=${(string) => this.addPopUpNode(string)}
           .addQuestionNode=${() => this.addQuestionNode()}
+          .addBranchNode=${() => this.addBranchNode()}
           .showDialog=${() =>
             (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
         >
@@ -615,6 +617,79 @@ export class NodeEditor extends LitElementWw {
       centerY,
       "question-branch",
       data,
+      containerHtml,
+      false
+    );
+  }
+
+  /*
+
+
+  */
+  /*
+
+
+  */
+  private addBranchNode() {
+    const branchNodeContent = {
+      title: "Branch Node",
+      content: `<p>Testing Slots HTML Editing</p>`,
+    };
+
+    // Create the container div
+    const containerDiv = document.createElement("div");
+    containerDiv.classList.add("container");
+
+    // Create page sl-icon
+    const iconDiv = document.createElement("div");
+    iconDiv.classList.add("iconDiv");
+    const icon = document.createElement("sl-icon") as SlIcon;
+    icon.setAttribute("src", arrowsSplit2);
+    icon.classList.add("pageIcon");
+
+    iconDiv.appendChild(icon);
+    containerDiv.appendChild(iconDiv);
+
+    const contentDiv = document.createElement("div");
+    contentDiv.classList.add("content");
+
+    const input = document.createElement("input");
+    input.id = "title";
+    input.setAttribute("df-title", ""); // Adding df-title attribute
+    contentDiv.appendChild(input);
+
+    //Add label to the input for the nodes name
+    const nameLabel = document.createElement("p");
+    nameLabel.classList.add("input-label");
+    nameLabel.textContent = "Popup"; // Set the text content of the label
+    contentDiv.appendChild(nameLabel);
+
+    containerDiv.appendChild(contentDiv);
+
+    // Add three dots iccon
+    const threeDotsIcon = document.createElement("sl-icon") as SlIcon;
+    threeDotsIcon.setAttribute("src", dotsVertical);
+    threeDotsIcon.classList.add("threeDots");
+    containerDiv.appendChild(threeDotsIcon);
+
+    const containerHtml = containerDiv.outerHTML;
+
+    //get current center of drawflow div
+    const rect = this.drawflowEditorDiv.getBoundingClientRect();
+    const zoom = this.editor.zoom;
+
+    //center of canvas - translation of canvas / zoom - node dimension center
+    const centerX = rect.width / 2 - this.editor.canvas_x / zoom - 302 / 2;
+    const centerY = rect.height / 2 - this.editor.canvas_y / zoom - 90 / 2;
+
+    this.editor.addNode(
+      "Branch Node",
+      1,
+      0,
+      centerX,
+      centerY,
+      "branch",
+      branchNodeContent,
       containerHtml,
       false
     );

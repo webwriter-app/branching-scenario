@@ -54,6 +54,7 @@ export class NodeConnectionList extends LitElementWw {
         border-bottom: 1px solid gray;
         height: 20px;
         padding-bottom: 5px;
+        width: 100%;
       }
 
       .titlebar p {
@@ -73,7 +74,28 @@ export class NodeConnectionList extends LitElementWw {
         height: 80px;
         width: 100%;
         overflow-y: auto;
-        padding-right: 10px;
+        padding-right: 10px; /* Adjust if needed for scrollbar spacing */
+
+        /* Custom scrollbar styles */
+        scrollbar-width: thin; /* Firefox */
+        scrollbar-color: transparent transparent; /* Firefox */
+      }
+
+      .verticalStack::-webkit-scrollbar {
+        width: 6px; /* Width of the scrollbar */
+      }
+
+      .verticalStack::-webkit-scrollbar-track {
+        background: transparent; /* Hide the track */
+      }
+
+      .verticalStack::-webkit-scrollbar-thumb {
+        background-color: #888; /* Color of the scrollbar handle */
+        border-radius: 10px; /* Rounded corners */
+      }
+
+      .verticalStack::-webkit-scrollbar-thumb:hover {
+        background-color: #555; /* Darker color on hover */
       }
 
       .item {
@@ -83,7 +105,7 @@ export class NodeConnectionList extends LitElementWw {
         align-items: center;
         gap: 10px;
         height: 30px;
-        width: 170px;
+        width: 100%;
 
         border-bottom: 1px solid #d4d4d8;
       }
