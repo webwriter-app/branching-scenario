@@ -100,41 +100,6 @@ export class PopupNodeDetails extends LitElementWw {
 
   render() {
     return html` <div class="page-node-details">
-      <div class="title-bar">
-        <div class="div-icon">
-          <sl-icon src=${squares}></sl-icon>
-        </div>
-        <div class="div-title">
-          <!-- <p class="title">${this.selectedNode.data.title}</p> -->
-          <toggleable-input
-            .text=${this.selectedNode.data.title}
-            .saveChanges=${(string) => this.renameNode(string)}
-          ></toggleable-input>
-          <p class="subtitle">Page</p>
-        </div>
-
-        <div class="last-item">
-          <node-connection-list
-            input
-            .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.selectedNode}
-            ._addOutputToSelectedNode=${() => this._addOutputToSelectedNode()}
-            ._deleteOutputFromNode=${(nodeId, outputClass) =>
-              this._deleteOutputFromNode(nodeId, outputClass)}
-          ></node-connection-list>
-
-          <sl-divider vertical style="height: 70px;"></sl-divider>
-          <node-connection-list
-            output
-            .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.selectedNode}
-            ._addOutputToSelectedNode=${() => this._addOutputToSelectedNode()}
-            ._deleteOutputFromNode=${(nodeId, outputClass) =>
-              this._deleteOutputFromNode(nodeId, outputClass)}
-          ></node-connection-list>
-        </div>
-      </div>
-
       <div class="controls">
         <sl-select
           class="nodeSelect"
@@ -195,33 +160,6 @@ export class PopupNodeDetails extends LitElementWw {
   }
 
   /*
-      //TODO: make node preview part of selectednodeviewrenderer
-      //TODO: use selects on outputs to redo connections
-      //TODO: move quick connect to part options
-      //TODO: find error with clear and slots
-  */
-  private _deleteOutputFromNode(output_id: number, output_class: string) {
-    let outputHadConnections =
-      (this.nodeEditor.editor.getNodeFromId(output_id) as DrawflowNode).outputs[
-        output_class
-      ].connections.length != 0;
-
-    this.nodeEditor.editor.removeNodeOutput(output_id, output_class);
-
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "outputDeleted",
-      null,
-      null,
-      null,
-      null,
-      null,
-      output_class,
-      outputHadConnections
-    );
-  }
-
-  /*
 
 
   */
@@ -248,29 +186,11 @@ export class PopupNodeDetails extends LitElementWw {
 
   /*
 
-
   */
   private _resetSelect() {
     if (this.nodeSelect) {
       this.nodeSelect.value = "";
       this.isNodeSelected = false;
     }
-  }
-
-  /*
-
-
-  */
-  private renameNode(text: String) {
-    this.nodeEditor.editor.updateNodeDataFromId(this.selectedNode.id, {
-      ...this.selectedNode.data,
-      title: text,
-    });
-
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "nodeRenamed",
-      this.selectedNode.id
-    );
   }
 }

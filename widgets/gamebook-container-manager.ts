@@ -11,6 +11,7 @@ import {
 
 //Drawflow Imports
 import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
+import { WebWriterConnectionButton } from "./webwriter-connection-button";
 import { WebWriterGamebookPageContainer } from "./webwriter-gamebook-page-container";
 import { WebWriterGamebookPopupContainer } from "./webwriter-gamebook-popup-container";
 import { QuizContainer } from "./quiz-container";
@@ -123,6 +124,110 @@ export class GamebookContainerManager extends LitElementWw {
   }
 
   /*
+
+
+  */
+  public addConnectionButtonToContainer(
+    outputNode: DrawflowNode,
+    inputNode: DrawflowNode,
+    output_class: string,
+    input_class: string
+  ) {
+    const container = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == outputNode.id
+    );
+
+    const connButton = document.createElement(
+      "webwriter-connection-button"
+    ) as WebWriterConnectionButton;
+
+    connButton.setAttribute("name", inputNode.data.title);
+    connButton.setAttribute("dataTargetId", inputNode.id.toString());
+    // Ensure uniqueness by adding a unique identifier
+    connButton.setAttribute(
+      "identifier",
+      `${outputNode.id}-${output_class}-${inputNode.id}-${input_class}`
+    );
+    container.appendChild(connButton);
+  }
+
+  /*
+
+
+  */
+  public removeConnectionButtonFromContainer(
+    containerId: string,
+    identifier: string
+  ) {
+    const container = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == containerId
+    );
+
+    const connButton =
+      container.shadowRoot?.querySelector(
+        `webwriter-connection-button[identifier="${identifier}"]`
+      ) ||
+      container.querySelector(
+        `webwriter-connection-button[identifier="${identifier}"]`
+      );
+
+    if (connButton) {
+      const parts = (connButton as WebWriterConnectionButton).identifier.split(
+        "-"
+      );
+      const parsed = {
+        outputNodeId: parseInt(parts[0]),
+        outputClass: parts[1],
+        inputNodeId: parseInt(parts[2]),
+        inputClass: parts[3],
+      };
+      this.updateContainersConnectionButtonIds(containerId, parsed.outputClass);
+      connButton.setAttribute("identifier", "connectionDeltedInNodeEditor");
+      connButton.remove();
+    }
+  }
+
+  /*
+
+
+  */
+  public updateContainersConnectionButtonIds(
+    containerId: string,
+    removed_output_class: string
+  ) {
+    const container = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == containerId
+    );
+
+    // Extract the number from the output_class parameter
+    const removedOutputClassNumber = parseInt(
+      removed_output_class.split("_")[1],
+      10
+    );
+
+    // Iterate over each linkButton to update its identifier
+    container.connectionButtons.forEach((connButton) => {
+      const [output_id, output_class, input_id] =
+        connButton.identifier.split("-");
+      const connButtonOutputClassNumber = parseInt(
+        output_class.split("_")[1],
+        10
+      );
+
+      // Check if the linkButton should be updated
+      if (connButtonOutputClassNumber > removedOutputClassNumber) {
+        // Generate the new identifier with incremented output_class
+        const newIdentifier = `${output_id}-output_${
+          connButtonOutputClassNumber - 1
+        }-${input_id}-input_1`;
+
+        // Update the identifier
+        connButton.setAttribute("identifier", newIdentifier);
+      }
+    });
+  }
+
+  /*
   TODO: Figure out how to put this into a constructor
   Also remove the node data adding 
   */
@@ -205,4 +310,9 @@ export class GamebookContainerManager extends LitElementWw {
     quizContainer.hide();
     this.appendToShadowDom(quizContainer);
   }
+
+  /* 
+  
+  
+  */
 }

@@ -44,10 +44,10 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
 
-  static shadowRootOptions = {
-    ...LitElement.shadowRootOptions,
-    delegatesFocus: true,
-  };
+  // static shadowRootOptions = {
+  //   ...LitElement.shadowRootOptions,
+  //   delegatesFocus: true,
+  // };
 
   /* 
   
@@ -68,10 +68,10 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
     // Start observing the target node for configured mutations
     this.mutationObserver.observe(this, config);
 
-    // this.addEventListener("click", () => {
-    //   console.log("page Container clicked");
-    //   this.focus();
-    // });
+    this.addEventListener("click", () => {
+      console.log("page Container clicked");
+      this.focus();
+    });
   }
   /*
 
@@ -101,58 +101,6 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
 
 
   */
-  public addConnectionButtonToPageContainer(
-    outputNode: DrawflowNode,
-    inputNode: DrawflowNode,
-    output_class: string,
-    input_class: string
-  ) {
-    const connButton = document.createElement(
-      "webwriter-connection-button"
-    ) as WebWriterConnectionButton;
-    connButton.setAttribute("name", inputNode.data.title);
-    connButton.setAttribute("dataTargetId", inputNode.id.toString());
-    // Ensure uniqueness by adding a unique identifier
-    connButton.setAttribute(
-      "identifier",
-      `${outputNode.id}-${output_class}-${inputNode.id}-${input_class}`
-    );
-    this.appendChild(connButton);
-  }
-
-  /*
-
-
-  */
-  public removeConnectionButtonFromPageContainer(identifier: string) {
-    const connButton =
-      this.shadowRoot?.querySelector(
-        `webwriter-connection-button[identifier="${identifier}"]`
-      ) ||
-      this.querySelector(
-        `webwriter-connection-button[identifier="${identifier}"]`
-      );
-
-    if (connButton) {
-      const parts = (connButton as WebWriterConnectionButton).identifier.split(
-        "-"
-      );
-      const parsed = {
-        outputNodeId: parseInt(parts[0]),
-        outputClass: parts[1],
-        inputNodeId: parseInt(parts[2]),
-        inputClass: parts[3],
-      };
-      this.updateConnectionButtonIds(parsed.outputClass);
-      connButton.setAttribute("identifier", "x");
-      connButton.remove();
-    }
-  }
-
-  /*
-
-
-  */
   private mutationCallback = (mutationList: MutationRecord[]) => {
     mutationList.forEach((mutation) => {
       if (mutation.type == "childList") {
@@ -173,7 +121,7 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
               //make sure link button did not get deleted programtically
               let connButton = node as WebWriterConnectionButton;
 
-              if (connButton.identifier != "x") {
+              if (connButton.identifier != "connectionDeltedInNodeEditor") {
                 console.log("in mutation observer here");
                 const event = new CustomEvent("userDeleteConnectionButton", {
                   detail: {
@@ -190,37 +138,4 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
       }
     });
   };
-
-  /*
-
-
-  */
-  public updateConnectionButtonIds(removed_output_class: string) {
-    // Extract the number from the output_class parameter
-    const removedOutputClassNumber = parseInt(
-      removed_output_class.split("_")[1],
-      10
-    );
-
-    // Iterate over each linkButton to update its identifier
-    this.connectionButtons.forEach((connButton) => {
-      const [output_id, output_class, input_id] =
-        connButton.identifier.split("-");
-      const connButtonOutputClassNumber = parseInt(
-        output_class.split("_")[1],
-        10
-      );
-
-      // Check if the linkButton should be updated
-      if (connButtonOutputClassNumber > removedOutputClassNumber) {
-        // Generate the new identifier with incremented output_class
-        const newIdentifier = `${output_id}-output_${
-          connButtonOutputClassNumber - 1
-        }-${input_id}-input_1`;
-
-        // Update the identifier
-        connButton.setAttribute("identifier", newIdentifier);
-      }
-    });
-  }
 }

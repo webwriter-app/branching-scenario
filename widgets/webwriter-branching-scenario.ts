@@ -32,7 +32,7 @@ const NO_NODE_SELECTED: DrawflowNode = {
 export class WebWriterBranchingScenario extends LitElementWw {
   @query("gamebook-container-manager")
   gamebookContainerManager;
-  @query("node-editor") nodeEditor;
+
   @queryAssignedElements({
     flatten: true,
     selector:
@@ -40,13 +40,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
   })
   gamebookContainers;
 
+  @query("node-editor") nodeEditor;
+
   @property({ type: Object, attribute: true, reflect: true }) editorContent;
   @property({ type: Number, attribute: true, reflect: true }) editorZoom = -1;
   @property({ type: Object, attribute: true })
   selectedNode: DrawflowNode = NO_NODE_SELECTED;
   @property({ type: String, attribute: true, reflect: true })
   gamebookTitle = "Untitled Gamebook";
-  @property({ type: Boolean }) reactToChanges = true;
+  @property({ type: Boolean }) reactToCallbackFromNodeEditor = true;
 
   static shadowRootOptions = {
     ...LitElement.shadowRootOptions,
@@ -190,15 +192,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
       );
     }
     //
-    else if (updateType == "selectedNodeDataChanged") {
-      this.updateSelectedNode(this.selectedNode.id.toString());
+    // else if (updateType == "selectedNodeDataChanged") {
+    //   this.updateSelectedNode(this.selectedNode.id.toString());
 
-      if (node.class == "question-branch") {
-        this.gamebookContainerManager
-          ._getContainerByDrawflowNodeId(node.id)
-          .updateFromQuestionNode(this.selectedNode);
-      }
-    }
+    //   if (node.class == "question-branch") {
+    //     this.gamebookContainerManager
+    //       ._getContainerByDrawflowNodeId(node.id)
+    //       .updateFromQuestionNode(this.selectedNode);
+    //   }
+    // }
     //
     else if (updateType == "nodeCreated") {
       if (node.class == "page" || node.class == "origin") {
@@ -223,65 +225,26 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
     //
     else if (updateType == "connectionCreated") {
-      if (outputNode.class == "page" || outputNode.class == "origin") {
-        const pageContainer =
-          this.gamebookContainerManager._getContainerByDrawflowNodeId(
-            outputNode.id
-          );
-        pageContainer.addConnectionButtonToPageContainer(
-          outputNode,
-          inputNode,
-          outputClass,
-          inputClass
-        );
-      }
-      //
-      else if (outputNode.class == "popup") {
-        const popupContainer =
-          this.gamebookContainerManager._getContainerByDrawflowNodeId(
-            outputNode.id
-          );
-        popupContainer.addConnectionButtonToPopupContainer(
-          outputNode,
-          inputNode,
-          outputClass,
-          inputClass
-        );
-      }
-      //
-      else if (outputNode.class == "question-branch") {
-        this._updateQuestionNodeAnswerTarget(
-          outputNode,
-          outputClass.toString(),
-          inputNode.id.toString()
-        );
-      }
+      this.gamebookContainerManager.addConnectionButtonToContainer(
+        outputNode,
+        inputNode,
+        outputClass,
+        inputClass
+      );
     }
+
     //
     else if (updateType == "connectionRemoved") {
       //if a connection is removed by the user, remove the corresponding button
-      if (this.reactToChanges) {
-        if (outputNode.class == "page" || outputNode.class == "origin") {
-          console.log("deletes connection button");
-          const pageContainer =
-            this.gamebookContainerManager._getContainerByDrawflowNodeId(
-              outputNode.id
-            );
-          const identifier = `${outputNode.id}-${outputClass}-${inputNode.id}-input_1`;
-          pageContainer.removeConnectionButtonFromPageContainer(identifier);
-        }
-        //
-        else if (outputNode.class == "question-branch") {
-          this._updateQuestionNodeAnswerTarget(
-            outputNode,
-            outputClass.toString(),
-            "undefined"
-          );
-        }
+      if (this.reactToCallbackFromNodeEditor) {
+        this.gamebookContainerManager.removeConnectionButtonFromContainer(
+          outputNode.id,
+          `${outputNode.id}-${outputClass}-${inputNode.id}-input_1`
+        );
       }
       //if a button was removed by the user
       else {
-        this.reactToChanges = true;
+        this.reactToCallbackFromNodeEditor = true;
       }
     }
     //
@@ -295,15 +258,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
     //
     else if (updateType == "outputDeleted") {
-      console.log("callback output deleted");
-      const pageContainer =
-        this.gamebookContainerManager._getContainerByDrawflowNodeId(
-          this.selectedNode.id
-        );
-
       //Updat the Connection Button Id's only if the output had no connection, because connection removal also updates conneciton button ids
       if (!outputHadConnections) {
-        pageContainer.updateConnectionButtonIds(outputClass);
+        this.gamebookContainerManager.updateContainersConnectionButtonIds(
+          this.selectedNode.id,
+          outputClass
+        );
       }
 
       this.updateSelectedNode(this.selectedNode.id.toString());
@@ -317,7 +277,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   private handleChangesInGamebookContainers() {
     this.addEventListener("userDeleteConnectionButton", (event) => {
       //if a button is removed, remove the corresponding connection
-      this.reactToChanges = false;
+      this.reactToCallbackFromNodeEditor = false;
       const { outputNodeId, outputClass, inputNodeId, inputClass } =
         this.parseConnectionIdentifier(
           (event as CustomEvent).detail.identifier

@@ -32,9 +32,6 @@ import { ToggleableInput } from "./ui-components/toggleable-input";
 import { NodeConnectionList } from "./ui-components/node-connection-list";
 
 //Tabler Icon Import
-import plus from "@tabler/icons/outline/plus.svg";
-import file from "@tabler/icons/filled/file.svg";
-import minus from "@tabler/icons/outline/minus.svg";
 import route2 from "@tabler/icons/outline/route-2.svg";
 
 //CSS
@@ -100,41 +97,6 @@ export class PageNodeDetails extends LitElementWw {
 
   render() {
     return html` <div class="page-node-details">
-      <div class="title-bar">
-        <div class="div-icon">
-          <sl-icon src=${file}></sl-icon>
-        </div>
-        <div class="div-title">
-          <!-- <p class="title">${this.selectedNode.data.title}</p> -->
-          <toggleable-input
-            .text=${this.selectedNode.data.title}
-            .saveChanges=${(string) => this.renameNode(string)}
-          ></toggleable-input>
-          <p class="subtitle">Page</p>
-        </div>
-
-        <div class="last-item">
-          <node-connection-list
-            input
-            .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.selectedNode}
-            ._addOutputToSelectedNode=${() => this._addOutputToSelectedNode()}
-            ._deleteOutputFromNode=${(nodeId, outputClass) =>
-              this._deleteOutputFromNode(nodeId, outputClass)}
-          ></node-connection-list>
-
-          <sl-divider vertical style="height: 70px;"></sl-divider>
-          <node-connection-list
-            output
-            .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.selectedNode}
-            ._addOutputToSelectedNode=${() => this._addOutputToSelectedNode()}
-            ._deleteOutputFromNode=${(nodeId, outputClass) =>
-              this._deleteOutputFromNode(nodeId, outputClass)}
-          ></node-connection-list>
-        </div>
-      </div>
-
       <div class="controls">
         <sl-select
           class="nodeSelect"
@@ -196,26 +158,6 @@ export class PageNodeDetails extends LitElementWw {
       //TODO: move quick connect to part options
       //TODO: find error with clear and slots
   */
-  private _deleteOutputFromNode(output_id: number, output_class: string) {
-    let outputHadConnections =
-      (this.nodeEditor.editor.getNodeFromId(output_id) as DrawflowNode).outputs[
-        output_class
-      ].connections.length != 0;
-
-    this.nodeEditor.editor.removeNodeOutput(output_id, output_class);
-
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "outputDeleted",
-      null,
-      null,
-      null,
-      null,
-      null,
-      output_class,
-      outputHadConnections
-    );
-  }
 
   /*
 

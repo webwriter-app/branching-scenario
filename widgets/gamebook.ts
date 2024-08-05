@@ -159,9 +159,14 @@ export class WebWriterGamebook extends LitElementWw {
 
   */
   private _showPopupContainerDialog(containerId: number) {
-    this.gamebookContainers.forEach((popup) => {
-      if (popup.drawflowNodeId == containerId) {
-        (popup as WebWriterGamebookPopupContainer).showDialog();
+    this.gamebookContainers.forEach((container) => {
+      if (container.drawflowNodeId == containerId) {
+        (container as WebWriterGamebookPopupContainer).showDialog();
+      } else if (container.drawflowNodeId != containerId) {
+        if (container instanceof WebWriterGamebookPopupContainer) {
+          container.hideDialog();
+          container.hide();
+        }
       }
     });
   }
