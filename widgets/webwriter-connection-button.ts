@@ -51,21 +51,21 @@ export class WebWriterConnectionButton extends LitElementWw {
         display: none;
       }
 
+      :host([contenteditable="true"]) .author-only,
+      :host([contenteditable=""]) .author-only {
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        padding-left: 10px;
+        padding-bottom: 10px;
+        gap: 5px;
+      }
+
       .container {
         display: flex;
         justify-content: center;
         align-items: center;
         width: 100%;
-      }
-
-      .controls {
-        display: flex;
-        flex-direction: column;
-        box-sizing: border-box;
-        border: 1px solid orange;
-        padding-left: 10px;
-        padding-bottom: 10px;
-        gap: 5px;
       }
 
       .controls p {
@@ -136,10 +136,9 @@ export class WebWriterConnectionButton extends LitElementWw {
         >
           <p>${this.name}</p>
         </sl-button>
-        <div part="options" class="controls">
+        <div part="options" class="author-only">
           <p>Title</p>
           <sl-input
-            class="author-only"
             .value=${this.name}
             @input=${(e) => (this.name = e.target.value)}
           ></sl-input>

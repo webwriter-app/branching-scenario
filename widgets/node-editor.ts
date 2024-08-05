@@ -632,7 +632,7 @@ export class NodeEditor extends LitElementWw {
   */
   private addBranchNode() {
     const branchNodeContent = {
-      title: "Branch Node",
+      title: "Untitled Branch",
       content: `<p>Testing Slots HTML Editing</p>`,
     };
 
@@ -661,7 +661,7 @@ export class NodeEditor extends LitElementWw {
     //Add label to the input for the nodes name
     const nameLabel = document.createElement("p");
     nameLabel.classList.add("input-label");
-    nameLabel.textContent = "Popup"; // Set the text content of the label
+    nameLabel.textContent = "Smart Branch"; // Set the text content of the label
     contentDiv.appendChild(nameLabel);
 
     containerDiv.appendChild(contentDiv);

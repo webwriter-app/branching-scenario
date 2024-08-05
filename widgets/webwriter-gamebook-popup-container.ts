@@ -84,8 +84,13 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
     const config = { attributes: true, childList: true, subtree: true };
     // Start observing the target node for configured mutations
     this.mutationObserver.observe(this, config);
-
     //
+    // Prevent the dialog from closing when the user clicks on the overlay
+    // this.dialog.addEventListener("sl-request-close", (event) => {
+    //   if (event.detail.source === "overlay") {
+    //     event.preventDefault();
+    //   }
+    // });
   }
   /*
 

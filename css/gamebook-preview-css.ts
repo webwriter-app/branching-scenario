@@ -38,6 +38,8 @@ export default css`
 
     background-color: #f7f7f7;
 
+    border-bottom: 1px solid #e4e4e4;
+
     height: auto;
     display: flex;
     align-items: center; /* Vertically center */
