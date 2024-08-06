@@ -116,23 +116,38 @@ export class NodeConnectionList extends LitElementWw {
 
       .itemButton {
         width: 100%;
-        margin-right: auto;
       }
 
-      .itemButton::part(label) {
-        max-width: 130px;
+      /* .itemButton::part(label) {
+        padding: 0px;
+        width: 100%;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         text-align: left;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      } */
+
+      sl-button::part(base) {
+        justify-content: flex-start; /* Aligns the content to the left */
+        text-align: left; /* Ensures text within the button is aligned left */
+      }
+
+      sl-button::part(label) {
+        max-width: 130px; /* Ensures the label takes up the full width of the button */
+        text-align: left; /* Aligns the text within the label to the left */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       sl-icon-button::part(base) {
         padding: 0px;
       }
-      /* output-connection-control sl-select::part(listbox) {
-        z-index: 100000;
-      } */
 
       .verticalStack::-webkit-scrollbar {
         width: 6px; /* Width of the scrollbar */
