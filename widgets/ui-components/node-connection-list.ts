@@ -9,29 +9,38 @@ import { SlButton, SlIconButton } from "@shoelace-style/shoelace";
 // Drawflow Imports
 import { DrawflowNode } from "drawflow";
 
-// Tabler Icon Import
+import { OutputConnectionControl } from "./output-connection-control";
+
 import plus from "@tabler/icons/outline/plus.svg";
 import minus from "@tabler/icons/outline/minus.svg";
+import XCircleFill from "bootstrap-icons/icons/x-circle-fill.svg";
 
 @customElement("node-connection-list")
 export class NodeConnectionList extends LitElementWw {
   @property({ type: Object }) nodeEditor;
   @property({ type: Object, attribute: false }) selectedNode?: DrawflowNode;
 
-  @property({ attribute: false }) _addOutputToSelectedNode = () => {};
-  @property({ attribute: false }) _deleteOutputFromNode = (
-    nodeId,
-    outputClass
-  ) => {};
-
   @property({ type: Boolean, reflect: true }) output = false;
   @property({ type: Boolean, reflect: true }) input = false;
+
+  @property({ attribute: false }) changeInEditorCallback = (
+    drawflow,
+    updateType,
+    node?,
+    removedNodeId?,
+    inputNode?,
+    outputNode?,
+    inputClass?,
+    outputClass?,
+    outputHadConnections?
+  ) => {};
 
   // Registering custom elements used in the widget
   static get scopedElements() {
     return {
       "sl-button": SlButton,
       "sl-icon-button": SlIconButton,
+      "output-connection-control": OutputConnectionControl,
     };
   }
 
@@ -40,10 +49,10 @@ export class NodeConnectionList extends LitElementWw {
       .container {
         display: flex;
         flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        box-sizing: border-box;
         height: 100%;
-        width: 175px;
-        justify-content: left;
-        align-items: left;
       }
 
       .titlebar {
@@ -52,7 +61,6 @@ export class NodeConnectionList extends LitElementWw {
         align-items: center;
         gap: 10px;
         border-bottom: 1px solid gray;
-        height: 20px;
         padding-bottom: 5px;
         width: 100%;
       }
@@ -60,26 +68,71 @@ export class NodeConnectionList extends LitElementWw {
       .titlebar p {
         font-family: "Roboto", sans-serif;
         font-size: 12px;
+        font-weight: bold;
         color: gray;
         margin: 0px;
         padding: 0px;
         margin-right: auto;
         color: #3f3f46;
+        max-width: 100px;
+        min-width: 80px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .verticalStack {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        height: 80px;
+        box-sizing: border-box;
+        height: 100%;
         width: 100%;
-        overflow-y: auto;
-        padding-right: 10px; /* Adjust if needed for scrollbar spacing */
+        overflow-y: scroll;
+        padding-right: 5px;
 
-        /* Custom scrollbar styles */
-        scrollbar-width: thin; /* Firefox */
-        scrollbar-color: transparent transparent; /* Firefox */
+        scrollbar-width: thin;
+        scrollbar-color: transparent transparent;
+        position: relative;
       }
+
+      .item {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+        width: 100%;
+        border-bottom: 1px solid #d4d4d8;
+        padding-left: 5px;
+        box-sizing: border-box;
+      }
+
+      .item p {
+        padding: 0px;
+        margin: 0px;
+        font-size: 12px;
+      }
+
+      .itemButton {
+        width: 100%;
+        margin-right: auto;
+      }
+
+      .itemButton::part(label) {
+        max-width: 130px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+      }
+
+      sl-icon-button::part(base) {
+        padding: 0px;
+      }
+      /* output-connection-control sl-select::part(listbox) {
+        z-index: 100000;
+      } */
 
       .verticalStack::-webkit-scrollbar {
         width: 6px; /* Width of the scrollbar */
@@ -96,36 +149,6 @@ export class NodeConnectionList extends LitElementWw {
 
       .verticalStack::-webkit-scrollbar-thumb:hover {
         background-color: #555; /* Darker color on hover */
-      }
-
-      .item {
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 10px;
-        height: 30px;
-        width: 100%;
-
-        border-bottom: 1px solid #d4d4d8;
-      }
-
-      .item p {
-        padding: 0px;
-        margin: 0px;
-        font-size: 12px;
-      }
-
-      .itemButton::part(label) {
-        width: 110px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        text-align: left;
-      }
-
-      .itemButton {
-        margin-right: auto;
       }
     `;
   }
@@ -150,34 +173,29 @@ export class NodeConnectionList extends LitElementWw {
               class="item"
             >
               <p style="color: gray">${index + 1}</p>
-              ${drawflowConnection.connections.length > 0
-                ? html` <sl-button
-                    class="itemButton"
-                    variant="text"
-                    size="small"
-                    @mouseenter=${() =>
-                      this.nodeEditor._highlightConnection(
-                        this.selectedNode.id,
-                        drawflowConnection.connections[0].node,
-                        output_class,
-                        "input_1"
-                      )}
-                    @mouseleave=${() =>
-                      this.nodeEditor._unhighlightConnection(
-                        `${this.selectedNode.id}-${drawflowConnection.connections[0].node}-${output_class}-input_1`
-                      )}
-                  >
-                    ${this.nodeEditor.editor.getNodeFromId(
-                      drawflowConnection.connections[0].node
-                    ).data.title}
-                  </sl-button>`
-                : html`<sl-button
-                    class="itemButton"
-                    variant="text"
-                    size="small"
-                    disabled
-                    >Not connected</sl-button
-                  > `}
+              <output-connection-control
+                .nodeEditor=${this.nodeEditor}
+                .selectedNode=${this.selectedNode}
+                .outputClass=${output_class}
+                @mouseenter=${() => {
+                  if (drawflowConnection.connections[0]) {
+                    this.nodeEditor._highlightConnection(
+                      this.selectedNode.id,
+                      drawflowConnection.connections[0].node,
+                      output_class,
+                      "input_1"
+                    );
+                  }
+                }}
+                @mouseleave=${() => {
+                  if (drawflowConnection.connections[0]) {
+                    this.nodeEditor._unhighlightConnection(
+                      `${this.selectedNode.id}-${drawflowConnection.connections[0].node}-${output_class}-input_1`
+                    );
+                  }
+                }}
+              >
+              </output-connection-control>
               <sl-icon-button
                 src=${minus}
                 style="font-size: 0.8rem;"
@@ -227,8 +245,8 @@ export class NodeConnectionList extends LitElementWw {
                   .title}
               </sl-button>
               <sl-icon-button
-                src=${minus}
-                style="font-size: 0.8rem;"
+                src=${XCircleFill}
+                style="font-size: 14px; color: #71717A;"
                 @click=${() =>
                   this._deleteOutputFromNode(
                     parseInt(connection.node),
@@ -250,5 +268,34 @@ export class NodeConnectionList extends LitElementWw {
     } else {
       return html`<p>Please specify either 'input' or 'output' attribute.</p>`;
     }
+  }
+
+  private _deleteOutputFromNode(output_id: number, output_class: string) {
+    let outputHadConnections =
+      (this.nodeEditor.editor.getNodeFromId(output_id) as DrawflowNode).outputs[
+        output_class
+      ].connections.length != 0;
+
+    this.nodeEditor.editor.removeNodeOutput(output_id, output_class);
+
+    this.changeInEditorCallback(
+      { ...this.nodeEditor.editor.drawflow },
+      "outputDeleted",
+      null,
+      null,
+      null,
+      null,
+      null,
+      output_class,
+      outputHadConnections
+    );
+  }
+
+  private _addOutputToSelectedNode() {
+    this.nodeEditor.editor.addNodeOutput(this.selectedNode.id);
+    this.changeInEditorCallback(
+      { ...this.nodeEditor.editor.drawflow },
+      "outputCreated"
+    );
   }
 }

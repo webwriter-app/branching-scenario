@@ -78,7 +78,7 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
     this.mutationObserver.observe(this, config);
 
     this.addEventListener("click", () => {
-      console.log("page Container clicked");
+      //console.log("page Container clicked");
       this.focus();
     });
   }
@@ -131,7 +131,7 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
               let connButton = node as WebWriterConnectionButton;
 
               if (connButton.identifier != "connectionDeltedInNodeEditor") {
-                console.log("in mutation observer here");
+                //console.log("in mutation observer here");
                 const event = new CustomEvent("userDeleteConnectionButton", {
                   detail: {
                     identifier: (node as WebWriterConnectionButton).identifier,

@@ -12,7 +12,20 @@ import { WebWriterGamebook } from "./gamebook";
 import { GamebookContainerManager } from "./gamebook-container-manager";
 import { NodeEditor } from "./node-editor";
 import { DrawflowNode } from "drawflow";
+import { QuickConnectNode } from "./ui-components/quick-connect-node";
+import { OutputConnectionControl } from "./ui-components/output-connection-control";
+
+// Shoelace Imports
+import "@shoelace-style/shoelace/dist/themes/light.css";
+import { SlInput, SlIcon } from "@shoelace-style/shoelace";
+
 import styles from "../css/webwriter-branching-scenario-css";
+
+import search from "@tabler/icons/outline/search.svg";
+import route2 from "@tabler/icons/outline/route-2.svg";
+import file from "@tabler/icons/outline/file.svg";
+import squares from "@tabler/icons/outline/squares.svg";
+import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 
 const NO_CONNECTION_SELECTED = "output_id-output_class-input_id-input_class";
 const NO_NODE_SELECTED: DrawflowNode = {
@@ -57,6 +70,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "gamebook-container-manager": GamebookContainerManager,
       "selected-node-view-renderer": SelectedNodeViewRenderer,
       "node-editor": NodeEditor,
+      "quick-connect-node": QuickConnectNode,
+      "output-connection-control": OutputConnectionControl,
+      "sl-input": SlInput,
+      "sl-icon": SlIcon,
     };
   }
 
@@ -150,6 +167,56 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   <slot></slot>
                 </gamebook-container-manager>
               </selected-node-view-renderer>
+
+              <div part="options" class="author-only">
+                ${this.selectedNode.id != -1
+                  ? html`
+                      ${this.selectedNode.class == "page" ||
+                      this.selectedNode.class == "origin"
+                        ? html`<sl-icon src=${file} slot="prefix"></sl-icon>`
+                        : this.selectedNode.class == "popup"
+                        ? html`<sl-icon src=${squares} slot="prefix"></sl-icon>`
+                        : this.selectedNode.class == "branch"
+                        ? html`<sl-icon
+                            src=${arrowsSplit2}
+                            slot="prefix"
+                          ></sl-icon>`
+                        : null}
+                      <p>${this.selectedNode.data.title}</p>
+                      <p>Quick Connect</p>
+                      <sl-icon src=${route2} slot="prefix"></sl-icon>
+                      <quick-connect-node
+                        .nodeEditor=${this.nodeEditor}
+                        .selectedNode=${this.selectedNode}
+                        .changeInEditorCallback=${(
+                          drawflow,
+                          updateType,
+                          node,
+                          removedNodeId,
+                          inputNode,
+                          outputNode,
+                          inputClass,
+                          outputClass,
+                          outputHadConnections
+                        ) => {
+                          this.updateGamebookContainers(
+                            drawflow,
+                            updateType,
+                            node,
+                            removedNodeId,
+                            inputNode,
+                            outputNode,
+                            inputClass,
+                            outputClass,
+                            outputHadConnections
+                          );
+                        }}
+                      ></quick-connect-node>
+                    `
+                  : html`<sl-input placeholder="Search nodes">
+                      <sl-icon src=${search} slot="prefix"></sl-icon>
+                    </sl-input>`}
+              </div>
             `
           : html`<webwriter-gamebook
               gamebookTitle=${this.gamebookTitle != ""
@@ -198,8 +265,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
     // }
     //
     else if (updateType == "nodeCreated") {
+      this.updateSelectedNode(this.selectedNode.id.toString());
       if (node.class == "page" || node.class == "origin") {
         this.gamebookContainerManager._createPageContainerFromPageNode(node);
+        //console.log(this.gamebookContainerManager.gamebookContainers);
       }
       //
       else if (node.class == "popup") {
@@ -246,6 +315,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
     else if (updateType == "editorCleared") {
       this.gamebookContainerManager._deleteAllGamebookContainers();
       this.updateSelectedNode("-1");
+
+      //console.log(this.gamebookContainerManager.gamebookContainers);
     }
     //
     else if (updateType == "outputCreated") {
@@ -279,11 +350,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
         );
 
       this.nodeEditor.editor.removeNodeOutput(outputNodeId, outputClass);
-      const pageContainer =
-        this.gamebookContainerManager._getContainerByDrawflowNodeId(
-          outputNodeId
-        );
-      pageContainer.updateConnectionButtonIds(outputClass);
+      this.gamebookContainerManager.updateContainersConnectionButtonIds(
+        outputNodeId,
+        outputClass
+      );
 
       this.editorContent = { ...this.nodeEditor.editor.drawflow };
       this.updateSelectedNode(this.selectedNode.id.toString());
@@ -295,7 +365,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   */
   private updateSelectedNode(id: String) {
-    //console.log("update Selected Node to", id);
+    console.log("update Selected Node to", id);
     if (id != "-1") {
       this.selectedNode = this.nodeEditor.editor.getNodeFromId(id);
       //console.log(this.nodeEditor.editor.getNodeFromId(this.selectedNode.id));

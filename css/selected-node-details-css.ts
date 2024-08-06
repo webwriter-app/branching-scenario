@@ -1,18 +1,6 @@
 import { css } from "lit";
 
 export default css`
-  #selected-node-details {
-    height: 100%;
-    width: 100%;
-
-    box-sizing: border-box;
-    border-radius: 0px 0px 8px 8px;
-
-    font-family: "Roboto", sans-serif;
-    font-size: 18px;
-    background-color: white;
-  }
-
   .no-node-selected {
     display: flex;
     flex-direction: column;
@@ -28,15 +16,43 @@ export default css`
     flex-direction: row;
     align-items: flex-start;
     justify-items: center;
-    gap: 15px;
-
-    width: 100%;
-    height: 150px;
-    padding: 20px;
-
-    background-color: white;
 
     box-sizing: border-box;
+    width: 100%;
+    height: 150px;
+
+    gap: 15px;
+    padding: 15px;
+
+    background-color: white;
+    border-bottom: 1px solid black;
+  }
+
+  .inputOutputControls {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-items: center;
+  }
+
+  node-connection-list {
+    height: 100%; /* Adjust as needed */
+    flex: 1; /* This makes the node-connection-list elements take up remaining space evenly */
+  }
+
+  .div-title {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .subtitle {
+    font-family: "Roboto", sans-serif;
+    font-size: 12px;
+    color: gray;
+    margin: 0px;
+    padding: 0px;
   }
 
   .div-icon-popup {
@@ -75,26 +91,5 @@ export default css`
     width: 42px;
     height: 42px;
     color: white;
-  }
-
-  .div-title {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .subtitle {
-    font-family: "Roboto", sans-serif;
-    font-size: 12px;
-    color: gray;
-    margin: 0px;
-    padding: 0px;
-  }
-
-  .last-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-left: auto;
   }
 `;

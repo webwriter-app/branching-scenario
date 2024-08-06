@@ -170,4 +170,28 @@ export default css`
     bottom: 0;
     z-index: 0; /* Place background behind #drawflowEditorDiv */
   }
+
+  :host(:not([contenteditable="true"]):not([contenteditable=""])) .author-only {
+    display: none;
+  }
+
+  :host([contenteditable="true"]) .author-only,
+  :host([contenteditable=""]) .author-only {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding-left: 10px;
+
+    gap: 10px;
+  }
+
+  .author-only p {
+    margin: 0px;
+    font-weight: 500;
+    font-size: 15px;
+    box-sizing: border-box;
+    padding-bottom: 5px;
+    border-bottom: 1.5px solid #52525b;
+    color: #52525b;
+  }
 `;

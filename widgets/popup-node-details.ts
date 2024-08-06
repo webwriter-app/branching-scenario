@@ -31,6 +31,7 @@ import {
 import { WebWriterConnectionButton } from "./webwriter-connection-button";
 import { ToggleableInput } from "./ui-components/toggleable-input";
 import { NodeConnectionList } from "./ui-components/node-connection-list";
+import { QuickConnectNode } from "./ui-components/quick-connect-node";
 
 //Tabler Icon Import
 import route2 from "@tabler/icons/outline/route-2.svg";
@@ -59,6 +60,7 @@ export class PopupNodeDetails extends LitElementWw {
       "webwriter-connection-button": WebWriterConnectionButton,
       "toggleable-input": ToggleableInput,
       "node-connection-list": NodeConnectionList,
+      "quick-connect-node": QuickConnectNode,
     };
   }
 
@@ -77,7 +79,6 @@ export class PopupNodeDetails extends LitElementWw {
 
   //public properties are part of the component's public API
   @property({ type: Object, attribute: false }) selectedNode?: DrawflowNode;
-  @property({ type: Object, attribute: false }) nodesInEditor = {};
 
   @property({ type: Function }) _hoverConnection = (string) => {};
   @property({ type: Function }) _unhoverConnection = (string) => {};
@@ -98,34 +99,9 @@ export class PopupNodeDetails extends LitElementWw {
     this._resetSelect();
   }
 
+  //TODO: Make sl select into its own component
   render() {
     return html` <div class="page-node-details">
-      <div class="controls">
-        <sl-select
-          class="nodeSelect"
-          placeholder="Page"
-          @sl-change=${this._handleSelectChange}
-        >
-          ${Object.keys(this.nodesInEditor)
-            .filter(
-              (key) => this.nodesInEditor[key].id !== this.selectedNode.id
-            )
-            .map(
-              (key) =>
-                html`<sl-option value=${this.nodesInEditor[key].id}>
-                  ${this.nodesInEditor[key].data.title}
-                </sl-option>`
-            )}
-        </sl-select>
-        <sl-button
-          @click=${() => this._connectSelectedNodes()}
-          ?disabled=${!this.isNodeSelected}
-        >
-          <sl-icon slot="prefix" src="${route2}"></sl-icon>
-          Connect</sl-button
-        >
-      </div>
-
       <div class="preview">
         <div class="page">
           <div class="overlay">

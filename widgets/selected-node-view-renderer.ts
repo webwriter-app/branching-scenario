@@ -70,117 +70,118 @@ export class SelectedNodeViewRenderer extends LitElementWw {
 
   render() {
     return html`
-      <div>
-        ${this.selectedNode.id != -1
-          ? html` <div class="title-bar">
-                ${this.selectedNode.class == "page" ||
-                this.selectedNode.class == "origin"
-                  ? html`
-                      <div class="div-icon-page">
-                        <sl-icon src=${file}></sl-icon>
-                      </div>
-                    `
-                  : this.selectedNode.class == "popup"
-                  ? html`<div class="div-icon-popup">
-                      <sl-icon src=${squares}></sl-icon>
-                    </div>`
-                  : this.selectedNode.class == "branch"
-                  ? html`<div class="div-icon-branch">
-                      <sl-icon src=${arrowsSplit2}></sl-icon>
-                    </div>`
-                  : null}
-                <div class="div-title">
-                  <!-- <p class="title">${this.selectedNode.data.title}</p> -->
-                  <toggleable-input
-                    .text=${this.selectedNode.data.title}
-                    .saveChanges=${(string) => this.renameNode(string)}
-                  ></toggleable-input>
-                  ${this.selectedNode.class == "page" ||
-                  this.selectedNode.class == "origin"
-                    ? html` <p class="subtitle">Page</p> `
-                    : this.selectedNode.class == "popup"
-                    ? html`<p class="subtitle">Popup</p>`
-                    : this.selectedNode.class == "branch"
-                    ? html`<p class="subtitle">Smart Branch</p>`
-                    : null}
-                </div>
-
-                <div class="last-item">
-                  <node-connection-list
-                    input
-                    .nodeEditor=${this.nodeEditor}
-                    .selectedNode=${this.selectedNode}
-                    ._addOutputToSelectedNode=${() =>
-                      this._addOutputToSelectedNode()}
-                    ._deleteOutputFromNode=${(nodeId, outputClass) =>
-                      this._deleteOutputFromNode(nodeId, outputClass)}
-                  ></node-connection-list>
-
-                  <sl-divider vertical style="height: 70px;"></sl-divider>
-                  <node-connection-list
-                    output
-                    .nodeEditor=${this.nodeEditor}
-                    .selectedNode=${this.selectedNode}
-                    ._addOutputToSelectedNode=${() =>
-                      this._addOutputToSelectedNode()}
-                    ._deleteOutputFromNode=${(nodeId, outputClass) =>
-                      this._deleteOutputFromNode(nodeId, outputClass)}
-                  ></node-connection-list>
-                </div>
-              </div>
+      ${this.selectedNode.id != -1
+        ? html` <div class="title-bar">
               ${this.selectedNode.class == "page" ||
               this.selectedNode.class == "origin"
                 ? html`
-                    <page-node-details
-                      .nodeEditor="${this.nodeEditor}"
-                      .nodesInEditor="${this.editorContent.drawflow.Home.data}"
-                      .selectedNode="${this.selectedNode}"
-                      .selectedNodeId="${this.selectedNode.id}"
-                      .changeInEditorCallback=${(
-                        drawflow,
-                        updateType,
-                        node,
-                        removedNodeId,
-                        inputNode,
-                        outputNode,
-                        inputClass,
-                        outputClass,
-                        outputHadConnections
-                      ) => {
-                        this.changeInEditorCallback(
-                          drawflow,
-                          updateType,
-                          node,
-                          removedNodeId,
-                          inputNode,
-                          outputNode,
-                          inputClass,
-                          outputClass,
-                          outputHadConnections
-                        );
-                      }}
-                    >
-                      <slot></slot>
-                    </page-node-details>
+                    <div class="div-icon-page">
+                      <sl-icon src=${file}></sl-icon>
+                    </div>
                   `
-                : this.selectedNode.class == "question-branch"
-                ? html` <div id="selected-node-details">
-                    <quiz-branch-node-details
-                      .editor="${this.nodeEditor}"
-                      .nodesInEditor="${this.editorContent.drawflow.Home.data}"
-                      .selectedNode="${this.selectedNode}"
-                    >
-                      <slot></slot>
-                    </quiz-branch-node-details>
-                  </div>`
                 : this.selectedNode.class == "popup"
-                ? html`
-                    <popup-node-details
-                      .nodeEditor="${this.nodeEditor}"
-                      .nodesInEditor="${this.editorContent.drawflow.Home.data}"
-                      .selectedNode="${this.selectedNode}"
-                      .selectedNodeId="${this.selectedNode.id}"
-                      .changeInEditorCallback=${(
+                ? html`<div class="div-icon-popup">
+                    <sl-icon src=${squares}></sl-icon>
+                  </div>`
+                : this.selectedNode.class == "branch"
+                ? html`<div class="div-icon-branch">
+                    <sl-icon src=${arrowsSplit2}></sl-icon>
+                  </div>`
+                : null}
+              <div class="div-title">
+                <!-- <p class="title">${this.selectedNode.data.title}</p> -->
+                <toggleable-input
+                  .text=${this.selectedNode.data.title}
+                  .saveChanges=${(string) => this.renameNode(string)}
+                ></toggleable-input>
+                ${this.selectedNode.class == "page" ||
+                this.selectedNode.class == "origin"
+                  ? html` <p class="subtitle">Page</p> `
+                  : this.selectedNode.class == "popup"
+                  ? html`<p class="subtitle">Popup</p>`
+                  : this.selectedNode.class == "branch"
+                  ? html`<p class="subtitle">Smart Branch</p>`
+                  : null}
+              </div>
+              <div class="inputOutputControls">
+                <node-connection-list
+                  input
+                  .nodeEditor=${this.nodeEditor}
+                  .selectedNode=${this.selectedNode}
+                  .changeInEditorCallback=${(
+                    drawflow,
+                    updateType,
+                    node,
+                    removedNodeId,
+                    inputNode,
+                    outputNode,
+                    inputClass,
+                    outputClass,
+                    outputHadConnections
+                  ) => {
+                    this.changeInEditorCallback(
+                      drawflow,
+                      updateType,
+                      node,
+                      removedNodeId,
+                      inputNode,
+                      outputNode,
+                      inputClass,
+                      outputClass,
+                      outputHadConnections
+                    );
+                  }}
+                ></node-connection-list>
+                <sl-divider vertical style="height: 100%;"></sl-divider>
+                <node-connection-list
+                  output
+                  .nodeEditor=${this.nodeEditor}
+                  .selectedNode=${this.selectedNode}
+                  .changeInEditorCallback=${(
+                    drawflow,
+                    updateType,
+                    node,
+                    removedNodeId,
+                    inputNode,
+                    outputNode,
+                    inputClass,
+                    outputClass,
+                    outputHadConnections
+                  ) => {
+                    this.changeInEditorCallback(
+                      drawflow,
+                      updateType,
+                      node,
+                      removedNodeId,
+                      inputNode,
+                      outputNode,
+                      inputClass,
+                      outputClass,
+                      outputHadConnections
+                    );
+                  }}
+                ></node-connection-list>
+              </div>
+            </div>
+            ${this.selectedNode.class == "page" ||
+            this.selectedNode.class == "origin"
+              ? html`
+                  <page-node-details
+                    .nodeEditor="${this.nodeEditor}"
+                    .selectedNode="${this.selectedNode}"
+                    .selectedNodeId="${this.selectedNode.id}"
+                    .changeInEditorCallback=${(
+                      drawflow,
+                      updateType,
+                      node,
+                      removedNodeId,
+                      inputNode,
+                      outputNode,
+                      inputClass,
+                      outputClass,
+                      outputHadConnections
+                    ) => {
+                      this.changeInEditorCallback(
                         drawflow,
                         updateType,
                         node,
@@ -190,29 +191,60 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                         inputClass,
                         outputClass,
                         outputHadConnections
-                      ) => {
-                        this.changeInEditorCallback(
-                          drawflow,
-                          updateType,
-                          node,
-                          removedNodeId,
-                          inputNode,
-                          outputNode,
-                          inputClass,
-                          outputClass,
-                          outputHadConnections
-                        );
-                      }}
-                    >
-                      <slot></slot>
-                    </popup-node-details>
-                  `
-                : null}`
-          : html` <div class="no-node-selected">
-              <p>Select a node</p>
-              <slot></slot>
-            </div>`}
-      </div>
+                      );
+                    }}
+                  >
+                    <slot></slot>
+                  </page-node-details>
+                `
+              : this.selectedNode.class == "question-branch"
+              ? html` <div id="selected-node-details">
+                  <quiz-branch-node-details
+                    .editor="${this.nodeEditor}"
+                    .nodesInEditor="${this.editorContent.drawflow.Home.data}"
+                    .selectedNode="${this.selectedNode}"
+                  >
+                    <slot></slot>
+                  </quiz-branch-node-details>
+                </div>`
+              : this.selectedNode.class == "popup"
+              ? html`
+                  <popup-node-details
+                    .nodeEditor="${this.nodeEditor}"
+                    .selectedNode="${this.selectedNode}"
+                    .selectedNodeId="${this.selectedNode.id}"
+                    .changeInEditorCallback=${(
+                      drawflow,
+                      updateType,
+                      node,
+                      removedNodeId,
+                      inputNode,
+                      outputNode,
+                      inputClass,
+                      outputClass,
+                      outputHadConnections
+                    ) => {
+                      this.changeInEditorCallback(
+                        drawflow,
+                        updateType,
+                        node,
+                        removedNodeId,
+                        inputNode,
+                        outputNode,
+                        inputClass,
+                        outputClass,
+                        outputHadConnections
+                      );
+                    }}
+                  >
+                    <slot></slot>
+                  </popup-node-details>
+                `
+              : null}`
+        : html` <div class="no-node-selected">
+            <p>Select a node</p>
+            <slot></slot>
+          </div>`}
     `;
   }
 
@@ -237,13 +269,6 @@ export class SelectedNodeViewRenderer extends LitElementWw {
 
 
   */
-  private _addOutputToSelectedNode() {
-    this.nodeEditor.editor.addNodeOutput(this.selectedNode.id);
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "outputCreated"
-    );
-  }
 
   /*
       //TODO: make node preview part of selectednodeviewrenderer
@@ -251,24 +276,4 @@ export class SelectedNodeViewRenderer extends LitElementWw {
       //TODO: move quick connect to part options
       //TODO: find error with clear and slots
   */
-  private _deleteOutputFromNode(output_id: number, output_class: string) {
-    let outputHadConnections =
-      (this.nodeEditor.editor.getNodeFromId(output_id) as DrawflowNode).outputs[
-        output_class
-      ].connections.length != 0;
-
-    this.nodeEditor.editor.removeNodeOutput(output_id, output_class);
-
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "outputDeleted",
-      null,
-      null,
-      null,
-      null,
-      null,
-      output_class,
-      outputHadConnections
-    );
-  }
 }

@@ -15,26 +15,6 @@ export default css`
     box-sizing: border-box;
   }
 
-  .controls {
-    border-top: 1px solid #e4e4e4;
-    border-bottom: 1px solid #e4e4e4;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center; /* Center items vertically */
-    gap: 10px; /* Adjust the value to your desired spacing */
-
-    font-family: "Roboto", sans-serif;
-    font-size: 20px;
-    font-weight: bold;
-
-    width: 100%;
-    background-color: white;
-
-    padding: 15px;
-    box-sizing: border-box;
-  }
-
   .preview {
     display: flex;
     flex-direction: column;

@@ -250,6 +250,7 @@ export class NodeEditor extends LitElementWw {
 
     //Event listerner for creation of a node
     this.editor.on("nodeCreated", (id) => {
+      //console.log("nodeCreated", id);
       let createdNode = this.editor.getNodeFromId(id);
       this.changeInEditorCallback(
         { ...this.editor.drawflow },
@@ -343,7 +344,7 @@ export class NodeEditor extends LitElementWw {
     this.editor.on(
       "connectionRemoved",
       ({ output_id, input_id, output_class, input_class }) => {
-        console.log("this nodeeditor callback");
+        //console.log("this nodeeditor callback");
         this.updateSelectedNodeCallback(this.selectedNode.id);
 
         if (this.selectedConnection != NO_CONNECTION_SELECTED) {

@@ -36,6 +36,7 @@ export class ToggleableInput extends LitElementWw {
         flex-direction: row;
         align-items: center;
         gap: 5px;
+        width: 260px;
       }
 
       input {

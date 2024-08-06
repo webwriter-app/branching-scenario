@@ -70,6 +70,7 @@ export class GamebookContainerManager extends LitElementWw {
     this.gamebookContainers.forEach((container) => {
       container.remove();
     });
+    console.log("delete successfull", this.gamebookContainers);
   }
 
   /*
@@ -232,7 +233,7 @@ export class GamebookContainerManager extends LitElementWw {
   Also remove the node data adding 
   */
   public _createPageContainerFromPageNode(pageNode: DrawflowNode) {
-    //console.log(this.gamebookContainers);
+    //console.log("pageNode in Manager", pageNode.id.toString());
     const pageContainer = document.createElement(
       "webwriter-gamebook-page-container"
     ) as WebWriterGamebookPageContainer;
@@ -261,6 +262,8 @@ export class GamebookContainerManager extends LitElementWw {
 
     //
     this.appendToShadowDom(pageContainer);
+
+    //console.log("created Page Container", pageContainer);
   }
 
   /*
