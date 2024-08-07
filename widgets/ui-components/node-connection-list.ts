@@ -1,4 +1,4 @@
-import { html, css, LitElement, unsafeCSS } from "lit";
+import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -118,20 +118,6 @@ export class NodeConnectionList extends LitElementWw {
         width: 100%;
       }
 
-      /* .itemButton::part(label) {
-        padding: 0px;
-        width: 100%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        text-align: left;
-
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      } */
-
       sl-button::part(base) {
         justify-content: flex-start; /* Aligns the content to the left */
         text-align: left; /* Ensures text within the button is aligned left */
@@ -143,6 +129,7 @@ export class NodeConnectionList extends LitElementWw {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        margin-right: auto;
       }
 
       sl-icon-button::part(base) {
@@ -168,6 +155,10 @@ export class NodeConnectionList extends LitElementWw {
     `;
   }
 
+  protected firstUpdated(_changedProperties: PropertyValues): void {
+    console.log("node connection list");
+  }
+
   renderOutputs() {
     return html`
       <div class="container">
@@ -189,8 +180,8 @@ export class NodeConnectionList extends LitElementWw {
             >
               <p style="color: gray">${index + 1}</p>
               <output-connection-control
-                .nodeEditor=${this.nodeEditor}
                 .selectedNode=${this.selectedNode}
+                .nodeEditor=${this.nodeEditor}
                 .outputClass=${output_class}
                 @mouseenter=${() => {
                   if (drawflowConnection.connections[0]) {

@@ -20,6 +20,7 @@ import {
 import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
+import route2 from "@tabler/icons/outline/route-2.svg";
 
 @customElement("quick-connect-node")
 export class QuickConnectNode extends LitElementWw {
@@ -40,17 +41,23 @@ export class QuickConnectNode extends LitElementWw {
       .controls {
         display: flex;
         flex-direction: row;
-        justify-content: left;
-        align-items: left; /* Center items vertically */
-        gap: 10px; /* Adjust the value to your desired spacing */
-
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
         font-family: "Roboto", sans-serif;
         font-size: 20px;
         font-weight: bold;
-
-        width: 100%;
-
         box-sizing: border-box;
+        width: 100%;
+      }
+
+      sl-select {
+        flex-grow: 1; /* Allow sl-select to grow and take up remaining space */
+      }
+
+      sl-button {
+        width: 100px; /* Set a fixed width for the button */
+        flex-shrink: 0; /* Prevent the button from shrinking */
       }
 
       .icon-header {
@@ -143,8 +150,7 @@ export class QuickConnectNode extends LitElementWw {
         <sl-button
           @click=${() => this._connectSelectedNodes()}
           ?disabled=${!this.isNodeSelected}
-        >
-          Connect</sl-button
+          ><sl-icon src=${route2} slot="prefix"></sl-icon> Connect</sl-button
         >
       </div>
     `;

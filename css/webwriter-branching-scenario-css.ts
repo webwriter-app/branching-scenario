@@ -190,8 +190,22 @@ export default css`
     font-weight: 500;
     font-size: 15px;
     box-sizing: border-box;
-    padding-bottom: 5px;
+
+    /* border-bottom: 1.5px solid #52525b; */
+    color: #52525b;
+  }
+
+  .author-only div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
     border-bottom: 1.5px solid #52525b;
+    gap: 7px;
+    padding-bottom: 10px;
+  }
+
+  .author-only sl-icon {
     color: #52525b;
   }
 `;

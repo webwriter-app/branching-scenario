@@ -26,6 +26,7 @@ import route2 from "@tabler/icons/outline/route-2.svg";
 import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
+import book from "@tabler/icons/outline/book.svg";
 
 const NO_CONNECTION_SELECTED = "output_id-output_class-input_id-input_class";
 const NO_NODE_SELECTED: DrawflowNode = {
@@ -169,23 +170,30 @@ export class WebWriterBranchingScenario extends LitElementWw {
               </selected-node-view-renderer>
 
               <div part="options" class="author-only">
+                <div>
+                  <sl-icon src=${book} slot="prefix"></sl-icon>
+                  <p>Gamebook</p>
+                </div>
+                <sl-input
+                  placeholder="Search nodes"
+                  style="padding-bottom: 15px"
+                >
+                  <sl-icon src=${search} slot="prefix"></sl-icon>
+                </sl-input>
                 ${this.selectedNode.id != -1
-                  ? html`
-                      ${this.selectedNode.class == "page" ||
-                      this.selectedNode.class == "origin"
-                        ? html`<sl-icon src=${file} slot="prefix"></sl-icon>`
-                        : this.selectedNode.class == "popup"
-                        ? html`<sl-icon src=${squares} slot="prefix"></sl-icon>`
-                        : this.selectedNode.class == "branch"
-                        ? html`<sl-icon
-                            src=${arrowsSplit2}
-                            slot="prefix"
-                          ></sl-icon>`
-                        : null}
-                      <p>${this.selectedNode.data.title}</p>
-                      <p>Quick Connect</p>
-                      <sl-icon src=${route2} slot="prefix"></sl-icon>
+                  ? html`<div style="margin-left: 25px">
+                        ${this.selectedNode.class == "page" ||
+                        this.selectedNode.class == "origin"
+                          ? html`<sl-icon src=${file}></sl-icon>`
+                          : this.selectedNode.class == "popup"
+                          ? html`<sl-icon src=${squares}></sl-icon>`
+                          : this.selectedNode.class == "branch"
+                          ? html`<sl-icon src=${arrowsSplit2}></sl-icon>`
+                          : null}
+                        <p>${this.selectedNode.data.title}</p>
+                      </div>
                       <quick-connect-node
+                        style="margin-left: 25px"
                         .nodeEditor=${this.nodeEditor}
                         .selectedNode=${this.selectedNode}
                         .changeInEditorCallback=${(
@@ -211,11 +219,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                             outputHadConnections
                           );
                         }}
-                      ></quick-connect-node>
-                    `
-                  : html`<sl-input placeholder="Search nodes">
-                      <sl-icon src=${search} slot="prefix"></sl-icon>
-                    </sl-input>`}
+                      ></quick-connect-node> `
+                  : null}
               </div>
             `
           : html`<webwriter-gamebook

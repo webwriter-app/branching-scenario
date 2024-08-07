@@ -74,6 +74,7 @@ export class NodeEditorControlsBar extends LitElementWw {
   @property({ type: Function }) addPopUpNode = (title: string) => {};
   @property({ type: Function }) addBranchNode = () => {};
   @property({ type: Function }) addQuestionNode = () => {};
+  @property({ type: Function }) addDecisionPopUpTemplate = () => {};
   @property({ type: Function }) showDialog = () => {};
 
   protected render() {
@@ -137,7 +138,7 @@ export class NodeEditorControlsBar extends LitElementWw {
             </sl-menu-item>
             <sl-divider></sl-divider>
             <sl-menu-label>Template</sl-menu-label>
-            <sl-menu-item @click=${() => this.addQuestionNode()}>
+            <sl-menu-item @click=${() => this.addDecisionPopUpTemplate()}>
               <sl-icon slot="prefix" src=${directions}></sl-icon>
               Decision Popup
             </sl-menu-item>

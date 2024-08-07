@@ -89,6 +89,22 @@ export class OutputConnectionControl extends LitElementWw {
     `;
   }
 
+  protected updated(_changedProperties: PropertyValues): void {
+    if (_changedProperties.has("selectedNode")) {
+      this.updateComplete.then(() => {
+        const selectElement = this.shadowRoot.querySelector(
+          ".nodeSelect"
+        ) as SlSelect;
+        if (selectElement) {
+          selectElement.value =
+            this.selectedNode?.outputs?.[this.outputClass.toString()]
+              ?.connections?.[0]?.node ?? "-1";
+          selectElement.requestUpdate();
+        }
+      });
+    }
+  }
+
   /*
   
   */

@@ -1,4 +1,4 @@
-import { html, css, LitElement, unsafeCSS } from "lit";
+import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property } from "lit/decorators.js";
 import { DrawflowNode } from "drawflow";
@@ -67,6 +67,12 @@ export class SelectedNodeViewRenderer extends LitElementWw {
 
   //import CSS
   static styles = [styles];
+
+  protected updated(_changedProperties: PropertyValues): void {
+    if (_changedProperties.has("selectedNode")) {
+      console.log(this.selectedNode);
+    }
+  }
 
   render() {
     return html`

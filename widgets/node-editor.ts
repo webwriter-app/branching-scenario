@@ -157,6 +157,7 @@ export class NodeEditor extends LitElementWw {
           .addPopUpNode=${(string) => this.addPopUpNode(string)}
           .addQuestionNode=${() => this.addQuestionNode()}
           .addBranchNode=${() => this.addBranchNode()}
+          .addDecisionPopUpTemplate=${() => this.addDecisionPopUpTemplate()}
           .showDialog=${() =>
             (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
         >
@@ -245,6 +246,7 @@ export class NodeEditor extends LitElementWw {
 
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
+      //TODO: make node unselected method because output-connection-control on node switch asre broken//ask chatgpt what htey think of  it
       this.updateSelectedNodeCallback("-1");
     });
 
@@ -281,6 +283,17 @@ export class NodeEditor extends LitElementWw {
 
     //Event listener for when a connection creation started via drag and drop
     this.editor.on("connectionStart", ({ output_id, output_class }) => {
+      // if (
+      //   this.editor.getNodeFromId(output_id).outputs[output_class]
+      //     ?.connections?.[0]?.node != undefined
+      // ) {
+      //   console.log("output already is connected");
+      // } else {
+      //   console.log("output empty");
+      // }
+
+      //TODO: include a run that disables outputs that already have a connection using css pointer events
+
       //   this.updateSelectedNodeCallback(output_id);
       //   this.shadowRoot
       //     ?.getElementById(`node-${output_id}`)
@@ -694,6 +707,15 @@ export class NodeEditor extends LitElementWw {
       containerHtml,
       false
     );
+  }
+
+  /*
+
+
+  */
+  private addDecisionPopUpTemplate() {
+    this.addPageNode("test", false);
+    this.addBranchNode();
   }
 
   /*
