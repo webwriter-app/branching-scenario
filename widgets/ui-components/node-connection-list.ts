@@ -1,6 +1,14 @@
-import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
+import {
+  html,
+  css,
+  LitElement,
+  unsafeCSS,
+  PropertyValues,
+  PropertyDeclaration,
+} from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { repeat } from "lit/directives/repeat.js";
 
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -18,7 +26,8 @@ import XCircleFill from "bootstrap-icons/icons/x-circle-fill.svg";
 @customElement("node-connection-list")
 export class NodeConnectionList extends LitElementWw {
   @property({ type: Object }) nodeEditor;
-  @property({ type: Object, attribute: false }) selectedNode?: DrawflowNode;
+  @property({ type: Object, attribute: true, reflect: true })
+  selectedNode?: DrawflowNode;
 
   @property({ type: Boolean, reflect: true }) output = false;
   @property({ type: Boolean, reflect: true }) input = false;
@@ -155,10 +164,6 @@ export class NodeConnectionList extends LitElementWw {
     `;
   }
 
-  protected firstUpdated(_changedProperties: PropertyValues): void {
-    console.log("node connection list");
-  }
-
   renderOutputs() {
     return html`
       <div class="container">
@@ -174,44 +179,45 @@ export class NodeConnectionList extends LitElementWw {
           ></sl-icon-button>
         </div>
         <div class="verticalStack">
-          ${Object.entries(this.selectedNode.outputs).map(
-            ([output_class, drawflowConnection], index) => html` <div
-              class="item"
-            >
-              <p style="color: gray">${index + 1}</p>
-              <output-connection-control
-                .selectedNode=${this.selectedNode}
-                .nodeEditor=${this.nodeEditor}
-                .outputClass=${output_class}
-                @mouseenter=${() => {
-                  if (drawflowConnection.connections[0]) {
-                    this.nodeEditor._highlightConnection(
+          ${repeat(
+            Object.entries(this.selectedNode.outputs),
+            ([output_class]) => `${this.selectedNode.id}-${output_class}`,
+            ([output_class, drawflowConnection], index) => html`
+              <div class="item">
+                <p style="color: gray">${index + 1}</p>
+                <output-connection-control
+                  .selectedNode=${this.selectedNode}
+                  .nodeEditor=${this.nodeEditor}
+                  .outputClass=${output_class}
+                  @mouseenter=${() => {
+                    if (drawflowConnection.connections[0]) {
+                      this.nodeEditor._highlightConnection(
+                        this.selectedNode.id,
+                        drawflowConnection.connections[0].node,
+                        output_class,
+                        "input_1"
+                      );
+                    }
+                  }}
+                  @mouseleave=${() => {
+                    if (drawflowConnection.connections[0]) {
+                      this.nodeEditor._unhighlightConnection(
+                        `${this.selectedNode.id}-${drawflowConnection.connections[0].node}-${output_class}-input_1`
+                      );
+                    }
+                  }}
+                ></output-connection-control>
+                <sl-icon-button
+                  src=${minus}
+                  style="font-size: 0.8rem;"
+                  @click=${() =>
+                    this._deleteOutputFromNode(
                       this.selectedNode.id,
-                      drawflowConnection.connections[0].node,
-                      output_class,
-                      "input_1"
-                    );
-                  }
-                }}
-                @mouseleave=${() => {
-                  if (drawflowConnection.connections[0]) {
-                    this.nodeEditor._unhighlightConnection(
-                      `${this.selectedNode.id}-${drawflowConnection.connections[0].node}-${output_class}-input_1`
-                    );
-                  }
-                }}
-              >
-              </output-connection-control>
-              <sl-icon-button
-                src=${minus}
-                style="font-size: 0.8rem;"
-                @click=${() =>
-                  this._deleteOutputFromNode(
-                    this.selectedNode.id,
-                    output_class
-                  )}
-              ></sl-icon-button>
-            </div>`
+                      output_class
+                    )}
+                ></sl-icon-button>
+              </div>
+            `
           )}
         </div>
       </div>

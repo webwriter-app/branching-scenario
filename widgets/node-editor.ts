@@ -37,6 +37,7 @@ import styles from "../css/webwriter-branching-scenario-css";
 import { DrawflowBackground } from "./node-editor-background";
 import { NodeEditorControlsBar } from "./node-editor-control-bar";
 import { DrawflowHelpPopUpControls } from "./node-editor-help-popup-controls";
+import { nodeTemplates } from "./node-templates";
 
 // Declare global variable of type DrawflowNode
 const NO_NODE_SELECTED: DrawflowNode = {
@@ -102,7 +103,8 @@ export class NodeEditor extends LitElementWw {
     outputNode?,
     inputClass?,
     outputClass?,
-    outputHadConnections?
+    outputHadConnections?,
+    importedGamebookContainers?
   ) => {};
 
   @property({ attribute: false }) updateSelectedNodeCallback = (id) => {};
@@ -247,7 +249,7 @@ export class NodeEditor extends LitElementWw {
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
       //TODO: make node unselected method because output-connection-control on node switch asre broken//ask chatgpt what htey think of  it
-      this.updateSelectedNodeCallback("-1");
+      this.updateSelectedNodeCallback(-1);
     });
 
     //Event listerner for creation of a node
@@ -640,10 +642,6 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  /*
-
-
-  */
   private addBranchNode() {
     const branchNodeContent = {
       title: "Untitled Branch",
@@ -693,8 +691,8 @@ export class NodeEditor extends LitElementWw {
     const zoom = this.editor.zoom;
 
     //center of canvas - translation of canvas / zoom - node dimension center
-    const centerX = rect.width / 2 - this.editor.canvas_x / zoom - 302 / 2;
-    const centerY = rect.height / 2 - this.editor.canvas_y / zoom - 90 / 2;
+    const centerX = rect.width / 2 - this.editor.canvas_x / zoom; //- 302 / 2;
+    const centerY = rect.height / 2 - this.editor.canvas_y / zoom; //- 90 / 2;
 
     this.editor.addNode(
       "Branch Node",
@@ -707,15 +705,6 @@ export class NodeEditor extends LitElementWw {
       containerHtml,
       false
     );
-  }
-
-  /*
-
-
-  */
-  private addDecisionPopUpTemplate() {
-    this.addPageNode("test", false);
-    this.addBranchNode();
   }
 
   /*
@@ -849,5 +838,174 @@ export class NodeEditor extends LitElementWw {
       )
       ?.querySelector("path")
       ?.classList.remove("creating");
+  }
+
+  /*
+
+
+  */
+  private addDecisionPopUpTemplate() {
+    //console.log(JSON.stringify(exportdata));
+    var currentNodes = this.editor.export();
+    // Create a deep copy of the nodeTemplates
+    const nodeTemplatesCopy = JSON.parse(JSON.stringify(nodeTemplates));
+
+    // Assuming you have the following from the drawflow editor:
+    const rect = this.drawflowEditorDiv.getBoundingClientRect();
+    const zoom = this.editor.zoom;
+
+    const centerX = rect.width / 2 - this.editor.canvas_x / zoom - 317 / 2;
+    const centerY = rect.height / 2 - this.editor.canvas_y / zoom - 105 / 2;
+
+    // Move nodes to the center of the canvas
+    this.moveNodesToCenter(nodeTemplatesCopy, centerX, centerY);
+
+    const mergedData = this.mergeTemplate(currentNodes, nodeTemplatesCopy);
+    //
+    this.editor.import(mergedData.currentNodes);
+
+    this.changeInEditorCallback(
+      { ...this.editor.drawflow },
+      "templateImported",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      mergedData.templateContainers
+    );
+
+    this.updateSelectedNodeCallback(this.selectedNode.id);
+  }
+
+  /*
+
+
+  */
+  private getCenterOfBoundingBox(data) {
+    const nodes = Object.values(data);
+
+    let minX = Infinity,
+      maxX = -Infinity;
+    let minY = Infinity,
+      maxY = -Infinity;
+
+    nodes.forEach((node) => {
+      const { pos_x, pos_y } = node as DrawflowNode;
+
+      if (pos_x < minX) minX = pos_x;
+      if (pos_x > maxX) maxX = pos_x;
+
+      if (pos_y < minY) minY = pos_y;
+      if (pos_y > maxY) maxY = pos_y;
+    });
+
+    const centerX = (minX + maxX) / 2;
+    const centerY = (minY + maxY) / 2;
+
+    return { centerX, centerY };
+  }
+
+  /*
+
+
+  */
+  private moveNodesToCenter(nodeTemplate, targetCenterX, targetCenterY) {
+    const data = nodeTemplate.drawflow.Home.data;
+    // Step 1: Get the current center of the bounding box
+    const { centerX: currentCenterX, centerY: currentCenterY } =
+      this.getCenterOfBoundingBox(nodeTemplate.drawflow.Home.data);
+
+    // Step 2: Calculate the translation required to move the nodes to the target center
+    const deltaX = targetCenterX - currentCenterX;
+    const deltaY = targetCenterY - currentCenterY;
+
+    // Step 3: Update each node's position
+    Object.values(data).forEach((node) => {
+      (node as DrawflowNode).pos_x += deltaX;
+      (node as DrawflowNode).pos_y += deltaY;
+    });
+  }
+
+  /*
+
+
+  */
+  private mergeTemplate(currentNodes, nodeTemplates) {
+    //
+    const currentData = currentNodes.drawflow.Home.data;
+    const templateData = nodeTemplates.drawflow.Home.data;
+
+    const currentMaxIndex = Math.max(...Object.keys(currentData).map(Number));
+    let newIndex = currentMaxIndex + 1;
+
+    const indexMap = Object.fromEntries(
+      Object.keys(templateData).map((key) => [Number(key), newIndex++])
+    );
+
+    for (const [key, node] of Object.entries(templateData)) {
+      const newId = indexMap[Number(key)];
+      (node as DrawflowNode).id = newId;
+
+      for (const connections of Object.values(
+        (node as DrawflowNode).inputs
+      ).concat(Object.values((node as DrawflowNode).outputs))) {
+        for (const connection of connections.connections) {
+          connection.node =
+            indexMap[connection.node]?.toString() || connection.node;
+        }
+      }
+
+      currentData[newId] = { ...(node as DrawflowNode) };
+    }
+
+    // Update the containers with the new indexMap values
+    const templateContainers = nodeTemplates.containers;
+
+    for (const container of templateContainers) {
+      // Update the drawflownodeid attribute
+      const drawflowNodeIdAttr = container.attributes.find(
+        (attr) => attr.name === "drawflownodeid"
+      );
+      if (drawflowNodeIdAttr) {
+        const oldId = Number(drawflowNodeIdAttr.value);
+        drawflowNodeIdAttr.value = indexMap[oldId].toString();
+      }
+
+      // Update the datatargetid and identifier in the innerHTML
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(container.innerHTML, "text/html");
+      const buttons = doc.querySelectorAll("webwriter-connection-button");
+
+      buttons.forEach((button) => {
+        // Update datatargetid
+        const dataTargetId = button.getAttribute("datatargetid");
+        if (dataTargetId) {
+          const oldTargetId = Number(dataTargetId);
+          button.setAttribute("datatargetid", indexMap[oldTargetId].toString());
+        }
+
+        // Update identifier
+        const identifier = button.getAttribute("identifier");
+        if (identifier) {
+          const identifierParts = identifier.split("-");
+          if (identifierParts.length === 4) {
+            const x = Number(identifierParts[0]);
+            const y = Number(identifierParts[2]);
+            const newX = indexMap[x];
+            const newY = indexMap[y];
+            const newIdentifier = `${newX}-output_1-${newY}-input_1`;
+            button.setAttribute("identifier", newIdentifier);
+          }
+        }
+      });
+
+      // Update the container's innerHTML with the modified content
+      container.innerHTML = doc.body.innerHTML;
+    }
+
+    return { currentNodes, templateContainers };
   }
 }

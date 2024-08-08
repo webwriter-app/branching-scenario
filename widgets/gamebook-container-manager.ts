@@ -318,4 +318,25 @@ export class GamebookContainerManager extends LitElementWw {
   
   
   */
+  private importContainers(template: Array<Object>) {
+    let containers = template.map((info) =>
+      this.createContainerFromImport(info)
+    );
+    containers.forEach((container) => {
+      this.appendToShadowDom(container);
+    });
+  }
+
+  /*
+
+
+  */
+  private createContainerFromImport(info) {
+    let element = document.createElement(info.tagName);
+    info.attributes.forEach((attr) => {
+      element.setAttribute(attr.name, attr.value);
+    });
+    element.innerHTML = info.innerHTML;
+    return element;
+  }
 }

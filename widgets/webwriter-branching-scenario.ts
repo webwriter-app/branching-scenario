@@ -98,6 +98,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   render() {
     return html`
       <div id="widget">
+        <!-- <button @click=${() => this.testOutput()}></button> -->
         ${this.isContentEditable
           ? html`
               <node-editor
@@ -112,7 +113,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   outputNode,
                   inputClass,
                   outputClass,
-                  outputHadConnections
+                  outputHadConnections,
+                  importedGamebookContainers
                 ) => {
                   this.updateGamebookContainers(
                     drawflow,
@@ -123,7 +125,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     outputNode,
                     inputClass,
                     outputClass,
-                    outputHadConnections
+                    outputHadConnections,
+                    importedGamebookContainers
                   );
                 }}
                 .updateSelectedNodeCallback=${(id) => {
@@ -133,6 +136,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 .handleGamebookTitle=${(event) =>
                   this.handleGamebookTitle(event)}
               ></node-editor>
+
               <selected-node-view-renderer
                 .selectedNode=${this.selectedNode}
                 .nodeEditor=${this.nodeEditor}
@@ -237,6 +241,35 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
 
   */
+  private testOutput() {
+    console.log("test");
+    console.log(
+      JSON.stringify(this.gamebookContainers, this.domElementReplacer)
+    );
+  }
+
+  /*
+  //TODO: remove, just keep this for making a string for examples
+
+  */
+  private domElementReplacer(key, value) {
+    if (value instanceof HTMLElement) {
+      return {
+        tagName: value.tagName,
+        attributes: [...value.attributes].map((attr) => ({
+          name: attr.name,
+          value: attr.value,
+        })),
+        innerHTML: value.innerHTML,
+      };
+    }
+    return value;
+  }
+
+  /*
+
+
+  */
   private updateGamebookContainers(
     drawflow: Object,
     updateType: String,
@@ -246,7 +279,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
     outputNode?: DrawflowNode,
     inputClass?: String,
     outputClass?: String,
-    outputHadConnections?: Boolean
+    outputHadConnections?: Boolean,
+    importedGamebookContainers?: Array<Object>
   ) {
     this.editorContent = drawflow;
 
@@ -339,6 +373,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
       this.updateSelectedNode(this.selectedNode.id.toString());
     }
+    //
+    else if (updateType == "templateImported") {
+      console.log(importedGamebookContainers);
+      this.gamebookContainerManager.importContainers(
+        importedGamebookContainers
+      );
+    }
   }
 
   /*
@@ -370,9 +411,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   */
   private updateSelectedNode(id: String) {
-    console.log("update Selected Node to", id);
+    //console.log("update Selected Node to", id);
     if (id != "-1") {
-      this.selectedNode = this.nodeEditor.editor.getNodeFromId(id);
+      this.selectedNode = { ...this.nodeEditor.editor.getNodeFromId(id) };
+
+      console.log(this.selectedNode);
       //console.log(this.nodeEditor.editor.getNodeFromId(this.selectedNode.id));
       if (
         this.selectedNode.class == "page" ||
@@ -382,11 +425,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.gamebookContainerManager._showGamebookContainerById(
           this.selectedNode.id
         );
-      } else if (this.selectedNode.class == "question-branch") {
+      }
+      //
+      else if (this.selectedNode.class == "question-branch") {
         this.gamebookContainerManager._hideAllGamebookContainers();
       }
     } else {
-      this.selectedNode = NO_NODE_SELECTED;
+      this.selectedNode = { ...NO_NODE_SELECTED };
       this.gamebookContainerManager._hideAllGamebookContainers();
     }
   }

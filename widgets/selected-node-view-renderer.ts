@@ -30,15 +30,14 @@ import { ToggleableInput } from "./ui-components/toggleable-input";
 import { NodeConnectionList } from "./ui-components/node-connection-list";
 
 //Tabler Icon Import
-import route2 from "@tabler/icons/outline/route-2.svg";
 import squares from "@tabler/icons/filled/squares.svg";
 import file from "@tabler/icons/filled/file.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 
 @customElement("node-details-selector")
 export class SelectedNodeViewRenderer extends LitElementWw {
-  @property({ type: Object, attribute: true }) selectedNode: DrawflowNode =
-    NO_NODE_SELECTED;
+  @property({ type: Object, attribute: true, reflect: true })
+  selectedNode: DrawflowNode = NO_NODE_SELECTED;
   @property({ type: Object }) nodeEditor;
   @property({ type: Object, attribute: false }) editorContent;
   @property({ attribute: false }) changeInEditorCallback = (
@@ -68,15 +67,9 @@ export class SelectedNodeViewRenderer extends LitElementWw {
   //import CSS
   static styles = [styles];
 
-  protected updated(_changedProperties: PropertyValues): void {
-    if (_changedProperties.has("selectedNode")) {
-      console.log(this.selectedNode);
-    }
-  }
-
   render() {
     return html`
-      ${this.selectedNode.id != -1
+      ${this.selectedNode.id !== -1
         ? html` <div class="title-bar">
               ${this.selectedNode.class == "page" ||
               this.selectedNode.class == "origin"

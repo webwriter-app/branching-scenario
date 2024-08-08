@@ -38,8 +38,8 @@ const NO_NODE_SELECTED: DrawflowNode = {
 export class OutputConnectionControl extends LitElementWw {
   @property({ type: Object, attribute: true, reflect: false }) nodeEditor;
 
-  @property({ type: String, attribute: true, reflect: true })
-  selectedNode?;
+  @property({ type: Object, attribute: true, reflect: false })
+  selectedNode;
   @property({ type: String, attribute: true, reflect: true })
   outputClass?;
 
@@ -89,20 +89,27 @@ export class OutputConnectionControl extends LitElementWw {
     `;
   }
 
-  protected updated(_changedProperties: PropertyValues): void {
-    if (_changedProperties.has("selectedNode")) {
-      this.updateComplete.then(() => {
-        const selectElement = this.shadowRoot.querySelector(
-          ".nodeSelect"
-        ) as SlSelect;
-        if (selectElement) {
-          selectElement.value =
-            this.selectedNode?.outputs?.[this.outputClass.toString()]
-              ?.connections?.[0]?.node ?? "-1";
-          selectElement.requestUpdate();
-        }
-      });
+  firstUpdated() {
+    const slSelect = this.shadowRoot.querySelector("sl-select") as SlSelect;
+    if (slSelect) {
+      slSelect.value =
+        this.selectedNode?.outputs?.[
+          this.outputClass.toString()
+        ]?.connections?.[0]?.node?.toString() ?? "-1";
     }
+  }
+
+  updated(changedProperties: PropertyValues) {
+    const slSelect = this.shadowRoot.querySelector("sl-select") as SlSelect;
+    if (slSelect) {
+      slSelect.value =
+        this.selectedNode?.outputs?.[
+          this.outputClass.toString()
+        ]?.connections?.[0]?.node?.toString() ?? "-1";
+    }
+
+    console.log(slSelect.value);
+    super.updated(changedProperties);
   }
 
   /*
@@ -136,8 +143,9 @@ export class OutputConnectionControl extends LitElementWw {
         placeholder="Not connected"
         clearable
         @sl-input=${this._handleUserInputTargetPage}
-        .value=${this.selectedNode?.outputs?.[this.outputClass.toString()]
-          ?.connections?.[0]?.node ?? "-1"}
+        .value=${this.selectedNode?.outputs?.[
+          this.outputClass.toString()
+        ]?.connections?.[0]?.node.toString() ?? "-1"}
       >
         ${Object.keys(data).length <= 1
           ? html`<small>No nodes found</small>`
@@ -187,7 +195,6 @@ export class OutputConnectionControl extends LitElementWw {
           ?.connections?.[0]?.node == undefined &&
         event.target.value != ""
       ) {
-        console.log("new");
         this.nodeEditor.editor.addConnection(
           this.selectedNode.id,
           event.target.value,
@@ -219,7 +226,6 @@ export class OutputConnectionControl extends LitElementWw {
       }
       //clear sl-select
       else if (event.target.value == "") {
-        console.log("clear");
         this.nodeEditor.editor.removeSingleConnection(
           this.selectedNode.id,
           this.selectedNode?.outputs?.[this.outputClass.toString()]
