@@ -99,7 +99,6 @@ export class PopupNodeDetails extends LitElementWw {
     this._resetSelect();
   }
 
-  //TODO: Make sl select into its own component
   render() {
     return html` <div class="page-node-details">
       <div class="preview">

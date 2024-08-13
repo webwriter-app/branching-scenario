@@ -115,7 +115,9 @@ export class NodeEditorControlsBar extends LitElementWw {
           : "display: block; height: 30px;"}
         ></sl-divider>-->
         <sl-dropdown
+          placement="bottom-end"
           style=${this.inPreviewMode ? "display: none;" : "display: block;"}
+          hoist
         >
           <sl-button slot="trigger">
             Add

@@ -22,7 +22,6 @@ import { SlInput, SlIcon } from "@shoelace-style/shoelace";
 import styles from "../css/webwriter-branching-scenario-css";
 
 import search from "@tabler/icons/outline/search.svg";
-import route2 from "@tabler/icons/outline/route-2.svg";
 import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
@@ -98,7 +97,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
   render() {
     return html`
       <div id="widget">
-        <!-- <button @click=${() => this.testOutput()}></button> -->
+        <!-- <button @click=${() =>
+          this.exportContainersAsString()}></button> -->
         ${this.isContentEditable
           ? html`
               <node-editor
@@ -140,7 +140,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
               <selected-node-view-renderer
                 .selectedNode=${this.selectedNode}
                 .nodeEditor=${this.nodeEditor}
-                .editorContent=${this.editorContent}
                 .changeInEditorCallback=${(
                   drawflow,
                   updateType,
@@ -166,6 +165,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 }}
               >
                 <gamebook-container-manager
+                  .editorContent=${this.editorContent}
+                  .getNodeEditor=${() => this.getNodeEditor()}
                   .appendToShadowDom=${(container) =>
                     this._addContainerCallback(container)}
                 >
@@ -196,6 +197,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
                           : null}
                         <p>${this.selectedNode.data.title}</p>
                       </div>
+                      <p style="margin-left: auto">
+                        Internal ID: ${this.selectedNode.id}
+                      </p>
+                      <p style="margin-left: auto">
+                        Container found:
+                        ${this.gamebookContainerManager._getContainerByDrawflowNodeId(
+                          this.selectedNode.id
+                        ) != undefined}
+                      </p>
                       <quick-connect-node
                         style="margin-left: 25px"
                         .nodeEditor=${this.nodeEditor}
@@ -241,15 +251,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
 
   */
-  private testOutput() {
-    console.log("test");
+  private exportContainersAsString() {
     console.log(
       JSON.stringify(this.gamebookContainers, this.domElementReplacer)
     );
   }
 
   /*
-  //TODO: remove, just keep this for making a string for examples
 
   */
   private domElementReplacer(key, value) {
@@ -282,8 +290,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
     outputHadConnections?: Boolean,
     importedGamebookContainers?: Array<Object>
   ) {
-    this.editorContent = drawflow;
-
     //
     if (updateType == "nodeRenamed") {
       this.updateSelectedNode(this.selectedNode.id.toString());
@@ -340,13 +346,42 @@ export class WebWriterBranchingScenario extends LitElementWw {
     else if (updateType == "connectionRemoved") {
       //if a connection is removed by the user, remove the corresponding button
       if (this.reactToCallbackFromNodeEditor) {
+        const identifier = `${outputNode.id}-${outputClass}-${inputNode.id}-${inputClass}`;
         this.gamebookContainerManager.removeConnectionButtonFromContainer(
           outputNode.id,
-          `${outputNode.id}-${outputClass}-${inputNode.id}-input_1`
+          identifier
         );
       }
       //if a button was removed by the user
       else {
+        this.reactToCallbackFromNodeEditor = true;
+      }
+    }
+    //
+    else if (updateType == "connectionHighlighted") {
+      //
+      //
+      if (this.reactToCallbackFromNodeEditor) {
+        const identifier = `${outputNode.id}-${outputClass}-${inputNode.id}-${inputClass}`;
+
+        this.gamebookContainerManager.highlightConnectionButtonInContainer(
+          this.selectedNode.id,
+          identifier
+        );
+      } else {
+        this.reactToCallbackFromNodeEditor = true;
+      }
+    } else if (updateType == "connectionUnhighlighted") {
+      //
+      //
+      if (this.reactToCallbackFromNodeEditor) {
+        const identifier = `${outputNode.id}-${outputClass}-${inputNode.id}-${inputClass}`;
+
+        this.gamebookContainerManager.unhighlightConnectionButtonInContainer(
+          this.selectedNode.id,
+          identifier
+        );
+      } else {
         this.reactToCallbackFromNodeEditor = true;
       }
     }
@@ -380,6 +415,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
         importedGamebookContainers
       );
     }
+
+    this.editorContent = drawflow;
+    this.requestUpdate();
+  }
+
+  private getNodeEditor() {
+    return this.nodeEditor;
   }
 
   /*
@@ -387,22 +429,43 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   */
   private handleChangesInGamebookContainers() {
-    this.addEventListener("userDeleteConnectionButton", (event) => {
+    this.addEventListener("containerDeleteConnectionButton", (event) => {
       //if a button is removed, remove the corresponding connection
       this.reactToCallbackFromNodeEditor = false;
-      const { outputNodeId, outputClass, inputNodeId, inputClass } =
-        this.parseConnectionIdentifier(
-          (event as CustomEvent).detail.identifier
-        );
+      const outputClass = (event as CustomEvent).detail.outputClass;
 
-      this.nodeEditor.editor.removeNodeOutput(outputNodeId, outputClass);
+      this.nodeEditor.editor.removeNodeOutput(
+        this.selectedNode.id,
+        outputClass
+      );
       this.gamebookContainerManager.updateContainersConnectionButtonIds(
-        outputNodeId,
+        this.selectedNode.id,
         outputClass
       );
 
       this.editorContent = { ...this.nodeEditor.editor.drawflow };
       this.updateSelectedNode(this.selectedNode.id.toString());
+    });
+    this.addEventListener("containerHighlightConnectionButton", (event) => {
+      console.log("test");
+      this.reactToCallbackFromNodeEditor = false;
+      this.nodeEditor.highlightConnectionAndNode(
+        (event as CustomEvent).detail.outputNodeId,
+        (event as CustomEvent).detail.inputNodeId,
+        (event as CustomEvent).detail.outputClass,
+        (event as CustomEvent).detail.inputClass,
+        (event as CustomEvent).detail.highlightNode
+      );
+    });
+    this.addEventListener("containerUnhighlightConnectionButton", (event) => {
+      this.reactToCallbackFromNodeEditor = false;
+      this.nodeEditor.unhighlightConnectionAndNode(
+        (event as CustomEvent).detail.outputNodeId,
+        (event as CustomEvent).detail.inputNodeId,
+        (event as CustomEvent).detail.outputClass,
+        (event as CustomEvent).detail.inputClass,
+        (event as CustomEvent).detail.highlightNode
+      );
     });
   }
 
@@ -415,7 +478,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     if (id != "-1") {
       this.selectedNode = { ...this.nodeEditor.editor.getNodeFromId(id) };
 
-      console.log(this.selectedNode);
+      //console.log(this.selectedNode);
       //console.log(this.nodeEditor.editor.getNodeFromId(this.selectedNode.id));
       if (
         this.selectedNode.class == "page" ||
@@ -447,17 +510,17 @@ export class WebWriterBranchingScenario extends LitElementWw {
   /*
 
   */
-  private parseConnectionIdentifier(identifier) {
-    const parts = identifier.split("-");
-    const parsed = {
-      outputNodeId: parseInt(parts[0]),
-      outputClass: parts[1],
-      inputNodeId: parseInt(parts[2]),
-      inputClass: parts[3],
-    };
+  // private parseConnectionIdentifier(identifier) {
+  //   const parts = identifier.split("-");
+  //   const parsed = {
+  //     outputNodeId: parseInt(parts[0]),
+  //     outputClass: parts[1],
+  //     inputNodeId: parseInt(parts[2]),
+  //     inputClass: parts[3],
+  //   };
 
-    return parsed;
-  }
+  //   return parsed;
+  // }
 
   /*
 

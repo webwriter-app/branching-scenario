@@ -213,7 +213,8 @@ export class NodeEditor extends LitElementWw {
   }
 
   /*
-  TODO: on clear editor, there are some problems with the slot
+
+
   */
   private _clearEditor() {
     const dialog = this.shadowRoot.getElementById("dialog") as SlDialog;
@@ -248,7 +249,6 @@ export class NodeEditor extends LitElementWw {
 
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
-      //TODO: make node unselected method because output-connection-control on node switch asre broken//ask chatgpt what htey think of  it
       this.updateSelectedNodeCallback(-1);
     });
 
@@ -294,8 +294,6 @@ export class NodeEditor extends LitElementWw {
       //   console.log("output empty");
       // }
 
-      //TODO: include a run that disables outputs that already have a connection using css pointer events
-
       //   this.updateSelectedNodeCallback(output_id);
       //   this.shadowRoot
       //     ?.getElementById(`node-${output_id}`)
@@ -303,7 +301,7 @@ export class NodeEditor extends LitElementWw {
       this.shadowRoot
         .querySelector('svg[class="connection"]')
         ?.querySelector("path")
-        ?.classList.add("creating");
+        ?.classList.add("highlighted");
       //   this.programmticallySelectedNode = true;
     });
 
@@ -323,7 +321,15 @@ export class NodeEditor extends LitElementWw {
 
     //event listener for when a connection is unselected
     this.editor.on("connectionUnselected", (boolean) => {
-      this._unhighlightConnection(this.selectedConnection);
+      const parsedConnection = this.parseConnectionIdentifier(
+        this.selectedConnection
+      );
+      this._unhighlightConnection(
+        parsedConnection.outputNodeId,
+        parsedConnection.inputNodeId,
+        parsedConnection.outputClass,
+        parsedConnection.inputClass
+      );
       this.selectedConnection = NO_CONNECTION_SELECTED;
     });
 
@@ -340,7 +346,7 @@ export class NodeEditor extends LitElementWw {
             `svg[class="connection node_in_node-${input_id} node_out_node-${output_id} ${output_class} ${input_class}"]`
           )
           ?.querySelector("path")
-          ?.classList.remove("creating");
+          ?.classList.remove("highlighted");
 
         this.changeInEditorCallback(
           { ...this.editor.drawflow },
@@ -363,7 +369,15 @@ export class NodeEditor extends LitElementWw {
         this.updateSelectedNodeCallback(this.selectedNode.id);
 
         if (this.selectedConnection != NO_CONNECTION_SELECTED) {
-          this._unhighlightConnection(this.selectedConnection);
+          const parsedConnection = this.parseConnectionIdentifier(
+            this.selectedConnection
+          );
+          this._unhighlightConnection(
+            parsedConnection.outputNodeId,
+            parsedConnection.inputNodeId,
+            parsedConnection.outputClass,
+            parsedConnection.inputClass
+          );
           this.selectedConnection = NO_CONNECTION_SELECTED;
         }
 
@@ -411,8 +425,6 @@ export class NodeEditor extends LitElementWw {
         zoomValue.classList.add("fade-in-out");
       }
     });
-
-    //TODO: event for programmatic node selection
   }
 
   /*
@@ -786,19 +798,83 @@ export class NodeEditor extends LitElementWw {
   /*
 
   */
+  public highlightConnectionAndNode(
+    outputNodeId,
+    inputNodeId,
+    outputClass,
+    inputClass,
+    highlightNodeId
+  ) {
+    this._highlightConnection(
+      outputNodeId,
+      inputNodeId,
+      outputClass,
+      inputClass
+    );
+
+    this._highlightNode(highlightNodeId);
+    this.changeInEditorCallback(
+      { ...this.editor.drawflow },
+      "connectionHighlighted",
+      null,
+      null,
+      this.editor.getNodeFromId(inputNodeId),
+      this.editor.getNodeFromId(outputNodeId),
+      inputClass,
+      outputClass
+    );
+  }
+
+  /*
+
+  */
+  public unhighlightConnectionAndNode(
+    outputNodeId,
+    inputNodeId,
+    outputClass,
+    inputClass,
+    highlightNodeId
+  ) {
+    this._unhighlightConnection(
+      outputNodeId,
+      inputNodeId,
+      outputClass,
+      inputClass
+    );
+    this._unhighlightNode(highlightNodeId);
+
+    this.changeInEditorCallback(
+      { ...this.editor.drawflow },
+      "connectionUnhighlighted",
+      null,
+      null,
+      this.editor.getNodeFromId(inputNodeId),
+      this.editor.getNodeFromId(outputNodeId),
+      inputClass,
+      outputClass
+    );
+  }
+
+  /*
+
+  */
   public _highlightConnection(
     outputNodeId,
     inputNodeId,
     outputClass,
     inputClass
   ) {
+    const inputNodeClass = this.editor.getNodeFromId(inputNodeId).class;
+
     [
       ["output", outputNodeId, outputClass],
       ["input", inputNodeId, inputClass],
     ].forEach(([type, nodeId, cls]) => {
       const nodeDiv = this.shadowRoot?.getElementById(`node-${nodeId}`);
       if (nodeDiv) {
-        nodeDiv.querySelector(`.${type}.${cls}`).classList.add("selected");
+        nodeDiv
+          .querySelector(`.${type}.${cls}`)
+          .classList.add(`${inputNodeClass}-highlighted`);
       }
     });
 
@@ -807,37 +883,78 @@ export class NodeEditor extends LitElementWw {
         `svg[class="connection node_in_node-${inputNodeId} node_out_node-${outputNodeId} ${outputClass} ${inputClass}"]`
       )
       ?.querySelector("path")
-      ?.classList.add("creating");
+      ?.classList.add(`${inputNodeClass}-highlighted`);
   }
 
   /*
 
   */
-  public _unhighlightConnection(identifier) {
-    const parts = identifier.split("-");
-    const parsed = {
-      outputNodeId: parseInt(parts[0]),
-      inputNodeId: parseInt(parts[1]),
-      outputClass: parts[2],
-      inputClass: parts[3],
-    };
+  public _unhighlightConnection(
+    outputNodeId,
+    inputNodeId,
+    outputClass,
+    inputClass
+  ) {
+    const inputNodeClass = this.editor.getNodeFromId(inputNodeId).class;
 
     [
-      ["output", parsed.outputNodeId, parsed.outputClass],
-      ["input", parsed.inputNodeId, parsed.inputClass],
+      ["output", outputNodeId, outputClass],
+      ["input", inputNodeId, inputClass],
     ].forEach(([type, nodeId, cls]) => {
       const nodeDiv = this.shadowRoot?.getElementById(`node-${nodeId}`);
       if (nodeDiv) {
-        nodeDiv.querySelector(`.${type}.${cls}`).classList.remove("selected");
+        nodeDiv
+          .querySelector(`.${type}.${cls}`)
+          .classList.remove(`${inputNodeClass}-highlighted`);
       }
     });
 
     this.shadowRoot
       .querySelector(
-        `svg[class="connection node_in_node-${parsed.inputNodeId} node_out_node-${parsed.outputNodeId} ${parsed.outputClass} ${parsed.inputClass}"]`
+        `svg[class="connection node_in_node-${inputNodeId} node_out_node-${outputNodeId} ${outputClass} ${inputClass}"]`
       )
       ?.querySelector("path")
-      ?.classList.remove("creating");
+      ?.classList.remove(`${inputNodeClass}-highlighted`);
+  }
+
+  /*
+
+  */
+  public _highlightNode(nodeId) {
+    const selector = `div#node-${nodeId}.drawflow-node`;
+    this.shadowRoot.querySelector(selector)?.classList.add("highlighted");
+  }
+
+  /*
+
+  */
+  public _unhighlightNode(nodeId) {
+    const selector = `div#node-${nodeId}.drawflow-node`;
+    this.shadowRoot.querySelector(selector)?.classList.remove("highlighted");
+  }
+
+  /*
+
+  */
+  public _highlightOutput(outputNodeId, outputClass) {
+    [["output", outputNodeId, outputClass]].forEach(([type, nodeId, cls]) => {
+      this.shadowRoot
+        ?.getElementById(`node-${nodeId}`)
+        ?.querySelector(`.${type}.${cls}`)
+        ?.classList.add("highlighted");
+    });
+  }
+
+  /*
+
+  */
+  public _unhighlightOutput(outputNodeId, outputClass) {
+    [["output", outputNodeId, outputClass]].forEach(([type, nodeId, cls]) => {
+      this.shadowRoot
+        ?.getElementById(`node-${nodeId}`)
+        ?.querySelector(`.${type}.${cls}`)
+        ?.classList.remove("highlighted");
+    });
   }
 
   /*
@@ -849,21 +966,16 @@ export class NodeEditor extends LitElementWw {
     var currentNodes = this.editor.export();
     // Create a deep copy of the nodeTemplates
     const nodeTemplatesCopy = JSON.parse(JSON.stringify(nodeTemplates));
-
     // Assuming you have the following from the drawflow editor:
     const rect = this.drawflowEditorDiv.getBoundingClientRect();
     const zoom = this.editor.zoom;
-
     const centerX = rect.width / 2 - this.editor.canvas_x / zoom - 317 / 2;
     const centerY = rect.height / 2 - this.editor.canvas_y / zoom - 105 / 2;
-
     // Move nodes to the center of the canvas
     this.moveNodesToCenter(nodeTemplatesCopy, centerX, centerY);
-
     const mergedData = this.mergeTemplate(currentNodes, nodeTemplatesCopy);
     //
     this.editor.import(mergedData.currentNodes);
-
     this.changeInEditorCallback(
       { ...this.editor.drawflow },
       "templateImported",
@@ -876,7 +988,6 @@ export class NodeEditor extends LitElementWw {
       null,
       mergedData.templateContainers
     );
-
     this.updateSelectedNodeCallback(this.selectedNode.id);
   }
 
@@ -937,18 +1048,14 @@ export class NodeEditor extends LitElementWw {
     //
     const currentData = currentNodes.drawflow.Home.data;
     const templateData = nodeTemplates.drawflow.Home.data;
-
     const currentMaxIndex = Math.max(...Object.keys(currentData).map(Number));
     let newIndex = currentMaxIndex + 1;
-
     const indexMap = Object.fromEntries(
       Object.keys(templateData).map((key) => [Number(key), newIndex++])
     );
-
     for (const [key, node] of Object.entries(templateData)) {
       const newId = indexMap[Number(key)];
       (node as DrawflowNode).id = newId;
-
       for (const connections of Object.values(
         (node as DrawflowNode).inputs
       ).concat(Object.values((node as DrawflowNode).outputs))) {
@@ -957,13 +1064,10 @@ export class NodeEditor extends LitElementWw {
             indexMap[connection.node]?.toString() || connection.node;
         }
       }
-
       currentData[newId] = { ...(node as DrawflowNode) };
     }
-
     // Update the containers with the new indexMap values
     const templateContainers = nodeTemplates.containers;
-
     for (const container of templateContainers) {
       // Update the drawflownodeid attribute
       const drawflowNodeIdAttr = container.attributes.find(
@@ -973,12 +1077,10 @@ export class NodeEditor extends LitElementWw {
         const oldId = Number(drawflowNodeIdAttr.value);
         drawflowNodeIdAttr.value = indexMap[oldId].toString();
       }
-
       // Update the datatargetid and identifier in the innerHTML
       const parser = new DOMParser();
       const doc = parser.parseFromString(container.innerHTML, "text/html");
       const buttons = doc.querySelectorAll("webwriter-connection-button");
-
       buttons.forEach((button) => {
         // Update datatargetid
         const dataTargetId = button.getAttribute("datatargetid");
@@ -986,7 +1088,6 @@ export class NodeEditor extends LitElementWw {
           const oldTargetId = Number(dataTargetId);
           button.setAttribute("datatargetid", indexMap[oldTargetId].toString());
         }
-
         // Update identifier
         const identifier = button.getAttribute("identifier");
         if (identifier) {
@@ -1001,11 +1102,24 @@ export class NodeEditor extends LitElementWw {
           }
         }
       });
-
       // Update the container's innerHTML with the modified content
       container.innerHTML = doc.body.innerHTML;
     }
-
     return { currentNodes, templateContainers };
+  }
+
+  /*
+
+  */
+  private parseConnectionIdentifier(identifier) {
+    const parts = identifier.split("-");
+    const parsed = {
+      outputNodeId: parseInt(parts[0]),
+      inputNodeId: parseInt(parts[1]),
+      outputClass: parts[2],
+      inputClass: parts[3],
+    };
+
+    return parsed;
   }
 }

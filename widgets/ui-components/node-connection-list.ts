@@ -189,23 +189,6 @@ export class NodeConnectionList extends LitElementWw {
                   .selectedNode=${this.selectedNode}
                   .nodeEditor=${this.nodeEditor}
                   .outputClass=${output_class}
-                  @mouseenter=${() => {
-                    if (drawflowConnection.connections[0]) {
-                      this.nodeEditor._highlightConnection(
-                        this.selectedNode.id,
-                        drawflowConnection.connections[0].node,
-                        output_class,
-                        "input_1"
-                      );
-                    }
-                  }}
-                  @mouseleave=${() => {
-                    if (drawflowConnection.connections[0]) {
-                      this.nodeEditor._unhighlightConnection(
-                        `${this.selectedNode.id}-${drawflowConnection.connections[0].node}-${output_class}-input_1`
-                      );
-                    }
-                  }}
                 ></output-connection-control>
                 <sl-icon-button
                   src=${minus}
@@ -242,15 +225,20 @@ export class NodeConnectionList extends LitElementWw {
                 variant="text"
                 size="small"
                 @mouseenter=${() =>
-                  this.nodeEditor._highlightConnection(
+                  this.nodeEditor.highlightConnectionAndNode(
                     connection.node,
                     this.selectedNode.id,
                     connection.input,
-                    "input_1"
+                    "input_1",
+                    connection.node
                   )}
                 @mouseleave=${() =>
-                  this.nodeEditor._unhighlightConnection(
-                    `${connection.node}-${this.selectedNode.id}-${connection.input}-input_1`
+                  this.nodeEditor.unhighlightConnectionAndNode(
+                    connection.node,
+                    this.selectedNode.id,
+                    connection.input,
+                    "input_1",
+                    connection.node
                   )}
               >
                 ${this.nodeEditor.editor.getNodeFromId(connection.node).data

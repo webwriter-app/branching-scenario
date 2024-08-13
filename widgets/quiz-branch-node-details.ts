@@ -28,7 +28,6 @@ import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
 //CSS
 import styles from "../css/quiz-branch-node-details-css";
 
-//TODO: actually insert a multiple choice dialog to the gamebook page
 @customElement("quiz-branch-node-details")
 export class QuizBranchNodeDetails extends LitElementWw {
   //registering custom elements used in the widget
@@ -58,9 +57,6 @@ export class QuizBranchNodeDetails extends LitElementWw {
 
   @property({ type: Object, attribute: false }) nodesInEditor = {};
 
-  /*
-  //TODO: work on visualization of quiz branch node in slot system
-   */
   render() {
     return html` <div>
       <div class="title-bar">

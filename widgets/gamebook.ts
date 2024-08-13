@@ -32,9 +32,6 @@ import { QuizContainer } from "./quiz-container";
 import { WebWriterGamebookPageContainer } from "./webwriter-gamebook-page-container";
 import { WebWriterGamebookPopupContainer } from "./webwriter-gamebook-popup-container";
 
-//Define Component
-//TODO: Fix Gamebook Errors. Check other modules for proper updating. I commented out a lot for restructure!
-//TODO: employ structure such that users cannot simply change css in browser to see next slide
 @customElement("webwriter-gamebook")
 export class WebWriterGamebook extends LitElementWw {
   //registering custom elements used in the widget
@@ -105,8 +102,7 @@ export class WebWriterGamebook extends LitElementWw {
   }
 
   /*
-  //TODO: this seems to be laggy. consider saving the pagecontainer content directly into gamebook structure or drawflownode structure.
-  //This would also fix the editability issue. However, I would then need to rebuild the webwriter preview view as well
+
   */
   private _navigateTo(targetId: number) {
     //

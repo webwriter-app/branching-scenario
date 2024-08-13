@@ -50,11 +50,4 @@ export class PageNodeDetails extends LitElementWw {
       </div>
     </div>`;
   }
-
-  /*
-      //TODO: make node preview part of selectednodeviewrenderer
-      //TODO: use selects on outputs to redo connections
-      //TODO: move quick connect to part options
-      //TODO: find error with clear and slots
-  */
 }

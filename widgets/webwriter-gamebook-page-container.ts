@@ -1,4 +1,4 @@
-import { html, css, LitElement, unsafeCSS } from "lit";
+import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
@@ -77,11 +77,12 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
     // Start observing the target node for configured mutations
     this.mutationObserver.observe(this, config);
 
-    this.addEventListener("click", () => {
-      //console.log("page Container clicked");
-      this.focus();
-    });
+    // this.addEventListener("click", () => {
+    //   //console.log("page Container clicked");
+    //   this.focus();
+    // });
   }
+
   /*
 
 

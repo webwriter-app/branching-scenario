@@ -39,7 +39,6 @@ export class SelectedNodeViewRenderer extends LitElementWw {
   @property({ type: Object, attribute: true, reflect: true })
   selectedNode: DrawflowNode = NO_NODE_SELECTED;
   @property({ type: Object }) nodeEditor;
-  @property({ type: Object, attribute: false }) editorContent;
   @property({ attribute: false }) changeInEditorCallback = (
     drawflow,
     updateType,
@@ -198,13 +197,7 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                 `
               : this.selectedNode.class == "question-branch"
               ? html` <div id="selected-node-details">
-                  <quiz-branch-node-details
-                    .editor="${this.nodeEditor}"
-                    .nodesInEditor="${this.editorContent.drawflow.Home.data}"
-                    .selectedNode="${this.selectedNode}"
-                  >
-                    <slot></slot>
-                  </quiz-branch-node-details>
+                  <slot></slot>
                 </div>`
               : this.selectedNode.class == "popup"
               ? html`
@@ -241,7 +234,7 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                 `
               : null}`
         : html` <div class="no-node-selected">
-            <p>Select a node</p>
+            <p>Click on a node to view its content</p>
             <slot></slot>
           </div>`}
     `;
@@ -260,19 +253,7 @@ export class SelectedNodeViewRenderer extends LitElementWw {
     this.changeInEditorCallback(
       { ...this.nodeEditor.editor.drawflow },
       "nodeRenamed",
-      this.selectedNode.id
+      this.selectedNode
     );
   }
-
-  /*
-
-
-  */
-
-  /*
-      //TODO: make node preview part of selectednodeviewrenderer
-      //TODO: use selects on outputs to redo connections
-      //TODO: move quick connect to part options
-      //TODO: find error with clear and slots
-  */
 }

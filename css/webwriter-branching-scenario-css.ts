@@ -200,7 +200,7 @@ export default css`
     flex-direction: row;
     align-items: center;
     justify-items: center;
-    border-bottom: 1.5px solid #52525b;
+    border-bottom: 2px solid #52525b;
     gap: 7px;
     padding-bottom: 10px;
   }

@@ -2,7 +2,7 @@ import { css } from "lit";
 
 export default css`
   /* ------- */
-  /*  Nodes  */
+  /*  Base Layouting Nodes  */
   /* ------- */
 
   .drawflow .drawflow-node.page,
@@ -11,9 +11,6 @@ export default css`
   .drawflow .drawflow-node.branch {
     background: #ffffff;
     border: 1.5px solid #cecece;
-
-    -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
-    box-shadow: 0 2px 20px 2px #d0d0d0;
 
     padding: 0px;
     align-items: center;
@@ -24,6 +21,9 @@ export default css`
 
     min-width: 320px;
     min-height: 90px;
+
+    -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
+    box-shadow: 0 2px 20px 2px #d0d0d0;
   }
 
   .drawflow-node.page .container,
@@ -101,7 +101,7 @@ export default css`
   }
 
   /* ------- */
-  /* Branch  */
+  /* Specific Nodes icon Div  */
   /* ------- */
 
   .drawflow-node.branch .container .iconDiv {
@@ -114,21 +114,6 @@ export default css`
     min-height: 65px;
   }
 
-  .drawflow .drawflow-node:hover.branch {
-    border: 1.5px solid #05ae9e;
-  }
-
-  .drawflow .drawflow-node.selected.branch {
-    background: #f4fffe;
-    border: 3px solid #05ae9e;
-    color: #058b7f;
-    box-sizing: content-box;
-  }
-
-  /* ------- */
-  /* PAGE/ORIGIN */
-  /* ------- */
-
   .drawflow-node.page .container .iconDiv,
   .drawflow-node.origin .container .iconDiv {
     display: flex;
@@ -140,23 +125,6 @@ export default css`
     min-height: 65px;
   }
 
-  .drawflow .drawflow-node:hover.page,
-  .drawflow .drawflow-node:hover.origin {
-    border: 1.5px solid #4ea9ff;
-  }
-
-  .drawflow .drawflow-node.selected.page,
-  .drawflow .drawflow-node.selected.origin {
-    background: #f4faff;
-    border: 3px solid #4ea9ff;
-    color: #215f98;
-    box-sizing: content-box;
-  }
-
-  /* ------- */
-  /* Popup   */
-  /* ------- */
-
   .drawflow-node.popup .container .iconDiv {
     display: flex;
     justify-content: center;
@@ -167,19 +135,87 @@ export default css`
     min-height: 65px;
   }
 
+  /* ------- */
+  /* :hover nodes  */
+  /* ------- */
+
+  .drawflow .drawflow-node:hover.branch {
+    border: 2px solid #05ae9e;
+    -webkit-box-shadow: 0 4px 30px 4px #c0c0c0;
+    box-shadow: 0 4px 30px 4px #c0c0c0;
+  }
+
+  .drawflow .drawflow-node:hover.page,
+  .drawflow .drawflow-node:hover.origin {
+    border: 2px solid #3077ba;
+    -webkit-box-shadow: 0 4px 30px 4px #c0c0c0;
+    box-shadow: 0 4px 30px 4px #c0c0c0;
+  }
+
   .drawflow .drawflow-node:hover.popup {
-    border: 1.5px solid #bd7ee0;
+    border: 2px solid #9762b4;
+    -webkit-box-shadow: 0 4px 30px 4px #c0c0c0;
+    box-shadow: 0 4px 30px 4px #c0c0c0;
+  }
+
+  /* ------- */
+  /* highlighted nodes  */
+  /* ------- */
+
+  .drawflow-node.branch.highlighted {
+    border: 3px solid #05ae9e;
+    -webkit-box-shadow: 0 4px 60px 6px #b0b0b0;
+    box-shadow: 0 4px 60px 6px #b0b0b0;
+  }
+
+  .drawflow-node.highlighted.page,
+  .drawflow-node.highlighted.origin {
+    border: 3px solid #3077ba;
+    -webkit-box-shadow: 0 4px 60px 6px #b0b0b0;
+    box-shadow: 0 4px 60px 6px #b0b0b0;
+  }
+
+  .drawflow-node.popup.highlighted {
+    border: 3px solid #9762b4;
+    -webkit-box-shadow: 0 4px 60px 6px #b0b0b0;
+    box-shadow: 0 4px 60px 6px #b0b0b0;
+  }
+
+  /* ------- */
+  /* selected nodes  */
+  /* ------- */
+
+  .drawflow .drawflow-node.selected.branch {
+    background: #f4fffe;
+    border: 4px solid #05ae9e;
+    color: #058b7f;
+    box-sizing: content-box;
+    background-color: #f4fffe;
+    -webkit-box-shadow: 0 4px 60px 7px #b0b0b0;
+    box-shadow: 0 4px 60px 7px #b0b0b0;
+  }
+
+  .drawflow .drawflow-node.selected.page,
+  .drawflow .drawflow-node.selected.origin {
+    background: #f4faff;
+    border: 4px solid #3077ba;
+    color: #215f98;
+    box-sizing: content-box;
+    -webkit-box-shadow: 0 4px 60px 7px #b0b0b0;
+    box-shadow: 0 4px 60px 7px #b0b0b0;
   }
 
   .drawflow .drawflow-node.selected.popup {
     background: #fbf4fe;
-    border: 3px solid #cf7dff;
+    border: 4px solid #9762b4;
     color: #9762b4;
     box-sizing: content-box;
+    -webkit-box-shadow: 0 4px 60px 7px #b0b0b0;
+    box-shadow: 0 4px 60px 7px #b0b0b0;
   }
 
   /* ------- */
-  /* Origin  */
+  /* Origin Class Specifics  */
   /* ------- */
 
   .drawflow-node.origin .badge {
@@ -210,112 +246,9 @@ export default css`
     display: none;
   }
 
-  /* ------- */
-  /* BRANCHING */
-  /* ------- */
-
-  .drawflow .drawflow-node.question-branch {
-    background: #ffffff;
-    border: 1px solid #cecece;
-
-    font-family: "Roboto", sans-serif;
-
-    -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
-    box-shadow: 0 2px 20px 2px #d0d0d0;
-
-    padding: 0px;
-
-    align-items: center;
-
-    box-sizing: border-box;
-
-    border-radius: 8px;
-
-    min-width: 302px;
-    min-height: 90px;
-  }
-
-  .drawflow .drawflow-node.question-branch .container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-left: 20px;
-    padding-right: 20px;
-
-    gap: 20px;
-    box-sizing: border-box;
-  }
-
-  .drawflow .drawflow-node.question-branch .content {
-    color: #71717a;
-    display: flex;
-
-    flex-direction: column;
-    justify-content: flex-start;
-    width: 150px;
-
-    gap: 3px;
-    height: 60px;
-  }
-
-  .drawflow-node.question-branch .content .input-label {
-    font-size: 14px;
-    color: #a1a1a1; /* gray tone */
-    margin: 3px;
-  }
-
-  .drawflow-node.question-branch .content #test-textarea {
-    resize: none;
-    width: 100%;
-    text-align: left;
-    padding: 0.5rem;
-  }
-
-  .drawflow .drawflow-node.question-branch .threeDots {
-    font-size: 24px;
-  }
-
-  .drawflow .drawflow-node.question-branch p {
-    font-size: 14px;
-    font-weight: 400;
-    height: 100%;
-    margin: 0px;
-  }
-
-  .drawflow .drawflow-node.question-branch:hover {
-    border: 1.5px solid #c798ff;
-  }
-
-  .drawflow .drawflow-node.question-branch.selected {
-    border: 3px solid #c798ff;
-    color: #a152ff;
-    background-color: #f7efff;
-    box-sizing: content-box;
-  }
-
   /* ---- */
-  /* NODE INPUT AND OUTPUTS */
+  /*  INPUT AND OUTPUTS */
   /* ---- */
-
-  .drawflow-node input,
-  .drawflow-node select,
-  .drawflow-node textarea {
-    border-radius: 4px;
-    border: 1px solid #ededed;
-    height: 30px;
-    line-height: 30px;
-    font-size: 16px;
-    width: 158px;
-    color: #555555;
-    text-align: center;
-  }
-
-  .drawflow-node textarea {
-    height: 100px;
-  }
 
   .drawflow .drawflow-node .input,
   .drawflow .drawflow-node .output {
@@ -337,7 +270,7 @@ export default css`
   }
 
   .drawflow .drawflow-node .output:active {
-    background: #2d99ff;
+    background: #ffca00;
   }
 
   .drawflow .drawflow-node .output {
@@ -362,7 +295,37 @@ export default css`
 
   .drawflow .drawflow-node .output.selected,
   .drawflow .drawflow-node .input.selected {
+    background: #ffca00;
+  }
+
+  /* ---- */
+  /* INPUT OUTPUT HIGHLIGHTED */
+  /* ---- */
+
+  .drawflow .drawflow-node .output.highlighted,
+  .drawflow .drawflow-node .input.highlighted {
     background: #2d99ff;
+    border: 1px solid #3077ba;
+  }
+
+  .drawflow .drawflow-node .output.page-highlighted,
+  .drawflow .drawflow-node .input.page-highlighted,
+  .drawflow .drawflow-node .output.origin-highlighted,
+  .drawflow .drawflow-node .input.origin-highlighted {
+    background: #3077ba;
+    border: 1px solid #3077ba;
+  }
+
+  .drawflow .drawflow-node .output.branch-highlighted,
+  .drawflow .drawflow-node .input.branch-highlighted {
+    background: #05ae9e;
+    border: 1px solid #05ae9e;
+  }
+
+  .drawflow .drawflow-node .output.popup-highlighted,
+  .drawflow .drawflow-node .input.popup-highlighted {
+    background: #9762b4;
+    border: 1px solid #9762b4;
   }
 
   /* ---- */
@@ -374,11 +337,6 @@ export default css`
     stroke-width: 2px;
   }
 
-  .drawflow .connection .main-path.creating {
-    stroke: #4ea9ff;
-    stroke-width: 2px;
-  }
-
   .drawflow .connection .main-path:hover {
     stroke: #4ea9ff;
     stroke-width: 2px;
@@ -387,6 +345,8 @@ export default css`
   .drawflow .connection .main-path.selected {
     stroke: #2d99ff;
     stroke-width: 2px;
+    -webkit-box-shadow: 0 4px 60px 7px #b0b0b0;
+    box-shadow: 0 4px 60px 7px #b0b0b0;
   }
 
   .drawflow .connection .point {
@@ -398,6 +358,27 @@ export default css`
   .drawflow .connection .point.selected,
   .drawflow .connection .point:hover {
     fill: #000000;
+  }
+
+  /* ---- */
+  /* CONNECTIONS HIGHLIGHTED */
+  /* ---- */
+
+  .drawflow .connection .main-path.popup-highlighted {
+    stroke: #9762b4;
+    stroke-width: 3px;
+  }
+
+  .drawflow .connection .main-path.page-highlighted,
+  .drawflow .connection .main-path.origin-highlighted {
+    stroke: #3077ba;
+    stroke-width: 3px;
+  }
+
+  .drawflow .connection .main-path.branch-highlighted,
+  .drawflow .connection .main-path.branch-highlighted {
+    stroke: #05ae9e;
+    stroke-width: 3px;
   }
 
   /* ---- */

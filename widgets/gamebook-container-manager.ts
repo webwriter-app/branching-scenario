@@ -1,4 +1,4 @@
-import { html, css, LitElement, unsafeCSS } from "lit";
+import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
@@ -23,12 +23,16 @@ export class GamebookContainerManager extends LitElementWw {
     element: HTMLElement
   ) => {};
 
+  @property({ attribute: false }) getNodeEditor = () => {};
+
   @queryAssignedElements({
     flatten: true,
     selector:
       "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, quiz-container",
   })
   gamebookContainers;
+
+  @property({ type: Object, attribute: true }) editorContent;
 
   static get scopedElements() {
     return {
@@ -38,17 +42,26 @@ export class GamebookContainerManager extends LitElementWw {
     };
   }
 
-  protected firstUpdated(_changedProperties: any): void {
-    //console.log("container manager update");
-  }
-
-  handleSlotChange() {
-    //console.log("slot change");
-  }
+  protected firstUpdated(_changedProperties: any): void {}
 
   render() {
-    return html` <slot @slotchange=${this.handleSlotChange}></slot> `;
+    return html` <slot></slot> `;
   }
+
+  // private handleSlotChange(event) {
+  //   const slot = event.target;
+
+  //   const assignedElements = slot.assignedElements({ flatten: true });
+
+  //   const lastPos =
+  //     assignedElements.length - 1 > 0 ? assignedElements.length - 1 : 0;
+
+  //   const lastAddedContainer = assignedElements[lastPos];
+
+  //   if (lastAddedContainer?.getNodeEditor == undefined) {
+  //     lastAddedContainer.getNodeEditor = this.getNodeEditor;
+  //   }
+  // }
 
   /* 
   
@@ -229,8 +242,59 @@ export class GamebookContainerManager extends LitElementWw {
   }
 
   /*
-  TODO: Figure out how to put this into a constructor
-  Also remove the node data adding 
+
+
+  */
+
+  /*
+
+
+  */
+
+  /*
+
+  */
+  public highlightConnectionButtonInContainer(containerId, identifier) {
+    const container = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == containerId
+    );
+    const connButton =
+      container.shadowRoot?.querySelector(
+        `webwriter-connection-button[identifier="${identifier}"]`
+      ) ||
+      container.querySelector(
+        `webwriter-connection-button[identifier="${identifier}"]`
+      );
+
+    if (connButton) {
+      if (!connButton.classList.contains("ww-selected")) {
+        connButton.classList.add("highlighted");
+      }
+    }
+  }
+
+  /*
+
+  */
+  public unhighlightConnectionButtonInContainer(containerId, identifier) {
+    const container = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == containerId
+    );
+    const connButton =
+      container.shadowRoot?.querySelector(
+        `webwriter-connection-button[identifier="${identifier}"]`
+      ) ||
+      container.querySelector(
+        `webwriter-connection-button[identifier="${identifier}"]`
+      );
+
+    if (connButton) {
+      connButton.classList.remove("highlighted");
+    }
+  }
+
+  /*
+
   */
   public _createPageContainerFromPageNode(pageNode: DrawflowNode) {
     //console.log("pageNode in Manager", pageNode.id.toString());

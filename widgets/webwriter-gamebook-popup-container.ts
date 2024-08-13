@@ -163,15 +163,19 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
               //make sure link button did not get deleted programtically
               let connButton = node as WebWriterConnectionButton;
 
-              if (connButton.identifier != "connectionDeltedInNodeEditor") {
+              if (connButton.outputClass != "connectionDeltedInNodeEditor") {
                 //console.log("in mutation observer here");
-                const event = new CustomEvent("userDeleteConnectionButton", {
-                  detail: {
-                    identifier: (node as WebWriterConnectionButton).identifier,
-                  },
-                  bubbles: true, // Allows the event to bubble up through the DOM
-                  composed: true, // Allows the event to pass through shadow DOM boundaries
-                });
+                const event = new CustomEvent(
+                  "containerDeleteConnectionButton",
+                  {
+                    detail: {
+                      outputClass: (node as WebWriterConnectionButton)
+                        .outputClass,
+                    },
+                    bubbles: true, // Allows the event to bubble up through the DOM
+                    composed: true, // Allows the event to pass through shadow DOM boundaries
+                  }
+                );
                 this.dispatchEvent(event);
               }
             }
