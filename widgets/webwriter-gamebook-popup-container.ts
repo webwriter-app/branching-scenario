@@ -139,6 +139,17 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
     this.dialog.show();
   }
 
+  // Pause the observer
+  public pauseObserver() {
+    this.mutationObserver.disconnect();
+  }
+
+  // Resume the observer
+  public resumeObserver() {
+    const config = { attributes: true, childList: true, subtree: true };
+    this.mutationObserver.observe(this, config);
+  }
+
   /*
 
 
@@ -163,14 +174,16 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
               //make sure link button did not get deleted programtically
               let connButton = node as WebWriterConnectionButton;
 
-              if (connButton.outputClass != "connectionDeltedInNodeEditor") {
+              console.log("noticed");
+
+              if (connButton.identifier != "connectionDeletedInNodeEditor") {
                 //console.log("in mutation observer here");
                 const event = new CustomEvent(
                   "containerDeleteConnectionButton",
                   {
                     detail: {
-                      outputClass: (node as WebWriterConnectionButton)
-                        .outputClass,
+                      identifier: (node as WebWriterConnectionButton)
+                        .identifier,
                     },
                     bubbles: true, // Allows the event to bubble up through the DOM
                     composed: true, // Allows the event to pass through shadow DOM boundaries

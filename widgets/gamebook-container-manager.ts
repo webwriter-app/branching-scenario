@@ -162,6 +162,12 @@ export class GamebookContainerManager extends LitElementWw {
       "identifier",
       `${outputNode.id}-${output_class}-${inputNode.id}-${input_class}`
     );
+
+    // this.updateConnectionButtonIdsBeforeAdd(
+    //   outputNode.id.toString(),
+    //   output_class
+    // );
+
     container.appendChild(connButton);
   }
 
@@ -177,6 +183,8 @@ export class GamebookContainerManager extends LitElementWw {
       (container) => container.getAttribute("drawflowNodeId") == containerId
     );
 
+    //container.pauseObserver();
+
     const connButton =
       container.shadowRoot?.querySelector(
         `webwriter-connection-button[identifier="${identifier}"]`
@@ -186,26 +194,18 @@ export class GamebookContainerManager extends LitElementWw {
       );
 
     if (connButton) {
-      const parts = (connButton as WebWriterConnectionButton).identifier.split(
-        "-"
-      );
-      const parsed = {
-        outputNodeId: parseInt(parts[0]),
-        outputClass: parts[1],
-        inputNodeId: parseInt(parts[2]),
-        inputClass: parts[3],
-      };
-      this.updateContainersConnectionButtonIds(containerId, parsed.outputClass);
-      connButton.setAttribute("identifier", "connectionDeltedInNodeEditor");
+      connButton.setAttribute("identifier", "x");
       connButton.remove();
     }
+
+    //container.resumeObserver();
   }
 
   /*
 
 
   */
-  public updateContainersConnectionButtonIds(
+  public updateConnectionButtonIdsAfterRemove(
     containerId: string,
     removed_output_class: string
   ) {
@@ -239,6 +239,60 @@ export class GamebookContainerManager extends LitElementWw {
         connButton.setAttribute("identifier", newIdentifier);
       }
     });
+  }
+
+  /*
+
+
+  */
+  public updateConnectionButtonIdsBeforeAdd(
+    containerId: string,
+    added_output_class: string
+  ) {
+    const container = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == containerId
+    );
+
+    // Extract the number from the output_class parameter
+    const addedOutputClassNumber = parseInt(
+      added_output_class.split("_")[1],
+      10
+    );
+
+    // Find the index of the first button with outputClass == addedOutputClassNumber
+    const startIndex = container.connectionButtons.findIndex((connButton) => {
+      const [output_id, output_class, input_id] =
+        connButton.identifier.split("-");
+      const connButtonOutputClassNumber = parseInt(
+        output_class.split("_")[1],
+        10
+      );
+      return connButtonOutputClassNumber === addedOutputClassNumber;
+    });
+
+    // If a matching button was found, update subsequent buttons
+    if (startIndex !== -1) {
+      // Iterate over each linkButton to update its identifier
+      container.connectionButtons.forEach((connButton) => {
+        const [output_id, output_class, input_id] =
+          connButton.identifier.split("-");
+        const connButtonOutputClassNumber = parseInt(
+          output_class.split("_")[1],
+          10
+        );
+
+        // Check if the linkButton should be updated
+        if (connButtonOutputClassNumber >= addedOutputClassNumber) {
+          // Generate the new identifier with incremented output_class
+          const newIdentifier = `${output_id}-output_${
+            connButtonOutputClassNumber + 1
+          }-${input_id}-input_1`;
+
+          // Update the identifier
+          connButton.setAttribute("identifier", newIdentifier);
+        }
+      });
+    }
   }
 
   /*

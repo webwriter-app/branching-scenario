@@ -247,7 +247,7 @@ export class WebWriterConnectionButton extends LitElementWw {
             <p style="font-weight: 400;">Navigates to</p>
             <sl-button variant="text">
               ${(this.getNodeEditor() as NodeEditor)?.editor.getNodeFromId(
-                this.inputNodeId
+                this.dataTargetId
               ).data.title ?? "Test"}
             </sl-button>
             <p style="font-weight: 400;">in your gamebook.</p>

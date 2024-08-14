@@ -334,6 +334,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
     //
     else if (updateType == "connectionCreated") {
+      console.log("connection Created'");
       this.gamebookContainerManager.addConnectionButtonToContainer(
         outputNode,
         inputNode,
@@ -346,6 +347,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
     else if (updateType == "connectionRemoved") {
       //if a connection is removed by the user, remove the corresponding button
       if (this.reactToCallbackFromNodeEditor) {
+        console.log(
+          "connection delete",
+          outputNode.id,
+          outputClass,
+          inputNode.id,
+          inputClass
+        );
         const identifier = `${outputNode.id}-${outputClass}-${inputNode.id}-${inputClass}`;
         this.gamebookContainerManager.removeConnectionButtonFromContainer(
           outputNode.id,
@@ -398,13 +406,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
     //
     else if (updateType == "outputDeleted") {
+      console.log("here before", "deleted output", outputClass);
       //Updat the Connection Button Id's only if the output had no connection, because connection removal also updates conneciton button ids
-      if (!outputHadConnections) {
-        this.gamebookContainerManager.updateContainersConnectionButtonIds(
-          this.selectedNode.id,
-          outputClass
-        );
-      }
+      //if (!outputHadConnections) {
+      this.gamebookContainerManager.updateConnectionButtonIdsAfterRemove(
+        this.selectedNode.id,
+        outputClass
+      );
+      //}
 
       this.updateSelectedNode(this.selectedNode.id.toString());
     }
@@ -431,16 +440,22 @@ export class WebWriterBranchingScenario extends LitElementWw {
   private handleChangesInGamebookContainers() {
     this.addEventListener("containerDeleteConnectionButton", (event) => {
       //if a button is removed, remove the corresponding connection
-      this.reactToCallbackFromNodeEditor = false;
-      const outputClass = (event as CustomEvent).detail.outputClass;
+      const identifier = (event as CustomEvent).detail.identifier;
+      const parsed = this.parseConnectionIdentifier(identifier);
 
-      this.nodeEditor.editor.removeNodeOutput(
-        this.selectedNode.id,
-        outputClass
-      );
-      this.gamebookContainerManager.updateContainersConnectionButtonIds(
-        this.selectedNode.id,
-        outputClass
+      // console.log(
+      //   "what the shit",
+      //   this.selectedNode.id,
+      //   parsed.inputNodeId,
+      //   parsed.outputClass,
+      //   parsed.inputClass
+      // );
+
+      this.nodeEditor.editor.removeSingleConnection(
+        parsed.outputNodeId,
+        parsed.inputNodeId,
+        parsed.outputClass,
+        parsed.inputClass
       );
 
       this.editorContent = { ...this.nodeEditor.editor.drawflow };
@@ -527,6 +542,21 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   private _addContainerCallback(container: Node) {
     this.appendChild(container);
+  }
+
+  /*
+
+  */
+  private parseConnectionIdentifier(identifier) {
+    const parts = identifier.split("-");
+    const parsed = {
+      outputNodeId: parseInt(parts[0]),
+      outputClass: parts[1],
+      inputNodeId: parseInt(parts[2]),
+      inputClass: parts[3],
+    };
+
+    return parsed;
   }
 
   /*

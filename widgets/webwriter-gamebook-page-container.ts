@@ -43,6 +43,8 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
     null;
   @property({ type: String, attribute: true, reflect: true }) pageTitle = "";
   @property({ type: Number, attribute: true, reflect: true }) originPage = 0;
+  @property({ type: Boolean, attribute: true, reflect: false })
+  isObserverPaused = false;
 
   @queryAssignedElements({
     flatten: true,
@@ -91,6 +93,18 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
     return html`<slot class="page"></slot>`;
   }
 
+  // Pause the observer
+  public pauseObserver() {
+    console.log("pause this shit");
+    this.isObserverPaused = true;
+  }
+
+  // Resume the observer
+  public resumeObserver() {
+    console.log("resume this shit");
+    this.isObserverPaused = false;
+  }
+
   /*
 
 
@@ -112,6 +126,11 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
 
   */
   private mutationCallback = (mutationList: MutationRecord[]) => {
+    console.log(this.isObserverPaused);
+    if (this.isObserverPaused) {
+      return; // Ignore mutations while paused
+    }
+
     mutationList.forEach((mutation) => {
       if (mutation.type == "childList") {
         mutation.addedNodes.forEach((node) => {
@@ -119,7 +138,7 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
             (node as Element).nodeName.toLowerCase() ==
             "webwriter-connection-button"
           ) {
-            //console.log("LinkButton added:", node);
+            console.log("LinkButton added:", node);
           }
         });
         mutation.removedNodes.forEach((node) => {
@@ -131,15 +150,21 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
               //make sure link button did not get deleted programtically
               let connButton = node as WebWriterConnectionButton;
 
-              if (connButton.identifier != "connectionDeltedInNodeEditor") {
+              console.log("LinkButton removed:", node);
+
+              if (connButton.identifier != "x") {
                 //console.log("in mutation observer here");
-                const event = new CustomEvent("userDeleteConnectionButton", {
-                  detail: {
-                    identifier: (node as WebWriterConnectionButton).identifier,
-                  },
-                  bubbles: true, // Allows the event to bubble up through the DOM
-                  composed: true, // Allows the event to pass through shadow DOM boundaries
-                });
+                const event = new CustomEvent(
+                  "containerDeleteConnectionButton",
+                  {
+                    detail: {
+                      identifier: (node as WebWriterConnectionButton)
+                        .identifier,
+                    },
+                    bubbles: true, // Allows the event to bubble up through the DOM
+                    composed: true, // Allows the event to pass through shadow DOM boundaries
+                  }
+                );
                 this.dispatchEvent(event);
               }
             }

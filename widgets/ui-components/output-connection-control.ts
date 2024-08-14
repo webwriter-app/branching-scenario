@@ -301,6 +301,7 @@ export class OutputConnectionControl extends LitElementWw {
         }
         //clear sl-select
         else if (event.target.value == "") {
+          console.log("on clear");
           this.unhighlightConnectionAndNode(
             this.selectedNode.id,
             this.selectedNode?.outputs?.[
