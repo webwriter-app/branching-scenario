@@ -72,7 +72,8 @@ export class OutputConnectionControl extends LitElement {
       align-items: center;
       gap: 7px;
     }
-    .test {
+
+    .searchInput {
       --sl-input-border-width: 1px;
     }
   `;
@@ -141,7 +142,7 @@ export class OutputConnectionControl extends LitElement {
             @click=${() => this.searchElement.focus()}
             @keydown=${this.handleKeydown}
             clearable
-            class="test"
+            class="searchInput"
           >
             <sl-icon src=${search} slot="prefix"></sl-icon>
           </sl-input>
@@ -224,7 +225,7 @@ export class OutputConnectionControl extends LitElement {
 
   */
   private _toggleDividers(dividerId: string, shouldDisplay: boolean) {
-    const displayStyle = shouldDisplay ? "block" : "none";
+    const displayStyle = shouldDisplay ? "flex" : "none";
     this.shadowRoot
       .querySelectorAll(`#divider-${dividerId}`)
       .forEach((element) => {

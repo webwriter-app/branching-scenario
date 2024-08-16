@@ -83,7 +83,7 @@ export class GamebookContainerManager extends LitElementWw {
     this.gamebookContainers.forEach((container) => {
       container.remove();
     });
-    console.log("delete successfull", this.gamebookContainers);
+    //("delete successfull", this.gamebookContainers);
   }
 
   /*

@@ -38,6 +38,7 @@ export class WebWriterConnectionButton extends LitElementWw {
   @property({ type: Number, reflect: true }) width: number = 50;
   @property({ type: String, reflect: true }) alignment: string = "center";
   @property({ type: String, reflect: true }) variant: string = "default";
+  @property({ type: Number, attribute: true, reflect: true }) tabIndex = -1;
 
   @query("sl-button")
   button;
@@ -109,24 +110,6 @@ export class WebWriterConnectionButton extends LitElementWw {
       .active {
         background-color: #e0e0e0; /* example color for active state */
       }
-
-      .reset-button {
-        margin-top: 10px;
-        cursor: pointer;
-      }
-
-      .disabled-hover {
-        background-color: initial;
-        cursor: not-allowed;
-      }
-
-      /* Override hover styles when no-hover class is applied */
-      /* sl-button.no-hover::part(base):hover {
-        background-color: var(--original-bg-color, initial);
-        border-color: var(--original-border-color, initial);
-        color: var(--original-color, initial);
-        cursor: inherit;
-      } */
     `;
   }
 
@@ -175,34 +158,6 @@ export class WebWriterConnectionButton extends LitElementWw {
     });
   }
 
-  // queryPartBaseOfSlButton() {
-  //   const button = this.shadowRoot?.querySelector("sl-button");
-
-  //   if (button && button.shadowRoot) {
-  //     const observer = new MutationObserver((mutationsList, observer) => {
-  //       // Check if the part="base" element is present
-  //       const partBase = button.shadowRoot?.querySelector(
-  //         'button[part="base"]'
-  //       );
-  //       if (partBase) {
-  //         this.updateNoHover();
-  //         partBase.addEventListener("transitionend", (event) => {
-  //           // Check if the transitioned property is the one you care about
-  //           if ((event as TransitionEvent).propertyName !== "width") {
-  //             console.log("transitioned");
-  //             this.updateNoHover();
-  //           }
-  //         });
-
-  //         observer.disconnect();
-  //       }
-  //     });
-
-  //     // Start observing the Shadow DOM for child list changes
-  //     observer.observe(button.shadowRoot, { childList: true, subtree: true });
-  //   }
-  // }
-
   handleSizeChange(e) {
     this.size = e.target.value;
   }
@@ -234,6 +189,7 @@ export class WebWriterConnectionButton extends LitElementWw {
           size=${this.size}
           style="
             width: ${this.width}%;
+            pointer-events: ${this.isContentEditable ? "none" : "auto"}
           "
           variant=${this.variant}
           ?pill=${this.pill}
@@ -368,27 +324,4 @@ export class WebWriterConnectionButton extends LitElementWw {
 
     return parsed;
   }
-
-  // private updateNoHover() {
-  //   const button = this.shadowRoot?.querySelector("sl-button");
-  //   if (button) {
-  //     const partBase = button.shadowRoot?.querySelector('button[part="base"]');
-  //     if (partBase) {
-  //       console.log("inside");
-  //       const computedStyles = getComputedStyle(partBase);
-
-  //       console.log(computedStyles.backgroundColor);
-
-  //       button.style.setProperty(
-  //         "--original-bg-color",
-  //         computedStyles.backgroundColor
-  //       );
-  //       button.style.setProperty(
-  //         "--original-border-color",
-  //         computedStyles.borderColor
-  //       );
-  //       button.style.setProperty("--original-color", computedStyles.color);
-  //     }
-  //   }
-  // }
 }

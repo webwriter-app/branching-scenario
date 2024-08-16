@@ -23,8 +23,6 @@ export default css`
     justify-content: left;
     border-radius: 4px;
 
-    //border-bottom-left-radius: 20px;
-    z-index: 5;
     gap: 20px;
   }
 
@@ -41,7 +39,6 @@ export default css`
     box-sizing: border-box;
     color: white;
     border-radius: 4px;
-    z-index: 5;
   }
 
   .helpIcon {

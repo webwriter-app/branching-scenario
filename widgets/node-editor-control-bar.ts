@@ -123,7 +123,7 @@ export class NodeEditorControlsBar extends LitElementWw {
             Add
             <sl-icon src=${plus} slot="prefix"></sl-icon>
           </sl-button>
-          <sl-menu style="width: 200px;">
+          <sl-menu style="width: 200px;" hoist>
             <sl-menu-label>Blank</sl-menu-label>
             <sl-menu-item
               @click=${() => this.addPageNode("Untitled Page", false)}

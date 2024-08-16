@@ -1,6 +1,7 @@
-import { html } from "lit";
+import { html, css, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, query } from "lit/decorators.js";
+import { styleMap } from "lit/directives/style-map.js";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -32,7 +33,7 @@ import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
 import { style } from "drawflow/dist/drawflow.style.js";
 
 import customDrawflowStyles from "../css/custom-drawflow-css";
-import styles from "../css/webwriter-branching-scenario-css";
+import styles from "../css/node-editor-css";
 
 import { DrawflowBackground } from "./node-editor-background";
 import { NodeEditorControlsBar } from "./node-editor-control-bar";
@@ -53,6 +54,8 @@ const NO_NODE_SELECTED: DrawflowNode = {
   typenode: false,
 };
 const NO_CONNECTION_SELECTED = "output_id-input_id-output_class-input_class";
+
+const GRID_SIZE = 40;
 
 @customElement("node-editor")
 export class NodeEditor extends LitElementWw {
@@ -76,11 +79,33 @@ export class NodeEditor extends LitElementWw {
   }
 
   // Import CSS
-  static styles = [style, styles, customDrawflowStyles];
+  static styles = [
+    style,
+    styles,
+    customDrawflowStyles,
+    css`
+      #drawflowEditorDiv {
+        background-image: radial-gradient(
+          circle,
+          #dedede,
+          1px,
+          transparent 1px
+        );
+        background-size: ${GRID_SIZE}px ${GRID_SIZE}px;
+        background-color: #fbfbfb;
+        overflow: hidden;
+        cursor: grab;
+      }
+      #drawflowEditorDiv:active {
+        cursor: grabbing;
+      }
+    `,
+  ];
 
   //internal reactive state, not part of the component's API
-  @property({ type: Object, attribute: true, reflect: true }) editor?: Drawflow;
-  @property({ type: Object, attribute: true, reflect: true }) editorContent;
+  @property({ type: Object, attribute: true, reflect: false })
+  editor?: Drawflow;
+  @property({ type: Object, attribute: true, reflect: false }) editorContent;
   @property({ type: Number, attribute: true, reflect: true }) editorZoom = -1;
   @property({ type: String }) editorZoomString = "";
   @property({ type: Object, attribute: true }) selectedNode;
@@ -107,6 +132,16 @@ export class NodeEditor extends LitElementWw {
     importedGamebookContainers?
   ) => {};
 
+  @property({ type: Boolean }) backgroundIsDragging = false;
+  @property({ type: Number }) backgroundLastX = 0;
+  @property({ type: Number }) backgroundLastY = 0;
+  @property({ type: Number }) backgroundTranslateX = 0;
+  @property({ type: Number }) backgroundTranslateY = 0;
+  @property({ type: Number }) backgroundScale = 0.45;
+  @property({ type: Number }) backgroundMinScale = 0.5;
+  @property({ type: Number }) backgroundMaxScale = 2;
+  @property({ type: Number }) backgroundScaleFactor = 1.05;
+
   @property({ attribute: false }) updateSelectedNodeCallback = (id) => {};
 
   @query("#drawflowEditorDiv")
@@ -119,26 +154,21 @@ export class NodeEditor extends LitElementWw {
     this.editor = new Drawflow(this.drawflowEditorDiv);
     this.editor.reroute = false;
     this.editor.reroute_fix_curvature = false;
-
     //max scale
     this.editor.zoom_max = 0.8;
     //min scale
     this.editor.zoom_min = 0.25;
     //scale factor
     this.editor.zoom_value = 0.05;
-
     if (this.editorZoom == -1) {
-      this.editor.zoom = 0.45;
+      this.editor.zoom = this.backgroundScale;
     } else {
       this.editor.zoom = this.editorZoom;
     }
-
     this.editor.start();
     this.editor.zoom_refresh();
-
     this._registerEditorEventHandlers();
-    this._registerBackground();
-
+    //this._registerBackground();
     if (this.editorContent == null) {
       this.addPageNode("First Page", true);
     } else {
@@ -146,10 +176,98 @@ export class NodeEditor extends LitElementWw {
     }
   }
 
+  protected updated(_changedProperties: PropertyValues): void {
+    if (_changedProperties.has("selectedNode")) {
+      console.log(this.selectedNode.id);
+    }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener("mousemove", this.onMouseMove);
+    this.addEventListener("mousedown", this.onMouseDown);
+    this.addEventListener("mouseup", this.onMouseUp);
+    this.addEventListener("mouseleave", this.onMouseLeave);
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener("mousemove", this.onMouseMove);
+    this.removeEventListener("mousedown", this.onMouseDown);
+    this.removeEventListener("mouseup", this.onMouseUp);
+    this.removeEventListener("mouseleave", this.onMouseLeave);
+    super.disconnectedCallback();
+  }
+
+  private onMouseDown(event: MouseEvent) {
+    // Check if node is not selected
+    this.backgroundIsDragging = true;
+    this.backgroundLastX = event.clientX;
+    this.backgroundLastY = event.clientY;
+  }
+
+  public onMouseMove(event: MouseEvent) {
+    if (this.backgroundIsDragging && this.selectedNode.id == -1) {
+      // Check if node is not selected
+      const dx = event.clientX - this.backgroundLastX;
+      const dy = event.clientY - this.backgroundLastY;
+      this.backgroundTranslateX += dx;
+      this.backgroundTranslateY += dy;
+      this.backgroundLastX = event.clientX;
+      this.backgroundLastY = event.clientY;
+      this.requestUpdate();
+    }
+  }
+
+  private onMouseUp() {
+    this.backgroundIsDragging = false;
+  }
+
+  private onMouseLeave() {
+    this.backgroundIsDragging = false;
+  }
+
+  public onZoom(zoom_value: number, min_zoom: number, max_zoom: number) {
+    const rect =
+      this.shadowRoot!.querySelector(
+        "#drawflowEditorDiv"
+      )!.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    // Calculate the new scale from zoom_value
+    const prevScale = this.backgroundScale;
+    this.backgroundScale = zoom_value; // Assuming zoom_value directly represents the new scale
+
+    // Limit the scale within minScale and maxScale
+    this.backgroundScale = Math.min(
+      Math.max(min_zoom, this.backgroundScale),
+      max_zoom
+    );
+
+    // Calculate the scale ratio
+    const scaleRatio = this.backgroundScale / prevScale;
+
+    // Update translateX and translateY to center the zoom
+    this.backgroundTranslateX =
+      centerX - (centerX - this.backgroundTranslateX) * scaleRatio;
+    this.backgroundTranslateY =
+      centerY - (centerY - this.backgroundTranslateY) * scaleRatio;
+
+    // Request an update to apply the changes
+    this.requestUpdate();
+  }
+
   /*
 
   */
   render() {
+    const gridStyles = {
+      backgroundPosition: `${this.backgroundTranslateX}px ${this.backgroundTranslateY}px`,
+      backgroundSize: `${GRID_SIZE * this.backgroundScale}px ${
+        GRID_SIZE * this.backgroundScale
+      }px`,
+    };
+
     return html`
       <div id="nodeEditor">
         <node-editor-controls-bar
@@ -164,31 +282,30 @@ export class NodeEditor extends LitElementWw {
             (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
         >
         </node-editor-controls-bar>
-        <drawflow-background
-          .nodeSelected=${this.selectedNode.id.toString() != "-1"}
-        ></drawflow-background>
-        <div id="drawflowEditorDiv">
-          <div class="zoomControls">
-            <sl-icon-button
-              id="zoomInBtn"
-              src=${zoomIn}
-              style="font-size: auto;"
-              @click=${() => this.editor.zoom_in()}
-            >
-            </sl-icon-button>
-            <sl-icon-button
-              id="zoomOutBtn"
-              src=${zoomOut}
-              style="font-size: auto;"
-              @click=${() => this.editor.zoom_out()}
-            >
-            </sl-icon-button>
-          </div>
-          <div class="zoomValue">
-            <p>${this.editorZoomString}</p>
-          </div>
-          <drawflow-help-popup-controls></drawflow-help-popup-controls>
+
+        <div id="drawflowEditorDiv" style=${styleMap(gridStyles)}>
+          <!-- <drawflow-background></drawflow-background> -->
         </div>
+        <div class="zoomControls">
+          <sl-icon-button
+            id="zoomInBtn"
+            src=${zoomIn}
+            style="font-size: auto;"
+            @click=${() => this.editor.zoom_in()}
+          >
+          </sl-icon-button>
+          <sl-icon-button
+            id="zoomOutBtn"
+            src=${zoomOut}
+            style="font-size: auto;"
+            @click=${() => this.editor.zoom_out()}
+          >
+          </sl-icon-button>
+        </div>
+        <div class="zoomValue">
+          <p>${this.editorZoomString}</p>
+        </div>
+        <drawflow-help-popup-controls></drawflow-help-popup-controls>
       </div>
       <!-- Dialog for clearing editor-->
       <sl-dialog label="Clear graph" class="dialog" id="dialog">
@@ -402,11 +519,7 @@ export class NodeEditor extends LitElementWw {
       //NOTE: Usually this.editor.zoom_min should have been supplied here, however drawflow has an error in which the minimum gets undercut.
       //This results in faulty calculation for zooming into the background, so we hardcode it here.
       //Issue report drawflow: https://github.com/jerosoler/Drawflow/issues/883#issuecomment-2238986045
-      (
-        this.shadowRoot.querySelector(
-          "drawflow-background"
-        ) as DrawflowBackground
-      ).onZoom(zoom_level, 0.2, this.editor.zoom_max);
+      this.onZoom(zoom_level, 0.2, this.editor.zoom_max);
 
       //Attention: Due to floating errors in the drawflow framework, we hardcoded the actual zoom_min of 0.1.
       //Although it is set to 0.2 in the firstUpdated() method, values of 0.1 are produced
@@ -722,14 +835,14 @@ export class NodeEditor extends LitElementWw {
   /*
 
   */
-  private _registerBackground() {
-    // Select the elements
+  private _registerBackgroundEvents() {
+    // // Select the elements
     const drawflowEditorDiv =
       this.shadowRoot.querySelector("#drawflowEditorDiv");
+
     const drawflowBackground = this.shadowRoot.querySelector(
       "drawflow-background"
     );
-
     // List of events to propagate and controls to check
     const eventsToPropagate = [
       "mousemove",
@@ -737,58 +850,47 @@ export class NodeEditor extends LitElementWw {
       "mouseup",
       "mouseleave",
     ];
-    const insideEditorControls = [
-      "#zoomInBtn",
-      "#zoomOutBtn",
-      "help-editor-controls",
-      ".input",
-    ];
-
-    // Check if the event target is inside specified controls
-    const isEventInsideControls = (event) =>
-      insideEditorControls.some((selector) => {
-        const element = this.shadowRoot.querySelector(selector);
-        return element && element.contains(event.target);
-      });
 
     // Propagate event to drawflow-background if not inside controls
     const propagateEvent = (event) => {
-      if (isEventInsideControls(event)) return;
-
-      const eventInit = {
-        bubbles: event.bubbles,
-        cancelable: event.cancelable,
-        composed: event.composed,
-        clientX: event.clientX,
-        clientY: event.clientY,
-        screenX: event.screenX,
-        screenY: event.screenY,
-        ctrlKey: event.ctrlKey,
-        shiftKey: event.shiftKey,
-        altKey: event.altKey,
-        metaKey: event.metaKey,
-      };
-
-      const newEvent =
-        event.type === "wheel"
-          ? new WheelEvent(event.type, {
-              ...eventInit,
-              deltaX: event.deltaX,
-              deltaY: event.deltaY,
-              deltaZ: event.deltaZ,
-              deltaMode: event.deltaMode,
-            })
-          : new MouseEvent(event.type, {
-              ...eventInit,
-              button: event.button,
-              buttons: event.buttons,
-              movementX: event.movementX,
-              movementY: event.movementY,
-            });
-
-      drawflowBackground.dispatchEvent(newEvent);
+      if (this.selectedNode.id == -1) {
+        const eventInit = {
+          bubbles: event.bubbles,
+          cancelable: event.cancelable,
+          composed: event.composed,
+          clientX: event.clientX,
+          clientY: event.clientY,
+          screenX: event.screenX,
+          screenY: event.screenY,
+          ctrlKey: event.ctrlKey,
+          shiftKey: event.shiftKey,
+          altKey: event.altKey,
+          metaKey: event.metaKey,
+        };
+        const newEvent =
+          event.type === "wheel"
+            ? new WheelEvent(event.type, {
+                ...eventInit,
+                deltaX: event.deltaX,
+                deltaY: event.deltaY,
+                deltaZ: event.deltaZ,
+                deltaMode: event.deltaMode,
+              })
+            : new MouseEvent(event.type, {
+                ...eventInit,
+                button: event.button,
+                buttons: event.buttons,
+                movementX: event.movementX,
+                movementY: event.movementY,
+              });
+        drawflowBackground.dispatchEvent(newEvent);
+      }
     };
-
+    // const propagateEvent = (event) => {
+    //   if (event.type == "mousedown") {
+    //     console.log(event);
+    //   }
+    // };
     // Add event listeners to propagate events
     eventsToPropagate.forEach((eventType) => {
       drawflowEditorDiv.addEventListener(eventType, propagateEvent);

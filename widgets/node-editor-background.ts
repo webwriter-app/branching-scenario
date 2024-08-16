@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "lit";
+import { html, css, LitElement, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -27,7 +27,6 @@ export class DrawflowBackground extends LitElementWw {
   gridContainer!: HTMLElement;
 
   @property({ type: Boolean }) isDragging = false;
-  @property({ type: Boolean }) nodeSelected = false; // Add this property
   @property({ type: Number }) lastX = 0;
   @property({ type: Number }) lastY = 0;
   @property({ type: Number }) translateX = 0;
@@ -53,7 +52,6 @@ export class DrawflowBackground extends LitElementWw {
     this.addEventListener("mousemove", this.onMouseMove);
     this.addEventListener("mousedown", this.onMouseDown);
     this.addEventListener("mouseup", this.onMouseUp);
-
     this.addEventListener("mouseleave", this.onMouseLeave);
   }
 
@@ -66,16 +64,14 @@ export class DrawflowBackground extends LitElementWw {
   }
 
   private onMouseDown(event: MouseEvent) {
-    if (!this.nodeSelected) {
-      // Check if node is not selected
-      this.isDragging = true;
-      this.lastX = event.clientX;
-      this.lastY = event.clientY;
-    }
+    // Check if node is not selected
+    this.isDragging = true;
+    this.lastX = event.clientX;
+    this.lastY = event.clientY;
   }
 
   public onMouseMove(event: MouseEvent) {
-    if (this.isDragging && !this.nodeSelected) {
+    if (this.isDragging) {
       // Check if node is not selected
       const dx = event.clientX - this.lastX;
       const dy = event.clientY - this.lastY;

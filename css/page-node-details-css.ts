@@ -1,9 +1,15 @@
 import { css } from "lit";
 
 export default css`
-  .page-node-details {
-    width: auto;
+  /* :host {
+    height: 100%;
+  } */
 
+  :host * {
+    box-sizing: border-box;
+  }
+
+  .page-node-details {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,7 +18,6 @@ export default css`
     border-radius: 0px 0px 8px 8px;
 
     background-color: white;
-    box-sizing: border-box;
   }
 
   .preview {
@@ -36,8 +41,9 @@ export default css`
     box-sizing: border-box;
     border: 1px solid #d4d4d8;
     width: 100%;
-    min-height: 800px;
+
     height: auto;
+    min-height: 800px;
     color: black;
 
     box-shadow: 0 2px 20px 2px #d0d0d0;

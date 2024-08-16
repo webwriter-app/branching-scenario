@@ -1,14 +1,22 @@
 import { css } from "lit";
 
 export default css`
+  :host {
+    height: fit-content;
+  }
+
+  :host * {
+    box-sizing: border-box;
+  }
+
   .no-node-selected {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #a7a7a7;
-    padding: 30px;
+    justify-content: center;
+    height: 150px;
     background-color: white;
-    height: 100%;
+    color: darkgray;
   }
 
   .title-bar {

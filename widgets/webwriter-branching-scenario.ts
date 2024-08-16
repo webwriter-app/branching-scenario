@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "lit";
+import { html, css, LitElement, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
@@ -17,7 +17,7 @@ import { OutputConnectionControl } from "./ui-components/output-connection-contr
 
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import { SlInput, SlIcon } from "@shoelace-style/shoelace";
+import { SlInput, SlIcon, SlSplitPanel } from "@shoelace-style/shoelace";
 
 import styles from "../css/webwriter-branching-scenario-css";
 
@@ -26,8 +26,8 @@ import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import book from "@tabler/icons/outline/book.svg";
+import gripHorizontal from "@tabler/icons/outline/grip-horizontal.svg";
 
-const NO_CONNECTION_SELECTED = "output_id-output_class-input_id-input_class";
 const NO_NODE_SELECTED: DrawflowNode = {
   id: -1,
   name: "unselect",
@@ -54,14 +54,19 @@ export class WebWriterBranchingScenario extends LitElementWw {
   gamebookContainers;
 
   @query("node-editor") nodeEditor;
+  @query("sl-split-panel") splitPanel;
+  @query("#widget") widgetDiv;
+  @query("selected-node-view-renderer") selectedNodeViewRenderer;
 
-  @property({ type: Object, attribute: true, reflect: true }) editorContent;
+  @property({ type: Object, attribute: true, reflect: true })
+  editorContent;
   @property({ type: Number, attribute: true, reflect: true }) editorZoom = -1;
   @property({ type: Object, attribute: true })
   selectedNode: DrawflowNode = NO_NODE_SELECTED;
   @property({ type: String, attribute: true, reflect: true })
   gamebookTitle = "Untitled Gamebook";
   @property({ type: Boolean }) reactToCallbackFromNodeEditor = true;
+  @property({ type: Number, attribute: true, reflect: true }) tabIndex = -1;
 
   //registering custom elements used in the widget
   static get scopedElements() {
@@ -74,8 +79,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "output-connection-control": OutputConnectionControl,
       "sl-input": SlInput,
       "sl-icon": SlIcon,
+      "sl-split-panel": SlSplitPanel,
     };
   }
+
+  private min = "230px";
+  private max = "350px";
+  private previousSplitPanelHeight;
 
   //import CSS
   static styles = [styles];
@@ -89,19 +99,103 @@ export class WebWriterBranchingScenario extends LitElementWw {
       container.hide();
     });
     this.handleChangesInGamebookContainers();
+
+    this.updateComplete.then(() => {
+      this.previousSplitPanelHeight = this.splitPanel.offsetHeight;
+
+      this.splitPanel.addEventListener("sl-reposition", () => {
+        this.handleSplitViewChange(false);
+      });
+      const endPanel = this.splitPanel.querySelector(
+        "selected-node-view-renderer"
+      );
+      const startPanel = this.splitPanel.querySelector("node-editor");
+      this.resizeObserverEndPanel.observe(endPanel);
+      this.resizeObserverStartPanel.observe(startPanel);
+    });
   }
+
+  /*
+
+
+  */
+  private handleSplitViewChange(updatePosition: boolean) {
+    if (updatePosition) {
+      const startPosition = this.splitPanel.position;
+
+      const previousPositionInPixels =
+        this.previousSplitPanelHeight * (startPosition / 100);
+
+      const startPanel = this.splitPanel.querySelector("node-editor");
+      const endPanel = this.splitPanel.querySelector(
+        "selected-node-view-renderer"
+      );
+
+      const totalHeight = startPanel.offsetHeight + endPanel.offsetHeight + 20;
+      this.style.height = `${totalHeight}px`;
+
+      this.splitPanel.position =
+        (previousPositionInPixels / this.splitPanel.offsetHeight) * 100;
+    }
+
+    //
+    else {
+      const startPanel = this.splitPanel.querySelector("node-editor");
+      const endPanel = this.splitPanel.querySelector(
+        "selected-node-view-renderer"
+      );
+
+      const totalHeight = startPanel.offsetHeight + endPanel.offsetHeight + 20;
+      this.style.height = `${totalHeight}px`;
+    }
+  }
+
+  /*
+
+
+  */
+  resizeObserverEndPanel = new ResizeObserver((entries) => {
+    for (let entry of entries) {
+      // Ensure that only significant changes trigger recalculation
+      if (
+        entry.contentRect.height !==
+        this.splitPanel.getBoundingClientRect().height
+      ) {
+        this.handleSplitViewChange(true);
+      }
+    }
+  });
+
+  resizeObserverStartPanel = new ResizeObserver((entries) => {
+    for (let entry of entries) {
+      // Ensure that only significant changes trigger recalculation
+      if (
+        entry.contentRect.height !==
+        this.splitPanel.getBoundingClientRect().height
+      ) {
+        this.handleSplitViewChange(false);
+      }
+    }
+  });
 
   /*
   
   */
   render() {
     return html`
-      <div id="widget">
-        <!-- <button @click=${() =>
-          this.exportContainersAsString()}></button> -->
-        ${this.isContentEditable
-          ? html`
+      <!-- <div id="widget"> -->
+      <!-- <button @click=${() => this.exportContainersAsString()}></button> -->
+      ${this.isContentEditable
+        ? html`
+            <sl-split-panel
+              vertical
+              style="--min: ${this.min}; --max: ${this
+                .max}; --divider-width: 20px;"
+              position="85.35821004299979"
+            >
+              <sl-icon slot="divider" src=${gripHorizontal}></sl-icon>
               <node-editor
+                slot="start"
                 .selectedNode=${this.selectedNode}
                 .editorContent=${this.editorContent}
                 .changeInEditorCallback=${(
@@ -113,8 +207,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   outputNode,
                   inputClass,
                   outputClass,
-                  outputHadConnections,
-                  importedGamebookContainers
+                  outputHadConnections
                 ) => {
                   this.updateGamebookContainers(
                     drawflow,
@@ -125,8 +218,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     outputNode,
                     inputClass,
                     outputClass,
-                    outputHadConnections,
-                    importedGamebookContainers
+                    outputHadConnections
                   );
                 }}
                 .updateSelectedNodeCallback=${(id) => {
@@ -138,6 +230,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
               ></node-editor>
 
               <selected-node-view-renderer
+                slot="end"
                 .selectedNode=${this.selectedNode}
                 .nodeEditor=${this.nodeEditor}
                 .changeInEditorCallback=${(
@@ -173,44 +266,52 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   <slot></slot>
                 </gamebook-container-manager>
               </selected-node-view-renderer>
-
-              <div part="options" class="author-only">
-                <div>
-                  <sl-icon src=${book} slot="prefix"></sl-icon>
-                  <p>Gamebook</p>
-                </div>
-                <sl-input
-                  placeholder="Search nodes"
-                  style="padding-bottom: 15px"
-                >
-                  <sl-icon src=${search} slot="prefix"></sl-icon>
-                </sl-input>
-                ${this.selectedNode.id != -1
-                  ? html`<div style="margin-left: 25px">
-                        ${this.selectedNode.class == "page" ||
-                        this.selectedNode.class == "origin"
-                          ? html`<sl-icon src=${file}></sl-icon>`
-                          : this.selectedNode.class == "popup"
-                          ? html`<sl-icon src=${squares}></sl-icon>`
-                          : this.selectedNode.class == "branch"
-                          ? html`<sl-icon src=${arrowsSplit2}></sl-icon>`
-                          : null}
-                        <p>${this.selectedNode.data.title}</p>
-                      </div>
-                      <p style="margin-left: auto">
-                        Internal ID: ${this.selectedNode.id}
-                      </p>
-                      <p style="margin-left: auto">
-                        Container found:
-                        ${this.gamebookContainerManager._getContainerByDrawflowNodeId(
-                          this.selectedNode.id
-                        ) != undefined}
-                      </p>
-                      <quick-connect-node
-                        style="margin-left: 25px"
-                        .nodeEditor=${this.nodeEditor}
-                        .selectedNode=${this.selectedNode}
-                        .changeInEditorCallback=${(
+            </sl-split-panel>
+            <div part="options" class="author-only">
+              <div>
+                <sl-icon src=${book} slot="prefix"></sl-icon>
+                <p>Gamebook</p>
+              </div>
+              <sl-input placeholder="Search nodes" style="padding-bottom: 15px">
+                <sl-icon src=${search} slot="prefix"></sl-icon>
+              </sl-input>
+              ${this.selectedNode.id != -1
+                ? html`<div style="margin-left: 25px">
+                      ${this.selectedNode.class == "page" ||
+                      this.selectedNode.class == "origin"
+                        ? html`<sl-icon src=${file}></sl-icon>`
+                        : this.selectedNode.class == "popup"
+                        ? html`<sl-icon src=${squares}></sl-icon>`
+                        : this.selectedNode.class == "branch"
+                        ? html`<sl-icon src=${arrowsSplit2}></sl-icon>`
+                        : null}
+                      <p>${this.selectedNode.data.title}</p>
+                    </div>
+                    <p style="margin-left: auto">
+                      Internal ID: ${this.selectedNode.id}
+                    </p>
+                    <p style="margin-left: auto">
+                      Container found:
+                      ${this.gamebookContainerManager._getContainerByDrawflowNodeId(
+                        this.selectedNode.id
+                      ) != undefined}
+                    </p>
+                    <quick-connect-node
+                      style="margin-left: 25px"
+                      .nodeEditor=${this.nodeEditor}
+                      .selectedNode=${this.selectedNode}
+                      .changeInEditorCallback=${(
+                        drawflow,
+                        updateType,
+                        node,
+                        removedNodeId,
+                        inputNode,
+                        outputNode,
+                        inputClass,
+                        outputClass,
+                        outputHadConnections
+                      ) => {
+                        this.updateGamebookContainers(
                           drawflow,
                           updateType,
                           node,
@@ -220,30 +321,19 @@ export class WebWriterBranchingScenario extends LitElementWw {
                           inputClass,
                           outputClass,
                           outputHadConnections
-                        ) => {
-                          this.updateGamebookContainers(
-                            drawflow,
-                            updateType,
-                            node,
-                            removedNodeId,
-                            inputNode,
-                            outputNode,
-                            inputClass,
-                            outputClass,
-                            outputHadConnections
-                          );
-                        }}
-                      ></quick-connect-node> `
-                  : null}
-              </div>
-            `
-          : html`<webwriter-gamebook
-              gamebookTitle=${this.gamebookTitle != ""
-                ? this.gamebookTitle
-                : "Untitled Gamebook"}
-              ><slot></slot
-            ></webwriter-gamebook>`}
-      </div>
+                        );
+                      }}
+                    ></quick-connect-node> `
+                : null}
+            </div>
+          `
+        : html`<webwriter-gamebook
+            gamebookTitle=${this.gamebookTitle != ""
+              ? this.gamebookTitle
+              : "Untitled Gamebook"}
+            ><slot></slot
+          ></webwriter-gamebook>`}
+      <!-- </div> -->
     `;
   }
 
@@ -443,14 +533,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       const identifier = (event as CustomEvent).detail.identifier;
       const parsed = this.parseConnectionIdentifier(identifier);
 
-      // console.log(
-      //   "what the shit",
-      //   this.selectedNode.id,
-      //   parsed.inputNodeId,
-      //   parsed.outputClass,
-      //   parsed.inputClass
-      // );
-
       this.nodeEditor.editor.removeSingleConnection(
         parsed.outputNodeId,
         parsed.inputNodeId,
@@ -462,7 +544,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.updateSelectedNode(this.selectedNode.id.toString());
     });
     this.addEventListener("containerHighlightConnectionButton", (event) => {
-      console.log("test");
       this.reactToCallbackFromNodeEditor = false;
       this.nodeEditor.highlightConnectionAndNode(
         (event as CustomEvent).detail.outputNodeId,
@@ -489,12 +570,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   */
   private updateSelectedNode(id: String) {
-    //console.log("update Selected Node to", id);
+    this.previousSplitPanelHeight = this.splitPanel.offsetHeight;
+
     if (id != "-1") {
       this.selectedNode = { ...this.nodeEditor.editor.getNodeFromId(id) };
 
-      //console.log(this.selectedNode);
-      //console.log(this.nodeEditor.editor.getNodeFromId(this.selectedNode.id));
       if (
         this.selectedNode.class == "page" ||
         this.selectedNode.class == "origin" ||

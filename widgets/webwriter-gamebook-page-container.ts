@@ -46,6 +46,8 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
   @property({ type: Boolean, attribute: true, reflect: false })
   isObserverPaused = false;
 
+  @property({ type: Number, attribute: true, reflect: true }) tabIndex = -1;
+
   @queryAssignedElements({
     flatten: true,
     selector: "webwriter-connection-button",
@@ -126,7 +128,7 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
 
   */
   private mutationCallback = (mutationList: MutationRecord[]) => {
-    console.log(this.isObserverPaused);
+    //console.log(this.isObserverPaused);
     if (this.isObserverPaused) {
       return; // Ignore mutations while paused
     }

@@ -5,6 +5,10 @@ export default css`
   /*  Base Layouting Nodes  */
   /* ------- */
 
+  /* .drawflow {
+    border: 1.5px solid blue;
+  } */
+
   .drawflow .drawflow-node.page,
   .drawflow .drawflow-node.origin,
   .drawflow .drawflow-node.popup,
