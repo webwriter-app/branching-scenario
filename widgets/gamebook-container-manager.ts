@@ -417,6 +417,7 @@ export class GamebookContainerManager extends LitElementWw {
   
   */
   private importContainers(template: Array<Object>) {
+    console.log(template);
     let containers = template.map((info) =>
       this.createContainerFromImport(info)
     );

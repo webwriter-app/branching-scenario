@@ -106,16 +106,16 @@ export class NodeEditor extends LitElementWw {
 
   //access nodes in the internal component DOM.
   @property({ attribute: false }) changeInEditorCallback = (
-    drawflow,
-    updateType,
-    node?,
-    removedNodeId?,
-    inputNode?,
-    outputNode?,
-    inputClass?,
-    outputClass?,
-    outputHadConnections?,
-    importedGamebookContainers?
+    drawflow: Object,
+    updateType: String,
+    node?: DrawflowNode,
+    removedNodeId?: String,
+    inputNode?: DrawflowNode,
+    outputNode?: DrawflowNode,
+    inputClass?: String,
+    outputClass?: String,
+    outputHadConnections?: Boolean,
+    importedGamebookContainers?: Array<Object>
   ) => {};
 
   @property({ type: Boolean }) backgroundIsDragging = false;
@@ -397,7 +397,7 @@ export class NodeEditor extends LitElementWw {
         { ...this.editor.drawflow },
         "nodeRemoved",
         null,
-        id
+        id.toString()
       );
     });
 
@@ -1032,7 +1032,10 @@ export class NodeEditor extends LitElementWw {
     this.moveNodesToCenter(nodeTemplatesCopy, centerX, centerY);
     const mergedData = this.mergeTemplate(currentNodes, nodeTemplatesCopy);
     //
+
     this.editor.import(mergedData.currentNodes);
+
+    console.log(mergedData.templateContainers);
     this.changeInEditorCallback(
       { ...this.editor.drawflow },
       "templateImported",
@@ -1045,6 +1048,7 @@ export class NodeEditor extends LitElementWw {
       null,
       mergedData.templateContainers
     );
+
     this.updateSelectedNodeCallback(this.selectedNode.id);
   }
 

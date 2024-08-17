@@ -126,7 +126,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     outputNode,
                     inputClass,
                     outputClass,
-                    outputHadConnections
+                    outputHadConnections,
+                    importedGamebookContainers
                   ) => {
                     this.updateGamebookContainers(
                       drawflow,
@@ -137,7 +138,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                       outputNode,
                       inputClass,
                       outputClass,
-                      outputHadConnections
+                      outputHadConnections,
+                      importedGamebookContainers
                     );
                   }}
                   .updateSelectedNodeCallback=${(id) => {
@@ -395,7 +397,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
       } else {
         this.reactToCallbackFromNodeEditor = true;
       }
-    } else if (updateType == "connectionUnhighlighted") {
+    }
+
+    //
+    else if (updateType == "connectionUnhighlighted") {
       //
       //
       if (this.reactToCallbackFromNodeEditor) {
