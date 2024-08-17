@@ -12,7 +12,7 @@ import { repeat } from "lit/directives/repeat.js";
 
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import { SlButton, SlIconButton } from "@shoelace-style/shoelace";
+import { SlButton, SlIcon, SlIconButton } from "@shoelace-style/shoelace";
 
 // Drawflow Imports
 import { DrawflowNode } from "drawflow";
@@ -49,6 +49,7 @@ export class NodeConnectionList extends LitElementWw {
     return {
       "sl-button": SlButton,
       "sl-icon-button": SlIconButton,
+      "sl-icon": SlIcon,
       "output-connection-control": OutputConnectionControl,
     };
   }
@@ -68,8 +69,9 @@ export class NodeConnectionList extends LitElementWw {
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 10px;
-        border-bottom: 1px solid gray;
+
+        border-bottom: 1px solid #d4d4d8;
+
         padding-bottom: 5px;
         width: 100%;
       }
@@ -77,14 +79,13 @@ export class NodeConnectionList extends LitElementWw {
       .titlebar p {
         font-family: "Roboto", sans-serif;
         font-size: 12px;
-        font-weight: bold;
-        color: gray;
+
+        color: #3f3f46;
         margin: 0px;
         padding: 0px;
         margin-right: auto;
-        color: #3f3f46;
-        max-width: 100px;
-        min-width: 80px;
+        max-width: 85px;
+        min-width: 70px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -112,7 +113,7 @@ export class NodeConnectionList extends LitElementWw {
         align-items: center;
         gap: 5px;
         width: 100%;
-        border-bottom: 1px solid #d4d4d8;
+        border-bottom: 1px solid #e4e4e7;
         padding-left: 5px;
         box-sizing: border-box;
       }
@@ -141,8 +142,16 @@ export class NodeConnectionList extends LitElementWw {
         margin-right: auto;
       }
 
-      sl-icon-button::part(base) {
+      sl-icon-button.minus::part(base) {
         padding: 0px;
+      }
+
+      sl-icon-button.add::part(base) {
+        padding-left: 0px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        padding-right: 4px;
+        font-size: 16px;
       }
 
       .verticalStack::-webkit-scrollbar {
@@ -173,10 +182,11 @@ export class NodeConnectionList extends LitElementWw {
             (${Object.keys(this.selectedNode.outputs).length.toString()})
           </p>
           <sl-icon-button
-            src=${plus}
-            style="font-size: 0.8rem;"
             @click=${this._addOutputToSelectedNode}
-          ></sl-icon-button>
+            src=${plus}
+            class="add"
+          >
+          </sl-icon-button>
         </div>
         <div class="verticalStack">
           ${repeat(
@@ -191,8 +201,9 @@ export class NodeConnectionList extends LitElementWw {
                   .outputClass=${output_class}
                 ></output-connection-control>
                 <sl-icon-button
+                  class="minus"
                   src=${minus}
-                  style="font-size: 0.8rem;"
+                  style="font-size: 15px;"
                   @click=${() =>
                     this._deleteOutputFromNode(
                       this.selectedNode.id,

@@ -3,6 +3,7 @@ import { css } from "lit";
 export default css`
   :host {
     height: 100%;
+    width: 100%;
   }
 
   :host * {
@@ -47,18 +48,10 @@ export default css`
     color: inherit;
   }
 
-  #zoomInBtn,
-  #zoomOutBtn {
-    color: white;
-  }
-
   .zoomControls {
     display: flex;
     flex-direction: row;
 
-    box-sizing: border-box;
-
-    float: right;
     position: absolute;
     bottom: 10px;
     right: 10px;
@@ -66,12 +59,16 @@ export default css`
 
     padding: 0px;
 
-    color: white;
-    background-color: black;
-    opacity: 70%;
+    background-color: rgba(255, 255, 255, 0.9);
 
-    border-radius: 4px;
-    border-right: 1px solid white;
+    box-sizing: border-box;
+
+    border-radius: 8px;
+    border: 1px solid #e4e4e7;
+  }
+
+  .zoomControls.sl-icon-button::part(base) {
+    padding: 0px;
   }
 
   .exportButton {
@@ -88,17 +85,18 @@ export default css`
 
     float: right;
     position: absolute;
-    bottom: 55px;
-    right: 10px;
+    bottom: 45px;
+    right: 20px;
     z-index: 1;
 
+    /* 
     padding-inline: 5px;
     padding-block: 0px;
 
-    border-radius: 4px;
+    border-radius: 4px; */
 
-    color: white;
-    background: #555555;
+    /* color: white;
+    background: #555555; */
 
     font-size: 8px;
   }

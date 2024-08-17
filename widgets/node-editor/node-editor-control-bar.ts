@@ -10,7 +10,7 @@ import {
 } from "lit/decorators.js";
 
 //Import Styles
-import styles from "../css/branching-controls-css";
+import styles from "../../css/branching-controls-css";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";

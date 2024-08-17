@@ -28,17 +28,17 @@ import {
   SlDialog,
 } from "@shoelace-style/shoelace";
 
-import { WebWriterConnectionButton } from "./webwriter-connection-button";
-import { ToggleableInput } from "./ui-components/toggleable-input";
-import { NodeConnectionList } from "./ui-components/node-connection-list";
-import { QuickConnectNode } from "./ui-components/quick-connect-node";
+import { WebWriterConnectionButton } from "../gamebook-components/webwriter-connection-button";
+import { ToggleableInput } from "../ui-components/toggleable-input";
+import { NodeConnectionList } from "../ui-components/node-connection-list";
+import { QuickConnectNode } from "../ui-components/quick-connect-node";
 
 //Tabler Icon Import
 import route2 from "@tabler/icons/outline/route-2.svg";
 import squares from "@tabler/icons/filled/squares.svg";
 
 //CSS
-import styles from "../css/popup-node-details-css";
+import styles from "../../css/popup-node-details-css";
 
 @customElement("popup-node-details")
 export class PopupNodeDetails extends LitElementWw {

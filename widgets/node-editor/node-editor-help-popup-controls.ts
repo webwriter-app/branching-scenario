@@ -14,7 +14,7 @@ import questionMark from "@tabler/icons/outline/question-mark.svg";
 import { SlIcon, SlIconButton } from "@shoelace-style/shoelace";
 
 //Import Styles
-import styles from "../css/help-editor-controls-css";
+import styles from "../../css/help-editor-controls-css";
 
 @customElement("drawflow-help-popup-controls")
 export class DrawflowHelpPopUpControls extends LitElementWw {

@@ -2,12 +2,19 @@ import { css } from "lit";
 
 export default css`
   :host {
+    box-sizing: border-box;
     height: fit-content;
+
+    background-color: #fbfbfb;
+    width: 100%;
   }
 
   :host * {
     box-sizing: border-box;
   }
+
+  /* .selected-node {
+  } */
 
   .no-node-selected {
     display: flex;
@@ -15,7 +22,7 @@ export default css`
     align-items: center;
     justify-content: center;
     height: 150px;
-    background-color: white;
+    background-color: #fbfbfb;
     color: darkgray;
   }
 
@@ -33,7 +40,10 @@ export default css`
     padding: 15px;
 
     background-color: white;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #d4d4d8;
+    /* 
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px; */
   }
 
   .inputOutputControls {

@@ -5,10 +5,10 @@ import { customElement, property } from "lit/decorators.js";
 //Drawflow Imports
 import { DrawflowNode } from "drawflow";
 
-import { QuickConnectNode } from "./ui-components/quick-connect-node";
+import { QuickConnectNode } from "../ui-components/quick-connect-node";
 
 //CSS
-import styles from "../css/page-node-details-css";
+import styles from "../../css/page-node-details-css";
 
 @customElement("page-node-details")
 export class PageNodeDetails extends LitElementWw {

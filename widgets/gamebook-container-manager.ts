@@ -11,10 +11,9 @@ import {
 
 //Drawflow Imports
 import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
-import { WebWriterConnectionButton } from "./webwriter-connection-button";
-import { WebWriterGamebookPageContainer } from "./webwriter-gamebook-page-container";
-import { WebWriterGamebookPopupContainer } from "./webwriter-gamebook-popup-container";
-import { QuizContainer } from "./quiz-container";
+import { WebWriterConnectionButton } from "./gamebook-components/webwriter-connection-button";
+import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
+import { WebWriterGamebookPopupContainer } from "./gamebook-components/webwriter-gamebook-popup-container";
 
 @customElement("gamebook-container-manager")
 export class GamebookContainerManager extends LitElementWw {
@@ -38,7 +37,6 @@ export class GamebookContainerManager extends LitElementWw {
     return {
       "webwriter-gamebook-page-container": WebWriterGamebookPageContainer,
       "webwriter-gamebook-popup-container": WebWriterGamebookPopupContainer,
-      "quiz-container": QuizContainer,
     };
   }
 
@@ -412,24 +410,6 @@ export class GamebookContainerManager extends LitElementWw {
 
     //
     this.appendToShadowDom(popupContainer);
-  }
-
-  /* 
-  
-  
-  */
-  public _createQuestionContainerFromQuestionNode(questionNode: DrawflowNode) {
-    const quizContainer = document.createElement(
-      "quiz-container"
-    ) as QuizContainer;
-    quizContainer.setAttribute("drawflowNodeId", questionNode.id.toString());
-    quizContainer.style.position = "unset";
-
-    quizContainer.setAttribute("quiz", JSON.stringify(questionNode.data));
-
-    //to let it access editor
-    quizContainer.hide();
-    this.appendToShadowDom(quizContainer);
   }
 
   /* 

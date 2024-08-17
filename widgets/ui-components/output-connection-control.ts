@@ -269,40 +269,41 @@ export class OutputConnectionControl extends LitElement {
 
   */
   private _handleUserInputTargetPage(event: Event) {
-    if (event.target instanceof SlSelect) {
-      const selectedValue = (event.target as SlSelect).value;
-      const connections =
-        this.selectedNode?.outputs?.[this.outputClass]?.connections;
+    console.log("here");
+    const selectedValue = (event.target as SlSelect).value;
+    const connections =
+      this.selectedNode?.outputs?.[this.outputClass]?.connections;
 
-      if (connections?.[0]?.node === undefined && selectedValue) {
-        this.nodeEditor.editor.addConnection(
-          this.selectedNode.id,
-          selectedValue,
-          this.outputClass,
-          "input_1"
-        );
-      } else if (connections?.[0]?.node !== undefined && selectedValue) {
-        this.nodeEditor.editor.removeSingleConnection(
-          this.selectedNode.id,
-          connections[0].node,
-          this.outputClass,
-          "input_1"
-        );
-        this.nodeEditor.editor.addConnection(
-          this.selectedNode.id,
-          selectedValue,
-          this.outputClass,
-          "input_1"
-        );
-      } else if (!selectedValue) {
-        this._unhighlightConnectionAndNode();
-        this.nodeEditor.editor.removeSingleConnection(
-          this.selectedNode.id,
-          connections?.[0]?.node,
-          this.outputClass,
-          "input_1"
-        );
-      }
+    console.log("here");
+    if (connections?.[0]?.node === undefined && selectedValue) {
+      console.log("test");
+      this.nodeEditor.editor.addConnection(
+        this.selectedNode.id,
+        selectedValue,
+        this.outputClass,
+        "input_1"
+      );
+    } else if (connections?.[0]?.node !== undefined && selectedValue) {
+      this.nodeEditor.editor.removeSingleConnection(
+        this.selectedNode.id,
+        connections[0].node,
+        this.outputClass,
+        "input_1"
+      );
+      this.nodeEditor.editor.addConnection(
+        this.selectedNode.id,
+        selectedValue,
+        this.outputClass,
+        "input_1"
+      );
+    } else if (!selectedValue) {
+      this._unhighlightConnectionAndNode();
+      this.nodeEditor.editor.removeSingleConnection(
+        this.selectedNode.id,
+        connections?.[0]?.node,
+        this.outputClass,
+        "input_1"
+      );
     }
   }
 

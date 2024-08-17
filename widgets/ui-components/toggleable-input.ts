@@ -92,13 +92,13 @@ export class ToggleableInput extends LitElementWw {
               <sl-icon-button
                 id="cancelButton"
                 src=${x}
-                style="font-size: 15px;"
+                style="font-size: 18px;"
                 @click=${() => this.toggleRename()}
               ></sl-icon-button>
               <sl-icon-button
                 id="saveButton"
                 src=${check}
-                style="font-size: 15px;"
+                style="font-size: 18px;"
                 @click="${() => this.save()}"
               ></sl-icon-button>
             `
@@ -107,7 +107,7 @@ export class ToggleableInput extends LitElementWw {
               <sl-icon-button
                 id="renameToggleButton"
                 src=${pencil}
-                style="font-size: 15px;"
+                style="font-size: 18px;"
                 @click=${() => this.toggleRename()}
               ></sl-icon-button>
             `}

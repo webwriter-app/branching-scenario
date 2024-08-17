@@ -1,4 +1,4 @@
-export const nodeTemplates = {
+export const decisionPopUpWithFeedback = {
   drawflow: {
     Home: {
       data: {

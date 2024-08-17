@@ -27,6 +27,7 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
         box-sizing: border-box;
         width: 100%;
         height: auto;
+        pointer-events: none;
       }
 
       sl-dialog::part(base) {
@@ -49,6 +50,8 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
   //associated node id
   @property({ type: Number, attribute: true, reflect: true }) drawflowNodeId =
     null;
+
+  @property({ type: Number, attribute: true, reflect: true }) tabIndex = -1;
 
   @queryAssignedElements({
     flatten: true,
@@ -83,13 +86,11 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
     // Options for the observer (which mutations to observe)
     const config = { attributes: true, childList: true, subtree: true };
     this.mutationObserver.observe(this, config);
-    //
-    // Prevent the dialog from closing when the user clicks on the overlay
-    // this.dialog.addEventListener("sl-request-close", (event) => {
-    //   if (event.detail.source === "overlay") {
-    //     event.preventDefault();
-    //   }
-    // });
+
+    this.addEventListener("click", () => {
+      console.log("popup Container clicked");
+      this.focus();
+    });
   }
   /*
 

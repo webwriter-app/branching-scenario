@@ -18,9 +18,6 @@ import {
 import alignLeft from "@tabler/icons/outline/align-left.svg";
 import alignRight from "@tabler/icons/outline/align-right.svg";
 import alignCenter from "@tabler/icons/outline/align-center.svg";
-import { NodeEditor } from "./node-editor";
-import { WebWriterGamebookPageContainer } from "./webwriter-gamebook-page-container";
-import { WebWriterGamebookPopupContainer } from "./webwriter-gamebook-popup-container";
 
 @customElement("webwriter-connection-button")
 export class WebWriterConnectionButton extends LitElementWw {

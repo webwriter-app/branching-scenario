@@ -123,22 +123,21 @@ export default css`
 
     background-color: white;
 
-    padding: 10px;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    /* Inset shadow */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
   }
 
   .page {
     box-sizing: border-box;
-    border: 1px solid #d4d4d8;
     width: 100%;
     height: auto;
 
     color: black;
-    box-shadow: 0 2px 20px 2px #d0d0d0;
 
     display: flex;
     flex-direction: row;
@@ -153,7 +152,7 @@ export default css`
     height: auto;
     color: white;
     z-index: 1; /* Ensure the overlay is above other content */
-    padding: 20px;
+    padding: 10px;
 
     display: flex;
     flex-direction: row;

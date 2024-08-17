@@ -3,7 +3,6 @@ import { LitElementWw } from "@webwriter/lit";
 import { customElement, property } from "lit/decorators.js";
 import { DrawflowNode } from "drawflow";
 import { PageNodeDetails } from "./page-node-details";
-import { QuizBranchNodeDetails } from "./quiz-branch-node-details";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -24,10 +23,10 @@ const NO_NODE_SELECTED: DrawflowNode = {
 };
 
 //Import Styles
-import styles from "../css/selected-node-details-css";
+import styles from "../../css/selected-node-details-css";
 import { PopupNodeDetails } from "./popup-node-details";
-import { ToggleableInput } from "./ui-components/toggleable-input";
-import { NodeConnectionList } from "./ui-components/node-connection-list";
+import { ToggleableInput } from "../ui-components/toggleable-input";
+import { NodeConnectionList } from "../ui-components/node-connection-list";
 
 //Tabler Icon Import
 import squares from "@tabler/icons/filled/squares.svg";
@@ -55,7 +54,6 @@ export class SelectedNodeViewRenderer extends LitElementWw {
     return {
       "page-node-details": PageNodeDetails,
       "popup-node-details": PopupNodeDetails,
-      "quiz-branch-node-details": QuizBranchNodeDetails,
       "toggleable-input": ToggleableInput,
       "node-connection-list": NodeConnectionList,
       "sl-icon": SlIcon,
@@ -69,37 +67,43 @@ export class SelectedNodeViewRenderer extends LitElementWw {
   render() {
     return html`
       ${this.selectedNode.id !== -1
-        ? html` <div class="title-bar">
-              ${this.selectedNode.class == "page" ||
-              this.selectedNode.class == "origin"
-                ? html`
-                    <div class="div-icon-page">
-                      <sl-icon src=${file}></sl-icon>
-                    </div>
-                  `
-                : this.selectedNode.class == "popup"
-                ? html`<div class="div-icon-popup">
-                    <sl-icon src=${squares}></sl-icon>
-                  </div>`
-                : this.selectedNode.class == "branch"
-                ? html`<div class="div-icon-branch">
-                    <sl-icon src=${arrowsSplit2}></sl-icon>
-                  </div>`
-                : null}
+        ? html` 
+        <div class="selected-node">
+            <div class="title-bar">
+              ${
+                this.selectedNode.class == "page" ||
+                this.selectedNode.class == "origin"
+                  ? html`
+                      <div class="div-icon-page">
+                        <sl-icon src=${file}></sl-icon>
+                      </div>
+                    `
+                  : this.selectedNode.class == "popup"
+                  ? html`<div class="div-icon-popup">
+                      <sl-icon src=${squares}></sl-icon>
+                    </div>`
+                  : this.selectedNode.class == "branch"
+                  ? html`<div class="div-icon-branch">
+                      <sl-icon src=${arrowsSplit2}></sl-icon>
+                    </div>`
+                  : null
+              }
               <div class="div-title">
                 <!-- <p class="title">${this.selectedNode.data.title}</p> -->
                 <toggleable-input
                   .text=${this.selectedNode.data.title}
                   .saveChanges=${(string) => this.renameNode(string)}
                 ></toggleable-input>
-                ${this.selectedNode.class == "page" ||
-                this.selectedNode.class == "origin"
-                  ? html` <p class="subtitle">Page</p> `
-                  : this.selectedNode.class == "popup"
-                  ? html`<p class="subtitle">Popup</p>`
-                  : this.selectedNode.class == "branch"
-                  ? html`<p class="subtitle">Smart Branch</p>`
-                  : null}
+                ${
+                  this.selectedNode.class == "page" ||
+                  this.selectedNode.class == "origin"
+                    ? html` <p class="subtitle">Page</p> `
+                    : this.selectedNode.class == "popup"
+                    ? html`<p class="subtitle">Popup</p>`
+                    : this.selectedNode.class == "branch"
+                    ? html`<p class="subtitle">Smart Branch</p>`
+                    : null
+                }
               </div>
               <div class="inputOutputControls">
                 <node-connection-list
@@ -161,25 +165,15 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                 ></node-connection-list>
               </div>
             </div>
-            ${this.selectedNode.class == "page" ||
-            this.selectedNode.class == "origin"
-              ? html`
-                  <page-node-details
-                    .nodeEditor="${this.nodeEditor}"
-                    .selectedNode="${this.selectedNode}"
-                    .selectedNodeId="${this.selectedNode.id}"
-                    .changeInEditorCallback=${(
-                      drawflow,
-                      updateType,
-                      node,
-                      removedNodeId,
-                      inputNode,
-                      outputNode,
-                      inputClass,
-                      outputClass,
-                      outputHadConnections
-                    ) => {
-                      this.changeInEditorCallback(
+            ${
+              this.selectedNode.class == "page" ||
+              this.selectedNode.class == "origin"
+                ? html`
+                    <page-node-details
+                      .nodeEditor="${this.nodeEditor}"
+                      .selectedNode="${this.selectedNode}"
+                      .selectedNodeId="${this.selectedNode.id}"
+                      .changeInEditorCallback=${(
                         drawflow,
                         updateType,
                         node,
@@ -189,34 +183,34 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                         inputClass,
                         outputClass,
                         outputHadConnections
-                      );
-                    }}
-                  >
+                      ) => {
+                        this.changeInEditorCallback(
+                          drawflow,
+                          updateType,
+                          node,
+                          removedNodeId,
+                          inputNode,
+                          outputNode,
+                          inputClass,
+                          outputClass,
+                          outputHadConnections
+                        );
+                      }}
+                    >
+                      <slot></slot>
+                    </page-node-details>
+                  `
+                : this.selectedNode.class == "question-branch"
+                ? html` <div id="selected-node-details">
                     <slot></slot>
-                  </page-node-details>
-                `
-              : this.selectedNode.class == "question-branch"
-              ? html` <div id="selected-node-details">
-                  <slot></slot>
-                </div>`
-              : this.selectedNode.class == "popup"
-              ? html`
-                  <popup-node-details
-                    .nodeEditor="${this.nodeEditor}"
-                    .selectedNode="${this.selectedNode}"
-                    .selectedNodeId="${this.selectedNode.id}"
-                    .changeInEditorCallback=${(
-                      drawflow,
-                      updateType,
-                      node,
-                      removedNodeId,
-                      inputNode,
-                      outputNode,
-                      inputClass,
-                      outputClass,
-                      outputHadConnections
-                    ) => {
-                      this.changeInEditorCallback(
+                  </div>`
+                : this.selectedNode.class == "popup"
+                ? html`
+                    <popup-node-details
+                      .nodeEditor="${this.nodeEditor}"
+                      .selectedNode="${this.selectedNode}"
+                      .selectedNodeId="${this.selectedNode.id}"
+                      .changeInEditorCallback=${(
                         drawflow,
                         updateType,
                         node,
@@ -226,13 +220,27 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                         inputClass,
                         outputClass,
                         outputHadConnections
-                      );
-                    }}
-                  >
-                    <slot></slot>
-                  </popup-node-details>
-                `
-              : null}`
+                      ) => {
+                        this.changeInEditorCallback(
+                          drawflow,
+                          updateType,
+                          node,
+                          removedNodeId,
+                          inputNode,
+                          outputNode,
+                          inputClass,
+                          outputClass,
+                          outputHadConnections
+                        );
+                      }}
+                    >
+                      <slot></slot>
+                    </popup-node-details>
+                  `
+                : null
+            }
+              </div>
+          </div>`
         : html`
             <div class="no-node-selected">
               <p>Click on a node to view its content</p>

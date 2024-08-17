@@ -32,27 +32,13 @@ import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
 import { style } from "drawflow/dist/drawflow.style.js";
 
-import customDrawflowStyles from "../css/custom-drawflow-css";
-import styles from "../css/node-editor-css";
+import customDrawflowStyles from "../../css/custom-drawflow-css";
+import styles from "../../css/node-editor-css";
 
-import { DrawflowBackground } from "./node-editor-background";
 import { NodeEditorControlsBar } from "./node-editor-control-bar";
 import { DrawflowHelpPopUpControls } from "./node-editor-help-popup-controls";
-import { nodeTemplates } from "./node-templates";
+import { decisionPopUpWithFeedback } from "../node-templates/decision-popup-with-feedback";
 
-// Declare global variable of type DrawflowNode
-const NO_NODE_SELECTED: DrawflowNode = {
-  id: -1,
-  name: "unselect",
-  inputs: {},
-  outputs: {},
-  pos_x: 0,
-  pos_y: 0,
-  class: "unselect",
-  data: {},
-  html: "",
-  typenode: false,
-};
 const NO_CONNECTION_SELECTED = "output_id-input_id-output_class-input_class";
 
 const GRID_SIZE = 40;
@@ -72,7 +58,6 @@ export class NodeEditor extends LitElementWw {
       "sl-menu-item": SlMenuItem,
       "sl-dropdown": SlDropdown,
       "sl-menu-label": SlMenuLabel,
-      "drawflow-background": DrawflowBackground,
       "node-editor-controls-bar": NodeEditorControlsBar,
       "drawflow-help-popup-controls": DrawflowHelpPopUpControls,
     };
@@ -114,6 +99,7 @@ export class NodeEditor extends LitElementWw {
   selectedConnection = NO_CONNECTION_SELECTED;
   @property({ type: Boolean, attribute: true }) programmticallySelectedNode =
     false;
+  @property({ type: Boolean, attribute: true }) connectionStarted = false;
 
   //access nodes in the internal component DOM.
   @property({ attribute: false }) handleGamebookTitle = (event) => {};
@@ -151,7 +137,9 @@ export class NodeEditor extends LitElementWw {
 
   */
   protected firstUpdated(_changedProperties: any): void {
+    console.log("firstUpdated nodeEditor");
     this.editor = new Drawflow(this.drawflowEditorDiv);
+
     this.editor.reroute = false;
     this.editor.reroute_fix_curvature = false;
     //max scale
@@ -176,12 +164,9 @@ export class NodeEditor extends LitElementWw {
     }
   }
 
-  protected updated(_changedProperties: PropertyValues): void {
-    if (_changedProperties.has("selectedNode")) {
-      console.log(this.selectedNode.id);
-    }
-  }
+  /*
 
+  */
   connectedCallback() {
     super.connectedCallback();
     this.addEventListener("mousemove", this.onMouseMove);
@@ -190,71 +175,15 @@ export class NodeEditor extends LitElementWw {
     this.addEventListener("mouseleave", this.onMouseLeave);
   }
 
+  /*
+
+  */
   disconnectedCallback() {
     this.removeEventListener("mousemove", this.onMouseMove);
     this.removeEventListener("mousedown", this.onMouseDown);
     this.removeEventListener("mouseup", this.onMouseUp);
     this.removeEventListener("mouseleave", this.onMouseLeave);
     super.disconnectedCallback();
-  }
-
-  private onMouseDown(event: MouseEvent) {
-    // Check if node is not selected
-    this.backgroundIsDragging = true;
-    this.backgroundLastX = event.clientX;
-    this.backgroundLastY = event.clientY;
-  }
-
-  public onMouseMove(event: MouseEvent) {
-    if (this.backgroundIsDragging && this.selectedNode.id == -1) {
-      // Check if node is not selected
-      const dx = event.clientX - this.backgroundLastX;
-      const dy = event.clientY - this.backgroundLastY;
-      this.backgroundTranslateX += dx;
-      this.backgroundTranslateY += dy;
-      this.backgroundLastX = event.clientX;
-      this.backgroundLastY = event.clientY;
-      this.requestUpdate();
-    }
-  }
-
-  private onMouseUp() {
-    this.backgroundIsDragging = false;
-  }
-
-  private onMouseLeave() {
-    this.backgroundIsDragging = false;
-  }
-
-  public onZoom(zoom_value: number, min_zoom: number, max_zoom: number) {
-    const rect =
-      this.shadowRoot!.querySelector(
-        "#drawflowEditorDiv"
-      )!.getBoundingClientRect();
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    // Calculate the new scale from zoom_value
-    const prevScale = this.backgroundScale;
-    this.backgroundScale = zoom_value; // Assuming zoom_value directly represents the new scale
-
-    // Limit the scale within minScale and maxScale
-    this.backgroundScale = Math.min(
-      Math.max(min_zoom, this.backgroundScale),
-      max_zoom
-    );
-
-    // Calculate the scale ratio
-    const scaleRatio = this.backgroundScale / prevScale;
-
-    // Update translateX and translateY to center the zoom
-    this.backgroundTranslateX =
-      centerX - (centerX - this.backgroundTranslateX) * scaleRatio;
-    this.backgroundTranslateY =
-      centerY - (centerY - this.backgroundTranslateY) * scaleRatio;
-
-    // Request an update to apply the changes
-    this.requestUpdate();
   }
 
   /*
@@ -283,21 +212,19 @@ export class NodeEditor extends LitElementWw {
         >
         </node-editor-controls-bar>
 
-        <div id="drawflowEditorDiv" style=${styleMap(gridStyles)}>
-          <!-- <drawflow-background></drawflow-background> -->
-        </div>
+        <div id="drawflowEditorDiv" style=${styleMap(gridStyles)}></div>
         <div class="zoomControls">
           <sl-icon-button
             id="zoomInBtn"
             src=${zoomIn}
-            style="font-size: auto;"
+            style="font-size: 18px;"
             @click=${() => this.editor.zoom_in()}
           >
           </sl-icon-button>
           <sl-icon-button
             id="zoomOutBtn"
             src=${zoomOut}
-            style="font-size: auto;"
+            style="font-size: 18px;"
             @click=${() => this.editor.zoom_out()}
           >
           </sl-icon-button>
@@ -327,6 +254,90 @@ export class NodeEditor extends LitElementWw {
         >
       </sl-dialog>
     `;
+  }
+
+  /*
+
+  */
+  private onMouseDown(event: MouseEvent) {
+    // Check if node is not selected
+    this.backgroundIsDragging = true;
+    this.backgroundLastX = event.clientX;
+    this.backgroundLastY = event.clientY;
+  }
+
+  /*
+
+  */
+  public onMouseMove(event: MouseEvent) {
+    if (
+      this.backgroundIsDragging &&
+      this.selectedNode.id == -1 &&
+      !this.connectionStarted
+    ) {
+      // Check if node is not selected
+      const dx = event.clientX - this.backgroundLastX;
+      const dy = event.clientY - this.backgroundLastY;
+      this.backgroundTranslateX += dx;
+      this.backgroundTranslateY += dy;
+      this.backgroundLastX = event.clientX;
+      this.backgroundLastY = event.clientY;
+      this.requestUpdate();
+    }
+  }
+
+  /*
+
+  */
+  private onMouseUp() {
+    this.backgroundIsDragging = false;
+  }
+
+  /*
+
+  */
+  private onMouseLeave() {
+    this.backgroundIsDragging = false;
+
+    // If dragging is in progress, stop the dragging action
+    if (this.editor.drag) {
+      this.editor.drag = false;
+      console.log("Node dragging stopped");
+    }
+  }
+
+  /*
+
+  */
+  public onZoom(zoom_value: number, min_zoom: number, max_zoom: number) {
+    const rect =
+      this.shadowRoot!.querySelector(
+        "#drawflowEditorDiv"
+      )!.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    // Calculate the new scale from zoom_value
+    const prevScale = this.backgroundScale;
+    this.backgroundScale = zoom_value; // Assuming zoom_value directly represents the new scale
+
+    // Limit the scale within minScale and maxScale
+    this.backgroundScale = Math.min(
+      Math.max(min_zoom, this.backgroundScale),
+      max_zoom
+    );
+
+    // Calculate the scale ratio
+    const scaleRatio = this.backgroundScale / prevScale;
+
+    // Update translateX and translateY to center the zoom
+    this.backgroundTranslateX =
+      centerX - (centerX - this.backgroundTranslateX) * scaleRatio;
+    this.backgroundTranslateY =
+      centerY - (centerY - this.backgroundTranslateY) * scaleRatio;
+
+    // Request an update to apply the changes
+    this.requestUpdate();
   }
 
   /*
@@ -402,6 +413,7 @@ export class NodeEditor extends LitElementWw {
 
     //Event listener for when a connection creation started via drag and drop
     this.editor.on("connectionStart", ({ output_id, output_class }) => {
+      this.connectionStarted = true;
       // if (
       //   this.editor.getNodeFromId(output_id).outputs[output_class]
       //     ?.connections?.[0]?.node != undefined
@@ -420,6 +432,10 @@ export class NodeEditor extends LitElementWw {
         ?.querySelector("path")
         ?.classList.add("highlighted");
       //   this.programmticallySelectedNode = true;
+    });
+
+    this.editor.on("connectionCancel", () => {
+      this.connectionStarted = false;
     });
 
     //Event listener for when a connection is selected
@@ -454,6 +470,8 @@ export class NodeEditor extends LitElementWw {
     this.editor.on(
       "connectionCreated",
       ({ output_id, input_id, output_class, input_class }) => {
+        this.connectionStarted = false;
+        console.log("we got here");
         this.updateSelectedNodeCallback(this.selectedNode.id);
         const outputNode = this.editor.getNodeFromId(output_id);
         const inputNode = this.editor.getNodeFromId(input_id);
@@ -835,71 +853,6 @@ export class NodeEditor extends LitElementWw {
   /*
 
   */
-  private _registerBackgroundEvents() {
-    // // Select the elements
-    const drawflowEditorDiv =
-      this.shadowRoot.querySelector("#drawflowEditorDiv");
-
-    const drawflowBackground = this.shadowRoot.querySelector(
-      "drawflow-background"
-    );
-    // List of events to propagate and controls to check
-    const eventsToPropagate = [
-      "mousemove",
-      "mousedown",
-      "mouseup",
-      "mouseleave",
-    ];
-
-    // Propagate event to drawflow-background if not inside controls
-    const propagateEvent = (event) => {
-      if (this.selectedNode.id == -1) {
-        const eventInit = {
-          bubbles: event.bubbles,
-          cancelable: event.cancelable,
-          composed: event.composed,
-          clientX: event.clientX,
-          clientY: event.clientY,
-          screenX: event.screenX,
-          screenY: event.screenY,
-          ctrlKey: event.ctrlKey,
-          shiftKey: event.shiftKey,
-          altKey: event.altKey,
-          metaKey: event.metaKey,
-        };
-        const newEvent =
-          event.type === "wheel"
-            ? new WheelEvent(event.type, {
-                ...eventInit,
-                deltaX: event.deltaX,
-                deltaY: event.deltaY,
-                deltaZ: event.deltaZ,
-                deltaMode: event.deltaMode,
-              })
-            : new MouseEvent(event.type, {
-                ...eventInit,
-                button: event.button,
-                buttons: event.buttons,
-                movementX: event.movementX,
-                movementY: event.movementY,
-              });
-        drawflowBackground.dispatchEvent(newEvent);
-      }
-    };
-    // const propagateEvent = (event) => {
-    //   if (event.type == "mousedown") {
-    //     console.log(event);
-    //   }
-    // };
-    // Add event listeners to propagate events
-    eventsToPropagate.forEach((eventType) => {
-      drawflowEditorDiv.addEventListener(eventType, propagateEvent);
-    });
-  }
-
-  /*
-
-  */
   public highlightConnectionAndNode(
     outputNodeId,
     inputNodeId,
@@ -1067,7 +1020,9 @@ export class NodeEditor extends LitElementWw {
     //console.log(JSON.stringify(exportdata));
     var currentNodes = this.editor.export();
     // Create a deep copy of the nodeTemplates
-    const nodeTemplatesCopy = JSON.parse(JSON.stringify(nodeTemplates));
+    const nodeTemplatesCopy = JSON.parse(
+      JSON.stringify(decisionPopUpWithFeedback)
+    );
     // Assuming you have the following from the drawflow editor:
     const rect = this.drawflowEditorDiv.getBoundingClientRect();
     const zoom = this.editor.zoom;

@@ -13,20 +13,19 @@ export default css`
     box-sizing: border-box;
   }
 
-  sl-split-panel::part(divider) {
-    z-index: 0;
-    background-color: transparent;
-    border-top: 2px solid #e4e4e4;
-    box-sizing: border-box;
-    background-color: white;
-  }
-
   sl-split-panel {
     height: auto; /* Allow height to be determined by content */
   }
 
   sl-split-panel sl-icon {
     color: darkgray;
+  }
+
+  sl-split-panel::part(divider) {
+    z-index: 0;
+    border-top: 1px solid #e4e4e4;
+    box-sizing: border-box;
+    background: white;
   }
 
   //parts options

@@ -1,9 +1,9 @@
 import { css } from "lit";
 
 export default css`
-  /* :host {
-    height: 100%;
-  } */
+  :host {
+    /* height: 100%; */
+  }
 
   :host * {
     box-sizing: border-box;
@@ -15,9 +15,11 @@ export default css`
     align-items: center;
     flex-direction: column;
 
-    border-radius: 0px 0px 8px 8px;
+    background-color: #fbfbfb;
+    padding: 10px;
 
-    background-color: white;
+    /* border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px; */
   }
 
   .preview {
@@ -29,11 +31,9 @@ export default css`
     width: 100%;
     height: 100%;
 
+    background: #fbfbfb;
+
     box-sizing: border-box;
-
-    background-color: white;
-
-    padding: 10px;
   }
 
   .page {
@@ -46,7 +46,7 @@ export default css`
     min-height: 800px;
     color: black;
 
-    box-shadow: 0 2px 20px 2px #d0d0d0;
+    /* box-shadow: 0 2px 20px 2px #d0d0d0; */
   }
 
   .gamebookTitle {

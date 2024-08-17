@@ -27,10 +27,9 @@ import {
 //Import Styles
 import styles from "../css/gamebook-preview-css";
 
-import { WebWriterConnectionButton } from "./webwriter-connection-button";
-import { QuizContainer } from "./quiz-container";
-import { WebWriterGamebookPageContainer } from "./webwriter-gamebook-page-container";
-import { WebWriterGamebookPopupContainer } from "./webwriter-gamebook-popup-container";
+import { WebWriterConnectionButton } from "./gamebook-components/webwriter-connection-button";
+import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
+import { WebWriterGamebookPopupContainer } from "./gamebook-components/webwriter-gamebook-popup-container";
 
 @customElement("webwriter-gamebook")
 export class WebWriterGamebook extends LitElementWw {
@@ -117,11 +116,7 @@ export class WebWriterGamebook extends LitElementWw {
           this._showPopupContainerDialog(targetId);
           this._initializeConnectionButtons(targetId);
         }
-        //
-        else if (container instanceof QuizContainer) {
-          this._showQuizBranchDialog(targetId);
-          this._initializeQuizButtons(targetId);
-        }
+
         // Add more conditions as needed
       }
     });
@@ -163,18 +158,6 @@ export class WebWriterGamebook extends LitElementWw {
           container.hideDialog();
           container.hide();
         }
-      }
-    });
-  }
-
-  /*
-
-
-  */
-  private _showQuizBranchDialog(quizId: number) {
-    this.gamebookContainers.forEach((quiz) => {
-      if (quiz.drawflowNodeId == quizId) {
-        (quiz as QuizContainer).show();
       }
     });
   }

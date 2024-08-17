@@ -274,7 +274,7 @@ export default css`
   }
 
   .drawflow .drawflow-node .output:active {
-    background: #ffca00;
+    background: #4ea9ff;
   }
 
   .drawflow .drawflow-node .output {
@@ -308,8 +308,8 @@ export default css`
 
   .drawflow .drawflow-node .output.highlighted,
   .drawflow .drawflow-node .input.highlighted {
-    background: #2d99ff;
-    border: 1px solid #3077ba;
+    background: #4ea9ff;
+    border: 1px solid #4ea9ff;
   }
 
   .drawflow .drawflow-node .output.page-highlighted,

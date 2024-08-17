@@ -7,13 +7,14 @@ import {
   queryAssignedElements,
 } from "lit/decorators.js";
 
-import { SelectedNodeViewRenderer } from "./selected-node-view-renderer";
+import { SelectedNodeViewRenderer } from "./node-detail-view/selected-node-view-renderer";
 import { WebWriterGamebook } from "./gamebook";
 import { GamebookContainerManager } from "./gamebook-container-manager";
-import { NodeEditor } from "./node-editor";
+import { NodeEditor } from "./node-editor/node-editor";
 import { DrawflowNode } from "drawflow";
 import { QuickConnectNode } from "./ui-components/quick-connect-node";
 import { OutputConnectionControl } from "./ui-components/output-connection-control";
+import { SplitView } from "./ui-components/split-view";
 
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -80,6 +81,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-input": SlInput,
       "sl-icon": SlIcon,
       "sl-split-panel": SlSplitPanel,
+      "split-view": SplitView,
     };
   }
 
@@ -99,84 +101,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       container.hide();
     });
     this.handleChangesInGamebookContainers();
-
-    this.updateComplete.then(() => {
-      this.previousSplitPanelHeight = this.splitPanel.offsetHeight;
-
-      this.splitPanel.addEventListener("sl-reposition", () => {
-        this.handleSplitViewChange(false);
-      });
-      const endPanel = this.splitPanel.querySelector(
-        "selected-node-view-renderer"
-      );
-      const startPanel = this.splitPanel.querySelector("node-editor");
-      this.resizeObserverEndPanel.observe(endPanel);
-      this.resizeObserverStartPanel.observe(startPanel);
-    });
   }
-
-  /*
-
-
-  */
-  private handleSplitViewChange(updatePosition: boolean) {
-    if (updatePosition) {
-      const startPosition = this.splitPanel.position;
-
-      const previousPositionInPixels =
-        this.previousSplitPanelHeight * (startPosition / 100);
-
-      const startPanel = this.splitPanel.querySelector("node-editor");
-      const endPanel = this.splitPanel.querySelector(
-        "selected-node-view-renderer"
-      );
-
-      const totalHeight = startPanel.offsetHeight + endPanel.offsetHeight + 20;
-      this.style.height = `${totalHeight}px`;
-
-      this.splitPanel.position =
-        (previousPositionInPixels / this.splitPanel.offsetHeight) * 100;
-    }
-
-    //
-    else {
-      const startPanel = this.splitPanel.querySelector("node-editor");
-      const endPanel = this.splitPanel.querySelector(
-        "selected-node-view-renderer"
-      );
-
-      const totalHeight = startPanel.offsetHeight + endPanel.offsetHeight + 20;
-      this.style.height = `${totalHeight}px`;
-    }
-  }
-
-  /*
-
-
-  */
-  resizeObserverEndPanel = new ResizeObserver((entries) => {
-    for (let entry of entries) {
-      // Ensure that only significant changes trigger recalculation
-      if (
-        entry.contentRect.height !==
-        this.splitPanel.getBoundingClientRect().height
-      ) {
-        this.handleSplitViewChange(true);
-      }
-    }
-  });
-
-  resizeObserverStartPanel = new ResizeObserver((entries) => {
-    for (let entry of entries) {
-      // Ensure that only significant changes trigger recalculation
-      if (
-        entry.contentRect.height !==
-        this.splitPanel.getBoundingClientRect().height
-      ) {
-        this.handleSplitViewChange(false);
-      }
-    }
-  });
 
   /*
   
@@ -187,144 +112,145 @@ export class WebWriterBranchingScenario extends LitElementWw {
       <!-- <button @click=${() => this.exportContainersAsString()}></button> -->
       ${this.isContentEditable
         ? html`
-            <sl-split-panel
-              vertical
-              style="--min: ${this.min}; --max: ${this
-                .max}; --divider-width: 20px;"
-              position="85.35821004299979"
-            >
-              <sl-icon slot="divider" src=${gripHorizontal}></sl-icon>
-              <node-editor
-                slot="start"
-                .selectedNode=${this.selectedNode}
-                .editorContent=${this.editorContent}
-                .changeInEditorCallback=${(
-                  drawflow,
-                  updateType,
-                  node,
-                  removedNodeId,
-                  inputNode,
-                  outputNode,
-                  inputClass,
-                  outputClass,
-                  outputHadConnections
-                ) => {
-                  this.updateGamebookContainers(
-                    drawflow,
-                    updateType,
-                    node,
-                    removedNodeId,
-                    inputNode,
-                    outputNode,
-                    inputClass,
-                    outputClass,
-                    outputHadConnections
-                  );
-                }}
-                .updateSelectedNodeCallback=${(id) => {
-                  this.updateSelectedNode(id);
-                }}
-                .gamebookTitle=${this.gamebookTitle}
-                .handleGamebookTitle=${(event) =>
-                  this.handleGamebookTitle(event)}
-              ></node-editor>
-
-              <selected-node-view-renderer
-                slot="end"
-                .selectedNode=${this.selectedNode}
-                .nodeEditor=${this.nodeEditor}
-                .changeInEditorCallback=${(
-                  drawflow,
-                  updateType,
-                  node,
-                  removedNodeId,
-                  inputNode,
-                  outputNode,
-                  inputClass,
-                  outputClass,
-                  outputHadConnections
-                ) => {
-                  this.updateGamebookContainers(
-                    drawflow,
-                    updateType,
-                    node,
-                    removedNodeId,
-                    inputNode,
-                    outputNode,
-                    inputClass,
-                    outputClass,
-                    outputHadConnections
-                  );
-                }}
-              >
-                <gamebook-container-manager
+              <split-view>
+                <node-editor
+                  slot="start"
+                  .selectedNode=${this.selectedNode}
                   .editorContent=${this.editorContent}
-                  .getNodeEditor=${() => this.getNodeEditor()}
-                  .appendToShadowDom=${(container) =>
-                    this._addContainerCallback(container)}
+                  .changeInEditorCallback=${(
+                    drawflow,
+                    updateType,
+                    node,
+                    removedNodeId,
+                    inputNode,
+                    outputNode,
+                    inputClass,
+                    outputClass,
+                    outputHadConnections
+                  ) => {
+                    this.updateGamebookContainers(
+                      drawflow,
+                      updateType,
+                      node,
+                      removedNodeId,
+                      inputNode,
+                      outputNode,
+                      inputClass,
+                      outputClass,
+                      outputHadConnections
+                    );
+                  }}
+                  .updateSelectedNodeCallback=${(id) => {
+                    this.updateSelectedNode(id);
+                  }}
+                  .gamebookTitle=${this.gamebookTitle}
+                  .handleGamebookTitle=${(event) =>
+                    this.handleGamebookTitle(event)}
                 >
-                  <slot></slot>
-                </gamebook-container-manager>
-              </selected-node-view-renderer>
-            </sl-split-panel>
-            <div part="options" class="author-only">
-              <div>
-                <sl-icon src=${book} slot="prefix"></sl-icon>
-                <p>Gamebook</p>
+                </node-editor>
+                <selected-node-view-renderer
+                  slot="end"
+                  .selectedNode=${this.selectedNode}
+                  .nodeEditor=${this.nodeEditor}
+                  .changeInEditorCallback=${(
+                    drawflow,
+                    updateType,
+                    node,
+                    removedNodeId,
+                    inputNode,
+                    outputNode,
+                    inputClass,
+                    outputClass,
+                    outputHadConnections
+                  ) => {
+                    this.updateGamebookContainers(
+                      drawflow,
+                      updateType,
+                      node,
+                      removedNodeId,
+                      inputNode,
+                      outputNode,
+                      inputClass,
+                      outputClass,
+                      outputHadConnections
+                    );
+                  }}
+                >
+                  <gamebook-container-manager
+                    .editorContent=${this.editorContent}
+                    .getNodeEditor=${() => this.getNodeEditor()}
+                    .appendToShadowDom=${(container) =>
+                      this._addContainerCallback(container)}
+                  >
+                    <slot></slot>
+                  </gamebook-container-manager>
+                </selected-node-view-renderer>
+              </split-view>
+        
+              <div part="options" class="author-only">
+                <div>
+                  <sl-icon src=${book} slot="prefix"></sl-icon>
+                  <p>Gamebook</p>
+                </div>
+                <sl-input
+                  placeholder="Search nodes"
+                  style="padding-bottom: 15px"
+                >
+                  <sl-icon src=${search} slot="prefix"></sl-icon>
+                </sl-input>
+                ${
+                  this.selectedNode.id != -1
+                    ? html`<div style="margin-left: 25px">
+                          ${this.selectedNode.class == "page" ||
+                          this.selectedNode.class == "origin"
+                            ? html`<sl-icon src=${file}></sl-icon>`
+                            : this.selectedNode.class == "popup"
+                            ? html`<sl-icon src=${squares}></sl-icon>`
+                            : this.selectedNode.class == "branch"
+                            ? html`<sl-icon src=${arrowsSplit2}></sl-icon>`
+                            : null}
+                          <p>${this.selectedNode.data.title}</p>
+                        </div>
+                        <p style="margin-left: auto">
+                          Internal ID: ${this.selectedNode.id}
+                        </p>
+                        <p style="margin-left: auto">
+                          Container found:
+                          ${this.gamebookContainerManager._getContainerByDrawflowNodeId(
+                            this.selectedNode.id
+                          ) != undefined}
+                        </p>
+                        <quick-connect-node
+                          style="margin-left: 25px"
+                          .nodeEditor=${this.nodeEditor}
+                          .selectedNode=${this.selectedNode}
+                          .changeInEditorCallback=${(
+                            drawflow,
+                            updateType,
+                            node,
+                            removedNodeId,
+                            inputNode,
+                            outputNode,
+                            inputClass,
+                            outputClass,
+                            outputHadConnections
+                          ) => {
+                            this.updateGamebookContainers(
+                              drawflow,
+                              updateType,
+                              node,
+                              removedNodeId,
+                              inputNode,
+                              outputNode,
+                              inputClass,
+                              outputClass,
+                              outputHadConnections
+                            );
+                          }}
+                        ></quick-connect-node> `
+                    : null
+                }
               </div>
-              <sl-input placeholder="Search nodes" style="padding-bottom: 15px">
-                <sl-icon src=${search} slot="prefix"></sl-icon>
-              </sl-input>
-              ${this.selectedNode.id != -1
-                ? html`<div style="margin-left: 25px">
-                      ${this.selectedNode.class == "page" ||
-                      this.selectedNode.class == "origin"
-                        ? html`<sl-icon src=${file}></sl-icon>`
-                        : this.selectedNode.class == "popup"
-                        ? html`<sl-icon src=${squares}></sl-icon>`
-                        : this.selectedNode.class == "branch"
-                        ? html`<sl-icon src=${arrowsSplit2}></sl-icon>`
-                        : null}
-                      <p>${this.selectedNode.data.title}</p>
-                    </div>
-                    <p style="margin-left: auto">
-                      Internal ID: ${this.selectedNode.id}
-                    </p>
-                    <p style="margin-left: auto">
-                      Container found:
-                      ${this.gamebookContainerManager._getContainerByDrawflowNodeId(
-                        this.selectedNode.id
-                      ) != undefined}
-                    </p>
-                    <quick-connect-node
-                      style="margin-left: 25px"
-                      .nodeEditor=${this.nodeEditor}
-                      .selectedNode=${this.selectedNode}
-                      .changeInEditorCallback=${(
-                        drawflow,
-                        updateType,
-                        node,
-                        removedNodeId,
-                        inputNode,
-                        outputNode,
-                        inputClass,
-                        outputClass,
-                        outputHadConnections
-                      ) => {
-                        this.updateGamebookContainers(
-                          drawflow,
-                          updateType,
-                          node,
-                          removedNodeId,
-                          inputNode,
-                          outputNode,
-                          inputClass,
-                          outputClass,
-                          outputHadConnections
-                        );
-                      }}
-                    ></quick-connect-node> `
-                : null}
             </div>
           `
         : html`<webwriter-gamebook
@@ -570,8 +496,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   */
   private updateSelectedNode(id: String) {
-    this.previousSplitPanelHeight = this.splitPanel.offsetHeight;
-
     if (id != "-1") {
       this.selectedNode = { ...this.nodeEditor.editor.getNodeFromId(id) };
 
@@ -605,21 +529,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
   /*
 
   */
-  // private parseConnectionIdentifier(identifier) {
-  //   const parts = identifier.split("-");
-  //   const parsed = {
-  //     outputNodeId: parseInt(parts[0]),
-  //     outputClass: parts[1],
-  //     inputNodeId: parseInt(parts[2]),
-  //     inputClass: parts[3],
-  //   };
-
-  //   return parsed;
-  // }
-
-  /*
-
-  */
   private _addContainerCallback(container: Node) {
     this.appendChild(container);
   }
@@ -637,34 +546,5 @@ export class WebWriterBranchingScenario extends LitElementWw {
     };
 
     return parsed;
-  }
-
-  /*
-
-
-  */
-  private _updateQuestionNodeAnswerTarget(
-    quizNode: DrawflowNode,
-    answer_output_class: string,
-    target_node_id: string
-  ) {
-    const index = Object.keys(quizNode.outputs).indexOf(answer_output_class);
-
-    if (index !== -1) {
-      quizNode.data.answers[index].targetPageId = target_node_id;
-
-      this.nodeEditor.editor.updateNodeDataFromId(quizNode.id, {
-        ...quizNode.data,
-        answers: quizNode.data.answers,
-      });
-
-      this.dispatchEvent(
-        new CustomEvent("nodeDataUpdated", {
-          detail: { nodeId: quizNode.id },
-          bubbles: true,
-          composed: true,
-        })
-      );
-    }
   }
 }

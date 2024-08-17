@@ -7,16 +7,13 @@ export default css`
     bottom: 10px;
     left: 10px;
 
-    background-color: black;
-    opacity: 70%;
-
     width: auto;
     height: auto;
+    background-color: rgba(255, 255, 255, 0.95);
 
     box-sizing: border-box;
     padding: 10px;
 
-    color: white;
     display: flex;
     flex-direction: row;
     align-items: left;
@@ -24,6 +21,11 @@ export default css`
     border-radius: 4px;
 
     gap: 20px;
+
+    box-sizing: border-box;
+
+    border-radius: 8px;
+    border: 1px solid #e4e4e7;
   }
 
   .helpIconButton {
@@ -31,18 +33,16 @@ export default css`
     position: absolute;
     bottom: 10px;
     left: 10px;
-    background-color: black;
-    opacity: 70%;
+    background-color: rgba(255, 255, 255, 0.95);
     display: flex;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    color: white;
-    border-radius: 4px;
-  }
 
-  .helpIcon {
-    color: white;
+    box-sizing: border-box;
+
+    border-radius: 8px;
+    border: 1px solid #e4e4e7;
   }
 
   .close-icon {
@@ -66,21 +66,24 @@ export default css`
     height: 25px;
     display: flex;
     align-items: center;
+    color: #3f3f46;
   }
 
   .icon-plus {
     display: flex;
     align-items: center;
     gap: 5px; /* Add some space between the elements */
+    color: #3f3f46;
   }
 
   .icon-plus p {
     margin: 1px;
     font-size: 10px;
+    color: #3f3f46;
   }
 
   .label {
     font-size: 10px;
-    color: white;
+    color: #3f3f46;
   }
 `;
