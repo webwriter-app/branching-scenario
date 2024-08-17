@@ -259,51 +259,56 @@ export class OutputConnectionControl extends LitElement {
 
   */
   private handleKeydown(event: KeyboardEvent) {
-    if (event.target instanceof SlInput) {
-      this.searchElement.focus();
-      event.stopPropagation();
-    }
+    this.searchElement.focus();
+    event.stopPropagation();
   }
 
   /*
 
   */
   private _handleUserInputTargetPage(event: Event) {
-    console.log("here");
-    const selectedValue = (event.target as SlSelect).value;
-    const connections =
-      this.selectedNode?.outputs?.[this.outputClass]?.connections;
+    if (
+      event.target instanceof HTMLElement &&
+      event.target.tagName.toLowerCase() === "sl-select"
+    ) {
+      console.log(event.target);
+      const selectedValue = (event.target as SlSelect).value;
+      const connections =
+        this.selectedNode?.outputs?.[this.outputClass]?.connections;
 
-    console.log("here");
-    if (connections?.[0]?.node === undefined && selectedValue) {
-      console.log("test");
-      this.nodeEditor.editor.addConnection(
-        this.selectedNode.id,
-        selectedValue,
-        this.outputClass,
-        "input_1"
-      );
-    } else if (connections?.[0]?.node !== undefined && selectedValue) {
-      this.nodeEditor.editor.removeSingleConnection(
-        this.selectedNode.id,
-        connections[0].node,
-        this.outputClass,
-        "input_1"
-      );
-      this.nodeEditor.editor.addConnection(
-        this.selectedNode.id,
-        selectedValue,
-        this.outputClass,
-        "input_1"
-      );
-    } else if (!selectedValue) {
-      this._unhighlightConnectionAndNode();
-      this.nodeEditor.editor.removeSingleConnection(
-        this.selectedNode.id,
-        connections?.[0]?.node,
-        this.outputClass,
-        "input_1"
-      );
+      if (connections?.[0]?.node === undefined && selectedValue) {
+        this.nodeEditor.editor.addConnection(
+          this.selectedNode.id,
+          selectedValue,
+          this.outputClass,
+          "input_1"
+        );
+      }
+      //
+      else if (connections?.[0]?.node !== undefined && selectedValue) {
+        this.nodeEditor.editor.removeSingleConnection(
+          this.selectedNode.id,
+          connections[0].node,
+          this.outputClass,
+          "input_1"
+        );
+        this.nodeEditor.editor.addConnection(
+          this.selectedNode.id,
+          selectedValue,
+          this.outputClass,
+          "input_1"
+        );
+      }
+      //
+      else if (!selectedValue) {
+        this._unhighlightConnectionAndNode();
+        this.nodeEditor.editor.removeSingleConnection(
+          this.selectedNode.id,
+          connections?.[0]?.node,
+          this.outputClass,
+          "input_1"
+        );
+      }
     }
   }
 
