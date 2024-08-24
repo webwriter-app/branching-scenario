@@ -23,13 +23,14 @@ export class PageNodeDetails extends LitElementWw {
   static styles = [styles];
 
   //access nodes in the internal component DOM.
-  @property({ type: Object }) nodeEditor;
-  @property({ type: Boolean }) isNodeSelected = false;
+  @property({ type: Object }) accessor nodeEditor;
+  @property({ type: Boolean }) accessor isNodeSelected = false;
 
   //public properties are part of the component's public API
-  @property({ type: Object, attribute: false }) selectedNode?: DrawflowNode;
+  @property({ type: Object, attribute: false })
+  accessor selectedNode: DrawflowNode;
 
-  @property({ attribute: false }) changeInEditorCallback = (
+  @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow,
     updateType,
     node?,

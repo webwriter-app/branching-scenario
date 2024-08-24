@@ -69,21 +69,22 @@ export class PopupNodeDetails extends LitElementWw {
 
   //access nodes in the internal component DOM.
   @query(".nodeSelect")
-  nodeSelect;
+  accessor nodeSelect;
   @query("#textAreaHTML")
-  textAreaHTML;
+  accessor textAreaHTML;
 
-  @property({ type: Object }) nodeEditor;
+  @property({ type: Object }) accessor nodeEditor;
 
-  @property({ type: Boolean }) isNodeSelected = false;
+  @property({ type: Boolean }) accessor isNodeSelected = false;
 
   //public properties are part of the component's public API
-  @property({ type: Object, attribute: false }) selectedNode?: DrawflowNode;
+  @property({ type: Object, attribute: false })
+  accessor selectedNode: DrawflowNode;
 
-  @property({ type: Function }) _hoverConnection = (string) => {};
-  @property({ type: Function }) _unhoverConnection = (string) => {};
+  @property({ type: Function }) accessor _hoverConnection = (string) => {};
+  @property({ type: Function }) accessor _unhoverConnection = (string) => {};
 
-  @property({ attribute: false }) changeInEditorCallback = (
+  @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow,
     updateType,
     node?,

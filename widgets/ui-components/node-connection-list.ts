@@ -25,14 +25,14 @@ import XCircleFill from "bootstrap-icons/icons/x-circle-fill.svg";
 
 @customElement("node-connection-list")
 export class NodeConnectionList extends LitElementWw {
-  @property({ type: Object }) nodeEditor;
+  @property({ type: Object }) accessor nodeEditor;
   @property({ type: Object, attribute: true, reflect: true })
-  selectedNode?: DrawflowNode;
+  accessor selectedNode: DrawflowNode;
 
-  @property({ type: Boolean, reflect: true }) output = false;
-  @property({ type: Boolean, reflect: true }) input = false;
+  @property({ type: Boolean, reflect: true }) accessor output = false;
+  @property({ type: Boolean, reflect: true }) accessor input = false;
 
-  @property({ attribute: false }) changeInEditorCallback = (
+  @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow,
     updateType,
     node?,

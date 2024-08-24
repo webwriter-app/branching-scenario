@@ -9,7 +9,7 @@
   "dependencies": {
     "@shoelace-style/shoelace": "^2.15.0",
     "@tabler/icons": "^3.7.0",
-    "@webwriter/lit": "^1",
+    "@webwriter/lit": "^2.0.0",
     "bootstrap-icons": "^1.11.3",
     "drawflow": "^0.0.59",
     "lit": "^3.1.3",

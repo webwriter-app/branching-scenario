@@ -15,17 +15,17 @@ const DIVIDER_HEIGHT = 30;
 @customElement("split-view")
 export class SplitView extends LitElementWw {
   @property({ type: Number, attribute: true, reflect: true })
-  dividerPosition = 350;
+  accessor dividerPosition = 350;
   @property({ type: Number, attribute: true, reflect: true })
-  minStart = 230;
+  accessor minStart = 230;
   @property({ type: Number, attribute: true, reflect: true })
-  maxStart = 350;
+  accessor maxStart = 350;
 
-  @state() isDragging = false;
-  @state() initialY = 0;
-  @state() startHeight = 0;
-  @state() isCollapsed = false;
-  @state() previousHeight = 350;
+  @state() accessor isDragging = false;
+  @state() accessor initialY = 0;
+  @state() accessor startHeight = 0;
+  @state() accessor isCollapsed = false;
+  @state() accessor previousHeight = 350;
 
   // Registering custom elements used in the widget
   static get scopedElements() {

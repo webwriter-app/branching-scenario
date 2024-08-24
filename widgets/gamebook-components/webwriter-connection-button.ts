@@ -21,24 +21,26 @@ import alignCenter from "@tabler/icons/outline/align-center.svg";
 
 @customElement("webwriter-connection-button")
 export class WebWriterConnectionButton extends LitElementWw {
-  @property({ type: Number, reflect: true }) dataTargetId: number;
+  @property({ type: Number, reflect: true }) accessor dataTargetId: number;
   @property({ type: String, attribute: true, reflect: true })
-  identifier: string;
+  accessor identifier: string;
 
-  @property({ attribute: true }) getNodeEditor = () => {};
+  @property({ attribute: true }) accessor getNodeEditor = () => {};
 
   //visual properties
-  @property({ type: String, reflect: true }) name: string = "Button";
-  @property({ type: String, reflect: true }) size: string = "small";
-  @property({ type: Boolean, reflect: true }) pill: boolean = false;
-  @property({ type: Boolean, reflect: true }) outline: boolean = false;
-  @property({ type: Number, reflect: true }) width: number = 50;
-  @property({ type: String, reflect: true }) alignment: string = "center";
-  @property({ type: String, reflect: true }) variant: string = "default";
-  @property({ type: Number, attribute: true, reflect: true }) tabIndex = -1;
+  @property({ type: String, reflect: true }) accessor name: string = "Button";
+  @property({ type: String, reflect: true }) accessor size: string = "small";
+  @property({ type: Boolean, reflect: true }) accessor pill: boolean = false;
+  @property({ type: Boolean, reflect: true }) accessor outline: boolean = false;
+  @property({ type: Number, reflect: true }) accessor width: number = 50;
+  @property({ type: String, reflect: true }) accessor alignment: string =
+    "center";
+  @property({ type: String, reflect: true }) accessor variant: string =
+    "default";
+  @property({ type: Number, attribute: true, reflect: true })
+  accessor tabIndex = -1;
 
-  @query("sl-button")
-  button;
+  @query("sl-button") accessor button;
 
   static get scopedElements() {
     return {

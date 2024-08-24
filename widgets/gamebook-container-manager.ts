@@ -18,20 +18,20 @@ import { WebWriterGamebookPopupContainer } from "./gamebook-components/webwriter
 @customElement("gamebook-container-manager")
 export class GamebookContainerManager extends LitElementWw {
   //
-  @property({ attribute: false }) appendToShadowDom = (
+  @property({ attribute: false }) accessor appendToShadowDom = (
     element: HTMLElement
   ) => {};
 
-  @property({ attribute: false }) getNodeEditor = () => {};
+  @property({ attribute: false }) accessor getNodeEditor = () => {};
 
   @queryAssignedElements({
     flatten: true,
     selector:
       "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, quiz-container",
   })
-  gamebookContainers;
+  accessor gamebookContainers;
 
-  @property({ type: Object, attribute: true }) editorContent;
+  @property({ type: Object, attribute: true }) accessor editorContent;
 
   static get scopedElements() {
     return {

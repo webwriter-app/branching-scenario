@@ -29,7 +29,7 @@ export class DrawflowHelpPopUpControls extends LitElementWw {
     };
   }
 
-  @state() showWindow = false;
+  @state() accessor showWindow = false;
 
   render() {
     return html` ${this.showWindow

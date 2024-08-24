@@ -60,22 +60,23 @@ export class NodeEditorControlsBar extends LitElementWw {
   //import CSS
   static styles = [styles];
 
-  @state() inPreviewMode = false;
-  @property({ type: String })
-  gamebookTitle = "";
+  @state() accessor inPreviewMode = false;
+  @property({ type: String }) accessor gamebookTitle = "";
 
   //
-  @property({ type: Function }) handleGamebookTitle = (event: Event) => {};
-  @property({ type: Function }) importExample = (number: number) => {};
-  @property({ type: Function }) addPageNode = (
+  @property({ type: Function }) accessor handleGamebookTitle = (
+    event: Event
+  ) => {};
+  @property({ type: Function }) accessor importExample = (number: number) => {};
+  @property({ type: Function }) accessor addPageNode = (
     title: string,
     isOrigin: boolean
   ) => {};
-  @property({ type: Function }) addPopUpNode = (title: string) => {};
-  @property({ type: Function }) addBranchNode = () => {};
-  @property({ type: Function }) addQuestionNode = () => {};
-  @property({ type: Function }) addDecisionPopUpTemplate = () => {};
-  @property({ type: Function }) showDialog = () => {};
+  @property({ type: Function }) accessor addPopUpNode = (title: string) => {};
+  @property({ type: Function }) accessor addBranchNode = () => {};
+  @property({ type: Function }) accessor addQuestionNode = () => {};
+  @property({ type: Function }) accessor addDecisionPopUpTemplate = () => {};
+  @property({ type: Function }) accessor showDialog = () => {};
 
   protected render() {
     return html`

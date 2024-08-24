@@ -13,14 +13,12 @@ import x from "@tabler/icons/outline/x.svg";
 
 @customElement("toggleable-input")
 export class ToggleableInput extends LitElementWw {
-  @state()
-  isEditable: Boolean = false;
+  @state() accessor isEditable: Boolean = false;
 
-  @state()
-  hasError: Boolean = false;
+  @state() accessor hasError: Boolean = false;
 
-  @property({ type: String, attribute: true }) text = "";
-  @property({ type: Function }) saveChanges = (string) => {};
+  @property({ type: String, attribute: true }) accessor text = "";
+  @property({ type: Function }) accessor saveChanges = (string) => {};
 
   //registering custom elements used in the widget
   static get scopedElements() {

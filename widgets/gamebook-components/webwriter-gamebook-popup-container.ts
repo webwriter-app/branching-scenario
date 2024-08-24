@@ -48,18 +48,19 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
     };
   }
   //associated node id
-  @property({ type: Number, attribute: true, reflect: true }) drawflowNodeId =
-    null;
+  @property({ type: Number, attribute: true, reflect: true })
+  accessor drawflowNodeId = null;
 
-  @property({ type: Number, attribute: true, reflect: true }) tabIndex = -1;
+  @property({ type: Number, attribute: true, reflect: true })
+  accessor tabIndex = -1;
 
   @queryAssignedElements({
     flatten: true,
     selector: "webwriter-connection-button",
   })
-  connectionButtons;
+  accessor connectionButtons;
 
-  @query("#dialog") dialog: SlDialog;
+  @query("#dialog") accessor dialog: SlDialog;
 
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;

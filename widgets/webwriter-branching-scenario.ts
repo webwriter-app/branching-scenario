@@ -44,30 +44,31 @@ const NO_NODE_SELECTED: DrawflowNode = {
 
 @customElement("webwriter-branching-scenario")
 export class WebWriterBranchingScenario extends LitElementWw {
-  @query("gamebook-container-manager")
-  gamebookContainerManager;
+  @query("gamebook-container-manager") accessor gamebookContainerManager;
 
   @queryAssignedElements({
     flatten: true,
     selector:
       "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, quiz-container",
   })
-  gamebookContainers;
+  accessor gamebookContainers;
 
-  @query("node-editor") nodeEditor;
-  @query("sl-split-panel") splitPanel;
-  @query("#widget") widgetDiv;
-  @query("selected-node-view-renderer") selectedNodeViewRenderer;
+  @query("node-editor") accessor nodeEditor;
+  @query("sl-split-panel") accessor splitPanel;
+  @query("#widget") accessor widgetDiv;
+  @query("selected-node-view-renderer") accessor selectedNodeViewRenderer;
 
   @property({ type: Object, attribute: true, reflect: true })
-  editorContent;
-  @property({ type: Number, attribute: true, reflect: true }) editorZoom = -1;
+  accessor editorContent;
+  @property({ type: Number, attribute: true, reflect: true })
+  accessor editorZoom = -1;
   @property({ type: Object, attribute: true })
-  selectedNode: DrawflowNode = NO_NODE_SELECTED;
+  accessor selectedNode: DrawflowNode = NO_NODE_SELECTED;
   @property({ type: String, attribute: true, reflect: true })
-  gamebookTitle = "Untitled Gamebook";
-  @property({ type: Boolean }) reactToCallbackFromNodeEditor = true;
-  @property({ type: Number, attribute: true, reflect: true }) tabIndex = -1;
+  accessor gamebookTitle = "Untitled Gamebook";
+  @property({ type: Boolean }) accessor reactToCallbackFromNodeEditor = true;
+  @property({ type: Number, attribute: true, reflect: true })
+  accessor tabIndex = -1;
 
   //registering custom elements used in the widget
   static get scopedElements() {

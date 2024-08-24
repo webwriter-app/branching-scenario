@@ -52,17 +52,17 @@ export class WebWriterGamebook extends LitElementWw {
   //import CSS
   static styles = [styles];
 
-  @state() currentPageId?: Number;
+  @state() accessor currentPageId: Number;
 
-  @property({ type: String }) gamebookTitle;
-  @property({ type: String }) pageTitle;
+  @property({ type: String }) accessor gamebookTitle;
+  @property({ type: String }) accessor pageTitle;
 
   @queryAssignedElements({
     flatten: true,
     selector:
       "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, quiz-container",
   })
-  gamebookContainers;
+  accessor gamebookContainers;
 
   /*
 

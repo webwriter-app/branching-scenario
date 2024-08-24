@@ -36,9 +36,9 @@ import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 @customElement("node-details-selector")
 export class SelectedNodeViewRenderer extends LitElementWw {
   @property({ type: Object, attribute: true, reflect: false })
-  selectedNode: DrawflowNode = NO_NODE_SELECTED;
-  @property({ type: Object }) nodeEditor;
-  @property({ attribute: false }) changeInEditorCallback = (
+  accessor selectedNode: DrawflowNode = NO_NODE_SELECTED;
+  @property({ type: Object }) accessor nodeEditor;
+  @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow,
     updateType,
     node?,

@@ -29,14 +29,14 @@ const NO_NODE_SELECTED: DrawflowNode = {
 
 @customElement("output-connection-control")
 export class OutputConnectionControl extends LitElement {
-  @property({ type: Object }) nodeEditor;
-  @property({ type: Object }) selectedNode;
-  @property({ type: String }) outputClass?;
+  @property({ type: Object }) accessor nodeEditor;
+  @property({ type: Object }) accessor selectedNode;
+  @property({ type: String }) accessor outputClass;
 
-  @state() searchTerm = "";
+  @state() accessor searchTerm = "";
 
-  @query("sl-input") searchElement!: SlInput;
-  @query("sl-select") selectElement!: SlSelect;
+  @query("sl-input") accessor searchElement!: SlInput;
+  @query("sl-select") accessor selectElement!: SlSelect;
 
   static styles = css`
     .nodeSelect {

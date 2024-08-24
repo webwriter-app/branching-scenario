@@ -29,17 +29,16 @@ import search from "@tabler/icons/outline/search.svg";
 
 @customElement("quick-connect-node")
 export class QuickConnectNode extends LitElementWw {
-  @query("sl-select")
-  nodeSelect;
+  @query("sl-select") accessor nodeSelect;
 
-  @query("sl-input")
-  inputElement!: SlInput;
+  @query("sl-input") accessor inputElement!: SlInput;
 
-  @property({ type: Object }) nodeEditor;
-  @property({ type: Boolean }) isNodeSelected = false;
-  @property({ type: Object, attribute: false }) selectedNode?: DrawflowNode;
+  @property({ type: Object }) accessor nodeEditor;
+  @property({ type: Boolean }) accessor isNodeSelected = false;
+  @property({ type: Object, attribute: false })
+  accessor selectedNode: DrawflowNode;
 
-  @property({ attribute: false }) changeInEditorCallback = (
+  @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow,
     updateType,
     node?,
@@ -51,7 +50,7 @@ export class QuickConnectNode extends LitElementWw {
     outputHadConnections?
   ) => {};
 
-  @state() searchTerm = "";
+  @state() accessor searchTerm = "";
 
   //registering custom elements used in the widget
   static get scopedElements() {

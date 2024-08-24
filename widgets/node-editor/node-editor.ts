@@ -89,23 +89,26 @@ export class NodeEditor extends LitElementWw {
 
   //internal reactive state, not part of the component's API
   @property({ type: Object, attribute: true, reflect: false })
-  editor?: Drawflow;
-  @property({ type: Object, attribute: true, reflect: false }) editorContent;
-  @property({ type: Number, attribute: true, reflect: true }) editorZoom = -1;
-  @property({ type: String }) editorZoomString = "";
-  @property({ type: Object, attribute: true }) selectedNode;
-  @property({ type: String }) gamebookTitle;
-  @property({ type: String })
-  selectedConnection = NO_CONNECTION_SELECTED;
-  @property({ type: Boolean, attribute: true }) programmticallySelectedNode =
+  accessor editor: Drawflow;
+  @property({ type: Object, attribute: true, reflect: false })
+  accessor editorContent;
+  @property({ type: Number, attribute: true, reflect: true })
+  accessor editorZoom = -1;
+  @property({ type: String }) accessor editorZoomString = "";
+  @property({ type: Object, attribute: true }) accessor selectedNode;
+  @property({ type: String }) accessor gamebookTitle;
+  @property({ type: String }) accessor selectedConnection =
+    NO_CONNECTION_SELECTED;
+  @property({ type: Boolean, attribute: true })
+  accessor programmticallySelectedNode = false;
+  @property({ type: Boolean, attribute: true }) accessor connectionStarted =
     false;
-  @property({ type: Boolean, attribute: true }) connectionStarted = false;
 
   //access nodes in the internal component DOM.
-  @property({ attribute: false }) handleGamebookTitle = (event) => {};
+  @property({ attribute: false }) accessor handleGamebookTitle = (event) => {};
 
   //access nodes in the internal component DOM.
-  @property({ attribute: false }) changeInEditorCallback = (
+  @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow: Object,
     updateType: String,
     node?: DrawflowNode,
@@ -118,20 +121,21 @@ export class NodeEditor extends LitElementWw {
     importedGamebookContainers?: Array<Object>
   ) => {};
 
-  @property({ type: Boolean }) backgroundIsDragging = false;
-  @property({ type: Number }) backgroundLastX = 0;
-  @property({ type: Number }) backgroundLastY = 0;
-  @property({ type: Number }) backgroundTranslateX = 0;
-  @property({ type: Number }) backgroundTranslateY = 0;
-  @property({ type: Number }) backgroundScale = 0.45;
-  @property({ type: Number }) backgroundMinScale = 0.5;
-  @property({ type: Number }) backgroundMaxScale = 2;
-  @property({ type: Number }) backgroundScaleFactor = 1.05;
+  @property({ type: Boolean }) accessor backgroundIsDragging = false;
+  @property({ type: Number }) accessor backgroundLastX = 0;
+  @property({ type: Number }) accessor backgroundLastY = 0;
+  @property({ type: Number }) accessor backgroundTranslateX = 0;
+  @property({ type: Number }) accessor backgroundTranslateY = 0;
+  @property({ type: Number }) accessor backgroundScale = 0.45;
+  @property({ type: Number }) accessor backgroundMinScale = 0.5;
+  @property({ type: Number }) accessor backgroundMaxScale = 2;
+  @property({ type: Number }) accessor backgroundScaleFactor = 1.05;
 
-  @property({ attribute: false }) updateSelectedNodeCallback = (id) => {};
+  @property({ attribute: false }) accessor updateSelectedNodeCallback = (
+    id
+  ) => {};
 
-  @query("#drawflowEditorDiv")
-  drawflowEditorDiv;
+  @query("#drawflowEditorDiv") accessor drawflowEditorDiv;
 
   /*
 
@@ -297,13 +301,13 @@ export class NodeEditor extends LitElementWw {
 
   */
   private onMouseLeave() {
+    console.log("test");
     this.backgroundIsDragging = false;
 
     // If dragging is in progress, stop the dragging action
-    if (this.editor.drag) {
-      this.editor.drag = false;
-      console.log("Node dragging stopped");
-    }
+    this.editor.drag_point = false;
+    this.editor.drag = false;
+    console.log("Node dragging stopped");
   }
 
   /*
