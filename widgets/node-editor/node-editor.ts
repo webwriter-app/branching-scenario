@@ -166,6 +166,8 @@ export class NodeEditor extends LitElementWw {
     } else {
       this.editor.import(this.editorContent);
     }
+
+    this._markUsedOutputs();
   }
 
   /*
@@ -208,7 +210,6 @@ export class NodeEditor extends LitElementWw {
           .handleGamebookTitle=${(event) => this.handleGamebookTitle(event)}
           .addPageNode=${(string, boolean) => this.addPageNode(string, boolean)}
           .addPopUpNode=${(string) => this.addPopUpNode(string)}
-          .addQuestionNode=${() => this.addQuestionNode()}
           .addBranchNode=${() => this.addBranchNode()}
           .addDecisionPopUpTemplate=${() => this.addDecisionPopUpTemplate()}
           .showDialog=${() =>
@@ -301,13 +302,13 @@ export class NodeEditor extends LitElementWw {
 
   */
   private onMouseLeave() {
-    console.log("test");
+    //console.log("test");
     this.backgroundIsDragging = false;
 
     // If dragging is in progress, stop the dragging action
     this.editor.drag_point = false;
     this.editor.drag = false;
-    console.log("Node dragging stopped");
+    //console.log("Node dragging stopped");
   }
 
   /*
@@ -418,14 +419,14 @@ export class NodeEditor extends LitElementWw {
     //Event listener for when a connection creation started via drag and drop
     this.editor.on("connectionStart", ({ output_id, output_class }) => {
       this.connectionStarted = true;
-      // if (
-      //   this.editor.getNodeFromId(output_id).outputs[output_class]
-      //     ?.connections?.[0]?.node != undefined
-      // ) {
-      //   console.log("output already is connected");
-      // } else {
-      //   console.log("output empty");
-      // }
+      if (
+        this.editor.getNodeFromId(output_id).outputs[output_class]
+          ?.connections?.[0]?.node != undefined
+      ) {
+        //console.log("output already is connected");
+      } else {
+        //console.log("output empty");
+      }
 
       //   this.updateSelectedNodeCallback(output_id);
       //   this.shadowRoot
@@ -475,7 +476,7 @@ export class NodeEditor extends LitElementWw {
       "connectionCreated",
       ({ output_id, input_id, output_class, input_class }) => {
         this.connectionStarted = false;
-        console.log("we got here");
+        //console.log("we got here");
         this.updateSelectedNodeCallback(this.selectedNode.id);
         const outputNode = this.editor.getNodeFromId(output_id);
         const inputNode = this.editor.getNodeFromId(input_id);
@@ -722,73 +723,6 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  private addQuestionNode() {
-    const data = {
-      title: "Question Branch",
-      question: "",
-      answers: [],
-    };
-
-    // Create the container div
-    const containerDiv = document.createElement("div");
-    containerDiv.classList.add("container");
-
-    // Create the icon div
-    const icon = document.createElement("sl-icon") as SlIcon;
-    icon.setAttribute("src", helpSquareRounded);
-    icon.style.fontSize = "48px";
-    containerDiv.appendChild(icon);
-
-    //
-    const contentDiv = document.createElement("div");
-    contentDiv.classList.add("content");
-    const nameLabel = document.createElement("p");
-    nameLabel.textContent = "Question";
-    nameLabel.classList.add("input-label");
-    contentDiv.appendChild(nameLabel);
-
-    const inputElement = document.createElement("input");
-    inputElement.type = "text";
-    inputElement.id = "test-textarea";
-    inputElement.placeholder = "Enter name";
-    inputElement.setAttribute("df-title", ""); // Adding df-title attribute
-    contentDiv.appendChild(inputElement);
-
-    containerDiv.appendChild(contentDiv);
-
-    // Create the icon div
-    const threeDotsIcon = document.createElement("sl-icon") as SlIcon;
-    threeDotsIcon.setAttribute("src", dotsVertical);
-    threeDotsIcon.classList.add("threeDots");
-    containerDiv.appendChild(threeDotsIcon);
-
-    const containerHtml = containerDiv.outerHTML;
-
-    //get current center of drawflow div
-    const rect = this.drawflowEditorDiv.getBoundingClientRect();
-    const zoom = this.editor.zoom;
-
-    //center of canvas - translation of canvas / zoom - node dimension center
-    const centerX = rect.width / 2 - this.editor.canvas_x / zoom - 110 / 2;
-    const centerY = rect.height / 2 - this.editor.canvas_y / zoom - 110 / 2;
-
-    this.editor.addNode(
-      "Question Branch",
-      1,
-      0,
-      centerX,
-      centerY,
-      "question-branch",
-      data,
-      containerHtml,
-      false
-    );
-  }
-
-  /*
-
-
-  */
   private addBranchNode() {
     const branchNodeContent = {
       title: "Untitled Branch",
@@ -1020,6 +954,37 @@ export class NodeEditor extends LitElementWw {
 
 
   */
+  public _markUsedOutputs() {
+    //console.log("we in here");
+    // Loop through all nodes in drawflow
+    const nodes = this.editor.drawflow.drawflow.Home.data;
+
+    Object.values(nodes).forEach((node) => {
+      Object.entries((node as DrawflowNode).outputs).forEach(
+        ([outputClass, output]) => {
+          // Get the element corresponding to the output
+          const outputElement = this.shadowRoot
+            ?.getElementById(`node-${(node as DrawflowNode).id}`)
+            ?.querySelector(`.output.${outputClass}`);
+
+          if (outputElement) {
+            if (output.connections.length > 0) {
+              // If the output has at least one connection, mark it as in use
+              outputElement.classList.add("output-in-use");
+            } else {
+              // If the output has no connections, remove the in-use class
+              outputElement.classList.remove("output-in-use");
+            }
+          }
+        }
+      );
+    });
+  }
+
+  /*
+
+
+  */
   private addDecisionPopUpTemplate() {
     //console.log(JSON.stringify(exportdata));
     var currentNodes = this.editor.export();
@@ -1039,7 +1004,7 @@ export class NodeEditor extends LitElementWw {
 
     this.editor.import(mergedData.currentNodes);
 
-    console.log(mergedData.templateContainers);
+    //console.log(mergedData.templateContainers);
     this.changeInEditorCallback(
       { ...this.editor.drawflow },
       "templateImported",

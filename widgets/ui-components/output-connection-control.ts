@@ -32,6 +32,7 @@ export class OutputConnectionControl extends LitElement {
   @property({ type: Object }) accessor nodeEditor;
   @property({ type: Object }) accessor selectedNode;
   @property({ type: String }) accessor outputClass;
+  @property({ type: Boolean }) accessor disabled;
 
   @state() accessor searchTerm = "";
 
@@ -134,6 +135,7 @@ export class OutputConnectionControl extends LitElement {
         @sl-input=${this._handleUserInputTargetPage}
         @mouseenter=${() => this._highlightConnectionAndNode()}
         @mouseleave=${() => this._unhighlightConnectionAndNode()}
+        ?disabled=${this.disabled}
       >
         <div style="padding: 10px">
           <sl-input
@@ -271,7 +273,7 @@ export class OutputConnectionControl extends LitElement {
       event.target instanceof HTMLElement &&
       event.target.tagName.toLowerCase() === "sl-select"
     ) {
-      console.log(event.target);
+      //console.log(event.target);
       const selectedValue = (event.target as SlSelect).value;
       const connections =
         this.selectedNode?.outputs?.[this.outputClass]?.connections;

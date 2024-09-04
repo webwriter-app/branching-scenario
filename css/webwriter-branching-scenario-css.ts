@@ -67,4 +67,12 @@ export default css`
   .author-only sl-icon {
     color: #52525b;
   }
+
+  sl-dialog::part(base) {
+    position: absolute;
+  }
+
+  sl-dialog::part(overlay) {
+    position: absolute;
+  }
 `;

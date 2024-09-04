@@ -20,7 +20,9 @@
     "./widgets/webwriter-branching-scenario": "./widgets/webwriter-branching-scenario.ts",
     "./widgets/webwriter-gamebook-page-container": "./widgets/gamebook-components/webwriter-gamebook-page-container.ts",
     "./widgets/webwriter-gamebook-popup-container": "./widgets/gamebook-components/webwriter-gamebook-popup-container.ts",
+    "./widgets/webwriter-gamebook-branch-container": "./widgets/gamebook-components/webwriter-gamebook-branch-container.ts",
     "./widgets/webwriter-connection-button": "./widgets/gamebook-components/webwriter-connection-button.ts",
+    "./widgets/webwriter-smart-branch-button": "./widgets/gamebook-components/webwriter-smart-branch-button.ts",
     "./widgets/split-view": "./widgets/ui-components/split-view.ts",
     "./widgets/webwriter-gamebook": "./widgets/gamebook.ts"
   },

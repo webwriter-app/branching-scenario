@@ -32,6 +32,7 @@ import { NodeConnectionList } from "../ui-components/node-connection-list";
 import squares from "@tabler/icons/filled/squares.svg";
 import file from "@tabler/icons/filled/file.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
+import { BranchNodeDetails } from "./branch-node-details";
 
 @customElement("node-details-selector")
 export class SelectedNodeViewRenderer extends LitElementWw {
@@ -54,6 +55,7 @@ export class SelectedNodeViewRenderer extends LitElementWw {
     return {
       "page-node-details": PageNodeDetails,
       "popup-node-details": PopupNodeDetails,
+      "branch-node-details": BranchNodeDetails,
       "toggleable-input": ToggleableInput,
       "node-connection-list": NodeConnectionList,
       "sl-icon": SlIcon,
@@ -200,10 +202,37 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                       <slot></slot>
                     </page-node-details>
                   `
-                : this.selectedNode.class == "question-branch"
-                ? html` <div id="selected-node-details">
+                : this.selectedNode.class == "branch"
+                ? html` <branch-node-details
+                    .nodeEditor="${this.nodeEditor}"
+                    .selectedNode="${this.selectedNode}"
+                    .selectedNodeId="${this.selectedNode.id}"
+                    .changeInEditorCallback=${(
+                      drawflow,
+                      updateType,
+                      node,
+                      removedNodeId,
+                      inputNode,
+                      outputNode,
+                      inputClass,
+                      outputClass,
+                      outputHadConnections
+                    ) => {
+                      this.changeInEditorCallback(
+                        drawflow,
+                        updateType,
+                        node,
+                        removedNodeId,
+                        inputNode,
+                        outputNode,
+                        inputClass,
+                        outputClass,
+                        outputHadConnections
+                      );
+                    }}
+                  >
                     <slot></slot>
-                  </div>`
+                  </branch-node-details>`
                 : this.selectedNode.class == "popup"
                 ? html`
                     <popup-node-details

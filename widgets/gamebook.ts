@@ -30,6 +30,7 @@ import styles from "../css/gamebook-preview-css";
 import { WebWriterConnectionButton } from "./gamebook-components/webwriter-connection-button";
 import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
 import { WebWriterGamebookPopupContainer } from "./gamebook-components/webwriter-gamebook-popup-container";
+import { WebWriterGamebookBranchContainer } from "./gamebook-components/webwriter-gamebook-branch-container";
 
 @customElement("webwriter-gamebook")
 export class WebWriterGamebook extends LitElementWw {
@@ -50,6 +51,8 @@ export class WebWriterGamebook extends LitElementWw {
   }
 
   //import CSS
+
+  //TODO: make this more clear
   static styles = [styles];
 
   @state() accessor currentPageId: Number;
@@ -60,7 +63,7 @@ export class WebWriterGamebook extends LitElementWw {
   @queryAssignedElements({
     flatten: true,
     selector:
-      "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, quiz-container",
+      "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, webwriter-gamebook-branch-container",
   })
   accessor gamebookContainers;
 
@@ -81,7 +84,7 @@ export class WebWriterGamebook extends LitElementWw {
    */
   _handleSlotChange() {
     this.currentPageId = this._resetGamebookToOrigin();
-    this._initializeConnectionButtons(this.currentPageId);
+    this._initializeButtons(this.currentPageId);
   }
 
   /*
@@ -109,15 +112,18 @@ export class WebWriterGamebook extends LitElementWw {
       if (container.drawflowNodeId == targetId) {
         if (container instanceof WebWriterGamebookPageContainer) {
           this._navigateToPage(targetId);
-          this._initializeConnectionButtons(targetId);
+          this._initializeButtons(targetId);
         }
         //
         else if (container instanceof WebWriterGamebookPopupContainer) {
           this._showPopupContainerDialog(targetId);
-          this._initializeConnectionButtons(targetId);
+          this._initializeButtons(targetId);
         }
 
-        // Add more conditions as needed
+        //
+        else if (container instanceof WebWriterGamebookBranchContainer) {
+          this._navigateAccordingToRules(container);
+        }
       }
     });
   }
@@ -166,6 +172,58 @@ export class WebWriterGamebook extends LitElementWw {
 
 
   */
+  private _navigateAccordingToRules(
+    branchContainer: WebWriterGamebookBranchContainer
+  ) {
+    console.log(branchContainer.rules);
+    branchContainer.rules.forEach((rule) => {
+      if (rule.element.toLowerCase() == "text") {
+        console.log(this.gamebookContainers);
+        console.log(branchContainer.incomingContainerDrawflowNodeId);
+        this.gamebookContainers.forEach((container) => {
+          if (
+            container.drawflowNodeId ==
+            branchContainer.incomingContainerDrawflowNodeId
+          ) {
+            console.log("found incoming container", container);
+            const containersSlot = container.shadowRoot.querySelector("slot");
+            const assignedElements = containersSlot.assignedElements();
+
+            // Filter only paragraph elements
+            const paragraphElements = assignedElements.filter(
+              (el) => el.tagName.toLowerCase() === "p"
+            );
+
+            let contains = false;
+
+            // Iterate through the filtered paragraph elements
+            paragraphElements.forEach((paragraph) => {
+              if (paragraph.textContent?.includes(rule.match)) {
+                contains = true;
+              }
+            });
+
+            //contains
+            if (contains && rule.condition.toLowerCase() == "contains") {
+              this._navigateTo(Number(rule.target));
+            }
+            //not contains
+            else if (
+              !contains &&
+              rule.condition.toLowerCase() == "not_contains"
+            ) {
+              this._navigateTo(Number(rule.target));
+            }
+          }
+        });
+      }
+    });
+  }
+
+  /*
+
+
+  */
   private _resetGamebookToOrigin() {
     const originPageContainer = this.gamebookContainers.find(
       (container) => container.getAttribute("originPage") == 1
@@ -188,30 +246,14 @@ export class WebWriterGamebook extends LitElementWw {
 
 
   */
-  private _initializeConnectionButtons(containerId: Number) {
+  private _initializeButtons(containerId: Number) {
     const container = this.gamebookContainers.find(
       (container) => container.getAttribute("drawflowNodeId") == containerId
     );
 
     //initialise the elements on the origin page
-    container.connectionButtons.forEach((button) => {
+    container.buttons.forEach((button) => {
       const targetId = parseInt(button.getAttribute("dataTargetId"), 10);
-      button.addEventListener("click", () => this._navigateTo(targetId));
-    });
-  }
-
-  /*
-
-
-  */
-  private _initializeQuizButtons(containerId: Number) {
-    const container = this.gamebookContainers.find(
-      (container) => container.getAttribute("drawflowNodeId") == containerId
-    );
-
-    //initialise the elements on the origin page
-    container.answerButtons.forEach((button) => {
-      const targetId = parseInt(button.getAttribute("pageTargetId"), 10);
       button.addEventListener("click", () => this._navigateTo(targetId));
     });
   }

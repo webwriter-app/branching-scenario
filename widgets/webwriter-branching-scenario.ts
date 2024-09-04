@@ -18,7 +18,13 @@ import { SplitView } from "./ui-components/split-view";
 
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import { SlInput, SlIcon, SlSplitPanel } from "@shoelace-style/shoelace";
+import {
+  SlInput,
+  SlIcon,
+  SlSplitPanel,
+  SlDialog,
+  SlButton,
+} from "@shoelace-style/shoelace";
 
 import styles from "../css/webwriter-branching-scenario-css";
 
@@ -27,7 +33,6 @@ import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import book from "@tabler/icons/outline/book.svg";
-import gripHorizontal from "@tabler/icons/outline/grip-horizontal.svg";
 
 const NO_NODE_SELECTED: DrawflowNode = {
   id: -1,
@@ -49,7 +54,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @queryAssignedElements({
     flatten: true,
     selector:
-      "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, quiz-container",
+      "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, webwriter-gamebook-branch-container",
   })
   accessor gamebookContainers;
 
@@ -83,6 +88,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-icon": SlIcon,
       "sl-split-panel": SlSplitPanel,
       "split-view": SplitView,
+      "sl-dialog": SlDialog,
+      "sl-button": SlButton,
     };
   }
 
@@ -102,6 +109,17 @@ export class WebWriterBranchingScenario extends LitElementWw {
       container.hide();
     });
     this.handleChangesInGamebookContainers();
+
+    const dialog = this.shadowRoot.getElementById(
+      "branch_input_full_dialog"
+    ) as SlDialog;
+
+    // Prevent the dialog from closing when the user clicks on the overlay
+    dialog.addEventListener("sl-request-close", (event) => {
+      if (event.detail.source === "overlay") {
+        event.preventDefault();
+      }
+    });
   }
 
   /*
@@ -181,7 +199,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 >
                   <gamebook-container-manager
                     .editorContent=${this.editorContent}
-                    .getNodeEditor=${() => this.getNodeEditor()}
                     .appendToShadowDom=${(container) =>
                       this._addContainerCallback(container)}
                   >
@@ -263,6 +280,25 @@ export class WebWriterBranchingScenario extends LitElementWw {
             ><slot></slot
           ></webwriter-gamebook>`}
       <!-- </div> -->
+      <sl-dialog
+        label="Only one connection allowed!"
+        class="dialog"
+        id="branch_input_full_dialog"
+      >
+        Smart Branch Nodes allow only one connection.
+        <sl-button
+          slot="footer"
+          variant="primary"
+          outline
+          @click=${() =>
+            (
+              this.shadowRoot.getElementById(
+                "branch_input_full_dialog"
+              ) as SlDialog
+            ).hide()}
+          >Understood</sl-button
+        >
+      </sl-dialog>
     `;
   }
 
@@ -271,9 +307,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   */
   private exportContainersAsString() {
-    console.log(
-      JSON.stringify(this.gamebookContainers, this.domElementReplacer)
-    );
+    // console.log(
+    //   JSON.stringify(this.gamebookContainers, this.domElementReplacer)
+    // );
   }
 
   /*
@@ -294,8 +330,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
   }
 
   /*
-
-
+  TODO: redo the logic for creationg and deletion of connections and buttons.
+  TODO: bug test this!
   */
   private updateGamebookContainers(
     drawflow: Object,
@@ -318,15 +354,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
       );
     }
     //
-    // else if (updateType == "selectedNodeDataChanged") {
-    //   this.updateSelectedNode(this.selectedNode.id.toString());
-
-    //   if (node.class == "question-branch") {
-    //     this.gamebookContainerManager
-    //       ._getContainerByDrawflowNodeId(node.id)
-    //       .updateFromQuestionNode(this.selectedNode);
-    //   }
-    // }
+    else if (updateType == "customNodeDataChanged") {
+      this.updateSelectedNode(this.selectedNode.id.toString());
+    }
     //
     else if (updateType == "nodeCreated") {
       this.updateSelectedNode(this.selectedNode.id.toString());
@@ -339,10 +369,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.gamebookContainerManager._createPopupContainerFromPopupNode(node);
       }
       //
-      else if (node.class == "question-branch") {
-        this.gamebookContainerManager._createQuestionContainerFromQuestionNode(
-          node
-        );
+      else if (node.class == "branch") {
+        //console.log("branch node created");
+        this.gamebookContainerManager._createBranchContainer(node);
       }
     }
     //
@@ -353,31 +382,64 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
     //
     else if (updateType == "connectionCreated") {
-      console.log("connection Created'");
-      this.gamebookContainerManager.addConnectionButtonToContainer(
-        outputNode,
-        inputNode,
-        outputClass,
-        inputClass
-      );
+      this.nodeEditor._markUsedOutputs();
+      //console.log("connection Created'");
+      if (inputNode.class == "branch") {
+        //console.log(inputNode.inputs["input_1"]?.connections);
+        if (inputNode.inputs["input_1"]?.connections?.length <= 1) {
+          this.gamebookContainerManager.addSmartBranchButtonToContainer(
+            outputNode,
+            inputNode,
+            outputClass,
+            inputClass
+          );
+        } else {
+          const dialog = this.shadowRoot.getElementById(
+            "branch_input_full_dialog"
+          ) as SlDialog;
+          dialog.show();
+          this.nodeEditor.editor.removeSingleConnection(
+            outputNode.id,
+            inputNode.id,
+            outputClass,
+            inputClass
+          );
+        }
+      } else {
+        this.gamebookContainerManager.addConnectionButtonToContainer(
+          outputNode,
+          inputNode,
+          outputClass,
+          inputClass
+        );
+      }
     }
 
     //
     else if (updateType == "connectionRemoved") {
+      this.nodeEditor._markUsedOutputs();
       //if a connection is removed by the user, remove the corresponding button
       if (this.reactToCallbackFromNodeEditor) {
-        console.log(
-          "connection delete",
-          outputNode.id,
-          outputClass,
-          inputNode.id,
-          inputClass
-        );
+        // console.log(
+        //   "connection delete",
+        //   outputNode.id,
+        //   outputClass,
+        //   inputNode.id,
+        //   inputClass
+        // );
         const identifier = `${outputNode.id}-${outputClass}-${inputNode.id}-${inputClass}`;
-        this.gamebookContainerManager.removeConnectionButtonFromContainer(
-          outputNode.id,
-          identifier
-        );
+
+        if (inputNode.class == "branch") {
+          this.gamebookContainerManager.removeSmartBranchButtonFromContainer(
+            outputNode.id,
+            identifier
+          );
+        } else {
+          this.gamebookContainerManager.removeConnectionButtonFromContainer(
+            outputNode.id,
+            identifier
+          );
+        }
       }
       //if a button was removed by the user
       else {
@@ -428,20 +490,18 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
     //
     else if (updateType == "outputDeleted") {
-      console.log("here before", "deleted output", outputClass);
-      //Updat the Connection Button Id's only if the output had no connection, because connection removal also updates conneciton button ids
-      //if (!outputHadConnections) {
-      this.gamebookContainerManager.updateConnectionButtonIdsAfterRemove(
+      //console.log("here before", "deleted output", outputClass);
+
+      this.gamebookContainerManager.updateButtonIdsAfterOutputRemove(
         this.selectedNode.id,
         outputClass
       );
-      //}
 
       this.updateSelectedNode(this.selectedNode.id.toString());
     }
     //
     else if (updateType == "templateImported") {
-      console.log(importedGamebookContainers);
+      //console.log(importedGamebookContainers);
       this.gamebookContainerManager.importContainers(
         importedGamebookContainers
       );
@@ -449,10 +509,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     this.editorContent = drawflow;
     this.requestUpdate();
-  }
-
-  private getNodeEditor() {
-    return this.nodeEditor;
   }
 
   /*

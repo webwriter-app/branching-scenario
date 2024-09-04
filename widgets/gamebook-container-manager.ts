@@ -14,6 +14,8 @@ import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
 import { WebWriterConnectionButton } from "./gamebook-components/webwriter-connection-button";
 import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
 import { WebWriterGamebookPopupContainer } from "./gamebook-components/webwriter-gamebook-popup-container";
+import { WebWriterGamebookBranchContainer } from "./gamebook-components/webwriter-gamebook-branch-container";
+import { WebWriterSmartBranchButton } from "./gamebook-components/webwriter-smart-branch-button";
 
 @customElement("gamebook-container-manager")
 export class GamebookContainerManager extends LitElementWw {
@@ -22,12 +24,10 @@ export class GamebookContainerManager extends LitElementWw {
     element: HTMLElement
   ) => {};
 
-  @property({ attribute: false }) accessor getNodeEditor = () => {};
-
   @queryAssignedElements({
     flatten: true,
     selector:
-      "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, quiz-container",
+      "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, webwriter-gamebook-branch-container",
   })
   accessor gamebookContainers;
 
@@ -37,6 +37,7 @@ export class GamebookContainerManager extends LitElementWw {
     return {
       "webwriter-gamebook-page-container": WebWriterGamebookPageContainer,
       "webwriter-gamebook-popup-container": WebWriterGamebookPopupContainer,
+      "webwriter-gamebook-branch-container": WebWriterGamebookBranchContainer,
     };
   }
 
@@ -161,12 +162,36 @@ export class GamebookContainerManager extends LitElementWw {
       `${outputNode.id}-${output_class}-${inputNode.id}-${input_class}`
     );
 
-    // this.updateConnectionButtonIdsBeforeAdd(
-    //   outputNode.id.toString(),
-    //   output_class
-    // );
-
     container.appendChild(connButton);
+  }
+
+  /*
+
+
+  */
+  public addSmartBranchButtonToContainer(
+    outputNode: DrawflowNode,
+    inputNode: DrawflowNode,
+    output_class: string,
+    input_class: string
+  ) {
+    const container = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == outputNode.id
+    );
+
+    const branchButton = document.createElement(
+      "webwriter-smart-branch-button"
+    ) as WebWriterSmartBranchButton;
+
+    branchButton.setAttribute("name", inputNode.data.title);
+    branchButton.setAttribute("dataTargetId", inputNode.id.toString());
+    // Ensure uniqueness by adding a unique identifier
+    branchButton.setAttribute(
+      "identifier",
+      `${outputNode.id}-${output_class}-${inputNode.id}-${input_class}`
+    );
+
+    container.appendChild(branchButton);
   }
 
   /*
@@ -181,8 +206,6 @@ export class GamebookContainerManager extends LitElementWw {
       (container) => container.getAttribute("drawflowNodeId") == containerId
     );
 
-    //container.pauseObserver();
-
     const connButton =
       container.shadowRoot?.querySelector(
         `webwriter-connection-button[identifier="${identifier}"]`
@@ -195,15 +218,39 @@ export class GamebookContainerManager extends LitElementWw {
       connButton.setAttribute("identifier", "x");
       connButton.remove();
     }
-
-    //container.resumeObserver();
   }
 
   /*
 
 
   */
-  public updateConnectionButtonIdsAfterRemove(
+  public removeSmartBranchButtonFromContainer(
+    containerId: string,
+    identifier: string
+  ) {
+    const container = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == containerId
+    );
+
+    const branchButton =
+      container.shadowRoot?.querySelector(
+        `webwriter-smart-branch-button[identifier="${identifier}"]`
+      ) ||
+      container.querySelector(
+        `webwriter-smart-branch-button[identifier="${identifier}"]`
+      );
+
+    if (branchButton) {
+      branchButton.setAttribute("identifier", "x");
+      branchButton.remove();
+    }
+  }
+
+  /*
+
+
+  */
+  public updateButtonIdsAfterOutputRemove(
     containerId: string,
     removed_output_class: string
   ) {
@@ -218,90 +265,22 @@ export class GamebookContainerManager extends LitElementWw {
     );
 
     // Iterate over each linkButton to update its identifier
-    container.connectionButtons.forEach((connButton) => {
-      const [output_id, output_class, input_id] =
-        connButton.identifier.split("-");
-      const connButtonOutputClassNumber = parseInt(
-        output_class.split("_")[1],
-        10
-      );
+    container.buttons.forEach((button) => {
+      const [output_id, output_class, input_id] = button.identifier.split("-");
+      const buttonOutputClassNumber = parseInt(output_class.split("_")[1], 10);
 
       // Check if the linkButton should be updated
-      if (connButtonOutputClassNumber > removedOutputClassNumber) {
+      if (buttonOutputClassNumber > removedOutputClassNumber) {
         // Generate the new identifier with incremented output_class
         const newIdentifier = `${output_id}-output_${
-          connButtonOutputClassNumber - 1
+          buttonOutputClassNumber - 1
         }-${input_id}-input_1`;
 
         // Update the identifier
-        connButton.setAttribute("identifier", newIdentifier);
+        button.setAttribute("identifier", newIdentifier);
       }
     });
   }
-
-  /*
-
-
-  */
-  public updateConnectionButtonIdsBeforeAdd(
-    containerId: string,
-    added_output_class: string
-  ) {
-    const container = this.gamebookContainers.find(
-      (container) => container.getAttribute("drawflowNodeId") == containerId
-    );
-
-    // Extract the number from the output_class parameter
-    const addedOutputClassNumber = parseInt(
-      added_output_class.split("_")[1],
-      10
-    );
-
-    // Find the index of the first button with outputClass == addedOutputClassNumber
-    const startIndex = container.connectionButtons.findIndex((connButton) => {
-      const [output_id, output_class, input_id] =
-        connButton.identifier.split("-");
-      const connButtonOutputClassNumber = parseInt(
-        output_class.split("_")[1],
-        10
-      );
-      return connButtonOutputClassNumber === addedOutputClassNumber;
-    });
-
-    // If a matching button was found, update subsequent buttons
-    if (startIndex !== -1) {
-      // Iterate over each linkButton to update its identifier
-      container.connectionButtons.forEach((connButton) => {
-        const [output_id, output_class, input_id] =
-          connButton.identifier.split("-");
-        const connButtonOutputClassNumber = parseInt(
-          output_class.split("_")[1],
-          10
-        );
-
-        // Check if the linkButton should be updated
-        if (connButtonOutputClassNumber >= addedOutputClassNumber) {
-          // Generate the new identifier with incremented output_class
-          const newIdentifier = `${output_id}-output_${
-            connButtonOutputClassNumber + 1
-          }-${input_id}-input_1`;
-
-          // Update the identifier
-          connButton.setAttribute("identifier", newIdentifier);
-        }
-      });
-    }
-  }
-
-  /*
-
-
-  */
-
-  /*
-
-
-  */
 
   /*
 
@@ -362,16 +341,16 @@ export class GamebookContainerManager extends LitElementWw {
       pageContainer.setAttribute("originPage", "0");
     }
 
-    const parser = new DOMParser();
-    const contentFromNode = parser.parseFromString(
-      pageNode.data.content,
-      "text/html"
-    );
+    // const parser = new DOMParser();
+    // const contentFromNode = parser.parseFromString(
+    //   pageNode.data.content,
+    //   "text/html"
+    // );
 
-    // Loop through the child nodes of the body of the parsed document
-    contentFromNode.body.childNodes.forEach((node) => {
-      pageContainer.appendChild(node);
-    });
+    // // Loop through the child nodes of the body of the parsed document
+    // contentFromNode.body.childNodes.forEach((node) => {
+    //   pageContainer.appendChild(node);
+    // });
 
     //to let it access editor
     pageContainer.hide();
@@ -394,16 +373,16 @@ export class GamebookContainerManager extends LitElementWw {
     popupContainer.setAttribute("drawflowNodeId", popupNode.id.toString());
     popupContainer.setAttribute("pageTitle", popupNode.data.title);
 
-    const parser = new DOMParser();
-    const contentFromNode = parser.parseFromString(
-      popupNode.data.content,
-      "text/html"
-    );
+    // const parser = new DOMParser();
+    // const contentFromNode = parser.parseFromString(
+    //   popupNode.data.content,
+    //   "text/html"
+    // );
 
-    // Loop through the child nodes of the body of the parsed document
-    contentFromNode.body.childNodes.forEach((node) => {
-      popupContainer.appendChild(node);
-    });
+    // // Loop through the child nodes of the body of the parsed document
+    // contentFromNode.body.childNodes.forEach((node) => {
+    //   popupContainer.appendChild(node);
+    // });
 
     //to let it access editor
     popupContainer.hide();
@@ -416,8 +395,34 @@ export class GamebookContainerManager extends LitElementWw {
   
   
   */
+  public _createBranchContainer(branchNode: DrawflowNode) {
+    //console.log(this.gamebookContainers);
+    const branchContainer = document.createElement(
+      "webwriter-gamebook-branch-container"
+    ) as WebWriterGamebookBranchContainer;
+    branchContainer.setAttribute("drawflowNodeId", branchNode.id.toString());
+
+    // const parser = new DOMParser();
+    // const contentFromNode = parser.parseFromString(
+    //   branchNode.data.content,
+    //   "text/html"
+    // );
+    // // Loop through the child nodes of the body of the parsed document
+    // contentFromNode.body.childNodes.forEach((node) => {
+    //   branchContainer.appendChild(node);
+    // });
+    //to let it access editor
+    branchContainer.hide();
+    //
+    this.appendToShadowDom(branchContainer);
+  }
+
+  /* 
+  
+  
+  */
   private importContainers(template: Array<Object>) {
-    console.log(template);
+    //console.log(template);
     let containers = template.map((info) =>
       this.createContainerFromImport(info)
     );

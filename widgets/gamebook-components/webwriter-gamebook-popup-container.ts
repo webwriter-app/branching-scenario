@@ -27,7 +27,6 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
         box-sizing: border-box;
         width: 100%;
         height: auto;
-        pointer-events: none;
       }
 
       sl-dialog::part(base) {
@@ -56,19 +55,19 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
 
   @queryAssignedElements({
     flatten: true,
-    selector: "webwriter-connection-button",
+    selector: "webwriter-connection-button, webwriter-smart-branch-button",
   })
-  accessor connectionButtons;
+  accessor buttons;
 
   @query("#dialog") accessor dialog: SlDialog;
 
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
 
-  static shadowRootOptions = {
-    ...LitElement.shadowRootOptions,
-    delegatesFocus: true,
-  };
+  // static shadowRootOptions = {
+  //   ...LitElement.shadowRootOptions,
+  //   delegatesFocus: true,
+  // };
 
   /* 
   
@@ -88,10 +87,13 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
     const config = { attributes: true, childList: true, subtree: true };
     this.mutationObserver.observe(this, config);
 
-    this.addEventListener("click", () => {
-      console.log("popup Container clicked");
-      this.focus();
-    });
+    const slot = this.shadowRoot.querySelector("slot");
+    const assignedElements = slot.assignedElements();
+
+    if (assignedElements.length == 0) {
+      const par = document.createElement("p");
+      this.appendChild(par);
+    }
   }
   /*
 
@@ -141,15 +143,12 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
     this.dialog.show();
   }
 
-  // Pause the observer
-  public pauseObserver() {
-    this.mutationObserver.disconnect();
-  }
+  /*
 
-  // Resume the observer
-  public resumeObserver() {
-    const config = { attributes: true, childList: true, subtree: true };
-    this.mutationObserver.observe(this, config);
+
+  */
+  private generateUniqueId(prefix: string = "gamebook-id-"): string {
+    return `${prefix}${Date.now()}`;
   }
 
   /*
@@ -160,6 +159,11 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
     mutationList.forEach((mutation) => {
       if (mutation.type == "childList") {
         mutation.addedNodes.forEach((node) => {
+          // (node as HTMLElement).setAttribute(
+          //   "ww-gamebook-id",
+          //   this.generateUniqueId()
+          // );
+
           if (
             (node as Element).nodeName.toLowerCase() ==
             "webwriter-connection-button"
