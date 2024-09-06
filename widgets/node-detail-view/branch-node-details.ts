@@ -74,7 +74,8 @@ export class BranchNodeDetails extends LitElementWw {
   @property({ type: Object, attribute: false })
   accessor incomingContainer;
 
-  @property({ type: Number }) accessor ruleDrag = false;
+  @property({ type: Boolean }) accessor ruleDrag = false;
+
   private draggedIndex = -1;
 
   @property({ type: Number }) accessor hoveredDividerIndex = -1;
@@ -184,6 +185,7 @@ export class BranchNodeDetails extends LitElementWw {
                               this._onDragOver(e, index)}
                             @dragleave=${(e: DragEvent) =>
                               this._onDragLeave(e, index)}
+                            @drop=${(e: DragEvent) => this._onDrop(e)}
                           >
                             <sl-icon
                               class="draggable"
@@ -351,11 +353,26 @@ export class BranchNodeDetails extends LitElementWw {
 
   */
   private _onDrop(event: DragEvent) {
-    console.log("test");
     event.preventDefault();
 
-    this.draggedIndex = -1; // Reset dragged index
-    this.hoveredDividerIndex = -1; // Reset hovered divider index
+    if (
+      this.draggedIndex !== -1 &&
+      this.hoveredDividerIndex !== -1 &&
+      this.draggedIndex !== this.hoveredDividerIndex
+    ) {
+      const [draggedRule] = this.branchContainer.rules.splice(
+        this.draggedIndex,
+        1
+      ); // Remove the dragged item
+      this.branchContainer.rules.splice(
+        this.hoveredDividerIndex,
+        0,
+        draggedRule
+      ); // Insert it at the drop position
+      this.branchContainer.rules = [...this.branchContainer.rules]; // Trigger re-render
+    }
+
+    this._onDragEnd();
     this.requestUpdate();
   }
 
