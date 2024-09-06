@@ -135,7 +135,8 @@ export class BranchNodeDetails extends LitElementWw {
   //TODO: make rules moveable, since indexing gives priority of what will be done
   //TODO: also move outputs accordingly
   //TODO: delete connection once the matching has been cleared
-
+  //TODO: dont allow self loops
+  //TODO: check the branch container getter for robustness. does not seem to be working all the time
   render() {
     return html`
       <div class="container">
@@ -350,7 +351,7 @@ export class BranchNodeDetails extends LitElementWw {
 
   /*
 
-
+TODO: move outputs as well
   */
   private _onDrop(event: DragEvent) {
     event.preventDefault();

@@ -11,7 +11,24 @@ export default css`
 
   .drawflow .drawflow-node.page,
   .drawflow .drawflow-node.origin,
-  .drawflow .drawflow-node.popup,
+  .drawflow .drawflow-node.popup {
+    background: #ffffff;
+    border: 1.5px solid #cecece;
+
+    padding: 0px;
+    align-items: center;
+
+    box-sizing: border-box;
+
+    border-radius: 12px;
+
+    min-width: 320px;
+    min-height: 90px;
+
+    -webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
+    box-shadow: 0 2px 20px 2px #d0d0d0;
+  }
+
   .drawflow .drawflow-node.branch {
     background: #ffffff;
     border: 1.5px solid #cecece;
@@ -21,7 +38,7 @@ export default css`
 
     box-sizing: border-box;
 
-    border-radius: 8px;
+    border-radius: 12px;
 
     min-width: 320px;
     min-height: 90px;

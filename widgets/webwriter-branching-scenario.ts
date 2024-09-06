@@ -33,6 +33,7 @@ import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import book from "@tabler/icons/outline/book.svg";
+import infoSquareRounded from "@tabler/icons/filled/info-square-rounded.svg";
 
 const NO_NODE_SELECTED: DrawflowNode = {
   id: -1,
@@ -267,7 +268,16 @@ export class WebWriterBranchingScenario extends LitElementWw {
                               outputHadConnections
                             );
                           }}
-                        ></quick-connect-node> `
+                        ></quick-connect-node>
+                        ${this.selectedNode.class == "branch"
+                          ? html` <sl-icon src=${infoSquareRounded}></sl-icon>
+                              <p>
+                                Set up conditions to determine how your gamebook
+                                will continue. The first condition that is met
+                                will be taken. Rearrange the conditions to
+                                determine the order.
+                              </p>`
+                          : null} `
                     : null
                 }
               </div>
