@@ -7,7 +7,6 @@ import {
   state,
   queryAssignedElements,
 } from "lit/decorators.js";
-import { DrawflowNode } from "drawflow";
 
 import { WebWriterConnectionButton } from "./webwriter-connection-button";
 
@@ -18,7 +17,7 @@ import { SlButton } from "@shoelace-style/shoelace";
 export class WebWriterGamebookBranchContainer extends LitElementWw {
   //associated node id
   @property({ type: Number, attribute: true, reflect: true })
-  accessor drawflowNodeId = null;
+  accessor drawflowNodeId;
 
   @property({ type: String, attribute: true, reflect: true })
   accessor incomingContainerDrawflowNodeId;
@@ -63,9 +62,6 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
   */
   protected firstUpdated(_changedProperties: PropertyValues): void {
     // You can handle any initialization related to rules here
-    if (this.rules.length > 0) {
-      //console.log("Rules received: ", this.rules);
-    }
   }
 
   /*
@@ -99,9 +95,6 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
   public addRule(newRule: Rule) {
     // Add the new rule to the rules array
     this.rules = [...this.rules, newRule];
-
-    // Optionally, you can log or perform other actions
-    //console.log("Rule added: ", newRule);
   }
 
   /*

@@ -48,7 +48,7 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
   }
   //associated node id
   @property({ type: Number, attribute: true, reflect: true })
-  accessor drawflowNodeId = null;
+  accessor drawflowNodeId;
 
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;

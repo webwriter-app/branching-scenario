@@ -1,3 +1,4 @@
+
 {
   "name": "@webwriter/branching-scenario",
   "version": "0.0.1",
@@ -32,10 +33,11 @@
   },
   "editingConfig": {
     "./widgets/webwriter-branching-scenario": {
+      
       "content": "flow*"
     },
     "./widgets/webwriter-gamebook": {
-      "content": "flow*"
+      "content": "(webwriter-gamebook-page-container | webwriter-gamebook-popup-container | webwriter-gamebook-branch-container)*"
     },
     "./widgets/webwriter-gamebook-page-container": {
       "content": "flow*"

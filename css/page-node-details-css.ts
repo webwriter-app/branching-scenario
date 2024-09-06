@@ -17,9 +17,6 @@ export default css`
 
     background-color: #fbfbfb;
     padding: 10px;
-
-    /* border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px; */
   }
 
   .preview {

@@ -79,16 +79,6 @@ export class ContainerElementSelect extends LitElement {
   /*
 
   */
-  firstUpdated() {
-    //
-  }
-
-  protected updated(_changedProperties: PropertyValues): void {
-    super.updated(_changedProperties);
-  }
-  /*
-
-  */
   render() {
     const containersSlot = this.container.shadowRoot.querySelector("slot");
     const assignedElements = containersSlot.assignedElements();
@@ -107,7 +97,6 @@ export class ContainerElementSelect extends LitElement {
       el.classList.contains("ww-widget")
     );
 
-    console.log(assignedElements);
     this.options = [...this.options, ...wwWidgetElements];
 
     return html`

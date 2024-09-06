@@ -8,9 +8,3 @@ interface Rule {
   isMatchEnabled: Boolean;
   isTargetEnabled: Boolean;
 }
-
-// type AcyclicNodeRepresentation = {
-//   tagName?: string;
-//   textContent?: string;
-//   //index: number;
-// };

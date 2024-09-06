@@ -17,6 +17,7 @@ import { QuickConnectNode } from "../ui-components/quick-connect-node";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import {
   SlButton,
+  SlDivider,
   SlIcon,
   SlIconButton,
   SlInput,
@@ -47,6 +48,7 @@ export class BranchNodeDetails extends LitElementWw {
       "sl-select": SlSelect,
       "sl-input": SlInput,
       "sl-option": SlOption,
+      "sl-divider": SlDivider,
       "quick-connect-node": QuickConnectNode,
       "output-connection-control": OutputConnectionControl,
       "container-element-select": ContainerElementSelect,
@@ -72,6 +74,11 @@ export class BranchNodeDetails extends LitElementWw {
   @property({ type: Object, attribute: false })
   accessor incomingContainer;
 
+  @property({ type: Number }) accessor ruleDrag = false;
+  private draggedIndex = -1;
+
+  @property({ type: Number }) accessor hoveredDividerIndex = -1;
+
   @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow,
     updateType,
@@ -90,6 +97,9 @@ export class BranchNodeDetails extends LitElementWw {
   })
   accessor slotElements;
 
+  //
+
+  //
   protected updated(_changedProperties: PropertyValues): void {
     const gamebookContainerManager = this
       .slotElements[0] as GamebookContainerManager;
@@ -102,8 +112,9 @@ export class BranchNodeDetails extends LitElementWw {
     const incomingNodeId =
       this.selectedNode.inputs["input_1"].connections?.[0]?.node;
 
-    this.branchContainer.incomingContainerDrawflowNodeId = incomingNodeId;
-
+    if (this.branchContainer) {
+      this.branchContainer.incomingContainerDrawflowNodeId = incomingNodeId;
+    }
     if (incomingNodeId != undefined) {
       this.isConnected = true;
       this.incomingContainer =
@@ -123,6 +134,7 @@ export class BranchNodeDetails extends LitElementWw {
   //TODO: make rules moveable, since indexing gives priority of what will be done
   //TODO: also move outputs accordingly
   //TODO: delete connection once the matching has been cleared
+
   render() {
     return html`
       <div class="container">
@@ -142,103 +154,132 @@ export class BranchNodeDetails extends LitElementWw {
 
               <div class="ruleList">
                 ${this.branchContainer.rules.length > 0
-                  ? html`${repeat(
-                      this.branchContainer.rules,
-                      (rule, index) => html`
-                        <div class="horizontalStack">
-                          <!-- <p>${parseInt(
-                            rule.output_id.split("_")[1],
-                            10
-                          )}</p> -->
-                          <sl-icon-button
-                            class="minus"
-                            src=${gripHorizontal}
-                            style="font-size: 15px;"
-                          ></sl-icon-button>
-                          <p>${index}</p>
-                          <!-- <sl-select
-                            placeholder="Element"
-                            value=${rule.element}
-                            @sl-change=${(e: Event) =>
-                            this._updateRuleElement(
-                              index,
-                              (e.target as HTMLSelectElement).value
-                            )}
+                  ? html`
+                      ${repeat(
+                        this.branchContainer.rules,
+                        (rule, index) => html`
+                          <!-- top divider  -->
+                          <sl-divider
+                            class="rule-divider"
+                            style="
+                            visibility: ${this.draggedIndex == -1 ||
+                            index > this.draggedIndex ||
+                            index == this.draggedIndex
+                              ? "hidden"
+                              : "visible"};
+                              opacity: ${this.hoveredDividerIndex == index
+                              ? "100%"
+                              : "0%"};  
+                              "
+                          ></sl-divider>
+                          <!--   -->
+                          <div
+                            class="horizontalStack"
+                            id="horizontal-stack-${index}"
+                            draggable="true"
+                            @dragstart=${(e: DragEvent) =>
+                              this._onDragStart(e, index)}
+                            @dragend=${this._onDragEnd}
+                            @dragover=${(e: DragEvent) =>
+                              this._onDragOver(e, index)}
+                            @dragleave=${(e: DragEvent) =>
+                              this._onDragLeave(e, index)}
                           >
-                            <sl-option value="element1">Element 1</sl-option>
-                            <sl-option value="element2">Element 2</sl-option>
-                          </sl-select> -->
+                            <sl-icon
+                              class="draggable"
+                              src=${gripHorizontal}
+                              style="font-size: 15px;"
+                            ></sl-icon>
+                            <p>${index}</p>
 
-                          <container-element-select
-                            .value=${rule.element}
-                            @sl-change=${(e: Event) =>
-                              this._updateRuleElement(
-                                index,
-                                (
-                                  e.target as ContainerElementSelect
-                                ).selectElement.value.toString()
-                              )}
-                            .selectedNode=${this.selectedNode}
-                            .container=${this.incomingContainer}
-                          >
-                          </container-element-select>
+                            <!-- TODO: incomingContainer is set during updating and this sometimes returns null, causing an undefined error in the container element select -->
+                            ${this.incomingContainer != undefined
+                              ? html` <container-element-select
+                                  .value=${rule.element}
+                                  @sl-change=${(e: Event) =>
+                                    this._updateRuleElement(
+                                      index,
+                                      (
+                                        e.target as ContainerElementSelect
+                                      ).selectElement.value.toString()
+                                    )}
+                                  .selectedNode=${this.selectedNode}
+                                  .container=${this.incomingContainer}
+                                >
+                                </container-element-select>`
+                              : null}
 
-                          <sl-select
-                            clearable
-                            placeholder="Condition"
-                            value=${rule.condition}
-                            @sl-change=${(e: Event) =>
-                              this._updateRuleCondition(
-                                index,
-                                (e.target as HTMLSelectElement).value
-                              )}
-                            ?disabled=${!rule.isConditionEnabled}
-                          >
-                            <sl-option value="contains">Contains</sl-option>
-                            <sl-option value="not_contains"
-                              >Not Contains</sl-option
+                            <sl-select
+                              clearable
+                              placeholder="Condition"
+                              value=${rule.condition}
+                              @sl-change=${(e: Event) =>
+                                this._updateRuleCondition(
+                                  index,
+                                  (e.target as HTMLSelectElement).value
+                                )}
+                              ?disabled=${!rule.isConditionEnabled}
                             >
-                          </sl-select>
+                              <sl-option value="contains">Contains</sl-option>
+                              <sl-option value="not_contains"
+                                >Not Contains</sl-option
+                              >
+                            </sl-select>
 
-                          <sl-input
-                            clearable
-                            placeholder="Match"
-                            value=${rule.match}
-                            @sl-input=${(e: Event) =>
-                              this._updateRuleMatch(
-                                index,
-                                (e.target as HTMLInputElement).value
-                              )}
-                            ?disabled=${!rule.isMatchEnabled}
-                          ></sl-input>
+                            <sl-input
+                              clearable
+                              placeholder="Match"
+                              value=${rule.match}
+                              @sl-input=${(e: Event) =>
+                                this._updateRuleMatch(
+                                  index,
+                                  (e.target as HTMLInputElement).value
+                                )}
+                              ?disabled=${!rule.isMatchEnabled}
+                            ></sl-input>
 
-                          <output-connection-control
-                            @sl-change=${(e: Event) =>
-                              this._updateRuleTarget(
-                                index,
-                                (
-                                  e.target as OutputConnectionControl
-                                ).selectElement.value.toString()
-                              )}
-                            .selectedNode=${this.selectedNode}
-                            .nodeEditor=${this.nodeEditor}
-                            .outputClass=${rule.output_id}
-                            ?disabled=${!rule.isTargetEnabled}
-                          ></output-connection-control>
+                            <output-connection-control
+                              @sl-change=${(e: Event) =>
+                                this._updateRuleTarget(
+                                  index,
+                                  (
+                                    e.target as OutputConnectionControl
+                                  ).selectElement.value.toString()
+                                )}
+                              .selectedNode=${this.selectedNode}
+                              .nodeEditor=${this.nodeEditor}
+                              .outputClass=${rule.output_id}
+                              ?disabled=${!rule.isTargetEnabled}
+                            ></output-connection-control>
 
-                          <!-- Delete Rule Button -->
-                          <sl-icon-button
-                            class="minus"
-                            src=${minus}
-                            style="font-size: 15px;"
-                            @click=${() =>
-                              this._removeRuleFromSelectedBranchNode(
-                                rule.output_id
-                              )}
-                          ></sl-icon-button>
-                        </div>
-                      `
-                    )}`
+                            <sl-icon-button
+                              class="minus"
+                              src=${minus}
+                              style="font-size: 15px;"
+                              @click=${() =>
+                                this._removeRuleFromSelectedBranchNode(
+                                  rule.output_id
+                                )}
+                            ></sl-icon-button>
+                          </div>
+                          <!-- bottom divider -->
+                          <sl-divider
+                            class="rule-divider"
+                            style="
+                           visibility: ${this.draggedIndex == -1 ||
+                            index < this.draggedIndex ||
+                            index == this.draggedIndex
+                              ? "hidden"
+                              : "visible"};
+                            opacity: ${this.hoveredDividerIndex == index
+                              ? "100%"
+                              : "0%"};
+                            "
+                          ></sl-divider>
+                          <!--  -->
+                        `
+                      )}
+                    `
                   : html`<p class="no-node">Click + to create a rule</p>`}
               </div>`
           : html` <p class="no-node">
@@ -247,6 +288,75 @@ export class BranchNodeDetails extends LitElementWw {
         <slot></slot>
       </div>
     `;
+  }
+
+  /*
+
+
+  */
+  private _onDragStart(event: DragEvent, index: number) {
+    this.draggedIndex = index;
+
+    const stackElement = this.shadowRoot?.getElementById(
+      `horizontal-stack-${index}`
+    );
+    if (stackElement) {
+      stackElement.classList.add("dragging");
+    }
+    this.requestUpdate();
+  }
+
+  /*
+
+
+  */
+  private _onDragEnd() {
+    if (this.draggedIndex !== -1) {
+      const stackElement = this.shadowRoot?.getElementById(
+        `horizontal-stack-${this.draggedIndex}`
+      );
+      if (stackElement) {
+        stackElement.classList.remove("dragging");
+      }
+    }
+    this.draggedIndex = -1; // Reset dragged index
+    this.hoveredDividerIndex = -1; // Reset hovered divider index
+    this.requestUpdate();
+  }
+
+  /*
+
+
+  */
+  private _onDragOver(event: DragEvent, index: number) {
+    event.preventDefault();
+
+    this.hoveredDividerIndex = index;
+    this.requestUpdate();
+  }
+
+  /*
+
+
+  */
+  private _onDragLeave(event: DragEvent, index: number) {
+    event.preventDefault();
+
+    this.hoveredDividerIndex = -1;
+    this.requestUpdate();
+  }
+
+  /*
+
+
+  */
+  private _onDrop(event: DragEvent) {
+    console.log("test");
+    event.preventDefault();
+
+    this.draggedIndex = -1; // Reset dragged index
+    this.hoveredDividerIndex = -1; // Reset hovered divider index
+    this.requestUpdate();
   }
 
   /*
