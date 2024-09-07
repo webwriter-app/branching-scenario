@@ -138,6 +138,8 @@ export class NodeEditor extends LitElementWw {
 
   @query("#drawflowEditorDiv") accessor drawflowEditorDiv;
 
+  @property({ type: Boolean }) accessor nodePasted = false;
+
   /*
 
   */
@@ -211,7 +213,7 @@ export class NodeEditor extends LitElementWw {
           .handleGamebookTitle=${(event) => this.handleGamebookTitle(event)}
           .addPageNode=${(string, boolean) => this.addPageNode(string, boolean)}
           .addPopUpNode=${(string) => this.addPopUpNode(string)}
-          .addBranchNode=${() => this.addBranchNode()}
+          .addBranchNode=${(string) => this.addBranchNode(string)}
           .addDecisionPopUpTemplate=${() => this.addDecisionPopUpTemplate()}
           .showDialog=${() =>
             (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
@@ -369,7 +371,7 @@ export class NodeEditor extends LitElementWw {
 
   /*
 
-
+  TODO: this is buggy at some point
   */
   private jumpToOrigin() {
     const nodes = this.editor.drawflow.drawflow.Home.data;
@@ -423,6 +425,21 @@ export class NodeEditor extends LitElementWw {
 
 
   */
+  public pasteNode(copiedNode: DrawflowNode) {
+    this.nodePasted = true;
+    if (copiedNode.class == "page" || copiedNode.class == "origin") {
+      this.addPageNode(copiedNode.data.title, false);
+    } else if (copiedNode.class == "popup") {
+      this.addPopUpNode(copiedNode.data.title);
+    } else if (copiedNode.class == "branch") {
+      this.addBranchNode(copiedNode.data.title);
+    }
+  }
+
+  /*
+
+
+  */
   private _registerEditorEventHandlers() {
     this.editor.on("nodeDataChanged", (id) => {
       //This event only picks up data changes from elements marked with df-* in the node
@@ -447,13 +464,22 @@ export class NodeEditor extends LitElementWw {
 
     //Event listerner for creation of a node
     this.editor.on("nodeCreated", (id) => {
-      //console.log("nodeCreated", id);
-      let createdNode = this.editor.getNodeFromId(id);
-      this.changeInEditorCallback(
-        { ...this.editor.drawflow },
-        "nodeCreated",
-        createdNode
-      );
+      if (this.nodePasted == false) {
+        let createdNode = this.editor.getNodeFromId(id);
+        this.changeInEditorCallback(
+          { ...this.editor.drawflow },
+          "nodeCreated",
+          createdNode
+        );
+      } else {
+        let createdNode = this.editor.getNodeFromId(id);
+        this.changeInEditorCallback(
+          { ...this.editor.drawflow },
+          "nodePasted",
+          createdNode
+        );
+        this.nodePasted = false;
+      }
     });
 
     //Event listener for deletion of a node
@@ -627,7 +653,7 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  private addPageNode(title: string, isOrigin: boolean) {
+  public addPageNode(title: string, isOrigin: boolean) {
     const pageContent = {
       title: title,
       content: `<p>Testing Slots HTML Editing</p>`,
@@ -713,7 +739,7 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  private addPopUpNode(title: string) {
+  public addPopUpNode(title: string) {
     const popupContent = {
       title: title,
       content: `<p>Testing Slots HTML Editing</p>`,
@@ -783,9 +809,9 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  private addBranchNode() {
+  public addBranchNode(title: string) {
     const branchNodeContent = {
-      title: "Untitled Branch",
+      title: title,
       content: `<p>Testing Slots HTML Editing</p>`,
     };
 
@@ -1211,5 +1237,65 @@ export class NodeEditor extends LitElementWw {
     };
 
     return parsed;
+  }
+
+  /*
+
+  */
+  public searchNodes(value: String) {
+    let matchNodeIds = [];
+    // Loop through all nodes in drawflow
+    const nodes = this.editor.drawflow.drawflow.Home.data;
+
+    Object.values(nodes).forEach((node) => {
+      if (
+        node.data.title.toLowerCase().includes(value.toLowerCase()) ||
+        node.class.toLowerCase().includes(value.toLowerCase())
+      ) {
+        console.log(node.data.title, "includes", value);
+        matchNodeIds = [...matchNodeIds, node.id];
+      }
+    });
+
+    console.log(matchNodeIds);
+
+    return matchNodeIds;
+  }
+
+  /*
+
+  */
+  public highlightSearchedNodes(nodeIds: Array<Number>) {
+    //console.log("we in here");
+    // Loop through all nodes in drawflow
+    const nodes = this.editor.drawflow.drawflow.Home.data;
+
+    Object.values(nodes).forEach((node) => {
+      if (nodeIds.includes(node.id)) {
+        this.shadowRoot
+          ?.getElementById(`node-${(node as DrawflowNode).id}`)
+          .classList.add("searched");
+      } else {
+        this.shadowRoot
+          ?.getElementById(`node-${(node as DrawflowNode).id}`)
+          .classList.remove("searched");
+      }
+    });
+  }
+
+  /*
+  
+  
+  */
+  public removeSearchHighlightFromAllNodes() {
+    //console.log("we in here");
+    // Loop through all nodes in drawflow
+    const nodes = this.editor.drawflow.drawflow.Home.data;
+
+    Object.values(nodes).forEach((node) => {
+      this.shadowRoot
+        ?.getElementById(`node-${(node as DrawflowNode).id}`)
+        .classList.remove("searched");
+    });
   }
 }

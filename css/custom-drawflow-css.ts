@@ -203,6 +203,26 @@ export default css`
   }
 
   /* ------- */
+  /* searched nodes  */
+  /* ------- */
+
+  .drawflow-node.searched.branch,
+  .drawflow-node.searched.page,
+  .drawflow-node.searched.origin,
+  .drawflow-node.searched.popup {
+    border: 5px solid yellow;
+    -webkit-box-shadow: 0 4px 60px 6px #b0b0b0;
+    box-shadow: 0 4px 60px 6px #b0b0b0;
+  }
+
+  .drawflow-node.selected.branch.searched,
+  .drawflow-node.selected.page.searched,
+  .drawflow-node.selected.origin.searched,
+  .drawflow-node.selected.popup.searched {
+    border: 5px solid yellow !important;
+  }
+
+  /* ------- */
   /* selected nodes  */
   /* ------- */
 

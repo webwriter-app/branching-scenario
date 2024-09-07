@@ -443,4 +443,30 @@ export class GamebookContainerManager extends LitElementWw {
     element.innerHTML = info.innerHTML;
     return element;
   }
+
+  /*
+
+
+  */
+  public searchContainers(value: string): Number[] {
+    let matchContainerIds: Number[] = [];
+    const searchValue = value.toLowerCase();
+
+    this.gamebookContainers.forEach((container) => {
+      const slotElements = container.querySelectorAll("*"); // Get all child elements in the container
+
+      slotElements.forEach((element) => {
+        // Check if the tagName or textContent includes the search value
+        if (
+          element.tagName.toLowerCase().includes(searchValue) ||
+          (element.textContent &&
+            element.textContent.toLowerCase().includes(searchValue))
+        ) {
+          matchContainerIds = [...matchContainerIds, container.drawflowNodeId];
+        }
+      });
+    });
+
+    return matchContainerIds;
+  }
 }

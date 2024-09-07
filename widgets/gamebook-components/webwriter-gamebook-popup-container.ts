@@ -59,15 +59,15 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
   })
   accessor buttons;
 
+  @queryAssignedElements({
+    flatten: true,
+  })
+  accessor slotContent;
+
   @query("#dialog") accessor dialog: SlDialog;
 
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
-
-  // static shadowRootOptions = {
-  //   ...LitElement.shadowRootOptions,
-  //   delegatesFocus: true,
-  // };
 
   /* 
   
@@ -141,14 +141,6 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
   public showDialog() {
     this.style.display = "block";
     this.dialog.show();
-  }
-
-  /*
-
-
-  */
-  private generateUniqueId(prefix: string = "gamebook-id-"): string {
-    return `${prefix}${Date.now()}`;
   }
 
   /*

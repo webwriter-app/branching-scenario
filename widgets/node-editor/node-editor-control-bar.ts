@@ -73,7 +73,7 @@ export class NodeEditorControlsBar extends LitElementWw {
     isOrigin: boolean
   ) => {};
   @property({ type: Function }) accessor addPopUpNode = (title: string) => {};
-  @property({ type: Function }) accessor addBranchNode = () => {};
+  @property({ type: Function }) accessor addBranchNode = (title: string) => {};
   @property({ type: Function }) accessor addQuestionNode = () => {};
   @property({ type: Function }) accessor addDecisionPopUpTemplate = () => {};
   @property({ type: Function }) accessor showDialog = () => {};
@@ -135,7 +135,7 @@ export class NodeEditorControlsBar extends LitElementWw {
               <sl-icon slot="prefix" src=${squares}></sl-icon>
               Popup
             </sl-menu-item>
-            <sl-menu-item @click=${() => this.addBranchNode()}>
+            <sl-menu-item @click=${() => this.addBranchNode("Untitled Branch")}>
               <sl-icon slot="prefix" src=${arrowsSplit2}></sl-icon>
               Smart Branch
             </sl-menu-item>

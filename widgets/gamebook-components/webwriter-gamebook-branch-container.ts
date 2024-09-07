@@ -22,15 +22,6 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
   @property({ type: String, attribute: true, reflect: true })
   accessor incomingContainerDrawflowNodeId;
 
-  @property({ type: Number, attribute: true, reflect: false })
-  accessor tabIndex = -1;
-
-  @queryAssignedElements({
-    flatten: true,
-    selector: "webwriter-connection-button",
-  })
-  accessor connectionButtons;
-
   // Array of custom objects (rules)
   @property({ type: Array, attribute: true, reflect: true })
   accessor rules: Rule[] = [];

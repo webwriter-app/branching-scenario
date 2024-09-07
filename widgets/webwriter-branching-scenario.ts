@@ -70,6 +70,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
   accessor editorZoom = -1;
   @property({ type: Object, attribute: true })
   accessor selectedNode: DrawflowNode = NO_NODE_SELECTED;
+  @property({ type: Object, attribute: true })
+  accessor copiedNode: DrawflowNode = NO_NODE_SELECTED;
+  @property({ type: Number, attribute: true }) accessor numberOfSearchNodes = 0;
   @property({ type: String, attribute: true, reflect: true })
   accessor gamebookTitle = "Untitled Gamebook";
   @property({ type: Boolean }) accessor reactToCallbackFromNodeEditor = true;
@@ -214,11 +217,28 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   <p>Gamebook</p>
                 </div>
                 <sl-input
-                  placeholder="Search nodes"
+                  placeholder="Search for nodes and content"
                   style="padding-bottom: 15px"
+                  clearable
+                  help-text=${
+                    this.numberOfSearchNodes == 0
+                      ? ""
+                      : this.numberOfSearchNodes == 1
+                      ? `${this.numberOfSearchNodes} node found`
+                      : this.numberOfSearchNodes > 1
+                      ? `${this.numberOfSearchNodes} nodes found`
+                      : ""
+                  }
+                  @sl-input=${this._handleNodeSearch}
                 >
                   <sl-icon src=${search} slot="prefix"></sl-icon>
                 </sl-input>
+               <sl-button 
+  @click=${() => this.pasteNode()}
+  ?disabled=${this.copiedNode.id === -1}>
+  Paste Node
+</sl-button>
+
                 ${
                   this.selectedNode.id != -1
                     ? html`<div style="margin-left: 25px">
@@ -269,6 +289,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
                             );
                           }}
                         ></quick-connect-node>
+                        <sl-button
+                          id="copyNodeBtn"
+                          @click=${() => (this.copiedNode = this.selectedNode)}
+                          >Copy Node</sl-button
+                        >
                         ${this.selectedNode.class == "branch"
                           ? html` <sl-icon src=${infoSquareRounded}></sl-icon>
                               <p>
@@ -312,6 +337,58 @@ export class WebWriterBranchingScenario extends LitElementWw {
     `;
   }
 
+  /*
+
+
+  */
+  private pasteNode() {
+    if (this.copiedNode.id != -1) {
+      this.nodeEditor.pasteNode(this.copiedNode);
+    }
+  }
+
+  /*
+
+
+  */
+  private copyAndPasteContainerContents(copiedContainerId, pastedContainerId) {
+    const pastedContainer =
+      this.gamebookContainerManager._getContainerByDrawflowNodeId(
+        pastedContainerId
+      );
+    const copiedContainer =
+      this.gamebookContainerManager._getContainerByDrawflowNodeId(
+        copiedContainerId
+      );
+
+    // Iterate through each element in copiedContainer's slotContent
+    copiedContainer.slotContent.forEach((element) => {
+      // Skip elements with specific tag names
+      if (
+        element.tagName.toLowerCase() === "webwriter-connection-button" ||
+        element.tagName.toLowerCase() === "webwriter-smart-branch-button"
+      ) {
+        return; // Skip this element
+      }
+
+      // Create a new element of the same type
+      const newElement = document.createElement(element.tagName);
+
+      // Manually copy desired attributes, skipping 'id'
+      [...element.attributes].forEach((attr) => {
+        if (attr.name !== "id" && attr.name !== "contenteditable") {
+          // Skip the 'id' attribute
+          newElement.setAttribute(attr.name, attr.value);
+        }
+      });
+
+      // Copy inner content (text or children) if necessary
+      newElement.innerHTML = element.innerHTML; // or use another approach based on your needs
+
+      // Append the new element to pastedContainer's slot
+      pastedContainer.appendChild(newElement);
+    });
+  }
   /*
 
 
@@ -379,6 +456,28 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.gamebookContainerManager._createPopupContainerFromPopupNode(node);
       }
       //
+      else if (node.class == "branch") {
+        //console.log("branch node created");
+        this.gamebookContainerManager._createBranchContainer(node);
+      }
+    }
+    //
+    else if (updateType == "nodePasted") {
+      this.updateSelectedNode(this.selectedNode.id.toString());
+      if (node.class == "page" || node.class == "origin") {
+        this.gamebookContainerManager._createPageContainerFromPageNode(node);
+        this.copyAndPasteContainerContents(this.copiedNode.id, node.id);
+        this.copiedNode = NO_NODE_SELECTED;
+      }
+      //
+      else if (node.class == "popup") {
+        this.gamebookContainerManager._createPopupContainerFromPopupNode(node);
+        this.copyAndPasteContainerContents(this.copiedNode.id, node.id);
+        this.copiedNode = NO_NODE_SELECTED;
+      }
+      //TODO: copy and paste branch nodes need connection to the incoming node if they are connected
+      //TODO: think about how copying and pasting would work
+      //TODO: make cmd c cmd v work
       else if (node.class == "branch") {
         //console.log("branch node created");
         this.gamebookContainerManager._createBranchContainer(node);
@@ -618,5 +717,28 @@ export class WebWriterBranchingScenario extends LitElementWw {
     };
 
     return parsed;
+  }
+
+  /*
+  TODO: make css work with hovering css
+  */
+  private _handleNodeSearch(event: Event) {
+    const inputText = (event.target as SlInput).value;
+
+    if (inputText != "") {
+      let nodeIncludes = [
+        ...new Set([
+          ...this.nodeEditor.searchNodes(inputText),
+          ...this.gamebookContainerManager.searchContainers(inputText),
+        ]),
+      ];
+
+      this.numberOfSearchNodes = nodeIncludes.length;
+      this.nodeEditor.highlightSearchedNodes(nodeIncludes);
+    } else {
+      console.log("test");
+      this.nodeEditor.removeSearchHighlightFromAllNodes();
+      this.numberOfSearchNodes = 0;
+    }
   }
 }
