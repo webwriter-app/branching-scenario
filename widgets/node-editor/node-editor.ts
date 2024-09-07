@@ -27,6 +27,7 @@ import zoomIn from "@tabler/icons/outline/zoom-in.svg";
 import zoomOut from "@tabler/icons/outline/zoom-out.svg";
 import squares from "@tabler/icons/filled/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
+import artboard from "@tabler/icons/outline/artboard.svg";
 
 //Drawflow Imports
 import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
@@ -220,6 +221,13 @@ export class NodeEditor extends LitElementWw {
         <div id="drawflowEditorDiv" style=${styleMap(gridStyles)}></div>
         <div class="zoomControls">
           <sl-icon-button
+            id="jumpToOriginBtn"
+            src=${artboard}
+            style="font-size: 18px;"
+            @click=${() => this.jumpToOrigin()}
+          >
+          </sl-icon-button>
+          <sl-icon-button
             id="zoomInBtn"
             src=${zoomIn}
             style="font-size: 18px;"
@@ -357,6 +365,58 @@ export class NodeEditor extends LitElementWw {
 
     this.changeInEditorCallback({ ...this.editor.drawflow }, "editorCleared");
     this.addPageNode("First Page", true);
+  }
+
+  /*
+
+
+  */
+  private jumpToOrigin() {
+    const nodes = this.editor.drawflow.drawflow.Home.data;
+
+    // Find the node with class 'origin'
+    const originNode = Object.values(nodes).find(
+      (node: any) => node.class === "origin"
+    );
+
+    if (!originNode) {
+      console.error("No node with class 'origin' found.");
+      return;
+    }
+
+    // Get the origin node's coordinates
+    const originX = originNode.pos_x;
+    const originY = originNode.pos_y;
+
+    // Get the dimensions of the node (assuming width and height are available in node object)
+    //TODO: make this responsive to actual size of the origin node
+    const nodeWidth = 302;
+    const nodeHeight = 90;
+
+    // Calculate the center of the origin node
+    const originCenterX = originX + nodeWidth / 2;
+    const originCenterY = originY + nodeHeight / 2;
+
+    // Get the current dimensions of the drawflow container (viewport)
+    const rect = this.drawflowEditorDiv.getBoundingClientRect();
+    const zoom = this.editor.zoom;
+
+    // Calculate the center of the viewport (visible area)
+    const viewportCenterX = rect.width / 2;
+    const viewportCenterY = rect.height / 2;
+
+    //update translation such that the originNode is put to the center of the screen
+    this.editor.canvas_x = viewportCenterX - originCenterX;
+    this.editor.canvas_y = viewportCenterY - originCenterY;
+
+    // Apply the transformation to the drawflow container
+    const drawflowContainer = this.drawflowEditorDiv.querySelector(".drawflow");
+    if (drawflowContainer) {
+      drawflowContainer.style.transform = `translate(${this.editor.canvas_x}px, ${this.editor.canvas_y}px) scale(${zoom})`;
+    }
+
+    // Request an update to refresh the UI
+    this.requestUpdate();
   }
 
   /*
