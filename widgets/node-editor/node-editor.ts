@@ -371,7 +371,7 @@ export class NodeEditor extends LitElementWw {
 
   /*
 
-  TODO: this is buggy at some point
+
   */
   private jumpToOrigin() {
     const nodes = this.editor.drawflow.drawflow.Home.data;
@@ -386,69 +386,33 @@ export class NodeEditor extends LitElementWw {
       return;
     }
 
-    // Get the origin node's coordinates
-    // // Get the dimensions of the node (assuming width and height are available in node object)
-    // //TODO: make this responsive to actual size of the origin node
-
-    const zoom = this.editor.zoom;
-
-    const originNodeX = originNode.pos_x;
-    const originNodeY = originNode.pos_y;
+    const { zoom, canvas_x, canvas_y } = this.editor;
+    const { pos_x, pos_y } = originNode;
     const nodeWidth = 320;
     const nodeHeight = 109;
-    const originNodeCenterX = originNodeX + nodeWidth / 2;
-    const originNodeCenterY = originNodeY + nodeHeight / 2;
-
-    // console.log("nodecenter", originX, originY);
 
     const drawflowContainer = this.drawflowEditorDiv.querySelector(".drawflow");
-    // Add a border to the element
-    drawflowContainer.style.border = "2px solid black";
+    const rect = this.drawflowEditorDiv.getBoundingClientRect();
 
     if (drawflowContainer) {
-      const rect = this.drawflowEditorDiv.getBoundingClientRect();
+      // Calculate the center of the origin node
+      const originCenterX = pos_x + nodeWidth / 2;
+      const originCenterY = pos_y + nodeHeight / 2;
 
-      console.log("center viewport", rect.width / 2, rect.height / 2);
-
-      const editorPosAbsoluteX = rect.width / 2 + this.editor.canvas_x;
-      const editorPosAbsoluteY = rect.height / 2 + this.editor.canvas_y;
-
-      console.log(
-        "editor pos absolute",
-        editorPosAbsoluteX,
-        editorPosAbsoluteY
-      );
-
-      const nodePosAbsoluteX =
-        editorPosAbsoluteX -
-        rect.width / 2 +
-        originNodeCenterX * zoom +
-        (rect.width - rect.width * zoom) / 2;
-
-      const nodePosAbsoluteY =
-        editorPosAbsoluteY -
-        rect.height / 2 +
-        originNodeCenterY * zoom +
+      // Calculate the position of the editor and the node
+      const nodePosX =
+        originCenterX * zoom + canvas_x + (rect.width - rect.width * zoom) / 2;
+      const nodePosY =
+        originCenterY * zoom +
+        canvas_y +
         (rect.height - rect.height * zoom) / 2;
 
-      console.log("node pos abs", nodePosAbsoluteX, nodePosAbsoluteY);
-
-      const distanceViewportCenterNodeX = nodePosAbsoluteX - rect.width / 2;
-      const distanceViewportCenterNodeY = nodePosAbsoluteY - rect.height / 2;
-
-      console.log(
-        "distance node pos abs - center rect",
-        distanceViewportCenterNodeX,
-        distanceViewportCenterNodeY
-      );
-
-      //Calculate the required translation to center the origin node
-      this.editor.canvas_x -= distanceViewportCenterNodeX;
-      this.editor.canvas_y -= distanceViewportCenterNodeY;
+      // Calculate the translation required to center the node
+      this.editor.canvas_x -= nodePosX - rect.width / 2;
+      this.editor.canvas_y -= nodePosY - rect.height / 2;
 
       drawflowContainer.style.transform = `translate(${this.editor.canvas_x}px, ${this.editor.canvas_y}px) scale(${zoom})`;
 
-      console.log("");
       this.requestUpdate();
     }
   }
