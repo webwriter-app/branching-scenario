@@ -120,7 +120,8 @@ export class NodeEditor extends LitElementWw {
     outputClass?: String,
     outputHadConnections?: Boolean,
     importedGamebookContainers?: Array<Object>,
-    zoom?: Number
+    zoom?: Number,
+    translate?: { x: number; y: number }
   ) => {};
 
   @property({ type: Boolean }) accessor backgroundIsDragging = false;
@@ -141,6 +142,9 @@ export class NodeEditor extends LitElementWw {
 
   @property({ type: Boolean }) accessor nodePasted = false;
 
+  @property({ type: Object, attribute: true, reflect: true })
+  accessor editorPosition = { x: undefined, y: undefined };
+
   /*
 
   */
@@ -156,13 +160,32 @@ export class NodeEditor extends LitElementWw {
     this.editor.zoom_min = 0.25;
     //scale factor
     this.editor.zoom_value = 0.05;
+
     if (this.editorZoom == -1) {
       this.editor.zoom = this.backgroundScale;
     } else {
       this.editor.zoom = this.editorZoom;
+      this.onZoom(this.editorZoom, 0.2, this.editor.zoom_max);
     }
+
     this.editor.start();
     this.editor.zoom_refresh();
+
+    if (
+      this.editorPosition.x != undefined &&
+      this.editorPosition.y != undefined
+    ) {
+      this.editor.canvas_x = this.editorPosition.x;
+      this.editor.canvas_y = this.editorPosition.y;
+      console.log(this.editorPosition.x, this.editorPosition.y);
+      const drawflowContainer =
+        this.drawflowEditorDiv.querySelector(".drawflow");
+
+      if (drawflowContainer) {
+        drawflowContainer.style.transform = `translate(${this.editor.canvas_x}px, ${this.editor.canvas_y}px) scale(${this.editor.zoom})`;
+      }
+    }
+
     this._registerEditorEventHandlers();
     //this._registerBackground();
     if (this.editorContent == null) {
@@ -414,6 +437,12 @@ export class NodeEditor extends LitElementWw {
 
       drawflowContainer.style.transform = `translate(${this.editor.canvas_x}px, ${this.editor.canvas_y}px) scale(${zoom})`;
 
+      this.backgroundLastX = this.backgroundTranslateX;
+      this.backgroundLastY = this.backgroundTranslateY;
+      this.backgroundTranslateX -= nodePosX - rect.width / 2;
+      this.backgroundTranslateY -= nodePosY - rect.height / 2;
+      this.requestUpdate();
+
       this.requestUpdate();
     }
   }
@@ -656,6 +685,24 @@ export class NodeEditor extends LitElementWw {
         null,
         null,
         zoom_level
+      );
+    });
+    //
+    //event listener for when the user zoomed into the editor
+    this.editor.on("translate", ({ x, y }) => {
+      this.changeInEditorCallback(
+        { ...this.editor.drawflow },
+        "translate",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        { x, y }
       );
     });
   }

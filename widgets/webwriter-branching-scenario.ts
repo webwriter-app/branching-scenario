@@ -80,6 +80,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
   accessor dividerPos = 350;
   @property({ type: Number, attribute: true, reflect: true })
   accessor editorZoom = -1;
+  @property({ type: Object, attribute: true, reflect: true })
+  accessor editorPosition = { x: undefined, y: undefined };
 
   //registering custom elements used in the widget
   static get scopedElements() {
@@ -156,7 +158,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     outputClass,
                     outputHadConnections,
                     importedGamebookContainers,
-                    zoom
+                    zoom,
+                    translate
                   ) => {
                     this.updateGamebookContainers(
                       drawflow,
@@ -169,7 +172,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                       outputClass,
                       outputHadConnections,
                       importedGamebookContainers,
-                      zoom
+                      zoom,
+                      translate
                     );
                   }}
                   .updateSelectedNodeCallback=${(id) => {
@@ -179,6 +183,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   .handleGamebookTitle=${(event) =>
                     this.handleGamebookTitle(event)}
                   .editorZoom=${this.editorZoom}
+                  .editorPosition=${this.editorPosition}
                 >
                 </node-editor>
                 <selected-node-view-renderer
@@ -439,7 +444,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
     outputClass?: String,
     outputHadConnections?: Boolean,
     importedGamebookContainers?: Array<Object>,
-    zoom?: Number
+    zoom?: Number,
+    translate?: { x: number; y: number }
   ) {
     //
     if (updateType == "nodeRenamed") {
@@ -627,6 +633,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //
     else if (updateType == "zoom") {
       this.editorZoom = Number(zoom);
+    }
+    //
+    else if (updateType == "translate") {
+      this.editorPosition = translate;
     }
 
     this.editorContent = drawflow;
