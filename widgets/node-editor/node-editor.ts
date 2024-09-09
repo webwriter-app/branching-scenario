@@ -330,6 +330,21 @@ export class NodeEditor extends LitElementWw {
   */
   private onMouseUp() {
     this.backgroundIsDragging = false;
+
+    this.changeInEditorCallback(
+      { ...this.editor.drawflow },
+      "translate",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      { x: this.editor.canvas_x, y: this.editor.canvas_y }
+    );
   }
 
   /*
@@ -685,24 +700,6 @@ export class NodeEditor extends LitElementWw {
         null,
         null,
         zoom_level
-      );
-    });
-    //
-    //event listener for when the user zoomed into the editor
-    this.editor.on("translate", ({ x, y }) => {
-      this.changeInEditorCallback(
-        { ...this.editor.drawflow },
-        "translate",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        { x, y }
       );
     });
   }
