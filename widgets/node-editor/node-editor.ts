@@ -119,7 +119,8 @@ export class NodeEditor extends LitElementWw {
     inputClass?: String,
     outputClass?: String,
     outputHadConnections?: Boolean,
-    importedGamebookContainers?: Array<Object>
+    importedGamebookContainers?: Array<Object>,
+    zoom?: Number
   ) => {};
 
   @property({ type: Boolean }) accessor backgroundIsDragging = false;
@@ -642,6 +643,20 @@ export class NodeEditor extends LitElementWw {
         void zoomValue.offsetWidth;
         zoomValue.classList.add("fade-in-out");
       }
+
+      this.changeInEditorCallback(
+        { ...this.editor.drawflow },
+        "zoom",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        zoom_level
+      );
     });
   }
 

@@ -66,8 +66,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   @property({ type: Object, attribute: true, reflect: true })
   accessor editorContent;
-  @property({ type: Number, attribute: true, reflect: true })
-  accessor editorZoom = -1;
   @property({ type: Object, attribute: true })
   accessor selectedNode: DrawflowNode = NO_NODE_SELECTED;
   @property({ type: Object, attribute: true })
@@ -80,6 +78,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
   accessor tabIndex = -1;
   @property({ type: Number, attribute: true, reflect: true })
   accessor dividerPos = 350;
+  @property({ type: Number, attribute: true, reflect: true })
+  accessor editorZoom = -1;
 
   //registering custom elements used in the widget
   static get scopedElements() {
@@ -155,7 +155,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     inputClass,
                     outputClass,
                     outputHadConnections,
-                    importedGamebookContainers
+                    importedGamebookContainers,
+                    zoom
                   ) => {
                     this.updateGamebookContainers(
                       drawflow,
@@ -167,7 +168,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                       inputClass,
                       outputClass,
                       outputHadConnections,
-                      importedGamebookContainers
+                      importedGamebookContainers,
+                      zoom
                     );
                   }}
                   .updateSelectedNodeCallback=${(id) => {
@@ -176,6 +178,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   .gamebookTitle=${this.gamebookTitle}
                   .handleGamebookTitle=${(event) =>
                     this.handleGamebookTitle(event)}
+                  .editorZoom=${this.editorZoom}
                 >
                 </node-editor>
                 <selected-node-view-renderer
@@ -435,7 +438,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
     inputClass?: String,
     outputClass?: String,
     outputHadConnections?: Boolean,
-    importedGamebookContainers?: Array<Object>
+    importedGamebookContainers?: Array<Object>,
+    zoom?: Number
   ) {
     //
     if (updateType == "nodeRenamed") {
@@ -619,6 +623,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.gamebookContainerManager.importContainers(
         importedGamebookContainers
       );
+    }
+    //
+    else if (updateType == "zoom") {
+      this.editorZoom = Number(zoom);
     }
 
     this.editorContent = drawflow;
