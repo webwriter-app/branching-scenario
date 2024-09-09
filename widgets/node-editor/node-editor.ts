@@ -409,7 +409,6 @@ export class NodeEditor extends LitElementWw {
   }
 
   /*
-  TODO: background is not moving with it
   TODO: animation would be nice
   */
   private jumpToOrigin() {
@@ -434,6 +433,9 @@ export class NodeEditor extends LitElementWw {
     const rect = this.drawflowEditorDiv.getBoundingClientRect();
 
     if (drawflowContainer) {
+      // Add the transition class for smooth animation
+      drawflowContainer.classList.add("smooth-transition");
+      this.drawflowEditorDiv.classList.add("smooth-background-transition");
       // Calculate the center of the origin node
       const originCenterX = pos_x + nodeWidth / 2;
       const originCenterY = pos_y + nodeHeight / 2;
@@ -458,7 +460,11 @@ export class NodeEditor extends LitElementWw {
       this.backgroundTranslateY -= nodePosY - rect.height / 2;
       this.requestUpdate();
 
-      this.requestUpdate();
+      // // Optionally, remove the transition class after the animation is done
+      setTimeout(() => {
+        drawflowContainer.classList.remove("smooth-transition");
+        this.drawflowEditorDiv.classList.remove("smooth-background-transition");
+      }, 350); // Adjust the timeout duration to match your animation duration
     }
   }
 

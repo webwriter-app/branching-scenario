@@ -5,8 +5,12 @@ export default css`
   /*  Base Layouting Nodes  */
   /* ------- */
 
-  .transitionOrigin {
-    transition: transform 0.5s ease; /* Adjust duration and easing as needed */
+  .smooth-transition {
+    transition: transform 0.4s ease !important; /* Adjust duration and easing as needed */
+  }
+
+  .smooth-background-transition {
+    transition: background-position 0.4s ease; /* Adjust duration and easing as needed */
   }
 
   /* .drawflow {
