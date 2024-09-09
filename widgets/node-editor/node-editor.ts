@@ -701,6 +701,21 @@ export class NodeEditor extends LitElementWw {
         null,
         zoom_level
       );
+
+      this.changeInEditorCallback(
+        { ...this.editor.drawflow },
+        "translate",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        { x: this.editor.canvas_x, y: this.editor.canvas_y }
+      );
     });
   }
 
