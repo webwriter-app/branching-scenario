@@ -27,6 +27,9 @@ export class SplitView extends LitElementWw {
   @state() accessor isCollapsed = false;
   @state() accessor previousHeight = 350;
 
+  //access nodes in the internal component DOM.
+  @property({ attribute: false }) accessor getDividerPos = (Number) => {};
+
   // Registering custom elements used in the widget
   static get scopedElements() {
     return {
@@ -98,9 +101,19 @@ export class SplitView extends LitElementWw {
         position: absolute;
         right: 10px; /* Position the button on the right side */
       }
+
+      .icon {
+        color: #52525b;
+      }
+      .dragging {
+        color: #0084c7;
+      }
     `;
   }
 
+  /*
+  
+  */
   protected firstUpdated(_changedProperties: PropertyValues) {
     this.updateComplete.then(() => {
       const splitPanel = this.shadowRoot.querySelector(
@@ -125,6 +138,9 @@ export class SplitView extends LitElementWw {
     });
   }
 
+  /*
+  
+  */
   private onMouseDown(event: MouseEvent) {
     if (this.isCollapsed) return; // Prevent dragging when collapsed
 
@@ -152,6 +168,9 @@ export class SplitView extends LitElementWw {
     this.removeEventListener("mouseup", this.onMouseUp);
   }
 
+  /*
+  
+  */
   private onMouseMove(event: MouseEvent) {
     if (!this.isDragging) return;
 
@@ -176,13 +195,20 @@ export class SplitView extends LitElementWw {
 
     // Update the dividerPosition property to reflect the new height
     this.dividerPosition = newHeight;
+    this.getDividerPos(this.dividerPosition);
   }
 
+  /*
+  
+  */
   private itemEndHeight() {
     const itemEnd = this.shadowRoot.querySelector(".itemEnd") as HTMLElement;
     return itemEnd ? itemEnd.getBoundingClientRect().height : 0;
   }
 
+  /*
+  
+  */
   private adjustSplitPanelHeight() {
     const splitPanel = this.shadowRoot.querySelector(
       ".splitPanel"
@@ -192,6 +218,9 @@ export class SplitView extends LitElementWw {
     splitPanel.style.height = `${newTotalHeight}px`;
   }
 
+  /*
+  
+  */
   private toggleCollapse() {
     const itemStart = this.shadowRoot.querySelector(
       ".itemStart"
@@ -219,12 +248,18 @@ export class SplitView extends LitElementWw {
     this.adjustSplitPanelHeight();
   }
 
+  /*
+  
+  */
   render() {
     return html`
       <div class="splitPanel">
         <div class="itemStart"><slot name="start"></slot></div>
         <div class="divider" @mousedown=${this.onMouseDown}>
-          <sl-icon src=${gripHorizontal}></sl-icon>
+          <sl-icon
+            src=${gripHorizontal}
+            class="${this.isDragging ? "dragging" : "icon"}"
+          ></sl-icon>
           <sl-icon-button
             class="collapse-button"
             @click=${this.toggleCollapse}

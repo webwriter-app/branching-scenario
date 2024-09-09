@@ -370,8 +370,8 @@ export class NodeEditor extends LitElementWw {
   }
 
   /*
-
-
+  TODO: background is not moving with it
+  TODO: animation would be nice
   */
   private jumpToOrigin() {
     const nodes = this.editor.drawflow.drawflow.Home.data;

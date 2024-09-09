@@ -78,6 +78,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Boolean }) accessor reactToCallbackFromNodeEditor = true;
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
+  @property({ type: Number, attribute: true, reflect: true })
+  accessor dividerPos = 350;
 
   //registering custom elements used in the widget
   static get scopedElements() {
@@ -135,7 +137,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
       <!-- <button @click=${() => this.exportContainersAsString()}></button> -->
       ${this.isContentEditable
         ? html`
-              <split-view>
+              <split-view .getDividerPos=${(pos) =>
+                this.serializeDividerPos(pos)} .dividerPosition=${
+            this.dividerPos
+          } >
                 <node-editor
                   slot="start"
                   .selectedNode=${this.selectedNode}
@@ -740,5 +745,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.nodeEditor.removeSearchHighlightFromAllNodes();
       this.numberOfSearchNodes = 0;
     }
+  }
+
+  /*
+  
+  */
+  private serializeDividerPos(pos: number) {
+    this.dividerPos = pos;
   }
 }

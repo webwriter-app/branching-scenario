@@ -5,6 +5,10 @@ export default css`
   /*  Base Layouting Nodes  */
   /* ------- */
 
+  .transitionOrigin {
+    transition: transform 0.5s ease; /* Adjust duration and easing as needed */
+  }
+
   /* .drawflow {
     border: 1.5px solid blue;
   } */
