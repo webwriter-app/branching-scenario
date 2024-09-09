@@ -51,6 +51,8 @@ export default css`
   .zoomControls {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-items: center;
 
     position: absolute;
     bottom: 10px;

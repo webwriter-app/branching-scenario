@@ -253,6 +253,8 @@ export class NodeEditor extends LitElementWw {
             @click=${() => this.jumpToOrigin()}
           >
           </sl-icon-button>
+          <sl-divider vertical style="height: 20px; margin: 2px;"></sl-divider>
+
           <sl-icon-button
             id="zoomInBtn"
             src=${zoomIn}
