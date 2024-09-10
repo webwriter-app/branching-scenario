@@ -353,13 +353,51 @@ export class NodeEditor extends LitElementWw {
 
   */
   private onMouseLeave() {
-    //console.log("test");
-    this.backgroundIsDragging = false;
+    if (this.backgroundIsDragging) {
+      this.backgroundIsDragging = false;
 
-    // If dragging is in progress, stop the dragging action
-    this.editor.drag_point = false;
-    this.editor.drag = false;
-    //console.log("Node dragging stopped");
+      // If dragging is in progress, stop the dragging action
+      this.editor.drag_point = false;
+      this.editor.drag = false;
+
+      // Find the Drawflow container (replace with the correct selector if needed)
+      const editorElement = this.drawflowEditorDiv.querySelector(".drawflow"); // Adjust the selector to target the correct element
+
+      if (editorElement) {
+        // Create and dispatch a fake mouseup event
+        const fakeMouseUpEvent = new MouseEvent("mouseup", {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+        });
+
+        editorElement.dispatchEvent(fakeMouseUpEvent);
+
+        // Get the computed style of the element to extract the transform property
+        const computedStyle = window.getComputedStyle(editorElement);
+        const transform = computedStyle.transform;
+
+        if (transform && transform !== "none") {
+          // Parse the transform matrix values
+          const matrixValues = transform.match(/matrix\((.+)\)/);
+
+          if (matrixValues && matrixValues[1]) {
+            const values = matrixValues[1].split(", ").map(parseFloat);
+
+            // The translateX and translateY values are in the 4th and 5th positions in the matrix (index 4 and 5)
+            const translateX = values[4];
+            const translateY = values[5];
+
+            this.editor.canvas_x = translateX;
+            this.editor.canvas_y = translateY;
+
+            editorElement.style.transform = `translate(${this.editor.canvas_x}px, ${this.editor.canvas_y}px) scale(${this.editor.zoom})`;
+          }
+        } else {
+          console.log("No transform applied.");
+        }
+      }
+    }
   }
 
   /*
@@ -742,6 +780,8 @@ export class NodeEditor extends LitElementWw {
         { x: this.editor.canvas_x, y: this.editor.canvas_y }
       );
     });
+
+    this.editor.on("translate", ({ x, y }) => {});
   }
 
   /*
