@@ -150,7 +150,6 @@ export class NodeEditor extends LitElementWw {
 
   */
   protected firstUpdated(_changedProperties: any): void {
-    console.log("firstUpdated nodeEditor");
     this.editor = new Drawflow(this.drawflowEditorDiv);
 
     this.editor.reroute = false;
@@ -178,7 +177,7 @@ export class NodeEditor extends LitElementWw {
     ) {
       this.editor.canvas_x = this.editorPosition.x;
       this.editor.canvas_y = this.editorPosition.y;
-      console.log(this.editorPosition.x, this.editorPosition.y);
+
       const drawflowContainer =
         this.drawflowEditorDiv.querySelector(".drawflow");
 
@@ -203,20 +202,20 @@ export class NodeEditor extends LitElementWw {
   */
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener("mousemove", this.onMouseMove);
-    this.addEventListener("mousedown", this.onMouseDown);
-    this.addEventListener("mouseup", this.onMouseUp);
-    this.addEventListener("mouseleave", this.onMouseLeave);
+    // this.addEventListener("mousemove", this.onMouseMove);
+    // this.addEventListener("mousedown", this.onMouseDown);
+    // this.addEventListener("mouseup", this.onMouseUp);
+    // this.addEventListener("mouseleave", this.onMouseLeave);
   }
 
   /*
 
   */
   disconnectedCallback() {
-    this.removeEventListener("mousemove", this.onMouseMove);
-    this.removeEventListener("mousedown", this.onMouseDown);
-    this.removeEventListener("mouseup", this.onMouseUp);
-    this.removeEventListener("mouseleave", this.onMouseLeave);
+    // this.removeEventListener("mousemove", this.onMouseMove);
+    // this.removeEventListener("mousedown", this.onMouseDown);
+    // this.removeEventListener("mouseup", this.onMouseUp);
+    // this.removeEventListener("mouseleave", this.onMouseLeave);
     super.disconnectedCallback();
   }
 
@@ -245,7 +244,14 @@ export class NodeEditor extends LitElementWw {
         >
         </node-editor-controls-bar>
 
-        <div id="drawflowEditorDiv" style=${styleMap(gridStyles)}></div>
+        <div
+          id="drawflowEditorDiv"
+          style=${styleMap(gridStyles)}
+          @mousemove=${this.onMouseMove}
+          @mousedown=${this.onMouseDown}
+          @mouseup=${this.onMouseUp}
+          @mouseleave=${this.onMouseLeave}
+        ></div>
         <div class="zoomControls">
           <sl-icon-button
             id="jumpToOriginBtn"

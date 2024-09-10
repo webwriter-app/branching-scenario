@@ -513,6 +513,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
     //
     else if (updateType == "nodeCreated") {
+      this.focus();
       this.updateSelectedNode(this.selectedNode.id.toString());
       if (node.class == "page" || node.class == "origin") {
         this.gamebookContainerManager._createPageContainerFromPageNode(node);
@@ -552,6 +553,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
     //
     else if (updateType == "nodeRemoved") {
+      this.focus();
       this.gamebookContainerManager._deleteGamebookContainersById(
         removedNodeId
       );
