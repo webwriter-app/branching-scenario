@@ -34,6 +34,7 @@ import squares from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import book from "@tabler/icons/outline/book.svg";
 import infoSquareRounded from "@tabler/icons/filled/info-square-rounded.svg";
+import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
 
 const NO_NODE_SELECTED: DrawflowNode = {
   id: -1,
@@ -188,7 +189,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     outputHadConnections,
                     importedGamebookContainers,
                     zoom,
-                    translate
+                    translate,
+                    changeOrigin
                   ) => {
                     this.updateGamebookContainers(
                       drawflow,
@@ -202,7 +204,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                       outputHadConnections,
                       importedGamebookContainers,
                       zoom,
-                      translate
+                      translate,
+                      changeOrigin
                     );
                   }}
                   .updateSelectedNodeCallback=${(id) => {
@@ -277,10 +280,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   <sl-icon src=${search} slot="prefix"></sl-icon>
                 </sl-input>
                <sl-button 
-  @click=${() => this.pasteNode()}
-  ?disabled=${this.copiedNode.id === -1}>
-  Paste Node
-</sl-button>
+                  @click=${() => this.pasteNode()}
+                  ?disabled=${this.copiedNode.id === -1}>
+                  Paste Node
+                </sl-button>
 
                 ${
                   this.selectedNode.id != -1
@@ -335,6 +338,18 @@ export class WebWriterBranchingScenario extends LitElementWw {
                         <sl-button id="copyNodeBtn" @click=${this.copyNode}
                           >Copy Node</sl-button
                         >
+                        ${this.selectedNode.class == "page" ||
+                        this.selectedNode.class == "origin"
+                          ? html` <sl-button
+                              id="makeNodeOriginBtn"
+                              @click=${() =>
+                                this.makeNodeOrigin(this.selectedNode.id)}
+                              ?disabled=${this.selectedNode.class == "origin"
+                                ? true
+                                : false}
+                              >Make Node Origin</sl-button
+                            >`
+                          : null}
                         ${this.selectedNode.class == "branch"
                           ? html` <sl-icon src=${infoSquareRounded}></sl-icon>
                               <p>
@@ -481,7 +496,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
     outputHadConnections?: Boolean,
     importedGamebookContainers?: Array<Object>,
     zoom?: Number,
-    translate?: { x: number; y: number }
+    translate?: { x: number; y: number },
+    changeOrigin?: { oldId: number; newId: number }
   ) {
     //
     if (updateType == "nodeRenamed") {
@@ -674,6 +690,20 @@ export class WebWriterBranchingScenario extends LitElementWw {
     else if (updateType == "translate") {
       this.editorPosition = translate;
     }
+    //
+    else if (updateType == "changeOrigin") {
+      const originPageContainer =
+        this.gamebookContainerManager._getContainerByDrawflowNodeId(
+          changeOrigin.oldId
+        );
+      (originPageContainer as WebWriterGamebookPageContainer).originPage = 0;
+
+      const newOriginPageContainer =
+        this.gamebookContainerManager._getContainerByDrawflowNodeId(
+          changeOrigin.newId
+        );
+      (newOriginPageContainer as WebWriterGamebookPageContainer).originPage = 1;
+    }
 
     this.editorContent = drawflow;
     this.requestUpdate();
@@ -806,5 +836,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   private serializeDividerPos(pos: number) {
     this.dividerPos = pos;
+  }
+
+  /*
+  
+  */
+  private makeNodeOrigin(selectedNodeId: number) {
+    this.nodeEditor.makeNodeOrigin(selectedNodeId);
+
+    this.requestUpdate();
   }
 }

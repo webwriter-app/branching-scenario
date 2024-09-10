@@ -121,7 +121,8 @@ export class NodeEditor extends LitElementWw {
     outputHadConnections?: Boolean,
     importedGamebookContainers?: Array<Object>,
     zoom?: Number,
-    translate?: { x: number; y: number }
+    translate?: { x: number; y: number },
+    changeOrigin?: { oldId: number; newId: number }
   ) => {};
 
   @property({ type: Boolean }) accessor backgroundIsDragging = false;
@@ -354,6 +355,7 @@ export class NodeEditor extends LitElementWw {
   */
   private onMouseLeave() {
     if (this.backgroundIsDragging) {
+      console.log("on mouse leave");
       this.backgroundIsDragging = false;
 
       // If dragging is in progress, stop the dragging action
@@ -466,6 +468,8 @@ export class NodeEditor extends LitElementWw {
 
     const { zoom, canvas_x, canvas_y } = this.editor;
     const { pos_x, pos_y } = originNode;
+
+    //TODO: make adaptive to dynamic width and height
     const nodeWidth = 320;
     const nodeHeight = 109;
 
@@ -1432,5 +1436,92 @@ export class NodeEditor extends LitElementWw {
         ?.getElementById(`node-${(node as DrawflowNode).id}`)
         .classList.remove("searched");
     });
+  }
+
+  /*
+  
+  
+  */
+  public makeNodeOrigin(nodeId: number) {
+    let originNodeId = -1;
+
+    Object.values(this.editor.drawflow.drawflow.Home.data).forEach((node) => {
+      if (node.class == "origin") {
+        const originNodeDiv = this.shadowRoot?.getElementById(
+          `node-${node.id}`
+        );
+
+        originNodeId = node.id;
+        const badgeElement = originNodeDiv.querySelector(".badge");
+        badgeElement.remove();
+
+        const originNodeContentDiv = originNodeDiv.querySelector(".content");
+        const nameLabel = document.createElement("p");
+        nameLabel.classList.add("input-label");
+        nameLabel.textContent = "Page"; // Set the text content of the label
+        originNodeContentDiv.appendChild(nameLabel);
+
+        originNodeDiv.classList.remove("origin");
+        originNodeDiv.classList.add("page");
+
+        node.html = originNodeDiv.querySelector(".container").outerHTML;
+        node.class = "page";
+      }
+
+      if (node.id == nodeId) {
+        const nodeDiv = this.shadowRoot?.getElementById(`node-${nodeId}`);
+
+        if (nodeDiv) {
+          // Find the element with the class "input-label"
+          const inputLabelElement = nodeDiv.querySelector(".input-label");
+
+          // If the element exists, remove it from the DOM
+          if (inputLabelElement) {
+            inputLabelElement.remove();
+
+            const contentDiv = nodeDiv.querySelector(".content");
+
+            const badge = document.createElement("div");
+            badge.classList.add("badge");
+
+            const arrowIcon = document.createElement("sl-icon") as SlIcon;
+            arrowIcon.setAttribute("src", circleArrowRight);
+            badge.appendChild(arrowIcon);
+
+            const nameLabel = document.createElement("p");
+            nameLabel.textContent = "Start Page";
+            badge.appendChild(nameLabel);
+
+            contentDiv.appendChild(badge);
+
+            nodeDiv.classList.remove("page");
+            nodeDiv.classList.add("origin");
+          }
+        }
+
+        node.html = nodeDiv.querySelector(".container").outerHTML;
+        node.class = "origin";
+      }
+    });
+
+    console.log(this.editor.drawflow);
+
+    this.changeInEditorCallback(
+      { ...this.editor.drawflow },
+      "changeOrigin",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      { oldId: originNodeId, newId: nodeId }
+    );
+
+    this.requestUpdate();
   }
 }
