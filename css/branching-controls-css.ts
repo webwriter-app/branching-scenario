@@ -30,7 +30,6 @@ export default css`
     flex-direction: row;
     justify-content: start;
     align-items: center; /* Center items vertically */
-
     margin-right: auto; // Push this item to the start
   }
 

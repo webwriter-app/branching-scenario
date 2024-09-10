@@ -54,9 +54,9 @@ export class WebWriterGamebook extends LitElementWw {
   static styles = [styles];
 
   @state() accessor currentPageId: Number;
-
   @property({ type: String }) accessor gamebookTitle;
   @property({ type: String }) accessor pageTitle;
+  @property({ type: Number }) accessor startPage;
 
   @queryAssignedElements({
     flatten: true,

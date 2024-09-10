@@ -26,6 +26,7 @@ import {
   SlDropdown,
   SlIcon,
   SlInput,
+  SlButtonGroup,
 } from "@shoelace-style/shoelace";
 
 //@tabler icons
@@ -37,6 +38,9 @@ import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 import directions from "@tabler/icons/outline/directions.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
+import playerPlay from "@tabler/icons/filled/player-play.svg";
+import playerSkipForward from "@tabler/icons/filled/player-skip-forward.svg";
+import playerStop from "@tabler/icons/filled/player-stop.svg";
 
 @customElement("node-edtior-controls-bar")
 export class NodeEditorControlsBar extends LitElementWw {
@@ -44,6 +48,7 @@ export class NodeEditorControlsBar extends LitElementWw {
   static get scopedElements() {
     return {
       "sl-button": SlButton,
+      "sl-button-group": SlButtonGroup,
       "sl-textarea": SlTextarea,
       "sl-divider": SlDivider,
       "sl-dialog": SlDialog,
@@ -60,7 +65,8 @@ export class NodeEditorControlsBar extends LitElementWw {
   //import CSS
   static styles = [styles];
 
-  @state() accessor inPreviewMode = false;
+  @property({ type: Boolean, reflect: true }) accessor inPreviewMode = false;
+
   @property({ type: String }) accessor gamebookTitle = "";
 
   //
@@ -78,10 +84,30 @@ export class NodeEditorControlsBar extends LitElementWw {
   @property({ type: Function }) accessor addDecisionPopUpTemplate = () => {};
   @property({ type: Function }) accessor showDialog = () => {};
 
-  protected render() {
+  @property({ type: Object, attribute: true }) accessor selectedNode;
+
+  render() {
+    if (!this.inPreviewMode) {
+      return this.renderInNodeEditor();
+    } else {
+      return this.renderInPreviewMode();
+    }
+  }
+
+  renderInNodeEditor() {
     return html`
       <div class="controls">
         <div class="first-item">
+          <!-- <sl-button-group label="Example Button Group">
+            <sl-button @click=${() => this.switchToPreviewMode()}>
+              <sl-icon slot="prefix" src=${playerPlay}></sl-icon>
+            </sl-button>
+            <sl-button
+              @click=${() => this.switchToPreviewMode(this.selectedNode.id)}
+              ><sl-icon slot="prefix" src=${playerSkipForward}></sl-icon> from
+              here</sl-button
+            >
+          </sl-button-group> -->
           <sl-input
             id="gamebookTitle"
             rows="1"
@@ -95,26 +121,6 @@ export class NodeEditorControlsBar extends LitElementWw {
           </sl-input>
         </div>
 
-        <!-- <sl-dropdown
-          style=${this.inPreviewMode ? "display: none;" : "display: block;"}
-        >
-          <sl-button slot="trigger">
-            Import
-            <sl-icon src=${schema} slot="prefix"></sl-icon>
-          </sl-button>
-          <sl-menu style="width: 180px;">
-            <sl-menu-item @click=${() => console.log(this.importExample(0))}
-              ><sl-icon slot="prefix" src=${questionMark}></sl-icon>
-              Quiz Example
-            </sl-menu-item>
-          </sl-menu>
-        </sl-dropdown>
-        <sl-divider
-          vertical
-          style=${this.inPreviewMode
-          ? "display: none;"
-          : "display: block; height: 30px;"}
-        ></sl-divider>-->
         <sl-dropdown
           placement="bottom-end"
           style=${this.inPreviewMode ? "display: none;" : "display: block;"}
@@ -164,6 +170,17 @@ export class NodeEditorControlsBar extends LitElementWw {
     `;
   }
 
+  renderInPreviewMode() {
+    return html`
+      <div class="controls">
+        <div class="first-item">
+          <sl-button @click=${() => this.switchToNodeEditor()}>
+            <sl-icon slot="prefix" src=${playerStop}></sl-icon>
+          </sl-button>
+        </div>
+      </div>
+    `;
+  }
   /*
 
 
@@ -171,4 +188,31 @@ export class NodeEditorControlsBar extends LitElementWw {
   private textAreaInputChanged(event) {
     this.handleGamebookTitle(event);
   }
+
+  /*
+
+
+  */
+  // private switchToPreviewMode(containerId: Number = undefined) {
+  //   const event = new CustomEvent("switchToPreviewMode", {
+  //     detail: {
+  //       startFrom: containerId,
+  //     },
+  //     bubbles: true, // Allows the event to bubble up through the DOM
+  //     composed: true, // Allows the event to pass through shadow DOM boundaries
+  //   });
+  //   this.dispatchEvent(event);
+  // }
+
+  // /*
+
+  // */
+  // private switchToNodeEditor() {
+  //   const event = new CustomEvent("switchToNodeEditor", {
+  //     detail: {},
+  //     bubbles: true, // Allows the event to bubble up through the DOM
+  //     composed: true, // Allows the event to pass through shadow DOM boundaries
+  //   });
+  //   this.dispatchEvent(event);
+  // }
 }

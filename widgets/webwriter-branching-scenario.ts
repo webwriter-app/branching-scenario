@@ -3,6 +3,7 @@ import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
   property,
+  state,
   query,
   queryAssignedElements,
 } from "lit/decorators.js";
@@ -35,6 +36,7 @@ import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import book from "@tabler/icons/outline/book.svg";
 import infoSquareRounded from "@tabler/icons/filled/info-square-rounded.svg";
 import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
+import { NodeEditorControlsBar } from "./node-editor/node-editor-control-bar";
 
 const NO_NODE_SELECTED: DrawflowNode = {
   id: -1,
@@ -85,6 +87,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Object, attribute: true, reflect: true })
   accessor editorPosition = { x: undefined, y: undefined };
 
+  @state() accessor inPreviewMode = false;
+  @property({ type: Number, attribute: true, reflect: false })
+  accessor startContainerIdPreview = undefined;
+
   //registering custom elements used in the widget
   static get scopedElements() {
     return {
@@ -92,6 +98,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "gamebook-container-manager": GamebookContainerManager,
       "selected-node-view-renderer": SelectedNodeViewRenderer,
       "node-editor": NodeEditor,
+      "node-editor-controls-bar": NodeEditorControlsBar,
       "quick-connect-node": QuickConnectNode,
       "output-connection-control": OutputConnectionControl,
       "sl-input": SlInput,
@@ -130,18 +137,34 @@ export class WebWriterBranchingScenario extends LitElementWw {
         event.preventDefault();
       }
     });
+
+    // this.addEventListener("switchToPreviewMode", (event) => {
+    //   this.switchToPreviewMode((event as CustomEvent).detail.startFrom);
+    // });
+
+    // this.addEventListener("switchToNodeEditor", (event) => {
+    //   this.switchToNodeEditor();
+    // });
   }
 
+  /*
+  
+  */
   connectedCallback() {
     super.connectedCallback();
     window.addEventListener("keydown", this._handleKeydown);
   }
-
+  /*
+  
+  */
   disconnectedCallback() {
     super.disconnectedCallback();
     window.removeEventListener("keydown", this._handleKeydown);
   }
 
+  /*
+  
+  */
   private _handleKeydown = (event: KeyboardEvent) => {
     // Check if CMD (Mac) or CTRL (Windows/Linux) and F key is pressed
     if ((event.metaKey || event.ctrlKey) && event.key === "f") {
@@ -169,10 +192,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
       <!-- <button @click=${() => this.exportContainersAsString()}></button> -->
       ${this.isContentEditable
         ? html`
-              <split-view .getDividerPos=${(pos) =>
-                this.serializeDividerPos(pos)} .dividerPosition=${
-            this.dividerPos
-          } >
+           <split-view .getDividerPos=${(pos) => this.serializeDividerPos(pos)} 
+                .dividerPosition=${this.dividerPos} >
                 <node-editor
                   slot="start"
                   .selectedNode=${this.selectedNode}
@@ -707,7 +728,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       (newOriginPageContainer as WebWriterGamebookPageContainer).originPage = 1;
     }
 
-    this.editorContent = drawflow;
+    this.editorContent = { ...drawflow };
     this.requestUpdate();
   }
 
@@ -848,4 +869,19 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     this.requestUpdate();
   }
+
+  // /*
+
+  // */
+  // private switchToPreviewMode(containerId: Number = undefined) {
+  //   this.startContainerIdPreview = containerId;
+  //   this.inPreviewMode = true;
+  // }
+
+  // /*
+
+  // */
+  // private switchToNodeEditor() {
+  //   this.inPreviewMode = false;
+  // }
 }

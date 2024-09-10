@@ -202,20 +202,20 @@ export class NodeEditor extends LitElementWw {
   */
   connectedCallback() {
     super.connectedCallback();
-    // this.addEventListener("mousemove", this.onMouseMove);
-    // this.addEventListener("mousedown", this.onMouseDown);
-    // this.addEventListener("mouseup", this.onMouseUp);
-    // this.addEventListener("mouseleave", this.onMouseLeave);
+    this.addEventListener("mousemove", this.onMouseMove);
+    this.addEventListener("mousedown", this.onMouseDown);
+    this.addEventListener("mouseup", this.onMouseUp);
+    this.addEventListener("mouseleave", this.onMouseLeave);
   }
 
   /*
 
   */
   disconnectedCallback() {
-    // this.removeEventListener("mousemove", this.onMouseMove);
-    // this.removeEventListener("mousedown", this.onMouseDown);
-    // this.removeEventListener("mouseup", this.onMouseUp);
-    // this.removeEventListener("mouseleave", this.onMouseLeave);
+    this.removeEventListener("mousemove", this.onMouseMove);
+    this.removeEventListener("mousedown", this.onMouseDown);
+    this.removeEventListener("mouseup", this.onMouseUp);
+    this.removeEventListener("mouseleave", this.onMouseLeave);
     super.disconnectedCallback();
   }
 
@@ -241,17 +241,11 @@ export class NodeEditor extends LitElementWw {
           .addDecisionPopUpTemplate=${() => this.addDecisionPopUpTemplate()}
           .showDialog=${() =>
             (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
+          .selectedNode=${this.selectedNode}
         >
         </node-editor-controls-bar>
 
-        <div
-          id="drawflowEditorDiv"
-          style=${styleMap(gridStyles)}
-          @mousemove=${this.onMouseMove}
-          @mousedown=${this.onMouseDown}
-          @mouseup=${this.onMouseUp}
-          @mouseleave=${this.onMouseLeave}
-        ></div>
+        <div id="drawflowEditorDiv" style=${styleMap(gridStyles)}></div>
         <div class="zoomControls">
           <sl-icon-button
             id="jumpToOriginBtn"
@@ -340,6 +334,7 @@ export class NodeEditor extends LitElementWw {
   private onMouseUp() {
     this.backgroundIsDragging = false;
 
+    //console.log(this.editor.pos_x, this.editor.pos_y);
     this.changeInEditorCallback(
       { ...this.editor.drawflow },
       "translate",
@@ -361,7 +356,6 @@ export class NodeEditor extends LitElementWw {
   */
   private onMouseLeave() {
     if (this.backgroundIsDragging) {
-      console.log("on mouse leave");
       this.backgroundIsDragging = false;
 
       // If dragging is in progress, stop the dragging action
@@ -516,6 +510,9 @@ export class NodeEditor extends LitElementWw {
         this.drawflowEditorDiv.classList.remove("smooth-background-transition");
       }, 350); // Adjust the timeout duration to match your animation duration
 
+      // console.log("here");
+      // console.log({ x: this.editor.canvas_x, y: this.editor.canvas_y });
+
       this.changeInEditorCallback(
         { ...this.editor.drawflow },
         "translate",
@@ -608,7 +605,16 @@ export class NodeEditor extends LitElementWw {
 
     //Event listener for when a node got moved
     this.editor.on("nodeMoved", (id) => {
+      const nodes = this.editor.drawflow.drawflow.Home.data;
+
+      Object.values(nodes).forEach((node) => {
+        if (node.id == id) {
+          console.log(node.pos_x, node.pos_y);
+        }
+      });
+
       let movedNode = this.editor.getNodeFromId(id);
+
       this.changeInEditorCallback(
         { ...this.editor.drawflow },
         "nodeMoved",
@@ -791,7 +797,7 @@ export class NodeEditor extends LitElementWw {
       );
     });
 
-    this.editor.on("translate", ({ x, y }) => {});
+    //this.editor.on("translate", ({ x, y }) => {});
   }
 
   /*
@@ -1397,12 +1403,10 @@ export class NodeEditor extends LitElementWw {
         node.data.title.toLowerCase().includes(value.toLowerCase()) ||
         node.class.toLowerCase().includes(value.toLowerCase())
       ) {
-        console.log(node.data.title, "includes", value);
+        // console.log(node.data.title, "includes", value);
         matchNodeIds = [...matchNodeIds, node.id];
       }
     });
-
-    console.log(matchNodeIds);
 
     return matchNodeIds;
   }
@@ -1509,8 +1513,6 @@ export class NodeEditor extends LitElementWw {
         node.class = "origin";
       }
     });
-
-    console.log(this.editor.drawflow);
 
     this.changeInEditorCallback(
       { ...this.editor.drawflow },
