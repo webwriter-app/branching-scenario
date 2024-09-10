@@ -63,6 +63,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @query("sl-split-panel") accessor splitPanel;
   @query("#widget") accessor widgetDiv;
   @query("selected-node-view-renderer") accessor selectedNodeViewRenderer;
+  @query("#searchInput") accessor searchInput;
 
   @property({ type: Object, attribute: true, reflect: true })
   accessor editorContent;
@@ -129,6 +130,34 @@ export class WebWriterBranchingScenario extends LitElementWw {
       }
     });
   }
+
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener("keydown", this._handleKeydown);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener("keydown", this._handleKeydown);
+  }
+
+  private _handleKeydown = (event: KeyboardEvent) => {
+    // Check if CMD (Mac) or CTRL (Windows/Linux) and F key is pressed
+    if ((event.metaKey || event.ctrlKey) && event.key === "f") {
+      event.preventDefault(); // Prevent the default browser find functionality
+      this.searchInput.focus(); // Focus the sl-input element
+    }
+    //
+    else if ((event.metaKey || event.ctrlKey) && event.key === "c") {
+      event.preventDefault(); // Prevent the default browser find functionality
+      this.copyNode();
+    }
+    //
+    else if ((event.metaKey || event.ctrlKey) && event.key === "v") {
+      event.preventDefault(); // Prevent the default browser find functionality
+      this.pasteNode();
+    }
+  };
 
   /*
   
@@ -230,7 +259,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   <p>Gamebook</p>
                 </div>
                 <sl-input
-                  placeholder="Search for nodes and content"
+                  id="searchInput"
+                  placeholder="Search for nodes, types, and content"
                   style="padding-bottom: 15px"
                   clearable
                   help-text=${
@@ -302,9 +332,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                             );
                           }}
                         ></quick-connect-node>
-                        <sl-button
-                          id="copyNodeBtn"
-                          @click=${() => (this.copiedNode = this.selectedNode)}
+                        <sl-button id="copyNodeBtn" @click=${this.copyNode}
                           >Copy Node</sl-button
                         >
                         ${this.selectedNode.class == "branch"
@@ -348,6 +376,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
         >
       </sl-dialog>
     `;
+  }
+
+  /*
+
+
+  */
+  private copyNode() {
+    this.copiedNode = this.selectedNode;
   }
 
   /*
@@ -482,13 +518,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
       if (node.class == "page" || node.class == "origin") {
         this.gamebookContainerManager._createPageContainerFromPageNode(node);
         this.copyAndPasteContainerContents(this.copiedNode.id, node.id);
-        this.copiedNode = NO_NODE_SELECTED;
+        //this.copiedNode = NO_NODE_SELECTED;
       }
       //
       else if (node.class == "popup") {
         this.gamebookContainerManager._createPopupContainerFromPopupNode(node);
         this.copyAndPasteContainerContents(this.copiedNode.id, node.id);
-        this.copiedNode = NO_NODE_SELECTED;
+        //this.copiedNode = NO_NODE_SELECTED;
       }
       //TODO: copy and paste branch nodes need connection to the incoming node if they are connected
       //TODO: think about how copying and pasting would work

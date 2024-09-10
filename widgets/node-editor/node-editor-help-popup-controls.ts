@@ -31,6 +31,7 @@ export class DrawflowHelpPopUpControls extends LitElementWw {
 
   @state() accessor showWindow = false;
 
+  //TODO: add CTRL+f for search
   render() {
     return html` ${this.showWindow
       ? html`

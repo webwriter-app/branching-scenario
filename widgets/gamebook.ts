@@ -51,8 +51,6 @@ export class WebWriterGamebook extends LitElementWw {
   }
 
   //import CSS
-
-  //TODO: make this more clear
   static styles = [styles];
 
   @state() accessor currentPageId: Number;

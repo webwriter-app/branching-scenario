@@ -467,6 +467,21 @@ export class NodeEditor extends LitElementWw {
         drawflowContainer.classList.remove("smooth-transition");
         this.drawflowEditorDiv.classList.remove("smooth-background-transition");
       }, 350); // Adjust the timeout duration to match your animation duration
+
+      this.changeInEditorCallback(
+        { ...this.editor.drawflow },
+        "translate",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        { x: this.editor.canvas_x, y: this.editor.canvas_y }
+      );
     }
   }
 
@@ -520,7 +535,9 @@ export class NodeEditor extends LitElementWw {
           "nodeCreated",
           createdNode
         );
-      } else {
+      }
+      //
+      else {
         let createdNode = this.editor.getNodeFromId(id);
         this.changeInEditorCallback(
           { ...this.editor.drawflow },
