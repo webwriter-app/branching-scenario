@@ -19,14 +19,37 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
   //import CSS
   static get styles() {
     return css`
-      .page {
+      :host(:not([contenteditable="true"]):not([contenteditable=""])) .page {
+        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         gap: 10px; /* Adjust the value to your desired spacing */
-        padding: 20px;
         box-sizing: border-box;
         width: 100%;
         height: auto;
+        padding: 0px;
+      }
+
+      :host([contenteditable="true"]) .page,
+      :host([contenteditable=""]) .page {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* Adjust the value to your desired spacing */
+        box-sizing: border-box;
+        width: 100%;
+        height: auto;
+        padding: 20px;
+      }
+
+      /* Base style for the close button visibility */
+      sl-dialog::part(close-button) {
+        display: var(--close-button-display, flex);
+      }
+
+      /* Hide the close button when the class is applied */
+      .hide-close-button {
+        --close-button-display: none;
       }
 
       sl-dialog::part(base) {
@@ -66,6 +89,13 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
 
   @query("#dialog") accessor dialog: SlDialog;
 
+  @property({ type: String, attribute: true, reflect: true })
+  accessor titleLabel = "Dialog";
+  @property({ type: Boolean, attribute: true, reflect: true })
+  accessor noHeader = false;
+  @property({ type: Boolean, attribute: true, reflect: true })
+  accessor preventClosing;
+
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
 
@@ -94,6 +124,22 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
       const par = document.createElement("p");
       this.appendChild(par);
     }
+
+    if (this.preventClosing && this.dialog) {
+      // Prevent the dialog from closing when the user clicks on the overlay
+      this.dialog.addEventListener("sl-request-close", (event) => {
+        if (
+          event.detail.source === "overlay" ||
+          event.detail.source === "close-button" ||
+          event.detail.source === "keyboard"
+        ) {
+          event.preventDefault();
+        }
+      });
+
+      this.dialog.classList.add("hide-close-button");
+      console.log(this.dialog);
+    }
   }
   /*
 
@@ -103,7 +149,11 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
     return html` ${this.isContentEditable
       ? html` <slot class="page"></slot>`
       : html`
-          <sl-dialog id="dialog" no-header style="--width: 100%;"
+          <sl-dialog
+            id="dialog"
+            style="--width: 100%;"
+            label=${this.titleLabel}
+            ?no-header=${this.noHeader ? true : false}
             ><slot class="page"></slot
           ></sl-dialog>
         `}`;

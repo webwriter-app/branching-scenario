@@ -1,4 +1,4 @@
-import { html, css, LitElement, unsafeCSS } from "lit";
+import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
@@ -26,19 +26,21 @@ import {
   SlInput,
   SlIcon,
   SlDialog,
+  SlInputEvent,
 } from "@shoelace-style/shoelace";
 
 import { WebWriterConnectionButton } from "../gamebook-components/webwriter-connection-button";
 import { ToggleableInput } from "../ui-components/toggleable-input";
 import { NodeConnectionList } from "../ui-components/node-connection-list";
 import { QuickConnectNode } from "../ui-components/quick-connect-node";
+import { GamebookContainerManager } from "../gamebook-container-manager";
 
 //Tabler Icon Import
-import route2 from "@tabler/icons/outline/route-2.svg";
-import squares from "@tabler/icons/filled/squares.svg";
+import X from "@tabler/icons/outline/x.svg";
 
 //CSS
 import styles from "../../css/popup-node-details-css";
+import { WebWriterGamebookPopupContainer } from "../gamebook-components/webwriter-gamebook-popup-container";
 
 @customElement("popup-node-details")
 export class PopupNodeDetails extends LitElementWw {
@@ -96,16 +98,51 @@ export class PopupNodeDetails extends LitElementWw {
     outputHadConnections?
   ) => {};
 
-  protected firstUpdated(_changedProperties: any): void {
-    this._resetSelect();
+  @queryAssignedElements({
+    flatten: true,
+  })
+  accessor slotElements;
+
+  @property({ type: Object, attribute: false })
+  accessor popupContainer: WebWriterGamebookPopupContainer;
+
+  protected firstUpdated(_changedProperties: PropertyValues): void {
+    const gamebookContainerManager = this
+      .slotElements[0] as GamebookContainerManager;
+
+    this.popupContainer =
+      gamebookContainerManager._getContainerByDrawflowNodeId(
+        this.selectedNode.id.toString()
+      );
   }
 
+  /*
+
+
+  */
   render() {
-    return html` <div class="page-node-details">
+    return html` <div class="popup-node-details">
       <div class="preview">
         <div class="page">
           <div class="overlay">
             <div class="dialog">
+              <div
+                class="header"
+                style=${this.popupContainer?.noHeader
+                  ? "display: none"
+                  : "display: flex"}
+              >
+                <sl-input
+                  value=${this.popupContainer?.titleLabel}
+                  @sl-input=${(event) => this.handleDialogTitleChange(event)}
+                ></sl-input>
+                <sl-icon-button
+                  src=${X}
+                  style=${this.popupContainer?.preventClosing
+                    ? "display: none"
+                    : "display: flex"}
+                ></sl-icon-button>
+              </div>
               <slot></slot>
             </div>
           </div>
@@ -114,59 +151,8 @@ export class PopupNodeDetails extends LitElementWw {
     </div>`;
   }
 
-  /*
-
-
-  */
-  private _handleSelectChange(event: Event) {
-    const selectElement = event.target as HTMLSelectElement;
-    this.isNodeSelected = !!selectElement.value;
-  }
-
-  /*
-
-
-  */
-  private _addOutputToSelectedNode() {
-    this.nodeEditor.editor.addNodeOutput(this.selectedNode.id);
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "outputCreated"
-    );
-  }
-
-  /*
-
-
-  */
-  private _connectSelectedNodes() {
-    //Get the node to be connected from the sl-select "nodeSelect"
-    const nodeToBeConnectedId = this.nodeSelect.value;
-
-    //add output to the selected node and get output id
-    this._addOutputToSelectedNode();
-    const outputs = this.nodeEditor.editor.getNodeFromId(
-      this.selectedNode.id
-    ).outputs;
-    const outputKeys = Object.keys(outputs);
-    const lastOutputKey = outputKeys[outputKeys.length - 1];
-
-    //Use the main input to connect the selected Nodes
-    this.nodeEditor.editor.addConnection(
-      this.selectedNode.id,
-      nodeToBeConnectedId,
-      lastOutputKey,
-      "input_1"
-    );
-  }
-
-  /*
-
-  */
-  private _resetSelect() {
-    if (this.nodeSelect) {
-      this.nodeSelect.value = "";
-      this.isNodeSelected = false;
-    }
+  private handleDialogTitleChange(event: Event) {
+    const value = ((event as SlInputEvent).target as SlInput).value;
+    this.popupContainer.titleLabel = value;
   }
 }

@@ -25,6 +25,7 @@ import {
   SlSplitPanel,
   SlDialog,
   SlButton,
+  SlSwitch,
 } from "@shoelace-style/shoelace";
 
 import styles from "../css/webwriter-branching-scenario-css";
@@ -37,6 +38,7 @@ import book from "@tabler/icons/outline/book.svg";
 import infoSquareRounded from "@tabler/icons/filled/info-square-rounded.svg";
 import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
 import { NodeEditorControlsBar } from "./node-editor/node-editor-control-bar";
+import { WebWriterGamebookPopupContainer } from "./gamebook-components/webwriter-gamebook-popup-container";
 
 const NO_NODE_SELECTED: DrawflowNode = {
   id: -1,
@@ -107,6 +109,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "split-view": SplitView,
       "sl-dialog": SlDialog,
       "sl-button": SlButton,
+      "sl-switch": SlSwitch,
     };
   }
 
@@ -379,6 +382,33 @@ export class WebWriterBranchingScenario extends LitElementWw {
                                 will be taken. Rearrange the conditions to
                                 determine the order.
                               </p>`
+                          : null}
+                        ${this.selectedNode.class == "popup"
+                          ? html`
+                              <!-- Get gamebook container manager here and get the container with the matching id, tie attributes directly to the container and let it be controlled here-->
+                              <sl-switch
+                                ?checked=${(
+                                  this.gamebookContainerManager._getContainerByDrawflowNodeId(
+                                    this.selectedNode.id
+                                  ) as WebWriterGamebookPopupContainer
+                                ).preventClosing}
+                                @sl-input=${(event) =>
+                                  this.handleSwitchPreventClosing(event)}
+                                >Prevent Closing</sl-switch
+                              >
+                              <sl-switch
+                                ?checked=${(
+                                  this.gamebookContainerManager._getContainerByDrawflowNodeId(
+                                    this.selectedNode.id
+                                  ) as WebWriterGamebookPopupContainer
+                                ).noHeader
+                                  ? false
+                                  : true}
+                                @sl-input=${(event) =>
+                                  this.handleSwitchNoHeader(event)}
+                                >Header</sl-switch
+                              >
+                            `
                           : null} `
                     : null
                 }
@@ -866,6 +896,39 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   private makeNodeOrigin(selectedNodeId: number) {
     this.nodeEditor.makeNodeOrigin(selectedNodeId);
+
+    this.requestUpdate();
+  }
+
+  /*
+
+  */
+  private handleSwitchPreventClosing(event: Event) {
+    const value = (event.target as SlSwitch).checked;
+
+    (
+      this.gamebookContainerManager._getContainerByDrawflowNodeId(
+        this.selectedNode.id
+      ) as WebWriterGamebookPopupContainer
+    ).preventClosing = value;
+
+    this.requestUpdate();
+  }
+
+  /*
+
+
+  */
+  private handleSwitchNoHeader(event: Event) {
+    const value = (event.target as SlSwitch).checked;
+
+    console.log("no Header", !value);
+
+    (
+      this.gamebookContainerManager._getContainerByDrawflowNodeId(
+        this.selectedNode.id
+      ) as WebWriterGamebookPopupContainer
+    ).noHeader = !value;
 
     this.requestUpdate();
   }
