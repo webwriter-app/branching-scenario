@@ -362,6 +362,21 @@ export class WebWriterBranchingScenario extends LitElementWw {
                         <sl-button id="copyNodeBtn" @click=${this.copyNode}
                           >Copy Node</sl-button
                         >
+                        <sl-button
+                          id="deleteNodeBtn"
+                          @click=${() =>
+                            (
+                              this.shadowRoot.getElementById(
+                                "delete_node_dialog"
+                              ) as SlDialog
+                            ).show()}
+                          variant="danger"
+                          outline
+                          ?disabled=${this.selectedNode.class == "origin"
+                            ? true
+                            : false}
+                          >Delete Node</sl-button
+                        >
                         ${this.selectedNode.class == "page" ||
                         this.selectedNode.class == "origin"
                           ? html` <sl-button
@@ -391,7 +406,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                                   this.gamebookContainerManager._getContainerByDrawflowNodeId(
                                     this.selectedNode.id
                                   ) as WebWriterGamebookPopupContainer
-                                ).preventClosing}
+                                )?.preventClosing}
                                 @sl-input=${(event) =>
                                   this.handleSwitchPreventClosing(event)}
                                 >Prevent Closing</sl-switch
@@ -401,7 +416,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                                   this.gamebookContainerManager._getContainerByDrawflowNodeId(
                                     this.selectedNode.id
                                   ) as WebWriterGamebookPopupContainer
-                                ).noHeader
+                                )?.noHeader
                                   ? false
                                   : true}
                                 @sl-input=${(event) =>
@@ -439,6 +454,28 @@ export class WebWriterBranchingScenario extends LitElementWw {
               ) as SlDialog
             ).hide()}
           >Understood</sl-button
+        >
+      </sl-dialog>
+
+      <sl-dialog label="Delete node" class="dialog" id="delete_node_dialog">
+        You are about to delete the node "${this.selectedNode.data.title}". Do
+        you want to proceed?
+        <sl-button
+          slot="footer"
+          variant="primary"
+          outline
+          @click=${() =>
+            (
+              this.shadowRoot.getElementById("delete_node_dialog") as SlDialog
+            ).hide()}
+          >Abort</sl-button
+        >
+        <sl-button
+          slot="footer"
+          variant="danger"
+          outline
+          @click=${this.deleteSelectedNode}
+          >Delete</sl-button
         >
       </sl-dialog>
     `;
@@ -608,6 +645,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.gamebookContainerManager._deleteGamebookContainersById(
         removedNodeId
       );
+      this.updateSelectedNode(this.selectedNode.id.toString());
     }
     //
     else if (updateType == "connectionCreated") {
@@ -810,19 +848,22 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   private updateSelectedNode(id: String) {
     if (id != "-1") {
-      this.selectedNode = { ...this.nodeEditor.editor.getNodeFromId(id) };
+      try {
+        this.selectedNode = { ...this.nodeEditor.editor.getNodeFromId(id) };
 
-      if (
-        this.selectedNode.class == "page" ||
-        this.selectedNode.class == "origin" ||
-        this.selectedNode.class == "popup"
-      ) {
-        this.gamebookContainerManager._showGamebookContainerById(
-          this.selectedNode.id
-        );
-      }
-      //
-      else if (this.selectedNode.class == "question-branch") {
+        if (this.selectedNode) {
+          if (
+            this.selectedNode.class === "page" ||
+            this.selectedNode.class === "origin" ||
+            this.selectedNode.class === "popup"
+          ) {
+            this.gamebookContainerManager._showGamebookContainerById(
+              this.selectedNode.id
+            );
+          }
+        }
+      } catch (error) {
+        this.selectedNode = { ...NO_NODE_SELECTED };
         this.gamebookContainerManager._hideAllGamebookContainers();
       }
     } else {
@@ -931,6 +972,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
     ).noHeader = !value;
 
     this.requestUpdate();
+  }
+
+  /*
+
+
+  */
+  private deleteSelectedNode() {
+    this.nodeEditor.editor.removeNodeId(`node-${this.selectedNode.id}`);
+    (this.shadowRoot.getElementById("delete_node_dialog") as SlDialog).hide();
   }
 
   // /*
