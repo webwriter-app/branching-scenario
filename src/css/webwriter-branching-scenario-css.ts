@@ -7,6 +7,7 @@ export default css`
     box-sizing: border-box;
     border: 1px solid #e4e4e4;
     overflow: hidden;
+    display: flex;
   }
 
   :host * {

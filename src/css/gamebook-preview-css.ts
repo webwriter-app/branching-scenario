@@ -1,6 +1,17 @@
 import { css } from "lit";
 
 export default css`
+  :host * {
+    box-sizing: border-box;
+  }
+
+  :host {
+    width: 100%;
+    height: fit-content;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
   .gamebook {
     display: flex;
     flex-direction: column;
