@@ -4,5 +4,6 @@
     "useDefineForClassFields": true, // default when "target" is "ES2022" or higher
     "target": "ES2022",
     "moduleResolution": "node",
+    "outDir": "./dist",
   }
 }

@@ -1,9 +1,10 @@
 {
-  "name": "@webwriter/branching-scenario",
-  "version": "0.0.1",
+  "name": "@andreasdymek/branching-scenario",
+  "version": "0.0.3",
   "keywords": [
     "webwriter-widget"
   ],
+  "description": "WIP: Create adaptive learning experiences by authoring a gamebook, where you present the student with choices on how to continue. The content in the gamebook can be based on a all other WebWriter content types.",
   "license": "MIT",
   "author": "",
   "dependencies": {
@@ -16,15 +17,43 @@
     "react-icons": "^5.2.1",
     "styled-components": "^6.1.11"
   },
+  "scripts": {
+    "prepublishonly": "npx @webwriter/build"
+  },
   "exports": {
-    "./widgets/webwriter-branching-scenario": "./widgets/webwriter-branching-scenario.ts",
-    "./widgets/webwriter-gamebook-page-container": "./widgets/gamebook-components/webwriter-gamebook-page-container.ts",
-    "./widgets/webwriter-gamebook-popup-container": "./widgets/gamebook-components/webwriter-gamebook-popup-container.ts",
-    "./widgets/webwriter-gamebook-branch-container": "./widgets/gamebook-components/webwriter-gamebook-branch-container.ts",
-    "./widgets/webwriter-connection-button": "./widgets/gamebook-components/webwriter-connection-button.ts",
-    "./widgets/webwriter-smart-branch-button": "./widgets/gamebook-components/webwriter-smart-branch-button.ts",
-    "./widgets/split-view": "./widgets/ui-components/split-view.ts",
-    "./widgets/webwriter-gamebook": "./widgets/gamebook.ts"
+    "./widgets/webwriter-branching-scenario.*": {
+      "source": "./src/widgets/webwriter-branching-scenario.ts",
+      "default": "./dist/widgets/webwriter-branching-scenario.*"
+    },
+    "./widgets/webwriter-gamebook-page-container.*": {
+      "source": "./src/widgets/gamebook-components/webwriter-gamebook-page-container.ts",
+      "default": "./dist/widgets/gamebook-components/webwriter-gamebook-page-container.*"
+    },
+    "./widgets/webwriter-gamebook-popup-container.*": {
+      "source": "./src/widgets/gamebook-components/webwriter-gamebook-popup-container.ts",
+      "default": "./dist/widgets/gamebook-components/webwriter-gamebook-popup-container.*"
+    },
+    "./widgets/webwriter-gamebook-branch-container.*": {
+      "source": "./src/widgets/gamebook-components/webwriter-gamebook-branch-container.ts",
+      "default": "./dist/widgets/gamebook-components/webwriter-gamebook-branch-container.*"
+    },
+    "./widgets/webwriter-connection-button.*": {
+      "source": "./src/widgets/gamebook-components/webwriter-connection-button.ts",
+      "default": "./dist/widgets/gamebook-components/webwriter-connection-button.*"
+    },
+    "./widgets/webwriter-smart-branch-button.*": {
+      "source": "./src/widgets/gamebook-components/webwriter-smart-branch-button.ts",
+      "default": "./dist/widgets/gamebook-components/webwriter-smart-branch-button.*"
+    },
+    "./widgets/split-view.*": {
+      "source": "./src/widgets/ui-components/split-view.ts",
+      "default": "./dist/widgets/ui-components/split-view.*"
+    },
+    "./widgets/webwriter-gamebook.*": {
+      "source": "./src/widgets/gamebook.ts",
+      "default": "./dist/widgets/gamebook.*"
+    },
+    "./package.json": "./package.json"
   },
   "devDependencies": {
     "@types/drawflow": "^0.0.11",

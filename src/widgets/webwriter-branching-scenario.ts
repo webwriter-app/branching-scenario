@@ -35,6 +35,8 @@ import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import book from "@tabler/icons/outline/book.svg";
+import packages from "@tabler/icons/outline/packages.svg";
+
 import infoSquareRounded from "@tabler/icons/filled/info-square-rounded.svg";
 import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
 import { NodeEditorControlsBar } from "./node-editor/node-editor-control-bar";
@@ -386,17 +388,24 @@ export class WebWriterBranchingScenario extends LitElementWw {
                               ?disabled=${this.selectedNode.class == "origin"
                                 ? true
                                 : false}
-                              >Make Node Origin</sl-button
+                              >Make Page Origin</sl-button
                             >`
                           : null}
                         ${this.selectedNode.class == "branch"
-                          ? html` <sl-icon src=${infoSquareRounded}></sl-icon>
+                          ? html`
+                              <sl-icon src=${infoSquareRounded}></sl-icon>
                               <p>
                                 Set up conditions to determine how your gamebook
                                 will continue. The first condition that is met
                                 will be taken. Rearrange the conditions to
                                 determine the order.
-                              </p>`
+                              </p>
+                              <sl-icon src=${packages}></sl-icon>
+                              <p>
+                                Made to work with the WebWriter Quiz Widget.
+                                Available over packages!
+                              </p>
+                            `
                           : null}
                         ${this.selectedNode.class == "popup"
                           ? html`
