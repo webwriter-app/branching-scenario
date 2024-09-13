@@ -28,6 +28,10 @@ import zoomOut from "@tabler/icons/outline/zoom-out.svg";
 import squares from "@tabler/icons/filled/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import artboard from "@tabler/icons/outline/artboard.svg";
+import pinInvoke from "@tabler/icons/outline/pin-invoke.svg";
+import mapPin from "@tabler/icons/outline/map-pin.svg";
+import currentLocation from "@tabler/icons/outline/current-location.svg";
+import location from "@tabler/icons/outline/location.svg";
 
 //Drawflow Imports
 import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
@@ -249,7 +253,7 @@ export class NodeEditor extends LitElementWw {
         <div class="zoomControls">
           <sl-icon-button
             id="jumpToOriginBtn"
-            src=${artboard}
+            src=${mapPin}
             style="font-size: 18px;"
             @click=${() => this.jumpToOrigin()}
           >
