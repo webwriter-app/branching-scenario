@@ -46,41 +46,14 @@ export class ContainerElementSelect extends LitElement {
     .node-option-hidden {
       display: none;
     }
-    sl-select {
-      --sl-input-border-width: 0px;
-      --sl-input-padding: 0px;
-    }
-    sl-select::part(listbox) {
-      width: 250px;
-      height: 250px;
-    }
-    sl-select::part(display-input) {
-      border: none;
-      font-weight: 500;
-      color: #0084c7;
-      font-size: 12px;
-      width: 70px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      text-align: left;
-    }
-    .icon-header {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .searchInput {
-      --sl-input-border-width: 1px;
-    }
   `;
 
   /*
 
   */
-  render() {
-    const containersSlot = this.container.shadowRoot.querySelector("slot");
+  // Move the option gathering logic to firstUpdated lifecycle method
+  firstUpdated() {
+    const containersSlot = this.container?.shadowRoot.querySelector("slot");
     const assignedElements = containersSlot.assignedElements();
 
     // Check if there is a non-empty <p> element in the assignedElements
@@ -98,13 +71,14 @@ export class ContainerElementSelect extends LitElement {
     );
 
     this.options = [...this.options, ...wwWidgetElements];
+  }
 
+  render() {
     return html`
       <sl-select
         placement="bottom"
         hoist
         class="nodeSelect"
-        size="small"
         placeholder="Not connected"
         clearable
         .value=${this.value}
@@ -123,9 +97,6 @@ export class ContainerElementSelect extends LitElement {
     `;
   }
 
-  /*
-
-  */
   private _handleElementSelect(event: Event) {
     if (
       event.target instanceof HTMLElement &&

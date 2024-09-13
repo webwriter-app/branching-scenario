@@ -68,12 +68,16 @@ export class WebWriterGamebook extends LitElementWw {
   /*
 
 
-   */
+  */
   protected firstUpdated(_changedProperties: any): void {
     const slot = this.shadowRoot.querySelector("slot");
     if (slot) {
       slot.addEventListener("slotchange", () => this._handleSlotChange());
     }
+
+    this.addEventListener("submit", this._handleSubmit.bind(this));
+
+    this.addEventListener("formdata", this._handleFormData.bind(this));
   }
 
   /*
@@ -83,6 +87,43 @@ export class WebWriterGamebook extends LitElementWw {
   _handleSlotChange() {
     this.currentPageId = this._resetGamebookToOrigin();
     this._initializeButtons(this.currentPageId);
+
+    console.log("setting this", this.currentPageId);
+  }
+
+  /*
+
+
+   */
+  private _handleFormData(event: Event) {
+    console.log(event);
+  }
+
+  /*
+
+
+   */
+  private _handleSubmit(event: Event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    console.log(event);
+
+    console.log(event.target);
+
+    const form = event.target as HTMLFormElement; // Cast event.target to HTMLFormElement
+    const formData = new FormData(form); // Extract form data
+
+    // Log each form entry (key-value pairs)
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+
+    this.gamebookContainers.forEach((container) => {
+      if (container.drawflowNodeId == this.currentPageId) {
+        const quiz = container.querySelector(`webwriter-quiz`);
+        console.log(quiz);
+      }
+    });
   }
 
   /*

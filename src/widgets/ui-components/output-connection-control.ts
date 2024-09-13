@@ -33,6 +33,7 @@ export class OutputConnectionControl extends LitElement {
   @property({ type: Object }) accessor selectedNode;
   @property({ type: String }) accessor outputClass;
   @property({ type: Boolean }) accessor disabled;
+  @property({ type: Boolean }) accessor inOutputList; // New attribute
 
   @state() accessor searchTerm = "";
 
@@ -49,15 +50,16 @@ export class OutputConnectionControl extends LitElement {
     .node-option-hidden {
       display: none;
     }
-    sl-select {
+
+    :host([in-output-list]) sl-select {
       --sl-input-border-width: 0px;
       --sl-input-padding: 0px;
     }
-    sl-select::part(listbox) {
+    :host([in-output-list]) sl-select::part(listbox) {
       width: 250px;
       height: 250px;
     }
-    sl-select::part(display-input) {
+    :host([in-output-list]) sl-select::part(display-input) {
       border: none;
       font-weight: 500;
       color: #0084c7;
@@ -68,6 +70,7 @@ export class OutputConnectionControl extends LitElement {
       text-overflow: ellipsis;
       text-align: left;
     }
+
     .icon-header {
       display: flex;
       align-items: center;
@@ -127,7 +130,7 @@ export class OutputConnectionControl extends LitElement {
         placement="bottom"
         hoist
         class="nodeSelect"
-        size="small"
+        size=${this.inOutputList ? "small" : "medium"}
         placeholder="Not connected"
         clearable
         .value=${this.selectedNode?.outputs?.[this.outputClass]

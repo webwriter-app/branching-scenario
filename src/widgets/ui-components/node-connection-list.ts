@@ -199,6 +199,8 @@ export class NodeConnectionList extends LitElementWw {
                   .selectedNode=${this.selectedNode}
                   .nodeEditor=${this.nodeEditor}
                   .outputClass=${output_class}
+                  in-output-list
+                  .inOutputList=${true}
                 ></output-connection-control>
                 <sl-icon-button
                   class="minus"
