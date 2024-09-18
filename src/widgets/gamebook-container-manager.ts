@@ -258,6 +258,8 @@ export class GamebookContainerManager extends LitElementWw {
       (container) => container.getAttribute("drawflowNodeId") == containerId
     );
 
+    console.log(removed_output_class);
+
     // Extract the number from the output_class parameter
     const removedOutputClassNumber = parseInt(
       removed_output_class.split("_")[1],
@@ -265,21 +267,27 @@ export class GamebookContainerManager extends LitElementWw {
     );
 
     // Iterate over each linkButton to update its identifier
-    container.buttons.forEach((button) => {
-      const [output_id, output_class, input_id] = button.identifier.split("-");
-      const buttonOutputClassNumber = parseInt(output_class.split("_")[1], 10);
+    if (container.buttons) {
+      container.buttons.forEach((button) => {
+        const [output_id, output_class, input_id] =
+          button.identifier.split("-");
+        const buttonOutputClassNumber = parseInt(
+          output_class.split("_")[1],
+          10
+        );
 
-      // Check if the linkButton should be updated
-      if (buttonOutputClassNumber > removedOutputClassNumber) {
-        // Generate the new identifier with incremented output_class
-        const newIdentifier = `${output_id}-output_${
-          buttonOutputClassNumber - 1
-        }-${input_id}-input_1`;
+        // Check if the linkButton should be updated
+        if (buttonOutputClassNumber > removedOutputClassNumber) {
+          // Generate the new identifier with incremented output_class
+          const newIdentifier = `${output_id}-output_${
+            buttonOutputClassNumber - 1
+          }-${input_id}-input_1`;
 
-        // Update the identifier
-        button.setAttribute("identifier", newIdentifier);
-      }
-    });
+          // Update the identifier
+          button.setAttribute("identifier", newIdentifier);
+        }
+      });
+    }
   }
 
   /*

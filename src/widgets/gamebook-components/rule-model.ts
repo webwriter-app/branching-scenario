@@ -1,6 +1,7 @@
 interface Rule {
   output_id: string;
-  element: string;
+  elementId: string;
+  quizTasks: string;
   condition: string;
   match: string;
   target: string;

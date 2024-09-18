@@ -29,13 +29,24 @@ export default css`
     padding: 10px;
   }
 
-  .horizontalStack {
+  .ruleItem {
     display: flex;
     flex-direction: row;
     align-items: center;
+    box-sizing: border-box;
     gap: 10px;
-    //padding: 10px;
-    //border-bottom: 1px solid #d4d4d8;
+    width: 100%;
+  }
+
+  .ruleItem > *:not(.draggable, .minus, #index, #percent) {
+    flex: 1 !important; /* Make each child (except .draggable) take up equal space */
+    min-width: 0; /* Prevent overflow issues */
+    flex-grow: 1 !important;
+  }
+
+  sl-select::part(listbox) {
+    width: 250px;
+    height: 250px;
   }
 
   .no-node {
@@ -73,5 +84,68 @@ export default css`
 
   .rule-divider {
     transition: visibility 0.2s ease-in-out;
+  }
+
+  .title-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-items: center;
+
+    box-sizing: border-box;
+    width: 100%;
+    height: 150px;
+
+    gap: 15px;
+    padding: 15px;
+
+    background-color: white;
+    border-bottom: 1px solid #d4d4d8;
+  }
+
+  .div-title {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* This makes the node-connection-list elements take up remaining space evenly */
+    margin-right: auto;
+  }
+
+  .subtitle {
+    font-family: "Roboto", sans-serif;
+    font-size: 12px;
+    color: gray;
+    margin: 0px;
+    padding: 0px;
+  }
+
+  .inputOutputControls {
+    max-width: 190px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-items: center;
+  }
+
+  node-connection-list {
+    height: 100%; /* Adjust as needed */
+    width: 100%;
+  }
+
+  .div-icon-branch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    height: 65px; /* Remove the fixed height */
+    aspect-ratio: 1;
+    background-color: #05ae9e;
+  }
+
+  .div-icon-branch sl-icon {
+    width: 42px;
+    height: 42px;
+    color: white;
   }
 `;

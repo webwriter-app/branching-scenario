@@ -10,12 +10,28 @@ import { QuickConnectNode } from "../ui-components/quick-connect-node";
 //CSS
 import styles from "../../css/page-node-details-css";
 
+//Shoelace Imports
+import "@shoelace-style/shoelace/dist/themes/light.css";
+import { SlIcon, SlDivider } from "@shoelace-style/shoelace";
+
+//Tabler Icon Import
+import squares from "@tabler/icons/filled/squares.svg";
+import file from "@tabler/icons/filled/file.svg";
+import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
+import { BranchNodeDetails } from "./branch-node-details";
+import { ToggleableInput } from "../ui-components/toggleable-input";
+import { NodeConnectionList } from "../ui-components/node-connection-list";
+
 @customElement("page-node-details")
 export class PageNodeDetails extends LitElementWw {
   //registering custom elements used in the widget
   static get scopedElements() {
     return {
       "quick-connect-node": QuickConnectNode,
+      "toggleable-input": ToggleableInput,
+      "node-connection-list": NodeConnectionList,
+      "sl-divider": SlDivider,
+      "sl-icon": SlIcon,
     };
   }
 
@@ -43,12 +59,101 @@ export class PageNodeDetails extends LitElementWw {
   ) => {};
 
   render() {
-    return html` <div class="page-node-details">
-      <div class="preview">
-        <div class="page">
-          <slot></slot>
+    return html` <div class="title-bar">
+        <div class="div-icon-page">
+          <sl-icon src=${file}></sl-icon>
+        </div>
+        <div class="div-title">
+          <toggleable-input
+            .text=${this.selectedNode.data.title}
+            .saveChanges=${(string) => this.renameNode(string)}
+          ></toggleable-input>
+          <p class="subtitle">Page</p>
+        </div>
+        <div class="inputOutputControls">
+          <node-connection-list
+            input
+            .nodeEditor=${this.nodeEditor}
+            .selectedNode=${this.selectedNode}
+            .changeInEditorCallback=${(
+              drawflow,
+              updateType,
+              node,
+              removedNodeId,
+              inputNode,
+              outputNode,
+              inputClass,
+              outputClass,
+              outputHadConnections
+            ) => {
+              this.changeInEditorCallback(
+                drawflow,
+                updateType,
+                node,
+                removedNodeId,
+                inputNode,
+                outputNode,
+                inputClass,
+                outputClass,
+                outputHadConnections
+              );
+            }}
+          ></node-connection-list>
+          <sl-divider vertical style="height: 100%;"></sl-divider>
+          <node-connection-list
+            output
+            .nodeEditor=${this.nodeEditor}
+            .selectedNode=${this.selectedNode}
+            .changeInEditorCallback=${(
+              drawflow,
+              updateType,
+              node,
+              removedNodeId,
+              inputNode,
+              outputNode,
+              inputClass,
+              outputClass,
+              outputHadConnections
+            ) => {
+              this.changeInEditorCallback(
+                drawflow,
+                updateType,
+                node,
+                removedNodeId,
+                inputNode,
+                outputNode,
+                inputClass,
+                outputClass,
+                outputHadConnections
+              );
+            }}
+          ></node-connection-list>
         </div>
       </div>
-    </div>`;
+
+      <div class="page-node-details">
+        <div class="preview">
+          <div class="page">
+            <slot></slot>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  /*
+
+
+  */
+  private renameNode(text: String) {
+    this.nodeEditor.editor.updateNodeDataFromId(this.selectedNode.id, {
+      ...this.selectedNode.data,
+      title: text,
+    });
+
+    this.changeInEditorCallback(
+      { ...this.nodeEditor.editor.drawflow },
+      "nodeRenamed",
+      this.selectedNode
+    );
   }
 }

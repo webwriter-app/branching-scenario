@@ -31,6 +31,7 @@ export class NodeConnectionList extends LitElementWw {
 
   @property({ type: Boolean, reflect: true }) accessor output = false;
   @property({ type: Boolean, reflect: true }) accessor input = false;
+  @property({ type: Boolean, reflect: true }) accessor branch = false;
 
   @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow,
@@ -44,6 +45,10 @@ export class NodeConnectionList extends LitElementWw {
     outputHadConnections?
   ) => {};
 
+  /*
+
+
+  */
   // Registering custom elements used in the widget
   static get scopedElements() {
     return {
@@ -54,6 +59,10 @@ export class NodeConnectionList extends LitElementWw {
     };
   }
 
+  /*
+
+
+  */
   static get styles() {
     return css`
       .container {
@@ -170,9 +179,62 @@ export class NodeConnectionList extends LitElementWw {
       .verticalStack::-webkit-scrollbar-thumb:hover {
         background-color: #555; /* Darker color on hover */
       }
+
+      .no-node-message {
+        font-family: "Roboto", sans-serif;
+        font-size: 12px;
+
+        color: darkgray;
+        margin: 0px;
+        padding: 0px;
+      }
+
+      .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+      }
+
+      .node-message {
+        font-family: "Roboto", sans-serif;
+        font-size: 12px;
+
+        color: darkgray;
+        margin: 0px;
+        padding: 0px;
+      }
+
+      .branch-item {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .branch-item-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        margin-top: 10px;
+        gap: 5px;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+      }
     `;
   }
 
+  /*
+
+
+  */
   renderOutputs() {
     return html`
       <div class="container">
@@ -220,6 +282,10 @@ export class NodeConnectionList extends LitElementWw {
     `;
   }
 
+  /*
+
+
+  */
   renderInputs() {
     return html`
       <div class="container">
@@ -273,16 +339,91 @@ export class NodeConnectionList extends LitElementWw {
     `;
   }
 
+  /*
+
+
+  */
+  renderInputsBranch() {
+    return html`
+      <div class="container">
+        <div class="titlebar">
+          <p>
+            Accessing contents of
+            (${this.selectedNode.inputs.input_1.connections.length.toString()})
+          </p>
+        </div>
+        <div class="verticalStack">
+          ${Object.values(this.selectedNode.inputs.input_1.connections).length >
+          0
+            ? html` ${this.selectedNode.inputs.input_1.connections.map(
+                (connection, index) => html` <div class="branch-item-container">
+                  <div class="branch-item">
+                    <sl-button
+                      class="itemButton"
+                      variant="text"
+                      size="small"
+                      @mouseenter=${() =>
+                        this.nodeEditor.highlightConnectionAndNode(
+                          connection.node,
+                          this.selectedNode.id,
+                          connection.input,
+                          "input_1",
+                          connection.node
+                        )}
+                      @mouseleave=${() =>
+                        this.nodeEditor.unhighlightConnectionAndNode(
+                          connection.node,
+                          this.selectedNode.id,
+                          connection.input,
+                          "input_1",
+                          connection.node
+                        )}
+                    >
+                      ${this.nodeEditor.editor.getNodeFromId(connection.node)
+                        .data.title}
+                    </sl-button>
+                    <sl-icon-button
+                      src=${XCircleFill}
+                      style="font-size: 14px; color: #71717A;"
+                      @click=${() =>
+                        this._deleteOutputFromNode(
+                          parseInt(connection.node),
+                          connection.input
+                        )}
+                    ></sl-icon-button>
+                  </div>
+                </div>`
+              )}`
+            : html` <div class="container">
+                <p class="no-node-message">
+                  Connect a node to create branching rules based on its content
+                </p>
+              </div>`}
+        </div>
+      </div>
+    `;
+  }
+
+  /*
+
+
+  */
   render() {
     if (this.output) {
       return this.renderOutputs();
     } else if (this.input) {
       return this.renderInputs();
+    } else if (this.branch) {
+      return this.renderInputsBranch();
     } else {
       return html`<p>Please specify either 'input' or 'output' attribute.</p>`;
     }
   }
 
+  /*
+
+
+  */
   private _deleteOutputFromNode(output_id: number, output_class: string) {
     let outputHadConnections =
       (this.nodeEditor.editor.getNodeFromId(output_id) as DrawflowNode).outputs[
@@ -304,6 +445,10 @@ export class NodeConnectionList extends LitElementWw {
     );
   }
 
+  /*
+
+
+  */
   private _addOutputToSelectedNode() {
     this.nodeEditor.editor.addNodeOutput(this.selectedNode.id);
     this.changeInEditorCallback(

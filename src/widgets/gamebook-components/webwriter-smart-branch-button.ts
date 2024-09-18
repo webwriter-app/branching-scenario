@@ -37,6 +37,9 @@ export class WebWriterSmartBranchButton extends LitElementWw {
     "center";
   @property({ type: String, reflect: true }) accessor variant: string =
     "default";
+  @property({ type: Boolean, reflect: false }) accessor disabled = false;
+  @property({ type: Object, reflect: false }) accessor elementSubmitted = [];
+  @property({ type: Object, reflect: false }) accessor submitElements = [];
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
 
@@ -193,6 +196,7 @@ export class WebWriterSmartBranchButton extends LitElementWw {
           variant=${this.variant}
           ?pill=${this.pill}
           ?outline=${this.outline}
+          ?disabled=${this.disabled}
         >
           <p>${this.name}</p>
         </sl-button>

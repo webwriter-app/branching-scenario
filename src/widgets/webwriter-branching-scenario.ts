@@ -796,7 +796,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.gamebookContainerManager._getContainerByDrawflowNodeId(
           changeOrigin.oldId
         );
-      (originPageContainer as WebWriterGamebookPageContainer).originPage = 0;
+      if (originPageContainer) {
+        (originPageContainer as WebWriterGamebookPageContainer).originPage = 0;
+      }
 
       const newOriginPageContainer =
         this.gamebookContainerManager._getContainerByDrawflowNodeId(

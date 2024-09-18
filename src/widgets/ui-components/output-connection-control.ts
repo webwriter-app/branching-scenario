@@ -59,6 +59,12 @@ export class OutputConnectionControl extends LitElement {
       width: 250px;
       height: 250px;
     }
+
+    sl-select::part(listbox) {
+      width: 250px;
+      height: 250px;
+    }
+
     :host([in-output-list]) sl-select::part(display-input) {
       border: none;
       font-weight: 500;

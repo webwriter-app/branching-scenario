@@ -11,6 +11,9 @@ import {
 } from "@shoelace-style/shoelace";
 import Drawflow, { DrawflowNode } from "drawflow";
 
+import helpOctagon from "@tabler/icons/outline/help-octagon.svg";
+import textSize from "@tabler/icons/outline/text-size.svg";
+
 const NO_NODE_SELECTED: DrawflowNode = {
   id: -1,
   name: "unselect",
@@ -24,11 +27,10 @@ const NO_NODE_SELECTED: DrawflowNode = {
   typenode: false,
 };
 
-@customElement("container-element-select")
-export class ContainerElementSelect extends LitElement {
+@customElement("element-children-select")
+export class ElementChildrenSelect extends LitElement {
   @property({ type: Object }) accessor container;
   @property({ type: Object }) accessor options = [];
-  @property({ type: Object }) accessor selectedNode;
   @property({ type: String }) accessor value;
 
   @state() accessor searchTerm = "";
@@ -40,6 +42,12 @@ export class ContainerElementSelect extends LitElement {
     .nodeSelect {
       width: 100%;
     }
+
+    sl-select::part(listbox) {
+      width: 250px;
+      height: 250px;
+    }
+
     .node-option-visible {
       display: block;
     }
@@ -62,7 +70,7 @@ export class ContainerElementSelect extends LitElement {
     );
 
     if (hasNonEmptyP) {
-      this.options = [...this.options, { tagName: "Text" }];
+      this.options = [...this.options, { tagName: "Text", id: "text" }];
     }
 
     // Filter nodes with class "ww-widget" and add them to this.options
@@ -79,7 +87,7 @@ export class ContainerElementSelect extends LitElement {
         placement="bottom"
         hoist
         class="nodeSelect"
-        placeholder="Not connected"
+        placeholder="Select element"
         clearable
         .value=${this.value}
         @sl-input=${this._handleElementSelect}
@@ -88,9 +96,17 @@ export class ContainerElementSelect extends LitElement {
           this.options,
           (element) => (element as HTMLElement).id, // or use another unique identifier
           (element) => html`
-            <sl-option value=${(element as HTMLElement).tagName}
-              >${(element as HTMLElement).tagName}</sl-option
-            >
+            <sl-option value=${`${(element as HTMLElement).id}`}
+              >${(element as HTMLElement).tagName
+                .replace("WEBWRITER-", "")
+                .toLowerCase()
+                .replace(/^./, (str) => str.toUpperCase())}
+              ${element.tagName.toLowerCase().includes("text")
+                ? html` <sl-icon slot="prefix" src=${textSize}></sl-icon>`
+                : element.tagName.toLowerCase().includes("quiz")
+                ? html`<sl-icon slot="prefix" src=${helpOctagon}></sl-icon>`
+                : null}
+            </sl-option>
           `
         )}
       </sl-select>
@@ -103,6 +119,8 @@ export class ContainerElementSelect extends LitElement {
       event.target.tagName.toLowerCase() === "sl-select"
     ) {
       const selectedValue = (event.target as SlSelect).value;
+
+      // If it's not an array, just assign it as-is
       this.value = selectedValue;
     }
   }

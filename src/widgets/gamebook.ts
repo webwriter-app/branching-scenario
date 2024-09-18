@@ -31,6 +31,7 @@ import { WebWriterConnectionButton } from "./gamebook-components/webwriter-conne
 import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
 import { WebWriterGamebookPopupContainer } from "./gamebook-components/webwriter-gamebook-popup-container";
 import { WebWriterGamebookBranchContainer } from "./gamebook-components/webwriter-gamebook-branch-container";
+import { WebWriterSmartBranchButton } from "./gamebook-components/webwriter-smart-branch-button";
 
 @customElement("webwriter-gamebook")
 export class WebWriterGamebook extends LitElementWw {
@@ -53,7 +54,7 @@ export class WebWriterGamebook extends LitElementWw {
   //import CSS
   static styles = [styles];
 
-  @state() accessor currentPageId: Number;
+  @state() accessor currentContainerId: Number;
   @property({ type: String }) accessor gamebookTitle;
   @property({ type: String }) accessor pageTitle;
   @property({ type: Number }) accessor startPage;
@@ -76,8 +77,6 @@ export class WebWriterGamebook extends LitElementWw {
     }
 
     this.addEventListener("submit", this._handleSubmit.bind(this));
-
-    this.addEventListener("formdata", this._handleFormData.bind(this));
   }
 
   /*
@@ -85,18 +84,9 @@ export class WebWriterGamebook extends LitElementWw {
 
    */
   _handleSlotChange() {
-    this.currentPageId = this._resetGamebookToOrigin();
-    this._initializeButtons(this.currentPageId);
-
-    console.log("setting this", this.currentPageId);
-  }
-
-  /*
-
-
-   */
-  private _handleFormData(event: Event) {
-    console.log(event);
+    this.currentContainerId = this._resetGamebookToOrigin();
+    this._initializeButtons(this.currentContainerId);
+    //console.log("setting this", this.currentContainerId);
   }
 
   /*
@@ -105,25 +95,45 @@ export class WebWriterGamebook extends LitElementWw {
    */
   private _handleSubmit(event: Event) {
     event.preventDefault(); // Prevent the default form submission
+    // console.log(event);
 
-    console.log(event);
+    const currentContainer = this.gamebookContainers.find((container) => {
+      return container.drawflowNodeId === this.currentContainerId;
+    });
 
-    console.log(event.target);
+    const containersSlot = currentContainer.shadowRoot.querySelector("slot");
+    const assignedElements = containersSlot.assignedElements();
 
-    const form = event.target as HTMLFormElement; // Cast event.target to HTMLFormElement
-    const formData = new FormData(form); // Extract form data
+    const smartBranchButton = assignedElements.find((element) => {
+      return element instanceof WebWriterSmartBranchButton;
+    });
 
-    // Log each form entry (key-value pairs)
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
+    const branchContainer = this.gamebookContainers.find((container) => {
+      return container.drawflowNodeId === smartBranchButton.dataTargetId;
+    });
+
+    //TODO: make compatible for multiple smartBranchButtons
+
+    let submitElements = smartBranchButton.submitElements;
+
+    //this is specific to quiz:
+    const submitterIndex = submitElements.indexOf(
+      (event.target as HTMLElement).parentElement.id
+    );
+
+    if (submitterIndex !== -1) {
+      smartBranchButton.elementSubmitted[submitterIndex] = true;
     }
 
-    this.gamebookContainers.forEach((container) => {
-      if (container.drawflowNodeId == this.currentPageId) {
-        const quiz = container.querySelector(`webwriter-quiz`);
-        console.log(quiz);
-      }
-    });
+    //everything that needs to be submitted was submitted && at least one rule is satisfied
+    if (
+      smartBranchButton.elementSubmitted.every((element) => element === true) &&
+      this._getTargetFromRules(branchContainer) !== undefined
+    ) {
+      smartBranchButton.disabled = false;
+    }
+
+    this.requestUpdate();
   }
 
   /*
@@ -161,7 +171,8 @@ export class WebWriterGamebook extends LitElementWw {
 
         //
         else if (container instanceof WebWriterGamebookBranchContainer) {
-          this._navigateAccordingToRules(container);
+          const nextId = this._getTargetFromRules(container);
+          this._navigateTo(Number(nextId));
         }
       }
     });
@@ -187,76 +198,156 @@ export class WebWriterGamebook extends LitElementWw {
       }
     });
 
-    this.currentPageId = pageId;
+    this.currentContainerId = pageId;
   }
 
   /*
 
 
   */
-  private _showPopupContainerDialog(containerId: number) {
+  private _showPopupContainerDialog(popupId: number) {
     this.gamebookContainers.forEach((container) => {
-      if (container.drawflowNodeId == containerId) {
+      if (container.drawflowNodeId == popupId) {
         (container as WebWriterGamebookPopupContainer).showDialog();
-      } else if (container.drawflowNodeId != containerId) {
+      }
+      //
+      else if (container.drawflowNodeId != popupId) {
         if (container instanceof WebWriterGamebookPopupContainer) {
           container.hideDialog();
           container.hide();
         }
       }
     });
+
+    this.currentContainerId = popupId;
   }
 
   /*
 
 
   */
-  private _navigateAccordingToRules(
+  private _getTargetFromRules(
     branchContainer: WebWriterGamebookBranchContainer
-  ) {
-    console.log(branchContainer.rules);
-    branchContainer.rules.forEach((rule) => {
-      if (rule.element.toLowerCase() == "text") {
-        console.log(this.gamebookContainers);
-        console.log(branchContainer.incomingContainerDrawflowNodeId);
-        this.gamebookContainers.forEach((container) => {
-          if (
-            container.drawflowNodeId ==
-            branchContainer.incomingContainerDrawflowNodeId
-          ) {
-            console.log("found incoming container", container);
-            const containersSlot = container.shadowRoot.querySelector("slot");
-            const assignedElements = containersSlot.assignedElements();
+  ): Number {
+    const currentContainer = this.gamebookContainers.find((container) => {
+      return container.drawflowNodeId === this.currentContainerId;
+    });
 
-            // Filter only paragraph elements
-            const paragraphElements = assignedElements.filter(
-              (el) => el.tagName.toLowerCase() === "p"
-            );
+    if (currentContainer) {
+      const containersSlot = currentContainer.shadowRoot.querySelector("slot");
+      const assignedElements = containersSlot.assignedElements();
 
-            let contains = false;
+      for (const rule of branchContainer.rules) {
+        //console.log(rule);
+        //Case: Text on Page
+        if (rule.elementId.toLowerCase() == "text") {
+          // Filter only paragraph elements
+          const paragraphElements = assignedElements.filter(
+            (el) => el.tagName.toLowerCase() === "p"
+          );
 
-            // Iterate through the filtered paragraph elements
-            paragraphElements.forEach((paragraph) => {
-              if (paragraph.textContent?.includes(rule.match)) {
-                contains = true;
-              }
-            });
+          let contains = false;
 
-            //contains
-            if (contains && rule.condition.toLowerCase() == "contains") {
-              this._navigateTo(Number(rule.target));
+          // Iterate through the filtered paragraph elements
+          paragraphElements.forEach((paragraph) => {
+            if (paragraph.textContent?.includes(rule.match)) {
+              contains = true;
             }
-            //not contains
-            else if (
-              !contains &&
-              rule.condition.toLowerCase() == "not_contains"
-            ) {
-              this._navigateTo(Number(rule.target));
+          });
+
+          //contains
+          if (contains && rule.condition.toLowerCase() == "contains") {
+            return Number(rule.target);
+          }
+          //not contains
+          else if (
+            !contains &&
+            rule.condition.toLowerCase() == "not_contains"
+          ) {
+            return Number(rule.target);
+          }
+        }
+        //Case: Element Id
+        else {
+          const element = assignedElements.find((element) => {
+            return element.id === rule.elementId;
+          });
+
+          if (element) {
+            //Case: Quiz on Page
+            if (element.tagName.toLowerCase() == "webwriter-quiz") {
+              const quiz = element;
+
+              //console.log(quiz);
+
+              let relevantTasks = quiz.querySelectorAll("webwriter-task");
+
+              relevantTasks = [...relevantTasks].filter((element) => {
+                if (element.tagName.toLowerCase() == "webwriter-task") {
+                  if (rule.quizTasks.includes(element.id)) {
+                    return element;
+                  }
+                }
+              });
+
+              let amountFalseTasks = 0;
+
+              relevantTasks.forEach((task) => {
+                //Task is Choice
+                if (task.answer.tagName.toLowerCase() == "webwriter-choice") {
+                  const children = task.answer.children;
+
+                  //iterate through choice items
+                  const taskHasWrongChoiceItem = [...children].some(
+                    (element) => {
+                      if (element.active != element.valid) {
+                        return true;
+                      }
+                    }
+                  );
+
+                  if (taskHasWrongChoiceItem) {
+                    //console.log(task, "is false");
+                    amountFalseTasks++;
+                  }
+                }
+
+                //TODO: other kinds of tasks need to be respected
+              });
+
+              let percentageCorrect =
+                (relevantTasks.length - amountFalseTasks) /
+                relevantTasks.length;
+
+              let match = Number(rule.match) / 100;
+
+              console.log("correct", percentageCorrect);
+
+              if (rule.condition.toLowerCase() == "correct") {
+                console.log("correct");
+                if (percentageCorrect >= match) {
+                  return Number(rule.target);
+                  break;
+                }
+              }
+              //not contains
+              else if (rule.condition.toLowerCase() == "uncorrect") {
+                console.log("uncorrect");
+                if (1 - percentageCorrect >= match) {
+                  return Number(rule.target);
+                  break;
+                }
+              }
             }
           }
-        });
+        }
+
+        //TODO: let every node spwan with 1 output, and smart branching with 2 and 2 rules
+        //TODO: make match optional
       }
-    });
+    }
+
+    return undefined;
   }
 
   /*
@@ -267,6 +358,8 @@ export class WebWriterGamebook extends LitElementWw {
     const originPageContainer = this.gamebookContainers.find(
       (container) => container.getAttribute("originPage") == 1
     );
+
+    // console.log(originPageContainer);
 
     this.pageTitle = originPageContainer.pageTitle;
 
@@ -294,6 +387,41 @@ export class WebWriterGamebook extends LitElementWw {
     container.buttons.forEach((button) => {
       const targetId = parseInt(button.getAttribute("dataTargetId"), 10);
       button.addEventListener("click", () => this._navigateTo(targetId));
+
+      if (button instanceof WebWriterSmartBranchButton) {
+        let submitElements = [];
+        let elementSubmitted = [];
+        const containersSlot = container.shadowRoot.querySelector("slot");
+        const assignedElements = containersSlot.assignedElements();
+
+        const branchContainer = this.gamebookContainers.find((container) => {
+          return container.drawflowNodeId === targetId;
+        });
+
+        branchContainer.rules.forEach((rule) => {
+          const element = assignedElements.find((element) => {
+            return element.id === rule.elementId;
+          });
+
+          if (!submitElements.includes(element.id)) {
+            if (element.tagName.toLowerCase() == "webwriter-quiz") {
+              submitElements = [...submitElements, element.id];
+              elementSubmitted = [...elementSubmitted, false];
+            }
+          }
+        });
+
+        button.submitElements = submitElements;
+        button.elementSubmitted = elementSubmitted;
+        if (submitElements.length !== 0) {
+          button.disabled = true;
+        }
+      }
     });
+
+    this.requestUpdate();
+
+    //TODO: smart branch button disabled
+    //TODO: make fields required, include header in sl-select for children element that they belong to certian page
   }
 }

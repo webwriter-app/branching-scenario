@@ -35,6 +35,8 @@ import { NodeConnectionList } from "../ui-components/node-connection-list";
 import { QuickConnectNode } from "../ui-components/quick-connect-node";
 import { GamebookContainerManager } from "../gamebook-container-manager";
 
+import squares from "@tabler/icons/filled/squares.svg";
+
 //Tabler Icon Import
 import X from "@tabler/icons/outline/x.svg";
 
@@ -121,38 +123,131 @@ export class PopupNodeDetails extends LitElementWw {
 
   */
   render() {
-    return html` <div class="popup-node-details">
-      <div class="preview">
-        <div class="page">
-          <div class="overlay">
-            <div class="dialog">
-              <div
-                class="header"
-                style=${this.popupContainer?.noHeader
-                  ? "display: none"
-                  : "display: flex"}
-              >
-                <sl-input
-                  value=${this.popupContainer?.titleLabel}
-                  @sl-input=${(event) => this.handleDialogTitleChange(event)}
-                ></sl-input>
-                <sl-icon-button
-                  src=${X}
-                  style=${this.popupContainer?.preventClosing
+    return html` <div class="title-bar">
+        <div class="div-icon-popup">
+          <sl-icon src=${squares}></sl-icon>
+        </div>
+        <div class="div-title">
+          <toggleable-input
+            .text=${this.selectedNode.data.title}
+            .saveChanges=${(string) => this.renameNode(string)}
+          ></toggleable-input>
+          <p class="subtitle">Popup</p>
+        </div>
+        <div class="inputOutputControls">
+          <node-connection-list
+            input
+            .nodeEditor=${this.nodeEditor}
+            .selectedNode=${this.selectedNode}
+            .changeInEditorCallback=${(
+              drawflow,
+              updateType,
+              node,
+              removedNodeId,
+              inputNode,
+              outputNode,
+              inputClass,
+              outputClass,
+              outputHadConnections
+            ) => {
+              this.changeInEditorCallback(
+                drawflow,
+                updateType,
+                node,
+                removedNodeId,
+                inputNode,
+                outputNode,
+                inputClass,
+                outputClass,
+                outputHadConnections
+              );
+            }}
+          ></node-connection-list>
+          <sl-divider vertical style="height: 100%;"></sl-divider>
+          <node-connection-list
+            output
+            .nodeEditor=${this.nodeEditor}
+            .selectedNode=${this.selectedNode}
+            .changeInEditorCallback=${(
+              drawflow,
+              updateType,
+              node,
+              removedNodeId,
+              inputNode,
+              outputNode,
+              inputClass,
+              outputClass,
+              outputHadConnections
+            ) => {
+              this.changeInEditorCallback(
+                drawflow,
+                updateType,
+                node,
+                removedNodeId,
+                inputNode,
+                outputNode,
+                inputClass,
+                outputClass,
+                outputHadConnections
+              );
+            }}
+          ></node-connection-list>
+        </div>
+      </div>
+
+      <div class="popup-node-details">
+        <div class="preview">
+          <div class="page">
+            <div class="overlay">
+              <div class="dialog">
+                <div
+                  class="header"
+                  style=${this.popupContainer?.noHeader
                     ? "display: none"
                     : "display: flex"}
-                ></sl-icon-button>
+                >
+                  <sl-input
+                    value=${this.popupContainer?.titleLabel}
+                    @sl-input=${(event) => this.handleDialogTitleChange(event)}
+                  ></sl-input>
+                  <sl-icon-button
+                    src=${X}
+                    style=${this.popupContainer?.preventClosing
+                      ? "display: none"
+                      : "display: flex"}
+                  ></sl-icon-button>
+                </div>
+                <slot></slot>
               </div>
-              <slot></slot>
             </div>
           </div>
         </div>
-      </div>
-    </div>`;
+      </div>`;
   }
 
+  /*
+
+
+  */
   private handleDialogTitleChange(event: Event) {
     const value = ((event as SlInputEvent).target as SlInput).value;
     this.popupContainer.titleLabel = value;
+  }
+
+  /*
+
+
+  */
+  private renameNode(text: String) {
+    this.nodeEditor.editor.updateNodeDataFromId(this.selectedNode.id, {
+      ...this.selectedNode.data,
+      title: text,
+    });
+
+    this.changeInEditorCallback(
+      { ...this.nodeEditor.editor.drawflow },
+      "nodeRenamed",
+      this.selectedNode
+    );
   }
 }

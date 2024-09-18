@@ -613,7 +613,7 @@ export class NodeEditor extends LitElementWw {
 
       Object.values(nodes).forEach((node) => {
         if (node.id == id) {
-          console.log(node.pos_x, node.pos_y);
+          //console.log(node.pos_x, node.pos_y);
         }
       });
 
