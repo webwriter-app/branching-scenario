@@ -324,7 +324,6 @@ export class WebWriterGamebook extends LitElementWw {
               console.log("correct", percentageCorrect);
 
               if (rule.condition.toLowerCase() == "correct") {
-                console.log("correct");
                 if (percentageCorrect >= match) {
                   return Number(rule.target);
                   break;
@@ -332,7 +331,6 @@ export class WebWriterGamebook extends LitElementWw {
               }
               //not contains
               else if (rule.condition.toLowerCase() == "uncorrect") {
-                console.log("uncorrect");
                 if (1 - percentageCorrect >= match) {
                   return Number(rule.target);
                   break;
@@ -347,6 +345,7 @@ export class WebWriterGamebook extends LitElementWw {
       }
     }
 
+    console.log("No rule satisfied");
     return undefined;
   }
 
