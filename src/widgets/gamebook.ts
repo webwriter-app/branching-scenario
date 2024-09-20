@@ -399,6 +399,99 @@ export class WebWriterGamebook extends LitElementWw {
                 }
               }
             }
+            //
+            else if (element.tagName.toLowerCase() == "webwriter-choice") {
+              const children = element.answer.children;
+
+              //iterate through choice items
+              const choiceIsWrong = [...children].some((element) => {
+                if (element.active != element.valid) {
+                  return true;
+                }
+              });
+
+              if (rule.condition.toLowerCase() == "correct" && !choiceIsWrong) {
+                return Number(rule.target);
+              }
+              //
+              else if (
+                rule.condition.toLowerCase() == "uncorrect" &&
+                choiceIsWrong
+              ) {
+                return Number(rule.target);
+              }
+            }
+            //
+            else if (element.tagName.toLowerCase() == "webwriter-order") {
+              const children = element.answer.children;
+
+              //iterate through choice items
+              const orderIsWrong = [...children].some((element) => {
+                if (element.validOrder != element.elementIndex) {
+                  return true;
+                }
+              });
+
+              if (rule.condition.toLowerCase() == "correct" && !orderIsWrong) {
+                return Number(rule.target);
+              }
+              //
+              else if (
+                rule.condition.toLowerCase() == "uncorrect" &&
+                orderIsWrong
+              ) {
+                return Number(rule.target);
+              }
+            }
+            //
+            else if (element.tagName.toLowerCase() == "webwriter-text") {
+              const textIsWrong =
+                element.answer.solution !== element.answer.value;
+
+              if (rule.condition.toLowerCase() == "correct" && !textIsWrong) {
+                return Number(rule.target);
+              }
+              //
+              else if (
+                rule.condition.toLowerCase() == "uncorrect" &&
+                textIsWrong
+              ) {
+                return Number(rule.target);
+              }
+            }
+            //
+            else if (element.tagName.toLowerCase() == "webwriter-mark") {
+              let userHighlightMatches = false;
+
+              for (const solution_highlight of element.answer.solution) {
+                userHighlightMatches = element.answer.value.some(
+                  (user_highlight) => {
+                    if (
+                      solution_highlight.startOffset ==
+                        user_highlight.startOffset &&
+                      solution_highlight.endOffset == user_highlight.endOffset
+                    ) {
+                      return true;
+                    }
+                  }
+                );
+
+                if (
+                  rule.condition.toLowerCase() == "uncorrect" &&
+                  !userHighlightMatches
+                ) {
+                  return Number(rule.target);
+                }
+              }
+
+              if (
+                rule.condition.toLowerCase() == "correct" &&
+                userHighlightMatches
+              ) {
+                return Number(rule.target);
+              }
+              //
+            }
           }
         }
 

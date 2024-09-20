@@ -14,6 +14,12 @@ import Drawflow, { DrawflowNode } from "drawflow";
 import helpOctagon from "@tabler/icons/outline/help-octagon.svg";
 import textSize from "@tabler/icons/outline/text-size.svg";
 
+import number123 from "@tabler/icons/outline/number-123.svg";
+import checkbox from "@tabler/icons/outline/checkbox.svg";
+import blockquote from "@tabler/icons/outline/blockquote.svg";
+import highlight from "@tabler/icons/outline/highlight.svg";
+import microphone from "@tabler/icons/outline/microphone.svg";
+
 const NO_NODE_SELECTED: DrawflowNode = {
   id: -1,
   name: "unselect",
@@ -64,19 +70,27 @@ export class ElementChildrenSelect extends LitElement {
     const containersSlot = this.container?.shadowRoot.querySelector("slot");
     const assignedElements = containersSlot.assignedElements();
 
-    // Check if there is a non-empty <p> element in the assignedElements
-    const hasNonEmptyP = assignedElements.some(
-      (el) => el.tagName === "P" && el.textContent.trim() !== ""
-    );
+    // // Check if there is a non-empty <p> element in the assignedElements
+    // const hasNonEmptyP = assignedElements.some(
+    //   (el) => el.tagName === "P" && el.textContent.trim() !== ""
+    // );
 
-    if (hasNonEmptyP) {
-      this.options = [...this.options, { tagName: "Text", id: "text" }];
-    }
+    // if (hasNonEmptyP) {
+    //   this.options = [...this.options, { tagName: "Text", id: "text" }];
+    // }
 
     // Filter nodes with class "ww-widget" and add them to this.options
-    const wwWidgetElements = assignedElements.filter((el) =>
+    let wwWidgetElements = assignedElements.filter((el) =>
       el.classList.contains("ww-widget")
     );
+
+    wwWidgetElements = wwWidgetElements.filter(
+      (el) =>
+        el.tagName.toLowerCase().includes("webwriter-quiz") ||
+        el.tagName.toLowerCase().includes("webwriter-task")
+    );
+
+    console.log(wwWidgetElements);
 
     this.options = [...this.options, ...wwWidgetElements];
   }
@@ -96,15 +110,50 @@ export class ElementChildrenSelect extends LitElement {
           this.options,
           (element) => (element as HTMLElement).id, // or use another unique identifier
           (element) => html`
-            <sl-option value=${`${(element as HTMLElement).id}`}
-              >${(element as HTMLElement).tagName
-                .replace("WEBWRITER-", "")
+            <sl-option value=${`${(element as HTMLElement).id}`}>
+              ${(element as HTMLElement).tagName
                 .toLowerCase()
-                .replace(/^./, (str) => str.toUpperCase())}
-              ${element.tagName.toLowerCase().includes("text")
-                ? html` <sl-icon slot="prefix" src=${textSize}></sl-icon>`
-                : element.tagName.toLowerCase().includes("quiz")
-                ? html`<sl-icon slot="prefix" src=${helpOctagon}></sl-icon>`
+                .includes("webwriter-task")
+                ? html`${(element as HTMLElement).children[1].tagName
+                    .replace("WEBWRITER-", "")
+                    .toLowerCase()
+                    .replace(/^./, (str) => str.toUpperCase())}
+                  ${(element as HTMLElement).children[1]?.tagName
+                    .toLowerCase()
+                    .includes("order")
+                    ? html` <sl-icon slot="prefix" src=${number123}></sl-icon>`
+                    : (element as HTMLElement).children[1].tagName
+                        .toLowerCase()
+                        .includes("choice")
+                    ? html`<sl-icon slot="prefix" src=${checkbox}></sl-icon>`
+                    : (element as HTMLElement).children[1].tagName
+                        .toLowerCase()
+                        .includes("text")
+                    ? html`<sl-icon slot="prefix" src=${blockquote}></sl-icon>`
+                    : (element as HTMLElement).children[1].tagName
+                        .toLowerCase()
+                        .includes("mark")
+                    ? html`<sl-icon slot="prefix" src=${highlight}></sl-icon>`
+                    : (element as HTMLElement).children[1].tagName
+                        .toLowerCase()
+                        .includes("speech")
+                    ? html`<sl-icon slot="prefix" src=${microphone}></sl-icon>`
+                    : null} `
+                : (element as HTMLElement).tagName
+                    .toLowerCase()
+                    .includes("webwriter-quiz")
+                ? html`
+                    ${(element as HTMLElement).tagName
+                      .replace("WEBWRITER-", "")
+                      .toLowerCase()
+                      .replace(/^./, (str) => str.toUpperCase())}
+                    ${element.tagName.toLowerCase().includes("quiz")
+                      ? html`<sl-icon
+                          slot="prefix"
+                          src=${helpOctagon}
+                        ></sl-icon>`
+                      : null}
+                  `
                 : null}
             </sl-option>
           `
@@ -125,3 +174,25 @@ export class ElementChildrenSelect extends LitElement {
     }
   }
 }
+
+// ${(element as HTMLElement).children[1]?.tagName
+//   .toLowerCase()
+//   .includes("order")
+//   ? html` <sl-icon slot="prefix" src=${number123}></sl-icon>`
+//   : (element as HTMLElement).children[1].tagName
+//       .toLowerCase()
+//       .includes("choice")
+//   ? html`<sl-icon slot="prefix" src=${checkbox}></sl-icon>`
+//   : (element as HTMLElement).children[1].tagName
+//       .toLowerCase()
+//       .includes("text")
+//   ? html`<sl-icon slot="prefix" src=${blockquote}></sl-icon>`
+//   : (element as HTMLElement).children[1].tagName
+//       .toLowerCase()
+//       .includes("mark")
+//   ? html`<sl-icon slot="prefix" src=${highlight}></sl-icon>`
+//   : (element as HTMLElement).children[1].tagName
+//       .toLowerCase()
+//       .includes("speech")
+//   ? html`<sl-icon slot="prefix" src=${microphone}></sl-icon>`
+//   : null}
