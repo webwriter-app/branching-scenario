@@ -41,6 +41,7 @@ import infoSquareRounded from "@tabler/icons/filled/info-square-rounded.svg";
 import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
 import { NodeEditorControlsBar } from "./node-editor/node-editor-control-bar";
 import { WebWriterGamebookPopupContainer } from "./gamebook-components/webwriter-gamebook-popup-container";
+import { WebWriterGamebookBranchContainer } from "./gamebook-components/webwriter-gamebook-branch-container";
 
 const NO_NODE_SELECTED: DrawflowNode = {
   id: -1,
@@ -681,7 +682,33 @@ export class WebWriterBranchingScenario extends LitElementWw {
             inputClass
           );
         }
-      } else {
+      }
+      //
+      else if (outputNode.class == "branch") {
+        if (
+          inputNode.id ===
+          Number(
+            (
+              this.gamebookContainerManager._getContainerByDrawflowNodeId(
+                outputNode.id
+              ) as WebWriterGamebookBranchContainer
+            ).incomingContainerDrawflowNodeId
+          )
+        ) {
+          const dialog = this.shadowRoot.getElementById(
+            "branch_input_full_dialog"
+          ) as SlDialog;
+          dialog.show();
+          this.nodeEditor.editor.removeSingleConnection(
+            outputNode.id,
+            inputNode.id,
+            outputClass,
+            inputClass
+          );
+        }
+      }
+      //
+      else {
         this.gamebookContainerManager.addConnectionButtonToContainer(
           outputNode,
           inputNode,
