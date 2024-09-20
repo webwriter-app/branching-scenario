@@ -220,6 +220,8 @@ export class WebWriterGamebook extends LitElementWw {
     });
 
     this.currentContainerId = popupId;
+    //TODO: Introduction of closeable popups needs to listen to dismissed popups
+    //TODO: set currentPageContainer back to underlying page then
   }
 
   /*
@@ -255,6 +257,8 @@ export class WebWriterGamebook extends LitElementWw {
             }
           });
 
+          console.log("text", contains);
+
           //contains
           if (contains && rule.condition.toLowerCase() == "contains") {
             return Number(rule.target);
@@ -273,67 +277,125 @@ export class WebWriterGamebook extends LitElementWw {
             return element.id === rule.elementId;
           });
 
+          const smartBranchButton = assignedElements.find((element) => {
+            return element instanceof WebWriterSmartBranchButton;
+          });
+
+          let submitElements = smartBranchButton.submitElements;
+
           if (element) {
             //Case: Quiz on Page
             if (element.tagName.toLowerCase() == "webwriter-quiz") {
-              const quiz = element;
+              //this is specific to quiz:
+              const submitterIndex = submitElements.indexOf(element.id);
 
-              //console.log(quiz);
+              if (smartBranchButton.elementSubmitted[submitterIndex] == true) {
+                const quiz = element;
 
-              let relevantTasks = quiz.querySelectorAll("webwriter-task");
+                let relevantTasks = quiz.querySelectorAll("webwriter-task");
 
-              relevantTasks = [...relevantTasks].filter((element) => {
-                if (element.tagName.toLowerCase() == "webwriter-task") {
-                  if (rule.quizTasks.includes(element.id)) {
-                    return element;
+                relevantTasks = [...relevantTasks].filter((element) => {
+                  if (element.tagName.toLowerCase() == "webwriter-task") {
+                    if (rule.quizTasks.includes(element.id)) {
+                      return element;
+                    }
                   }
-                }
-              });
+                });
 
-              let amountFalseTasks = 0;
+                let amountFalseTasks = 0;
 
-              relevantTasks.forEach((task) => {
-                //Task is Choice
-                if (task.answer.tagName.toLowerCase() == "webwriter-choice") {
-                  const children = task.answer.children;
+                relevantTasks.forEach((task) => {
+                  //Task is Choice
+                  if (task.answer.tagName.toLowerCase() == "webwriter-choice") {
+                    const children = task.answer.children;
 
-                  //iterate through choice items
-                  const taskHasWrongChoiceItem = [...children].some(
-                    (element) => {
-                      if (element.active != element.valid) {
+                    //iterate through choice items
+                    const taskHasWrongChoiceItem = [...children].some(
+                      (element) => {
+                        if (element.active != element.valid) {
+                          return true;
+                        }
+                      }
+                    );
+
+                    if (taskHasWrongChoiceItem) {
+                      //console.log(task, "is false");
+                      amountFalseTasks++;
+                    }
+                  }
+                  //
+                  else if (
+                    task.answer.tagName.toLowerCase() == "webwriter-order"
+                  ) {
+                    const children = task.answer.children;
+
+                    //iterate through choice items
+                    const taskHasWrongOrder = [...children].some((element) => {
+                      if (element.validOrder != element.elementIndex) {
                         return true;
                       }
-                    }
-                  );
+                    });
 
-                  if (taskHasWrongChoiceItem) {
-                    //console.log(task, "is false");
-                    amountFalseTasks++;
+                    if (taskHasWrongOrder) {
+                      //console.log(task, "is false");
+                      amountFalseTasks++;
+                    }
+                  }
+                  //
+                  else if (
+                    task.answer.tagName.toLowerCase() == "webwriter-text"
+                  ) {
+                    if (task.answer.solution !== task.answer.value) {
+                      amountFalseTasks++;
+                    }
+                  }
+                  //
+                  else if (
+                    task.answer.tagName.toLowerCase() == "webwriter-mark"
+                  ) {
+                    let userHighlightMatches = false;
+
+                    for (const solution_highlight of task.answer.solution) {
+                      userHighlightMatches = task.answer.value.some(
+                        (user_highlight) => {
+                          if (
+                            solution_highlight.startOffset ==
+                              user_highlight.startOffset &&
+                            solution_highlight.endOffset ==
+                              user_highlight.endOffset
+                          ) {
+                            return true;
+                          }
+                        }
+                      );
+
+                      if (!userHighlightMatches) {
+                        amountFalseTasks++;
+                        break;
+                      }
+                    }
+                  }
+                  //TODO: other kinds of tasks need to be respected
+                });
+
+                let percentageCorrect =
+                  (relevantTasks.length - amountFalseTasks) /
+                  relevantTasks.length;
+
+                let match = Number(rule.match) / 100;
+
+                console.log("correct", percentageCorrect);
+
+                if (rule.condition.toLowerCase() == "correct") {
+                  if (percentageCorrect >= match) {
+                    return Number(rule.target);
                   }
                 }
-
-                //TODO: other kinds of tasks need to be respected
-              });
-
-              let percentageCorrect =
-                (relevantTasks.length - amountFalseTasks) /
-                relevantTasks.length;
-
-              let match = Number(rule.match) / 100;
-
-              console.log("correct", percentageCorrect);
-
-              if (rule.condition.toLowerCase() == "correct") {
-                if (percentageCorrect >= match) {
-                  return Number(rule.target);
-                  break;
-                }
-              }
-              //not contains
-              else if (rule.condition.toLowerCase() == "uncorrect") {
-                if (1 - percentageCorrect >= match) {
-                  return Number(rule.target);
-                  break;
+                //not contains
+                else if (rule.condition.toLowerCase() == "uncorrect") {
+                  if (1 - percentageCorrect >= match) {
+                    return Number(rule.target);
+                  }
                 }
               }
             }
