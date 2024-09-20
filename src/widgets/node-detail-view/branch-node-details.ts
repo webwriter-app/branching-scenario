@@ -399,6 +399,9 @@ export class BranchNodeDetails extends LitElementWw {
                                      ).selectElement.value.toString()
                                    )}
                                  .selectedNode=${this.selectedNode}
+                                 .incomingNodeId=${this.selectedNode.inputs[
+                                   "input_1"
+                                 ].connections?.[0]?.node}
                                  .nodeEditor=${this.nodeEditor}
                                  .outputClass=${rule.output_id}
                                  ?disabled=${!rule.isTargetEnabled}

@@ -31,6 +31,7 @@ const NO_NODE_SELECTED: DrawflowNode = {
 export class OutputConnectionControl extends LitElement {
   @property({ type: Object }) accessor nodeEditor;
   @property({ type: Object }) accessor selectedNode;
+  @property({ type: Number }) accessor incomingNodeId;
   @property({ type: String }) accessor outputClass;
   @property({ type: Boolean }) accessor disabled;
   @property({ type: Boolean }) accessor inOutputList; // New attribute
@@ -111,10 +112,14 @@ export class OutputConnectionControl extends LitElement {
   render() {
     const data = this.nodeEditor.editor.drawflow.drawflow.Home.data;
     const nodeId = this.selectedNode.id;
+
     const options = (nodeClass) =>
       Object.keys(data)
         .filter(
-          (key) => data[key].id !== nodeId && data[key].class === nodeClass
+          (key) =>
+            data[key].id !== nodeId &&
+            data[key].id !== Number(this.incomingNodeId) &&
+            data[key].class === nodeClass
         )
         .map(
           (key) => html`<sl-option
@@ -128,7 +133,10 @@ export class OutputConnectionControl extends LitElement {
 
     const hasNodesOfClass = (nodeClass) =>
       Object.keys(data).some(
-        (key) => data[key].id !== nodeId && data[key].class === nodeClass
+        (key) =>
+          data[key].id !== nodeId &&
+          data[key].id !== Number(this.incomingNodeId) &&
+          data[key].class === nodeClass
       );
 
     return html`
