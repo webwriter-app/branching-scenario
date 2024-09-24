@@ -957,7 +957,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.numberOfSearchNodes = nodeIncludes.length;
       this.nodeEditor.highlightSearchedNodes(nodeIncludes);
     } else {
-      console.log("test");
+      //console.log("test");
       this.nodeEditor.removeSearchHighlightFromAllNodes();
       this.numberOfSearchNodes = 0;
     }
@@ -1001,7 +1001,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   private handleSwitchNoHeader(event: Event) {
     const value = (event.target as SlSwitch).checked;
 
-    console.log("no Header", !value);
+    //console.log("no Header", !value);
 
     (
       this.gamebookContainerManager._getContainerByDrawflowNodeId(

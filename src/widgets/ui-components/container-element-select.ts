@@ -90,7 +90,7 @@ export class ElementChildrenSelect extends LitElement {
         el.tagName.toLowerCase().includes("webwriter-task")
     );
 
-    console.log(wwWidgetElements);
+    //console.log(wwWidgetElements);
 
     this.options = [...this.options, ...wwWidgetElements];
   }

@@ -258,7 +258,7 @@ export class GamebookContainerManager extends LitElementWw {
       (container) => container.getAttribute("drawflowNodeId") == containerId
     );
 
-    console.log(removed_output_class);
+    //console.log(removed_output_class);
 
     // Extract the number from the output_class parameter
     const removedOutputClassNumber = parseInt(

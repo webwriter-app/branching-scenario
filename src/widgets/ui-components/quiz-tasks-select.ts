@@ -103,7 +103,7 @@ export class QuizTasksSelect extends LitElement {
       const prompt = taskContent[0];
       const taskElement = taskContent[1];
 
-      //TODO: add support for Speech Quiz
+      //TODO: Add Support for Speech Quiz Task
       if (!taskElement.tagName.toLowerCase().includes("speech")) {
         taskOptions = [
           ...taskOptions,

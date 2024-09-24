@@ -222,7 +222,7 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
               //make sure link button did not get deleted programtically
               let connButton = node as WebWriterConnectionButton;
 
-              console.log("noticed");
+              //console.log("noticed");
 
               if (connButton.identifier != "connectionDeletedInNodeEditor") {
                 //console.log("in mutation observer here");

@@ -384,7 +384,7 @@ export class WebWriterGamebook extends LitElementWw {
 
                 let match = Number(rule.match) / 100;
 
-                console.log("correct", percentageCorrect);
+                //console.log("correct", percentageCorrect);
 
                 if (rule.condition.toLowerCase() == "correct") {
                   if (percentageCorrect >= match) {
@@ -500,7 +500,7 @@ export class WebWriterGamebook extends LitElementWw {
       }
     }
 
-    console.log("No rule satisfied");
+    //console.log("No rule satisfied");
     return undefined;
   }
 

@@ -70,25 +70,17 @@ export class BranchNodeDetails extends LitElementWw {
 
   //access nodes in the internal component DOM.
   @property({ type: Object }) accessor nodeEditor;
-
   @property({ type: Boolean }) accessor isConnected = false;
-
   //public properties are part of the component's public API
   @property({ type: Object, attribute: false })
   accessor selectedNode: DrawflowNode;
-
   @property({ type: Object, attribute: false })
   accessor branchContainer: WebWriterGamebookBranchContainer;
-
   @property({ type: Object, attribute: false })
   accessor incomingContainer;
-
   @property({ type: Boolean }) accessor ruleDrag = false;
-
   private draggedIndex = -1;
-
   @property({ type: Number }) accessor hoveredDividerIndex = -1;
-
   @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow,
     updateType,
@@ -108,15 +100,28 @@ export class BranchNodeDetails extends LitElementWw {
   })
   accessor gamebookContainerManager;
 
+  //
+
+  //
   protected firstUpdated(_changedProperties: PropertyValues): void {
     this.branchContainer = (
       this.gamebookContainerManager[0] as GamebookContainerManager
     )._getContainerByDrawflowNodeId(this.selectedNode.id.toString());
+
+    console.log(this.selectedNode.id.toString());
+    console.log(this.branchContainer);
   }
   //
 
   //
   protected updated(_changedProperties: PropertyValues): void {
+    this.branchContainer = (
+      this.gamebookContainerManager[0] as GamebookContainerManager
+    )._getContainerByDrawflowNodeId(this.selectedNode.id.toString());
+
+    console.log(this.selectedNode.id.toString());
+    console.log(this.branchContainer);
+
     const incomingNodeId =
       this.selectedNode.inputs["input_1"].connections?.[0]?.node;
 
@@ -210,6 +215,7 @@ export class BranchNodeDetails extends LitElementWw {
         <div class="ruleList">
           ${this.branchContainer?.rules.length > 0
             ? html`
+                ${console.log(this.branchContainer.rules)}
                 ${repeat(
                   this.branchContainer?.rules,
                   (rule, index) => html`
@@ -234,190 +240,181 @@ export class BranchNodeDetails extends LitElementWw {
                     <!--   -->
                      ${
                        this.incomingContainer != undefined
-                         ? html` <!--  -->
+                         ? html` <div
+                             class="ruleItem"
+                             id="horizontal-stack-${index}"
+                             draggable="true"
+                             @dragstart=${(e: DragEvent) =>
+                               this._onDragStart(e, index)}
+                             @dragend=${this._onDragEnd}
+                             @dragover=${(e: DragEvent) =>
+                               this._onDragOver(e, index)}
+                             @dragleave=${(e: DragEvent) =>
+                               this._onDragLeave(e, index)}
+                             @drop=${(e: DragEvent) => this._onDrop(e)}
+                           >
                              <div
-                               class="ruleItem"
-                               id="horizontal-stack-${index}"
-                               draggable="true"
-                               @dragstart=${(e: DragEvent) =>
-                                 this._onDragStart(e, index)}
-                               @dragend=${this._onDragEnd}
-                               @dragover=${(e: DragEvent) =>
-                                 this._onDragOver(e, index)}
-                               @dragleave=${(e: DragEvent) =>
-                                 this._onDragLeave(e, index)}
-                               @drop=${(e: DragEvent) => this._onDrop(e)}
+                               id="index"
+                               style="min-width: 25px; display: flex; flex-direction: row; align-items: center; justify-content: center;"
                              >
-                               <div
-                                 id="index"
-                                 style="min-width: 25px; display: flex; flex-direction: row; align-items: center; justify-content: center;"
-                               >
-                                 <p style="color: darkgrey; font-size: 15px;">
-                                   ${index}
-                                 </p>
-                               </div>
+                               <p style="color: darkgrey; font-size: 15px;">
+                                 ${index}
+                               </p>
+                             </div>
 
-                               <sl-icon
-                                 class="draggable"
-                                 src=${gripHorizontal}
-                                 style="font-size: 15px; flex-shrink: 0"
-                               ></sl-icon>
+                             <sl-icon
+                               class="draggable"
+                               src=${gripHorizontal}
+                               style="font-size: 15px; flex-shrink: 0"
+                             ></sl-icon>
 
-                               <!-- TODO: incomingContainer is set during updating and this sometimes returns null, causing an undefined error in the container element select -->
-                               <!-- TODO: Make different types of rules for different types of elements -->
-                               <!-- TODO: inlcude conditions for quiz: right (match), wrong (match), contains (match), ... -->
-                               <!-- See what quiz types are possible, how they match how to determine right wrong, contains, etc. -->
-                               <!-- Different kinds of matches: percent etc ... -->
-                               <!-- Specific subtasks of tasks?? -->
-                               <!-- TODO: Snippets allow direct Task without QUiz First -->
+                             <!-- TODO: incomingContainer is set during updating and this sometimes returns null, causing an undefined error in the container element select -->
+                             <!-- Different kinds of matches: percent etc ... -->
 
-                               <!-- Element -->
-                               <element-children-select
-                                 .value=${rule.elementId}
-                                 @sl-change=${(e: Event) =>
-                                   this._updateRuleElement(
-                                     index,
-                                     (
-                                       e.target as ElementChildrenSelect
-                                     ).selectElement.value.toString()
+                             <!-- Element -->
+                             <element-children-select
+                               .value=${rule.elementId}
+                               @sl-change=${(e: Event) =>
+                                 this._updateRuleElement(
+                                   index,
+                                   (
+                                     e.target as ElementChildrenSelect
+                                   ).selectElement.value.toString()
+                                 )}
+                               .container=${this.incomingContainer}
+                             >
+                             </element-children-select>
+
+                             <!-- Subelements -->
+                             ${rule.elementId !== "" &&
+                             rule.elementId !== "text" &&
+                             this.incomingContainer
+                               .querySelector(`#${rule.elementId}`)
+                               ?.tagName.toLowerCase() == "webwriter-quiz"
+                               ? html` <quiz-tasks-select
+                                   .value=${rule.quizTasks.split(" ")}
+                                   @sl-change=${(e: Event) =>
+                                     this._updateRuleTasks(
+                                       index,
+                                       (
+                                         e.target as ElementChildrenSelect
+                                       ).selectElement.value.toString()
+                                     )}
+                                   .quiz=${this.incomingContainer.querySelector(
+                                     `#${rule.elementId}`
                                    )}
-                                 .container=${this.incomingContainer}
-                               >
-                               </element-children-select>
+                                 >
+                                 </quiz-tasks-select>`
+                               : null}
 
-                               <!-- Subelements -->
+                             <!-- Condition -->
+                             <sl-select
+                               clearable
+                               placeholder="Condition"
+                               value=${rule.condition}
+                               @sl-change=${(e: Event) =>
+                                 this._updateRuleCondition(
+                                   index,
+                                   (e.target as HTMLSelectElement).value
+                                 )}
+                               ?disabled=${!rule.isConditionEnabled}
+                             >
+                               <!-- Text Conditions -->
+                               ${rule.elementId == "text"
+                                 ? html` <sl-option value="contains"
+                                       >Contains</sl-option
+                                     >
+                                     <sl-option value="not_contains"
+                                       >Not Contains</sl-option
+                                     >`
+                                 : null}
+
+                               <!-- Quiz Conditions -->
                                ${rule.elementId !== "" &&
                                rule.elementId !== "text" &&
                                this.incomingContainer
                                  .querySelector(`#${rule.elementId}`)
                                  ?.tagName.toLowerCase() == "webwriter-quiz"
-                                 ? html` <quiz-tasks-select
-                                     .value=${rule.quizTasks.split(" ")}
-                                     @sl-change=${(e: Event) =>
-                                       this._updateRuleTasks(
-                                         index,
-                                         (
-                                           e.target as ElementChildrenSelect
-                                         ).selectElement.value.toString()
-                                       )}
-                                     .quiz=${this.incomingContainer.querySelector(
-                                       `#${rule.elementId}`
-                                     )}
-                                   >
-                                   </quiz-tasks-select>`
-                                 : null}
-
-                               <!-- Condition -->
-                               <sl-select
-                                 clearable
-                                 placeholder="Condition"
-                                 value=${rule.condition}
-                                 @sl-change=${(e: Event) =>
-                                   this._updateRuleCondition(
-                                     index,
-                                     (e.target as HTMLSelectElement).value
-                                   )}
-                                 ?disabled=${!rule.isConditionEnabled}
-                               >
-                                 <!-- Text Conditions -->
-                                 ${rule.elementId == "text"
-                                   ? html` <sl-option value="contains"
-                                         >Contains</sl-option
-                                       >
-                                       <sl-option value="not_contains"
-                                         >Not Contains</sl-option
-                                       >`
-                                   : null}
-
-                                 <!-- Quiz Conditions -->
-                                 ${rule.elementId !== "" &&
-                                 rule.elementId !== "text" &&
-                                 this.incomingContainer
-                                   .querySelector(`#${rule.elementId}`)
-                                   ?.tagName.toLowerCase() == "webwriter-quiz"
-                                   ? html`
-                                       <sl-option value="correct"
-                                         >Correct</sl-option
-                                       >
-                                       <sl-option value="uncorrect"
-                                         >Uncorrect</sl-option
-                                       >
-                                     `
-                                   : null}
-                               </sl-select>
-
-                               <!-- Match -->
-                               ${rule.condition == ""
                                  ? html`
-                                     <sl-input
-                                       placeholder="Match"
-                                       ?disabled=${!rule.isMatchEnabled}
-                                     ></sl-input>
+                                     <sl-option value="correct"
+                                       >Correct</sl-option
+                                     >
+                                     <sl-option value="uncorrect"
+                                       >Uncorrect</sl-option
+                                     >
                                    `
-                                 : rule.condition == "correct" ||
-                                   rule.condition == "uncorrect"
-                                 ? html`<sl-input
-                                     id="percent"
-                                     placeholder="..."
-                                     value=${rule.match}
-                                     type="number"
-                                     min="0"
-                                     max="100"
-                                     inputmode="numeric"
-                                     @sl-input=${(e: Event) =>
-                                       this._validateAndUpdateRuleMatch(
-                                         e,
-                                         index
-                                       )}
-                                   >
-                                     <sl-icon
-                                       src=${percentage}
-                                       slot="prefix"
-                                     ></sl-icon>
-                                   </sl-input>`
-                                 : rule.condition == "contains" ||
-                                   rule.condition == "not_contains"
-                                 ? html` <sl-input
-                                     clearable
-                                     placeholder="Text"
-                                     value=${rule.match}
-                                     @sl-input=${(e: Event) =>
-                                       this._updateRuleMatch(
-                                         index,
-                                         (e.target as HTMLInputElement).value
-                                       )}
-                                   ></sl-input>`
                                  : null}
+                             </sl-select>
 
-                               <!-- Output -->
-                               <output-connection-control
-                                 @sl-change=${(e: Event) =>
-                                   this._updateRuleTarget(
-                                     index,
-                                     (
-                                       e.target as OutputConnectionControl
-                                     ).selectElement.value.toString()
-                                   )}
-                                 .selectedNode=${this.selectedNode}
-                                 .incomingNodeId=${this.selectedNode.inputs[
-                                   "input_1"
-                                 ].connections?.[0]?.node}
-                                 .nodeEditor=${this.nodeEditor}
-                                 .outputClass=${rule.output_id}
-                                 ?disabled=${!rule.isTargetEnabled}
-                               ></output-connection-control>
+                             <!-- Match -->
+                             ${rule.condition == ""
+                               ? html`
+                                   <sl-input
+                                     placeholder="Match"
+                                     ?disabled=${!rule.isMatchEnabled}
+                                   ></sl-input>
+                                 `
+                               : rule.condition == "correct" ||
+                                 rule.condition == "uncorrect"
+                               ? html`<sl-input
+                                   id="percent"
+                                   placeholder="..."
+                                   value=${rule.match}
+                                   type="number"
+                                   min="0"
+                                   max="100"
+                                   inputmode="numeric"
+                                   @sl-input=${(e: Event) =>
+                                     this._validateAndUpdateRuleMatch(e, index)}
+                                 >
+                                   <sl-icon
+                                     src=${percentage}
+                                     slot="prefix"
+                                   ></sl-icon>
+                                 </sl-input>`
+                               : rule.condition == "contains" ||
+                                 rule.condition == "not_contains"
+                               ? html` <sl-input
+                                   clearable
+                                   placeholder="Text"
+                                   value=${rule.match}
+                                   @sl-input=${(e: Event) =>
+                                     this._updateRuleMatch(
+                                       index,
+                                       (e.target as HTMLInputElement).value
+                                     )}
+                                 ></sl-input>`
+                               : null}
 
-                               <sl-icon-button
-                                 class="minus"
-                                 src=${minus}
-                                 style="font-size: 15px;"
-                                 @click=${() =>
-                                   this._removeRuleFromSelectedBranchNode(
-                                     rule.output_id
-                                   )}
-                                 ?disabled=${!this.isConnected}
-                               ></sl-icon-button>
-                             </div>`
+                             <!-- Output -->
+                             <output-connection-control
+                               @sl-change=${(e: Event) =>
+                                 this._updateRuleTarget(
+                                   index,
+                                   (
+                                     e.target as OutputConnectionControl
+                                   ).selectElement.value.toString()
+                                 )}
+                               .selectedNode=${this.selectedNode}
+                               .incomingNodeId=${this.selectedNode.inputs[
+                                 "input_1"
+                               ].connections?.[0]?.node}
+                               .nodeEditor=${this.nodeEditor}
+                               .outputClass=${rule.output_id}
+                               ?disabled=${!rule.isTargetEnabled}
+                             ></output-connection-control>
+
+                             <sl-icon-button
+                               class="minus"
+                               src=${minus}
+                               style="font-size: 15px;"
+                               @click=${() =>
+                                 this._removeRuleFromSelectedBranchNode(
+                                   rule.output_id
+                                 )}
+                               ?disabled=${!this.isConnected}
+                             ></sl-icon-button>
+                           </div>`
                          : null
                      }
                       <!-- bottom divider -->
