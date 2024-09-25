@@ -5,6 +5,7 @@ import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
   property,
+  query,
   queryAssignedElements,
 } from "lit/decorators.js";
 
@@ -107,9 +108,6 @@ export class BranchNodeDetails extends LitElementWw {
     this.branchContainer = (
       this.gamebookContainerManager[0] as GamebookContainerManager
     )._getContainerByDrawflowNodeId(this.selectedNode.id.toString());
-
-    console.log(this.selectedNode.id.toString());
-    console.log(this.branchContainer);
   }
   //
 
@@ -119,8 +117,8 @@ export class BranchNodeDetails extends LitElementWw {
       this.gamebookContainerManager[0] as GamebookContainerManager
     )._getContainerByDrawflowNodeId(this.selectedNode.id.toString());
 
-    console.log(this.selectedNode.id.toString());
-    console.log(this.branchContainer);
+    // console.log(this.selectedNode.id.toString());
+    // console.log(this.branchContainer);
 
     const incomingNodeId =
       this.selectedNode.inputs["input_1"].connections?.[0]?.node;
@@ -215,7 +213,6 @@ export class BranchNodeDetails extends LitElementWw {
         <div class="ruleList">
           ${this.branchContainer?.rules.length > 0
             ? html`
-                ${console.log(this.branchContainer.rules)}
                 ${repeat(
                   this.branchContainer?.rules,
                   (rule, index) => html`
@@ -319,71 +316,51 @@ export class BranchNodeDetails extends LitElementWw {
                                  )}
                                ?disabled=${!rule.isConditionEnabled}
                              >
-                               <!-- Text Conditions -->
-                               ${rule.elementId == "text"
-                                 ? html` <sl-option value="contains"
-                                       >Contains</sl-option
-                                     >
-                                     <sl-option value="not_contains"
-                                       >Not Contains</sl-option
-                                     >`
-                                 : null}
-
                                <!-- Quiz Conditions -->
-                               ${rule.elementId !== "" &&
-                               rule.elementId !== "text" &&
-                               this.incomingContainer
-                                 .querySelector(`#${rule.elementId}`)
-                                 ?.tagName.toLowerCase() == "webwriter-quiz"
-                                 ? html`
-                                     <sl-option value="correct"
-                                       >Correct</sl-option
-                                     >
-                                     <sl-option value="uncorrect"
-                                       >Uncorrect</sl-option
-                                     >
-                                   `
-                                 : null}
+                               <sl-option value="correct">Correct</sl-option>
+                               <sl-option value="uncorrect"
+                                 >Uncorrect</sl-option
+                               >
                              </sl-select>
 
                              <!-- Match -->
-                             ${rule.condition == ""
-                               ? html`
-                                   <sl-input
-                                     placeholder="Match"
-                                     ?disabled=${!rule.isMatchEnabled}
-                                   ></sl-input>
-                                 `
-                               : rule.condition == "correct" ||
-                                 rule.condition == "uncorrect"
-                               ? html`<sl-input
-                                   id="percent"
-                                   placeholder="..."
-                                   value=${rule.match}
-                                   type="number"
-                                   min="0"
-                                   max="100"
-                                   inputmode="numeric"
-                                   @sl-input=${(e: Event) =>
-                                     this._validateAndUpdateRuleMatch(e, index)}
-                                 >
-                                   <sl-icon
-                                     src=${percentage}
-                                     slot="prefix"
-                                   ></sl-icon>
-                                 </sl-input>`
-                               : rule.condition == "contains" ||
-                                 rule.condition == "not_contains"
-                               ? html` <sl-input
-                                   clearable
-                                   placeholder="Text"
-                                   value=${rule.match}
-                                   @sl-input=${(e: Event) =>
-                                     this._updateRuleMatch(
-                                       index,
-                                       (e.target as HTMLInputElement).value
-                                     )}
-                                 ></sl-input>`
+                             ${rule.elementId !== ""
+                               ? html`${this.incomingContainer
+                                   .querySelector(`#${rule.elementId}`)
+                                   ?.tagName?.toLowerCase() ===
+                                   "webwriter-quiz" && rule.condition == ""
+                                   ? html`
+                                       <sl-input
+                                         placeholder="Match"
+                                         ?disabled=${!rule.isMatchEnabled}
+                                       ></sl-input>
+                                     `
+                                   : this.incomingContainer
+                                       .querySelector(`#${rule.elementId}`)
+                                       ?.tagName.toLowerCase() ==
+                                       "webwriter-quiz" &&
+                                     (rule.condition == "correct" ||
+                                       rule.condition == "uncorrect")
+                                   ? html`<sl-input
+                                       id="percent"
+                                       placeholder="..."
+                                       value=${rule.match}
+                                       type="number"
+                                       min="0"
+                                       max="100"
+                                       inputmode="numeric"
+                                       @sl-input=${(e: Event) =>
+                                         this._validateAndUpdateRuleMatch(
+                                           e,
+                                           index
+                                         )}
+                                     >
+                                       <sl-icon
+                                         src=${percentage}
+                                         slot="prefix"
+                                       ></sl-icon>
+                                     </sl-input>`
+                                   : null}`
                                : null}
 
                              <!-- Output -->
@@ -402,6 +379,7 @@ export class BranchNodeDetails extends LitElementWw {
                                .nodeEditor=${this.nodeEditor}
                                .outputClass=${rule.output_id}
                                ?disabled=${!rule.isTargetEnabled}
+                               required="true"
                              ></output-connection-control>
 
                              <sl-icon-button
@@ -602,17 +580,28 @@ export class BranchNodeDetails extends LitElementWw {
 
   */
   private _updateRuleElement(index: number, value: string) {
+    //TODO: hier
     this.branchContainer.rules[index].elementId = value;
-    this.branchContainer.rules[index].isConditionEnabled = value !== "";
 
     if (value == "") {
-      this.branchContainer.rules[index].quizTasks = "";
-    } else if (
+      this.branchContainer.rules[index].isConditionEnabled = false;
+
+      this._updateRuleTasks(index, "");
+      this._updateRuleCondition(index, "");
+      this._updateRuleMatch(index, "");
+      this._updateRuleTarget(index, "");
+    }
+    //
+    else if (
       this.incomingContainer
         .querySelector(`#${value}`)
-        ?.tagName?.toLowerCase() != "webwriter-quiz"
+        ?.tagName?.toLowerCase() == "webwriter-quiz"
     ) {
-      this.branchContainer.rules[index].quizTasks = "";
+      this.branchContainer.rules[index].isConditionEnabled = false;
+    }
+    //
+    else {
+      this.branchContainer.rules[index].isConditionEnabled = true;
     }
 
     this.branchContainer.rules = [...this.branchContainer.rules];
@@ -624,6 +613,13 @@ export class BranchNodeDetails extends LitElementWw {
 
   */
   private _updateRuleTasks(index: number, value: string) {
+    this.branchContainer.rules[index].isConditionEnabled = value !== "";
+
+    if (value === "") {
+      this._updateRuleCondition(index, "");
+      this._updateRuleMatch(index, "");
+      this._updateRuleTarget(index, "");
+    }
     this.branchContainer.rules[index].quizTasks = value.replace(/,/g, " ");
     this.branchContainer.rules = [...this.branchContainer.rules];
     this.requestUpdate();
@@ -636,15 +632,23 @@ export class BranchNodeDetails extends LitElementWw {
   private _updateRuleCondition(index: number, value: string) {
     this.branchContainer.rules[index].condition = value;
 
-    if (value !== "") {
-      if (value == "contains" || value == "not_contains") {
-        this.branchContainer.rules[index].isMatchEnabled = true;
-      } else {
-        this.branchContainer.rules[index].isTargetEnabled = true;
-      }
-    } else {
+    if (value == "") {
+      this._updateRuleMatch(index, "");
+      this._updateRuleTarget(index, "");
       this.branchContainer.rules[index].isMatchEnabled = false;
       this.branchContainer.rules[index].isTargetEnabled = false;
+    }
+    //
+    else if (
+      this.incomingContainer
+        .querySelector(`#${this.branchContainer.rules[index].elementId}`)
+        ?.tagName?.toLowerCase() == "webwriter-quiz"
+    ) {
+      this.branchContainer.rules[index].isMatchEnabled = true;
+    }
+    //
+    else {
+      this.branchContainer.rules[index].isTargetEnabled = true;
     }
 
     this.branchContainer.rules = [...this.branchContainer.rules];
@@ -658,6 +662,11 @@ export class BranchNodeDetails extends LitElementWw {
   private _updateRuleMatch(index: number, value: string) {
     this.branchContainer.rules[index].match = value;
     this.branchContainer.rules[index].isTargetEnabled = value !== "";
+
+    if (value === "") {
+      this._updateRuleTarget(index, "");
+    }
+
     this.branchContainer.rules = [...this.branchContainer.rules];
     this.requestUpdate();
   }
@@ -670,17 +679,19 @@ export class BranchNodeDetails extends LitElementWw {
     const inputElement = e.target as HTMLInputElement;
     let value = inputElement.value;
 
-    // Remove any non-numeric characters (this makes sure input is strictly numeric)
-    value = value.replace(/[^0-9]/g, "");
+    if (value != "") {
+      // Remove any non-numeric characters (this makes sure input is strictly numeric)
+      value = value.replace(/[^0-9]/g, "");
 
-    // Convert the value to a number and clamp it to the range 0-100
-    let numericValue = Number(value);
+      // Convert the value to a number and clamp it to the range 0-100
+      let numericValue = Number(value);
 
-    if (numericValue < 0) numericValue = 0;
-    if (numericValue > 100) numericValue = 100;
+      if (numericValue < 0) numericValue = 0;
+      if (numericValue > 100) numericValue = 100;
 
-    // Update the input value with the clamped number
-    inputElement.value = numericValue.toString();
+      // Update the input value with the clamped number
+      inputElement.value = numericValue.toString();
+    }
 
     // Update the rule match
     this._updateRuleMatch(index, inputElement.value);
@@ -692,6 +703,20 @@ export class BranchNodeDetails extends LitElementWw {
   */
   private _updateRuleTarget(index: number, value: string) {
     this.branchContainer.rules[index].target = value;
+
+    if (value == "") {
+      const outputClass = this.branchContainer.rules[index].output_id;
+
+      const connections =
+        this.selectedNode?.outputs?.[outputClass]?.connections;
+      this.nodeEditor.editor.removeSingleConnection(
+        this.selectedNode.id,
+        connections?.[0]?.node,
+        outputClass,
+        "input_1"
+      );
+    }
+
     this.branchContainer.rules = [...this.branchContainer.rules];
     this.requestUpdate();
   }

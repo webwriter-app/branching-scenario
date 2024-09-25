@@ -1,4 +1,6 @@
 import { html, css, LitElement, PropertyValues } from "lit";
+
+import { classMap } from "lit-html/directives/class-map.js";
 import { customElement, property, state, query } from "lit/decorators.js";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import {
@@ -34,6 +36,8 @@ export class OutputConnectionControl extends LitElement {
   @property({ type: Number }) accessor incomingNodeId;
   @property({ type: String }) accessor outputClass;
   @property({ type: Boolean }) accessor disabled;
+  @property({ type: Boolean }) accessor required;
+  @property({ type: Boolean }) accessor hasValue = false;
   @property({ type: Boolean }) accessor inOutputList; // New attribute
 
   @state() accessor searchTerm = "";
@@ -42,9 +46,6 @@ export class OutputConnectionControl extends LitElement {
   @query("sl-select") accessor selectElement!: SlSelect;
 
   static styles = css`
-    .nodeSelect {
-      width: 100%;
-    }
     .node-option-visible {
       display: block;
     }
@@ -61,11 +62,6 @@ export class OutputConnectionControl extends LitElement {
       height: 250px;
     }
 
-    sl-select::part(listbox) {
-      width: 250px;
-      height: 250px;
-    }
-
     :host([in-output-list]) sl-select::part(display-input) {
       border: none;
       font-weight: 500;
@@ -76,6 +72,15 @@ export class OutputConnectionControl extends LitElement {
       overflow: hidden;
       text-overflow: ellipsis;
       text-align: left;
+    }
+
+    sl-select::part(listbox) {
+      width: 250px;
+      height: 250px;
+    }
+
+    sl-select.no-value::part(combobox) {
+      border: 1px solid #dc2625;
     }
 
     .icon-header {
@@ -104,6 +109,8 @@ export class OutputConnectionControl extends LitElement {
       });
     });
     openObserver.observe(this.selectElement, { attributes: true });
+
+    this.hasValue = this.selectElement.value != "-1";
   }
 
   /*
@@ -140,10 +147,13 @@ export class OutputConnectionControl extends LitElement {
       );
 
     return html`
+      ${console.log(this.required)}
       <sl-select
         placement="bottom"
         hoist
-        class="nodeSelect"
+        class="${!this.hasValue && this.required && !this.disabled
+          ? "no-value"
+          : ""}"
         size=${this.inOutputList ? "small" : "medium"}
         placeholder="Not connected"
         clearable
@@ -286,6 +296,16 @@ export class OutputConnectionControl extends LitElement {
 
   */
   private _handleUserInputTargetPage(event: Event) {
+    // console.log(this.selectElement);
+    // const partElement = this.selectElement.shadowRoot?.querySelector(
+    //   `[part="display-input"]`
+    // );
+
+    // console.log(partElement);
+
+    // const placeholder = partElement.children;
+    // console.log(placeholder);
+
     if (
       event.target instanceof HTMLElement &&
       event.target.tagName.toLowerCase() === "sl-select"
@@ -294,6 +314,8 @@ export class OutputConnectionControl extends LitElement {
       const selectedValue = (event.target as SlSelect).value;
       const connections =
         this.selectedNode?.outputs?.[this.outputClass]?.connections;
+
+      this.hasValue = selectedValue !== "";
 
       if (connections?.[0]?.node === undefined && selectedValue) {
         this.nodeEditor.editor.addConnection(

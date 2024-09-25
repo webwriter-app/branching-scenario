@@ -26,6 +26,7 @@ import {
   SlDialog,
   SlButton,
   SlSwitch,
+  SlSelect,
 } from "@shoelace-style/shoelace";
 
 import styles from "../css/webwriter-branching-scenario-css";
@@ -113,6 +114,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-dialog": SlDialog,
       "sl-button": SlButton,
       "sl-switch": SlSwitch,
+      "sl-select": SlSelect,
     };
   }
 
@@ -284,6 +286,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
               </split-view>
         
               <div part="options" class="author-only">
+                <sl-select label="Select an option" required>
+                  <sl-option>Test</sl-option>
+                  <sl-option>Test</sl-option>
+                </sl-select>
                 <div>
                   <sl-icon src=${book} slot="prefix"></sl-icon>
                   <p>Gamebook</p>
@@ -971,7 +977,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   }
 
   /*
-  
+  TODO: This needs to update the nodes view!!!
   */
   private makeNodeOrigin(selectedNodeId: number) {
     this.nodeEditor.makeNodeOrigin(selectedNodeId);

@@ -116,10 +116,20 @@ export class WebWriterGamebook extends LitElementWw {
 
     let submitElements = smartBranchButton.submitElements;
 
-    //this is specific to quiz:
-    const submitterIndex = submitElements.indexOf(
-      (event.target as HTMLElement).parentElement.id
-    );
+    let submitterIndex = -1;
+
+    if (
+      (event.target as HTMLElement).parentElement.tagName.toLowerCase() ==
+      "webwriter-quiz"
+    ) {
+      submitterIndex = submitElements.indexOf(
+        (event.target as HTMLElement).parentElement.id
+      );
+    }
+    //
+    else {
+      submitterIndex = submitElements.indexOf((event.target as HTMLElement).id);
+    }
 
     if (submitterIndex !== -1) {
       smartBranchButton.elementSubmitted[submitterIndex] = true;
@@ -133,6 +143,7 @@ export class WebWriterGamebook extends LitElementWw {
       smartBranchButton.disabled = false;
     }
 
+    console.log(submitElements, smartBranchButton.elementSubmitted);
     this.requestUpdate();
   }
 
@@ -240,39 +251,11 @@ export class WebWriterGamebook extends LitElementWw {
       const assignedElements = containersSlot.assignedElements();
 
       for (const rule of branchContainer.rules) {
-        //console.log(rule);
-        //Case: Text on Page
-        if (rule.elementId.toLowerCase() == "text") {
-          // Filter only paragraph elements
-          const paragraphElements = assignedElements.filter(
-            (el) => el.tagName.toLowerCase() === "p"
-          );
+        if (rule.target !== "") {
+          //console.log(rule);
 
-          let contains = false;
+          //Case: Element Id
 
-          // Iterate through the filtered paragraph elements
-          paragraphElements.forEach((paragraph) => {
-            if (paragraph.textContent?.includes(rule.match)) {
-              contains = true;
-            }
-          });
-
-          console.log("text", contains);
-
-          //contains
-          if (contains && rule.condition.toLowerCase() == "contains") {
-            return Number(rule.target);
-          }
-          //not contains
-          else if (
-            !contains &&
-            rule.condition.toLowerCase() == "not_contains"
-          ) {
-            return Number(rule.target);
-          }
-        }
-        //Case: Element Id
-        else {
           const element = assignedElements.find((element) => {
             return element.id === rule.elementId;
           });
@@ -400,103 +383,117 @@ export class WebWriterGamebook extends LitElementWw {
               }
             }
             //
-            else if (element.tagName.toLowerCase() == "webwriter-choice") {
-              const children = element.answer.children;
+            else if (element.tagName.toLowerCase() == "webwriter-task") {
+              if (element.answer.tagName.toLowerCase() == "webwriter-choice") {
+                const children = element.answer.children;
 
-              //iterate through choice items
-              const choiceIsWrong = [...children].some((element) => {
-                if (element.active != element.valid) {
-                  return true;
-                }
-              });
-
-              if (rule.condition.toLowerCase() == "correct" && !choiceIsWrong) {
-                return Number(rule.target);
-              }
-              //
-              else if (
-                rule.condition.toLowerCase() == "uncorrect" &&
-                choiceIsWrong
-              ) {
-                return Number(rule.target);
-              }
-            }
-            //
-            else if (element.tagName.toLowerCase() == "webwriter-order") {
-              const children = element.answer.children;
-
-              //iterate through choice items
-              const orderIsWrong = [...children].some((element) => {
-                if (element.validOrder != element.elementIndex) {
-                  return true;
-                }
-              });
-
-              if (rule.condition.toLowerCase() == "correct" && !orderIsWrong) {
-                return Number(rule.target);
-              }
-              //
-              else if (
-                rule.condition.toLowerCase() == "uncorrect" &&
-                orderIsWrong
-              ) {
-                return Number(rule.target);
-              }
-            }
-            //
-            else if (element.tagName.toLowerCase() == "webwriter-text") {
-              const textIsWrong =
-                element.answer.solution !== element.answer.value;
-
-              if (rule.condition.toLowerCase() == "correct" && !textIsWrong) {
-                return Number(rule.target);
-              }
-              //
-              else if (
-                rule.condition.toLowerCase() == "uncorrect" &&
-                textIsWrong
-              ) {
-                return Number(rule.target);
-              }
-            }
-            //
-            else if (element.tagName.toLowerCase() == "webwriter-mark") {
-              let userHighlightMatches = false;
-
-              for (const solution_highlight of element.answer.solution) {
-                userHighlightMatches = element.answer.value.some(
-                  (user_highlight) => {
-                    if (
-                      solution_highlight.startOffset ==
-                        user_highlight.startOffset &&
-                      solution_highlight.endOffset == user_highlight.endOffset
-                    ) {
-                      return true;
-                    }
+                //iterate through choice items
+                const choiceIsWrong = [...children].some((element) => {
+                  if (element.active != element.valid) {
+                    return true;
                   }
-                );
+                });
 
                 if (
+                  rule.condition.toLowerCase() == "correct" &&
+                  !choiceIsWrong
+                ) {
+                  return Number(rule.target);
+                }
+                //
+                else if (
                   rule.condition.toLowerCase() == "uncorrect" &&
-                  !userHighlightMatches
+                  choiceIsWrong
                 ) {
                   return Number(rule.target);
                 }
               }
-
-              if (
-                rule.condition.toLowerCase() == "correct" &&
-                userHighlightMatches
+              //
+              else if (
+                element.answer.tagName.toLowerCase() == "webwriter-order"
               ) {
-                return Number(rule.target);
+                const children = element.answer.children;
+
+                //iterate through choice items
+                const orderIsWrong = [...children].some((element) => {
+                  if (element.validOrder != element.elementIndex) {
+                    return true;
+                  }
+                });
+
+                if (
+                  rule.condition.toLowerCase() == "correct" &&
+                  !orderIsWrong
+                ) {
+                  return Number(rule.target);
+                }
+                //
+                else if (
+                  rule.condition.toLowerCase() == "uncorrect" &&
+                  orderIsWrong
+                ) {
+                  return Number(rule.target);
+                }
               }
               //
+              else if (
+                element.answer.tagName.toLowerCase() == "webwriter-text"
+              ) {
+                const textIsWrong =
+                  element.answer.solution !== element.answer.value;
+
+                if (rule.condition.toLowerCase() == "correct" && !textIsWrong) {
+                  return Number(rule.target);
+                }
+                //
+                else if (
+                  rule.condition.toLowerCase() == "uncorrect" &&
+                  textIsWrong
+                ) {
+                  return Number(rule.target);
+                }
+              }
+              //
+              else if (
+                element.answer.tagName.toLowerCase() == "webwriter-mark"
+              ) {
+                let userHighlightMatches = false;
+
+                for (const solution_highlight of element.answer.solution) {
+                  userHighlightMatches = element.answer.value.some(
+                    (user_highlight) => {
+                      if (
+                        solution_highlight.startOffset ==
+                          user_highlight.startOffset &&
+                        solution_highlight.endOffset == user_highlight.endOffset
+                      ) {
+                        return true;
+                      }
+                    }
+                  );
+
+                  if (
+                    rule.condition.toLowerCase() == "uncorrect" &&
+                    !userHighlightMatches
+                  ) {
+                    return Number(rule.target);
+                  }
+                }
+
+                if (
+                  rule.condition.toLowerCase() == "correct" &&
+                  userHighlightMatches
+                ) {
+                  return Number(rule.target);
+                }
+                //
+              }
             }
           }
-        }
 
-        //TODO: let every node spwan with 1 output, and smart branching with 2 and 2 rules
-        //TODO: make match optional
+          //TODO: let every node spwan with 1 output, and smart branching with 2 and 2 rules
+          //TODO: make match optional
+        }
       }
     }
 
@@ -558,7 +555,11 @@ export class WebWriterGamebook extends LitElementWw {
           });
 
           if (!submitElements.includes(element.id)) {
-            if (element.tagName.toLowerCase() == "webwriter-quiz") {
+            if (
+              element.tagName.toLowerCase() == "webwriter-quiz" ||
+              element.tagName.toLowerCase() == "webwriter-task"
+            ) {
+              console.log("element added", element);
               submitElements = [...submitElements, element.id];
               elementSubmitted = [...elementSubmitted, false];
             }
