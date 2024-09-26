@@ -26,6 +26,10 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
   @property({ type: Array, attribute: true, reflect: true })
   accessor rules: Rule[] = [];
 
+  // Array of custom objects (rules)
+  @property({ type: Object, attribute: true, reflect: true })
+  accessor elseRule: Rule;
+
   //import CSS
   static get styles() {
     return css``;
@@ -95,6 +99,8 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
   public deleteRule(output_id: string) {
     // Filter out the rule with the specified id
     this.rules = this.rules.filter((rule) => rule.output_id !== output_id);
+
+    console.log("test");
     this.updateRulesOutputIds(output_id);
   }
 
@@ -109,6 +115,7 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
       10
     );
 
+    //
     this.rules.forEach((rule) => {
       const outputIdNumber = parseInt(rule.output_id.split("_")[1], 10);
       // Check if the linkButton should be updated
@@ -117,6 +124,18 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
         rule.output_id = `output_${outputIdNumber - 1}`;
       }
     });
+
+    // Update this.elseRule
+    const elseRuleOutputIdNumber = parseInt(
+      this.elseRule.output_id.split("_")[1],
+      10
+    );
+    if (elseRuleOutputIdNumber > removedOutputClassNumber) {
+      this.elseRule = {
+        ...this.elseRule,
+        output_id: `output_${elseRuleOutputIdNumber - 1}`,
+      };
+    }
   }
 
   /*
@@ -129,5 +148,22 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
 
     // Optionally, you can log or perform other actions
     //console.log("All rules cleared");
+  }
+
+  /*
+
+  
+  */
+  public addElseRule(elseRule: Rule) {
+    // Add the new rule to the rules array
+    this.elseRule = elseRule;
+  }
+
+  /*
+
+  
+  */
+  public removeElseRule() {
+    this.elseRule = undefined;
   }
 }

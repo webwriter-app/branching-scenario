@@ -147,6 +147,9 @@ export class BranchNodeDetails extends LitElementWw {
   //TODO: different elements should offer different conditions as options per rule
   //TODO: also move outputs accordingly
   //TODO: delete connection once the matching has been cleared
+  //TODO: chaining branch nodes should not be possible!!
+  //TODO: branch nodes outputs need to be locked until the target is available
+  //TODO: make else rule available in the gamebook
 
   render() {
     return html`
@@ -254,8 +257,14 @@ export class BranchNodeDetails extends LitElementWw {
                                id="index"
                                style="min-width: 25px; display: flex; flex-direction: row; align-items: center; justify-content: center;"
                              >
+                               <p
+                                 style="color: darkgrey; font-size: 15px; margin-right: 15px;"
+                               >
+                                 ${index + 1}
+                               </p>
+
                                <p style="color: darkgrey; font-size: 15px;">
-                                 ${index}
+                                 ${rule.output_id}
                                </p>
                              </div>
 
@@ -415,6 +424,34 @@ export class BranchNodeDetails extends LitElementWw {
                     </div>
                   `
                 )}
+
+                <sl-divider></sl-divider>
+
+                <!-- the else rule  -->
+                <div class="ruleItem" id="horizontal-stack-else">
+                  <div
+                    id="index"
+                    style="min-width: 25px; display: flex; flex-direction: row; align-items: center; justify-content: center;"
+                  >
+                    <p style="color: darkgrey; font-size: 15px;">
+                      If no rule is satisfied, go to
+                    </p>
+                  </div>
+
+                  <p style="color: darkgrey; font-size: 15px;">
+                    ${this.branchContainer?.elseRule?.output_id}
+                  </p>
+
+                  <!-- Output -->
+                  <output-connection-control
+                    .selectedNode=${this.selectedNode}
+                    .incomingNodeId=${this.selectedNode.inputs["input_1"]
+                      .connections?.[0]?.node}
+                    .nodeEditor=${this.nodeEditor}
+                    required="true"
+                    .outputClass=${this.branchContainer?.elseRule?.output_id}
+                  ></output-connection-control>
+                </div>
               `
             : html`<p class="no-node">No branching rules</p>`}
         </div>
@@ -465,6 +502,7 @@ export class BranchNodeDetails extends LitElementWw {
     event.preventDefault();
 
     this.hoveredDividerIndex = index;
+
     this.requestUpdate();
   }
 
@@ -481,7 +519,7 @@ export class BranchNodeDetails extends LitElementWw {
 
   /*
 
-  TODO: move outputs as well
+
   */
   private _onDrop(event: DragEvent) {
     event.preventDefault();
@@ -491,16 +529,118 @@ export class BranchNodeDetails extends LitElementWw {
       this.hoveredDividerIndex !== -1 &&
       this.draggedIndex !== this.hoveredDividerIndex
     ) {
-      const [draggedRule] = this.branchContainer.rules.splice(
+      //Step 1: Move outputs of node according to the moved rule
+      const hoveredRuleOutput =
+        this.branchContainer.rules[this.hoveredDividerIndex].output_id;
+      const draggedRuleOutput =
+        this.branchContainer.rules[this.draggedIndex].output_id;
+
+      //1.1: Move connections from dragged output onto hovered output
+      this.selectedNode.outputs[draggedRuleOutput].connections.forEach(
+        (connection) => {
+          this.nodeEditor.editor.addConnection(
+            this.selectedNode.id,
+            connection.node,
+            hoveredRuleOutput,
+            "input_1"
+          );
+          this.nodeEditor.editor.removeSingleConnection(
+            this.selectedNode.id,
+            connection.node,
+            draggedRuleOutput,
+            "input_1"
+          );
+        }
+      );
+
+      //1.2: For other rules update their outputs and connections accordingly
+      this.branchContainer.rules.forEach((rule, index) => {
+        const outputIdNumber = parseInt(rule.output_id.split("_")[1], 10);
+        //Check if rule is between hovered and dragged rule, but not the draggedRule (we updated this in 1.1)
+        if (
+          outputIdNumber >=
+            Math.min(
+              parseInt(draggedRuleOutput.split("_")[1], 10),
+              parseInt(hoveredRuleOutput.split("_")[1], 10)
+            ) &&
+          outputIdNumber <=
+            Math.max(
+              parseInt(draggedRuleOutput.split("_")[1], 10),
+              parseInt(hoveredRuleOutput.split("_")[1], 10)
+            ) &&
+          outputIdNumber !== parseInt(draggedRuleOutput.split("_")[1], 10)
+        ) {
+          //1.3 Get the direction of the drag (move up or down in the array)
+          //Case Up
+          if (this.hoveredDividerIndex > this.draggedIndex) {
+            //Move the connection to the output above
+            this.selectedNode.outputs[rule.output_id].connections.forEach(
+              (connection) => {
+                this.nodeEditor.editor.removeSingleConnection(
+                  this.selectedNode.id,
+                  connection.node,
+                  `output_${outputIdNumber}`,
+                  "input_1"
+                );
+
+                this.nodeEditor.editor.addConnection(
+                  this.selectedNode.id,
+                  connection.node,
+                  `output_${outputIdNumber - 1}`,
+                  "input_1"
+                );
+              }
+            );
+
+            //Update rule reference
+            this.branchContainer.rules[index].output_id = `output_${
+              outputIdNumber - 1
+            }`;
+          }
+          //Case Down
+          else if (this.hoveredDividerIndex < this.draggedIndex) {
+            //Move the connection to the output below
+            this.selectedNode.outputs[rule.output_id].connections.forEach(
+              (connection) => {
+                this.nodeEditor.editor.removeSingleConnection(
+                  this.selectedNode.id,
+                  connection.node,
+                  `output_${outputIdNumber}`,
+                  "input_1"
+                );
+
+                this.nodeEditor.editor.addConnection(
+                  this.selectedNode.id,
+                  connection.node,
+                  `output_${outputIdNumber + 1}`,
+                  "input_1"
+                );
+              }
+            );
+            //Update rule reference
+            this.branchContainer.rules[index].output_id = `output_${
+              outputIdNumber + 1
+            }`;
+          }
+        }
+      });
+
+      //Update rule reference of dragged Rule
+      this.branchContainer.rules[this.draggedIndex].output_id =
+        hoveredRuleOutput;
+
+      //Update the rules index in the rules array according to drag by removing the rule and adding it at the drop position
+      let [draggedRule] = this.branchContainer.rules.splice(
         this.draggedIndex,
         1
-      ); // Remove the dragged item
+      );
       this.branchContainer.rules.splice(
         this.hoveredDividerIndex,
         0,
         draggedRule
-      ); // Insert it at the drop position
-      this.branchContainer.rules = [...this.branchContainer.rules]; // Trigger re-render
+      );
+      //reference update to trigger re-render
+      this.branchContainer.rules = [...this.branchContainer.rules];
     }
 
     this._onDragEnd();
@@ -532,6 +672,7 @@ export class BranchNodeDetails extends LitElementWw {
 
     // Step 5: Create an empty rule with the last output's output_class as output_id
     const emptyRule: Rule = {
+      //else_rule: false,
       output_id: lastOutputClass, // Use the last output's output_class as output_id
       elementId: "", // Empty element
       quizTasks: "",
@@ -545,6 +686,105 @@ export class BranchNodeDetails extends LitElementWw {
 
     // Step 6: Add the empty rule to the branch container
     this.branchContainer.addRule(emptyRule);
+
+    // Step 7: If no else rule exists, create one
+    const hasElseRule = this.branchContainer.elseRule !== undefined;
+
+    if (!hasElseRule) {
+      this._addElseRuleToBranchContainer();
+    }
+    //
+    else {
+      this._moveElseRuleOutputToTheEnd();
+    }
+  }
+
+  /*
+
+
+  */
+  private _moveElseRuleOutputToTheEnd() {
+    const highestOutputIdIndex = this.branchContainer.rules.reduce(
+      (maxIndex, currentRule, currentIndex, rulesArray) => {
+        // Extract the number from output_id of the current max rule and current rule using a regular expression.
+        const maxNumber = parseInt(
+          rulesArray[maxIndex].output_id.split("_")[1],
+          10
+        );
+        const currentNumber = parseInt(currentRule.output_id.split("_")[1], 10);
+
+        // Compare and return the index of the rule with the higher number.
+        return currentNumber > maxNumber ? currentIndex : maxIndex;
+      },
+      0
+    );
+
+    this.selectedNode.outputs[
+      this.branchContainer.elseRule.output_id
+    ].connections.forEach((connection) => {
+      this.nodeEditor.editor.addConnection(
+        this.selectedNode.id,
+        connection.node,
+        this.branchContainer.rules[highestOutputIdIndex].output_id,
+        "input_1"
+      );
+      this.nodeEditor.editor.removeSingleConnection(
+        this.selectedNode.id,
+        connection.node,
+        this.branchContainer.elseRule.output_id,
+        "input_1"
+      );
+    });
+
+    const elseRuleOutputId = this.branchContainer.elseRule.output_id;
+    const newRuleOutputId =
+      this.branchContainer.rules[highestOutputIdIndex].output_id;
+
+    this.branchContainer.rules[highestOutputIdIndex].output_id =
+      elseRuleOutputId;
+    this.branchContainer.elseRule = {
+      ...this.branchContainer.elseRule,
+      output_id: newRuleOutputId,
+    };
+  }
+  /*
+
+
+  */
+  private _addElseRuleToBranchContainer() {
+    // Step 1: Add a new output to the node editor
+    this.nodeEditor.editor.addNodeOutput(this.selectedNode.id);
+
+    // Step 2: Trigger the callback to signal a change in the editor
+    this.changeInEditorCallback(
+      { ...this.nodeEditor.editor.drawflow },
+      "outputCreated"
+    );
+
+    // Step 3: Refresh the selected node to get the updated outputs
+    this.selectedNode = this.nodeEditor.editor.getNodeFromId(
+      this.selectedNode.id
+    );
+
+    // Step 4: Extract the last created output's output_class
+    const outputKeys = Object.keys(this.selectedNode.outputs);
+    const lastOutputClass = outputKeys[outputKeys.length - 1]; // Get the last key (latest output)
+
+    // Step 5: Create an empty rule with the last output's output_class as output_id
+    const elseRule: Rule = {
+      output_id: lastOutputClass, // Use the last output's output_class as output_id
+      elementId: "", // Empty element
+      quizTasks: "",
+      condition: "", // Empty condition
+      match: "", // Empty match
+      target: "", // Empty target
+      isConditionEnabled: false,
+      isMatchEnabled: false,
+      isTargetEnabled: false,
+    };
+
+    // Step 6: Add the empty rule to the branch container
+    this.branchContainer.addElseRule(elseRule);
   }
 
   /*
@@ -552,6 +792,8 @@ export class BranchNodeDetails extends LitElementWw {
 
   */
   private _removeRuleFromSelectedBranchNode(output_id: any) {
+    console.log("try to delete output", output_id, this.selectedNode);
+
     this.nodeEditor.editor.removeNodeOutput(this.selectedNode.id, output_id);
 
     // Step 2: Trigger the callback to signal a change in the editor
@@ -572,7 +814,37 @@ export class BranchNodeDetails extends LitElementWw {
       this.selectedNode.id
     );
 
+    //Step 4
     this.branchContainer.deleteRule(output_id);
+
+    //Step 5: If its the last rule, delete it
+    const noOfExistingRules = this.branchContainer.rules.length;
+    if (noOfExistingRules == 0 && this.branchContainer.elseRule !== undefined) {
+      this.nodeEditor.editor.removeNodeOutput(
+        this.selectedNode.id,
+        this.branchContainer.elseRule.output_id
+      );
+
+      // Step 2: Trigger the callback to signal a change in the editor
+      this.changeInEditorCallback(
+        { ...this.nodeEditor.editor.drawflow },
+        "outputDeleted",
+        null,
+        null,
+        null,
+        null,
+        null,
+        this.branchContainer.elseRule.output_id,
+        null
+      );
+
+      // Step 3: Refresh the selected node to get the updated outputs
+      this.selectedNode = this.nodeEditor.editor.getNodeFromId(
+        this.selectedNode.id
+      );
+
+      this.branchContainer.removeElseRule();
+    }
   }
 
   /*

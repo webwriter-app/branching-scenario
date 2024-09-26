@@ -63,13 +63,10 @@ export default css`
     cursor: row-resize;
   }
 
-  sl-divider {
+  .rule-divider {
     --color: #0084c7;
     --width: 2px;
     margin: 0px;
-  }
-
-  .rule-divider {
     transition: opacity 0s ease-in-out;
   }
 

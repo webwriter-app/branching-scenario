@@ -286,10 +286,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
               </split-view>
         
               <div part="options" class="author-only">
-                <sl-select label="Select an option" required>
-                  <sl-option>Test</sl-option>
-                  <sl-option>Test</sl-option>
-                </sl-select>
+           
                 <div>
                   <sl-icon src=${book} slot="prefix"></sl-icon>
                   <p>Gamebook</p>
@@ -340,34 +337,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                             this.selectedNode.id
                           ) != undefined}
                         </p>
-                        <quick-connect-node
-                          style="margin-left: 25px"
-                          .nodeEditor=${this.nodeEditor}
-                          .selectedNode=${this.selectedNode}
-                          .changeInEditorCallback=${(
-                            drawflow,
-                            updateType,
-                            node,
-                            removedNodeId,
-                            inputNode,
-                            outputNode,
-                            inputClass,
-                            outputClass,
-                            outputHadConnections
-                          ) => {
-                            this.updateGamebookContainers(
-                              drawflow,
-                              updateType,
-                              node,
-                              removedNodeId,
-                              inputNode,
-                              outputNode,
-                              inputClass,
-                              outputClass,
-                              outputHadConnections
-                            );
-                          }}
-                        ></quick-connect-node>
+
                         <sl-button id="copyNodeBtn" @click=${this.copyNode}
                           >Copy Node</sl-button
                         >
@@ -799,6 +769,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
     //
     else if (updateType == "outputDeleted") {
+      console.log("test");
       //console.log("here before", "deleted output", outputClass);
 
       this.gamebookContainerManager.updateButtonIdsAfterOutputRemove(
