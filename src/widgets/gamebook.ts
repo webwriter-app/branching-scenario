@@ -143,7 +143,7 @@ export class WebWriterGamebook extends LitElementWw {
       smartBranchButton.disabled = false;
     }
 
-    console.log(submitElements, smartBranchButton.elementSubmitted);
+    //console.log(submitElements, smartBranchButton.elementSubmitted);
     this.requestUpdate();
   }
 
@@ -183,7 +183,7 @@ export class WebWriterGamebook extends LitElementWw {
         //
         else if (container instanceof WebWriterGamebookBranchContainer) {
           const nextId = this._getTargetFromRules(container);
-          console.log(nextId);
+          //console.log(nextId);
           this._navigateTo(Number(nextId));
         }
       }

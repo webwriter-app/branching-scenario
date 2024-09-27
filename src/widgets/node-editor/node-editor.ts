@@ -1,6 +1,6 @@
 import { html, css, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { customElement, property, query, queryAll } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 //Shoelace Imports
@@ -20,18 +20,14 @@ import {
 
 //@tabler icons
 import file from "@tabler/icons/filled/file.svg";
-import helpSquareRounded from "@tabler/icons/outline/help-square-rounded.svg";
 import circleArrowRight from "@tabler/icons/filled/circle-arrow-right.svg";
 import dotsVertical from "@tabler/icons/outline/dots-vertical.svg";
 import zoomIn from "@tabler/icons/outline/zoom-in.svg";
 import zoomOut from "@tabler/icons/outline/zoom-out.svg";
 import squares from "@tabler/icons/filled/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
-import artboard from "@tabler/icons/outline/artboard.svg";
-import pinInvoke from "@tabler/icons/outline/pin-invoke.svg";
+
 import mapPin from "@tabler/icons/outline/map-pin.svg";
-import currentLocation from "@tabler/icons/outline/current-location.svg";
-import location from "@tabler/icons/outline/location.svg";
 
 //Drawflow Imports
 import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
@@ -106,6 +102,9 @@ export class NodeEditor extends LitElementWw {
     NO_CONNECTION_SELECTED;
   @property({ type: Boolean, attribute: true })
   accessor programmticallySelectedNode = false;
+
+  @property({ type: Boolean, attribute: false })
+  accessor elseRuleIsSet = true;
   @property({ type: Boolean, attribute: true }) accessor connectionStarted =
     false;
 
@@ -129,6 +128,11 @@ export class NodeEditor extends LitElementWw {
     changeOrigin?: { oldId: number; newId: number }
   ) => {};
 
+  @property({ attribute: false }) accessor markUsedOutputs = () => {};
+
+  @property({ attribute: false })
+  accessor checkIfElseRuleTargetIsSet: () => boolean; // Default implementation with type
+
   @property({ type: Boolean }) accessor backgroundIsDragging = false;
   @property({ type: Number }) accessor backgroundLastX = 0;
   @property({ type: Number }) accessor backgroundLastY = 0;
@@ -144,6 +148,8 @@ export class NodeEditor extends LitElementWw {
   ) => {};
 
   @query("#drawflowEditorDiv") accessor drawflowEditorDiv;
+
+  @queryAll('div[id*="node-"]') accessor nodeDivs;
 
   @property({ type: Boolean }) accessor nodePasted = false;
 
@@ -198,9 +204,30 @@ export class NodeEditor extends LitElementWw {
       this.editor.import(this.editorContent);
     }
 
-    this._markUsedOutputs();
+    this.markUsedOutputs();
   }
 
+  /*
+
+  */
+  protected updated(_changedProperties: PropertyValues): void {
+    if (this.selectedNode.id == -1) {
+      this.nodeDivs.forEach((nodeDiv) => {
+        nodeDiv.classList.remove("selected");
+      });
+      this.editor.node_selected = null;
+    } else {
+      this.nodeDivs.forEach((nodeDiv) => {
+        const id = parseInt(nodeDiv.id.split("-")[1], 10);
+        if (id === this.selectedNode.id) {
+          nodeDiv.classList.add("selected");
+          this.editor.node_selected = nodeDiv;
+        } else {
+          nodeDiv.classList.remove("selected");
+        }
+      });
+    }
+  }
   /*
 
   */
@@ -310,6 +337,44 @@ export class NodeEditor extends LitElementWw {
     this.backgroundIsDragging = true;
     this.backgroundLastX = event.clientX;
     this.backgroundLastY = event.clientY;
+
+    // Get the drawflow element
+    // const drawflow = this.shadowRoot?.querySelector(".drawflow");
+    // if (!drawflow) {
+    //   console.log("not found");
+    //   return;
+    // }
+
+    // // Find which child of drawflow is hit
+    // const nodes = Array.from(drawflow.children).filter((child) =>
+    //   child.classList.contains("parent-node")
+    // );
+
+    // let actualNodes = [];
+
+    // nodes.forEach((parent) => {
+    //   const childElements = (
+    //     Array.from(parent.children) as HTMLElement[]
+    //   ).filter((node) => node.id.includes("node-"));
+
+    //   actualNodes.push(...childElements);
+    // });
+
+    // const hitChild = actualNodes.find((child) => {
+    //   const rect = child.getBoundingClientRect();
+    //   return (
+    //     event.clientX >= rect.left &&
+    //     event.clientX <= rect.right &&
+    //     event.clientY >= rect.top &&
+    //     event.clientY <= rect.bottom
+    //   );
+    // });
+
+    // if (hitChild) {
+    //   console.log("Hit child element:", hitChild);
+    // } else {
+    //   console.log("No child element hit.");
+    // }
   }
 
   /*
@@ -455,7 +520,7 @@ export class NodeEditor extends LitElementWw {
   }
 
   /*
-  TODO: animation would be nice
+  
   */
   private jumpToOrigin() {
     const nodes = this.editor.drawflow.drawflow.Home.data;
@@ -567,12 +632,18 @@ export class NodeEditor extends LitElementWw {
 
     // Event listener for node click
     this.editor.on("nodeSelected", (id) => {
-      this.updateSelectedNodeCallback(id);
+      if (this.elseRuleIsSet) {
+        console.log("node Selected");
+        this.updateSelectedNodeCallback(id);
+      }
     });
 
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
-      this.updateSelectedNodeCallback(-1);
+      if (this.elseRuleIsSet) {
+        console.log("node Unselected");
+        this.updateSelectedNodeCallback(-1);
+      }
     });
 
     //Event listerner for creation of a node
@@ -799,6 +870,19 @@ export class NodeEditor extends LitElementWw {
         null,
         { x: this.editor.canvas_x, y: this.editor.canvas_y }
       );
+    });
+
+    this.editor.on("click", (event) => {
+      //console.log("before click the selected node was", this.selectedNode);
+      //console.log(this.selectedNode.class);
+
+      // //This event fires before the selection has changed in the editor.
+      if (this.selectedNode.class == "branch") {
+        console.log("before click the selected node was a branch");
+        this.elseRuleIsSet = this.checkIfElseRuleTargetIsSet();
+      } else {
+        this.elseRuleIsSet = true;
+      }
     });
 
     //this.editor.on("translate", ({ x, y }) => {});
@@ -1188,37 +1272,6 @@ export class NodeEditor extends LitElementWw {
         ?.getElementById(`node-${nodeId}`)
         ?.querySelector(`.${type}.${cls}`)
         ?.classList.remove("highlighted");
-    });
-  }
-
-  /*
-
-
-  */
-  public _markUsedOutputs() {
-    //console.log("we in here");
-    // Loop through all nodes in drawflow
-    const nodes = this.editor.drawflow.drawflow.Home.data;
-
-    Object.values(nodes).forEach((node) => {
-      Object.entries((node as DrawflowNode).outputs).forEach(
-        ([outputClass, output]) => {
-          // Get the element corresponding to the output
-          const outputElement = this.shadowRoot
-            ?.getElementById(`node-${(node as DrawflowNode).id}`)
-            ?.querySelector(`.output.${outputClass}`);
-
-          if (outputElement) {
-            if (output.connections.length > 0) {
-              // If the output has at least one connection, mark it as in use
-              outputElement.classList.add("output-in-use");
-            } else {
-              // If the output has no connections, remove the in-use class
-              outputElement.classList.remove("output-in-use");
-            }
-          }
-        }
-      );
     });
   }
 

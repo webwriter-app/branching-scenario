@@ -94,6 +94,8 @@ export class BranchNodeDetails extends LitElementWw {
     outputHadConnections?
   ) => {};
 
+  @property({ attribute: false }) accessor markUsedOutputs = () => {};
+
   // Query elements assigned to the default slot
   @queryAssignedElements({
     flatten: true,
@@ -142,12 +144,13 @@ export class BranchNodeDetails extends LitElementWw {
     }
   }
 
+  //TODO: always have an else rule in the container, just manipulate
+
   //TODO: dialog before deletion of incoming connection
   //TODO: make it such that the smart branch looks visually different
-
   //TODO: chaining branch nodes should not be possible!!
   //TODO: branch nodes outputs need to be locked until the target is available
-  //TODO: make else rule available in the gamebook
+
   //TODO: visual distinction between else and other outputs
   //TODO: force else rule to be set: dont let node be deselected when else rule has no target. dont let connection be deleted in the editor.
 
@@ -455,6 +458,7 @@ export class BranchNodeDetails extends LitElementWw {
                       .connections?.[0]?.node}
                     .nodeEditor=${this.nodeEditor}
                     .outputClass=${this.branchContainer?.elseRule?.output_id}
+                    required="true"
                   ></output-connection-control>
                 </div>
               `
@@ -798,7 +802,7 @@ export class BranchNodeDetails extends LitElementWw {
 
   */
   private _removeRuleFromSelectedBranchNode(output_id: any) {
-    console.log("try to delete output", output_id, this.selectedNode);
+    //console.log("try to delete output", output_id, this.selectedNode);
 
     this.nodeEditor.editor.removeNodeOutput(this.selectedNode.id, output_id);
 
@@ -930,6 +934,7 @@ export class BranchNodeDetails extends LitElementWw {
     }
 
     this.branchContainer.rules = [...this.branchContainer.rules];
+    this.markUsedOutputs();
     this.requestUpdate();
   }
 
@@ -946,6 +951,7 @@ export class BranchNodeDetails extends LitElementWw {
     }
 
     this.branchContainer.rules = [...this.branchContainer.rules];
+    this.markUsedOutputs();
     this.requestUpdate();
   }
 
@@ -1008,6 +1014,7 @@ export class BranchNodeDetails extends LitElementWw {
       ...this.branchContainer.elseRule,
       target: value,
     };
+    console.log("target updated");
     this.requestUpdate();
   }
 

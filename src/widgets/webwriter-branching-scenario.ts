@@ -245,12 +245,16 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     this.handleGamebookTitle(event)}
                   .editorZoom=${this.editorZoom}
                   .editorPosition=${this.editorPosition}
+                  .markUsedOutputs=${() => this._markUsedOutputs()}
+                  .checkIfElseRuleTargetIsSet=${() =>
+                    this.checkIfElseRuleTargetIsSet()}
                 >
                 </node-editor>
                 <selected-node-view-renderer
                   slot="end"
                   .selectedNode=${this.selectedNode}
                   .nodeEditor=${this.nodeEditor}
+                   .markUsedOutputs=${() => this._markUsedOutputs()}
                   .changeInEditorCallback=${(
                     drawflow,
                     updateType,
@@ -635,11 +639,26 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
     //
     else if (updateType == "connectionCreated") {
-      this.nodeEditor._markUsedOutputs();
+      this._markUsedOutputs();
       //console.log("connection Created'");
       if (inputNode.class == "branch") {
+        //
+        if (outputNode.class == "branch") {
+          //TODO: Dialog should say cant chain branhc nodes
+          const dialog = this.shadowRoot.getElementById(
+            "branch_input_full_dialog"
+          ) as SlDialog;
+          dialog.show();
+          this.nodeEditor.editor.removeSingleConnection(
+            outputNode.id,
+            inputNode.id,
+            outputClass,
+            inputClass
+          );
+        }
+
         //console.log(inputNode.inputs["input_1"]?.connections);
-        if (inputNode.inputs["input_1"]?.connections?.length <= 1) {
+        else if (inputNode.inputs["input_1"]?.connections?.length <= 1) {
           this.gamebookContainerManager.addSmartBranchButtonToContainer(
             outputNode,
             inputNode,
@@ -671,6 +690,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
             ).incomingContainerDrawflowNodeId
           )
         ) {
+          //TODO: Dialog should say no self loop via branch node allowed
           const dialog = this.shadowRoot.getElementById(
             "branch_input_full_dialog"
           ) as SlDialog;
@@ -696,7 +716,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     //
     else if (updateType == "connectionRemoved") {
-      this.nodeEditor._markUsedOutputs();
+      this._markUsedOutputs();
       //if a connection is removed by the user, remove the corresponding button
       if (this.reactToCallbackFromNodeEditor) {
         // console.log(
@@ -769,7 +789,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
     //
     else if (updateType == "outputDeleted") {
-      console.log("test");
+      //console.log("test");
       //console.log("here before", "deleted output", outputClass);
 
       this.gamebookContainerManager.updateButtonIdsAfterOutputRemove(
@@ -812,7 +832,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
 
     this.editorContent = { ...drawflow };
+
     this.requestUpdate();
+    this._markUsedOutputs();
   }
 
   /*
@@ -863,6 +885,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   private updateSelectedNode(id: String) {
     if (id != "-1") {
+      //console.log("test");
       try {
         this.selectedNode = { ...this.nodeEditor.editor.getNodeFromId(id) };
 
@@ -881,7 +904,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
         this.selectedNode = { ...NO_NODE_SELECTED };
         this.gamebookContainerManager._hideAllGamebookContainers();
       }
-    } else {
+    }
+    //
+    else {
       this.selectedNode = { ...NO_NODE_SELECTED };
       this.gamebookContainerManager._hideAllGamebookContainers();
     }
@@ -1012,4 +1037,109 @@ export class WebWriterBranchingScenario extends LitElementWw {
   // private switchToNodeEditor() {
   //   this.inPreviewMode = false;
   // }
+
+  private checkIfElseRuleTargetIsSet() {
+    const branchContainer =
+      this.gamebookContainerManager._getContainerByDrawflowNodeId(
+        this.selectedNode.id
+      ) as WebWriterGamebookBranchContainer;
+
+    if (
+      branchContainer.elseRule !== undefined &&
+      branchContainer.elseRule.target === ""
+    ) {
+      //TODO: dialog should say else rule must be set
+      const dialog = this.shadowRoot.getElementById(
+        "branch_input_full_dialog"
+      ) as SlDialog;
+      dialog.show();
+      return false;
+    }
+
+    return true;
+  }
+  /*
+
+
+  */
+
+  private _markUsedOutputs() {
+    //console.log("we in here");
+    // Loop through all nodes in drawflow
+    const nodes = this.nodeEditor.editor.drawflow.drawflow.Home.data;
+
+    Object.values(nodes).forEach((node) => {
+      if ((node as DrawflowNode).class == "branch") {
+        //console.log(this.gamebookContainers);
+
+        //TODO: imporve this
+        const branchContainer = this.gamebookContainers.filter((container) => {
+          if (container.drawflowNodeId == (node as DrawflowNode).id) {
+            return true;
+          }
+        });
+
+        branchContainer[0].rules.forEach((rule) => {
+          const outputElement = this.nodeEditor.shadowRoot
+            ?.getElementById(`node-${(node as DrawflowNode).id}`)
+            ?.querySelector(`.output.${rule.output_id}`);
+
+          if (!rule.isTargetEnabled) {
+            outputElement?.classList.add("output-in-use");
+          }
+          //
+          else {
+            if (
+              (node as DrawflowNode).outputs[rule.output_id].connections
+                .length > 0
+            ) {
+              // If the output has at least one connection, mark it as in use
+              outputElement.classList.add("output-in-use");
+            } else {
+              // If the output has no connections, remove the in-use class
+              outputElement.classList.remove("output-in-use");
+            }
+          }
+        });
+
+        const elseRuleOutputElement = this.nodeEditor.shadowRoot
+          ?.getElementById(`node-${(node as DrawflowNode).id}`)
+          ?.querySelector(`.output.${branchContainer[0].elseRule.output_id}`);
+
+        if (
+          (node as DrawflowNode).outputs[branchContainer[0].elseRule.output_id]
+            .connections.length > 0
+        ) {
+          // If the output has at least one connection, mark it as in use
+          elseRuleOutputElement.classList.add("output-in-use");
+        } else {
+          // If the output has no connections, remove the in-use class
+          elseRuleOutputElement.classList.remove("output-in-use");
+        }
+      }
+      //
+      else {
+        Object.entries((node as DrawflowNode).outputs).forEach(
+          ([outputClass, output]) => {
+            // Get the element corresponding to the output
+            const outputElement = this.nodeEditor.shadowRoot
+              ?.getElementById(`node-${(node as DrawflowNode).id}`)
+              ?.querySelector(`.output.${outputClass}`);
+
+            if (outputElement) {
+              if (output.connections.length > 0) {
+                // If the output has at least one connection, mark it as in use
+                outputElement.classList.add("output-in-use");
+              } else {
+                // If the output has no connections, remove the in-use class
+                outputElement.classList.remove("output-in-use");
+              }
+            }
+          }
+        );
+      }
+    });
+
+    this.requestUpdate();
+  }
 }

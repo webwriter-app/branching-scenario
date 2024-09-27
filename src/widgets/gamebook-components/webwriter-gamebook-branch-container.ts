@@ -100,7 +100,6 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
     // Filter out the rule with the specified id
     this.rules = this.rules.filter((rule) => rule.output_id !== output_id);
 
-    console.log("test");
     this.updateRulesOutputIds(output_id);
   }
 

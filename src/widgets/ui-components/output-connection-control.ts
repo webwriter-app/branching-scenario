@@ -147,7 +147,6 @@ export class OutputConnectionControl extends LitElement {
       );
 
     return html`
-      ${console.log(this.required)}
       <sl-select
         placement="bottom"
         hoist

@@ -50,6 +50,7 @@ export class SelectedNodeViewRenderer extends LitElementWw {
     outputClass?,
     outputHadConnections?
   ) => {};
+  @property({ attribute: false }) accessor markUsedOutputs = () => {};
 
   static get scopedElements() {
     return {
@@ -109,6 +110,7 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                   .nodeEditor="${this.nodeEditor}"
                   .selectedNode="${this.selectedNode}"
                   .selectedNodeId="${this.selectedNode.id}"
+                  .markUsedOutputs=${() => this.markUsedOutputs()}
                   .changeInEditorCallback=${(
                     drawflow,
                     updateType,
