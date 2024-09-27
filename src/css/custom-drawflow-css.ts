@@ -218,16 +218,22 @@ export default css`
   .drawflow-node.searched.page,
   .drawflow-node.searched.origin,
   .drawflow-node.searched.popup {
-    border: 5px solid yellow;
-    -webkit-box-shadow: 0 4px 60px 6px #b0b0b0;
-    box-shadow: 0 4px 60px 6px #b0b0b0;
+    outline: 3px solid yellow;
+    background-color: #ffffe6;
   }
 
   .drawflow-node.selected.branch.searched,
   .drawflow-node.selected.page.searched,
   .drawflow-node.selected.origin.searched,
   .drawflow-node.selected.popup.searched {
-    border: 5px solid yellow !important;
+    outline: 3px solid yellow !important;
+  }
+
+  .drawflow-node:hover.branch.searched,
+  .drawflow-node:hover.page.searched,
+  .drawflow-node:hover.origin.searched,
+  .drawflow-node:hover.popup.searched {
+    outline: 3px solid yellow !important;
   }
 
   /* ------- */
