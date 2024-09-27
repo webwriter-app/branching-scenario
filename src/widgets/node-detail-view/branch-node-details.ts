@@ -146,6 +146,7 @@ export class BranchNodeDetails extends LitElementWw {
 
   //TODO: dialog before deletion of incoming connection
   //TODO: dont let connection be deleted in the editor // node deletion does not clear target of rule
+  //TODO: target of rules should be overwritten when connections get removed from outside forces
 
   render() {
     return html`

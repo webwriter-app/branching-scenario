@@ -964,7 +964,7 @@ export class NodeEditor extends LitElementWw {
     this.editor.addNode(
       title,
       1,
-      0,
+      1,
       centerX,
       centerY,
       isOrigin ? "origin" : "page",
@@ -1034,7 +1034,7 @@ export class NodeEditor extends LitElementWw {
     this.editor.addNode(
       title,
       1,
-      0,
+      1,
       centerX,
       centerY,
       "popup",
@@ -1103,7 +1103,7 @@ export class NodeEditor extends LitElementWw {
     this.editor.addNode(
       "Branch Node",
       1,
-      0,
+      1,
       centerX,
       centerY,
       "branch",

@@ -242,8 +242,6 @@ export class WebWriterGamebook extends LitElementWw {
     });
 
     this.currentContainerId = popupId;
-    //TODO: Introduction of closeable popups needs to listen to dismissed popups
-    //TODO: set currentPageContainer back to underlying page then
   }
 
   /*
@@ -369,7 +367,6 @@ export class WebWriterGamebook extends LitElementWw {
                       }
                     }
                   }
-                  //TODO: other kinds of tasks need to be respected
                 });
 
                 let percentageCorrect =
@@ -501,9 +498,6 @@ export class WebWriterGamebook extends LitElementWw {
               }
             }
           }
-
-          //TODO: let every node spwan with 1 output, and smart branching with 2 and 2 rules
-          //TODO: make match optional
         }
       }
     }
@@ -594,7 +588,7 @@ export class WebWriterGamebook extends LitElementWw {
 
     this.requestUpdate();
 
-    //TODO: smart branch button disabled
     //TODO: make fields required, include header in sl-select for children element that they belong to certian page
+    //TODO: include hint: no elements found
   }
 }

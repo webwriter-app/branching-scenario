@@ -622,8 +622,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
         //this.copiedNode = NO_NODE_SELECTED;
       }
       //TODO: copy and paste branch nodes need connection to the incoming node if they are connected
-      //TODO: think about how copying and pasting would work
-      //TODO: make cmd c cmd v work
       else if (node.class == "branch") {
         //console.log("branch node created");
         this.gamebookContainerManager._createBranchContainer(node);
@@ -1025,27 +1023,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
     (this.shadowRoot.getElementById("delete_node_dialog") as SlDialog).hide();
   }
 
-  // /*
+  /*
 
-  // */
-  // private switchToPreviewMode(containerId: Number = undefined) {
-  //   this.startContainerIdPreview = containerId;
-  //   this.inPreviewMode = true;
-  // }
 
-  // /*
-
-  // */
-  // private switchToNodeEditor() {
-  //   this.inPreviewMode = false;
-  // }
-
+  */
   private checkIfElseRuleTargetIsSet() {
     const branchContainer =
       this.gamebookContainerManager._getContainerByDrawflowNodeId(
         this.selectedNode.id
       ) as WebWriterGamebookBranchContainer;
-    console.log(branchContainer.elseRule.target);
     if (
       branchContainer.elseRule !== undefined &&
       branchContainer.elseRule.target === ""
@@ -1060,11 +1046,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     return true;
   }
+
   /*
 
 
   */
-
   private _markUsedOutputs() {
     //console.log("we in here");
     // Loop through all nodes in drawflow
