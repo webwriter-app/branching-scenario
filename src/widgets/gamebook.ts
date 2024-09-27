@@ -104,44 +104,48 @@ export class WebWriterGamebook extends LitElementWw {
     const containersSlot = currentContainer.shadowRoot.querySelector("slot");
     const assignedElements = containersSlot.assignedElements();
 
-    const smartBranchButton = assignedElements.find((element) => {
+    const smartBranchButtons = assignedElements.find((element) => {
       return element instanceof WebWriterSmartBranchButton;
     });
 
-    const branchContainer = this.gamebookContainers.find((container) => {
-      return container.drawflowNodeId === smartBranchButton.dataTargetId;
+    smartBranchButtons.forEach((smartBranchButton) => {
+      const branchContainer = this.gamebookContainers.find((container) => {
+        return container.drawflowNodeId === smartBranchButton.dataTargetId;
+      });
+
+      let submitElements = smartBranchButton.submitElements;
+
+      let submitterIndex = -1;
+
+      if (
+        (event.target as HTMLElement).parentElement.tagName.toLowerCase() ==
+        "webwriter-quiz"
+      ) {
+        submitterIndex = submitElements.indexOf(
+          (event.target as HTMLElement).parentElement.id
+        );
+      }
+      //
+      else {
+        submitterIndex = submitElements.indexOf(
+          (event.target as HTMLElement).id
+        );
+      }
+
+      if (submitterIndex !== -1) {
+        smartBranchButton.elementSubmitted[submitterIndex] = true;
+      }
+
+      //everything that needs to be submitted was submitted && at least one rule is satisfied
+      if (
+        smartBranchButton.elementSubmitted.every(
+          (element) => element === true
+        ) &&
+        this._getTargetFromRules(branchContainer) !== undefined
+      ) {
+        smartBranchButton.disabled = false;
+      }
     });
-
-    //TODO: make compatible for multiple smartBranchButtons
-
-    let submitElements = smartBranchButton.submitElements;
-
-    let submitterIndex = -1;
-
-    if (
-      (event.target as HTMLElement).parentElement.tagName.toLowerCase() ==
-      "webwriter-quiz"
-    ) {
-      submitterIndex = submitElements.indexOf(
-        (event.target as HTMLElement).parentElement.id
-      );
-    }
-    //
-    else {
-      submitterIndex = submitElements.indexOf((event.target as HTMLElement).id);
-    }
-
-    if (submitterIndex !== -1) {
-      smartBranchButton.elementSubmitted[submitterIndex] = true;
-    }
-
-    //everything that needs to be submitted was submitted && at least one rule is satisfied
-    if (
-      smartBranchButton.elementSubmitted.every((element) => element === true) &&
-      this._getTargetFromRules(branchContainer) !== undefined
-    ) {
-      smartBranchButton.disabled = false;
-    }
 
     //console.log(submitElements, smartBranchButton.elementSubmitted);
     this.requestUpdate();

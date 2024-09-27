@@ -729,6 +729,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
         const identifier = `${outputNode.id}-${outputClass}-${inputNode.id}-${inputClass}`;
 
         if (inputNode.class == "branch") {
+          //TODO: dialog for confirmation needs to happen here
+          //Warn about rules being deleted!
           this.gamebookContainerManager.removeSmartBranchButtonFromContainer(
             outputNode.id,
             identifier
@@ -1043,7 +1045,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.gamebookContainerManager._getContainerByDrawflowNodeId(
         this.selectedNode.id
       ) as WebWriterGamebookBranchContainer;
-
+    console.log(branchContainer.elseRule.target);
     if (
       branchContainer.elseRule !== undefined &&
       branchContainer.elseRule.target === ""

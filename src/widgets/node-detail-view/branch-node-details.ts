@@ -144,15 +144,8 @@ export class BranchNodeDetails extends LitElementWw {
     }
   }
 
-  //TODO: always have an else rule in the container, just manipulate
-
   //TODO: dialog before deletion of incoming connection
-  //TODO: make it such that the smart branch looks visually different
-  //TODO: chaining branch nodes should not be possible!!
-  //TODO: branch nodes outputs need to be locked until the target is available
-
-  //TODO: visual distinction between else and other outputs
-  //TODO: force else rule to be set: dont let node be deselected when else rule has no target. dont let connection be deleted in the editor.
+  //TODO: dont let connection be deleted in the editor // node deletion does not clear target of rule
 
   render() {
     return html`
