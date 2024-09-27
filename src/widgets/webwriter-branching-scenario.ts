@@ -1102,19 +1102,24 @@ export class WebWriterBranchingScenario extends LitElementWw {
           }
         });
 
-        const elseRuleOutputElement = this.nodeEditor.shadowRoot
-          ?.getElementById(`node-${(node as DrawflowNode).id}`)
-          ?.querySelector(`.output.${branchContainer[0].elseRule.output_id}`);
+        if (branchContainer[0].elseRule) {
+          const elseRuleOutputElement = this.nodeEditor.shadowRoot
+            ?.getElementById(`node-${(node as DrawflowNode).id}`)
+            ?.querySelector(
+              `.output.${branchContainer[0].elseRule?.output_id}`
+            );
 
-        if (
-          (node as DrawflowNode).outputs[branchContainer[0].elseRule.output_id]
-            .connections.length > 0
-        ) {
-          // If the output has at least one connection, mark it as in use
-          elseRuleOutputElement.classList.add("output-in-use");
-        } else {
-          // If the output has no connections, remove the in-use class
-          elseRuleOutputElement.classList.remove("output-in-use");
+          if (
+            (node as DrawflowNode).outputs[
+              branchContainer[0].elseRule?.output_id
+            ].connections.length > 0
+          ) {
+            // If the output has at least one connection, mark it as in use
+            elseRuleOutputElement.classList.add("output-in-use");
+          } else {
+            // If the output has no connections, remove the in-use class
+            elseRuleOutputElement.classList.remove("output-in-use");
+          }
         }
       }
       //
