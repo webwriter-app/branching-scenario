@@ -144,12 +144,12 @@ export class BranchNodeDetails extends LitElementWw {
 
   //TODO: dialog before deletion of incoming connection
   //TODO: make it such that the smart branch looks visually different
-  //TODO: different elements should offer different conditions as options per rule
-  //TODO: also move outputs accordingly
-  //TODO: delete connection once the matching has been cleared
+
   //TODO: chaining branch nodes should not be possible!!
   //TODO: branch nodes outputs need to be locked until the target is available
   //TODO: make else rule available in the gamebook
+  //TODO: visual distinction between else and other outputs
+  //TODO: force else rule to be set: dont let node be deselected when else rule has no target. dont let connection be deleted in the editor.
 
   render() {
     return html`
@@ -444,11 +444,16 @@ export class BranchNodeDetails extends LitElementWw {
 
                   <!-- Output -->
                   <output-connection-control
+                    @sl-change=${(e: Event) =>
+                      this._updateElseRuleTarget(
+                        (
+                          e.target as OutputConnectionControl
+                        ).selectElement.value.toString()
+                      )}
                     .selectedNode=${this.selectedNode}
                     .incomingNodeId=${this.selectedNode.inputs["input_1"]
                       .connections?.[0]?.node}
                     .nodeEditor=${this.nodeEditor}
-                    required="true"
                     .outputClass=${this.branchContainer?.elseRule?.output_id}
                   ></output-connection-control>
                 </div>
@@ -524,6 +529,7 @@ export class BranchNodeDetails extends LitElementWw {
   private _onDrop(event: DragEvent) {
     event.preventDefault();
 
+    //TODO: is it possible to move connections by manipulating the connections objects and calling editor.updateConnectionNodes(id)? May make this code way shorter
     if (
       this.draggedIndex !== -1 &&
       this.hoveredDividerIndex !== -1 &&
@@ -990,6 +996,18 @@ export class BranchNodeDetails extends LitElementWw {
     }
 
     this.branchContainer.rules = [...this.branchContainer.rules];
+    this.requestUpdate();
+  }
+
+  /*
+
+
+  */
+  private _updateElseRuleTarget(value: string) {
+    this.branchContainer.elseRule = {
+      ...this.branchContainer.elseRule,
+      target: value,
+    };
     this.requestUpdate();
   }
 

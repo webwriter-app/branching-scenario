@@ -91,7 +91,7 @@ export class WebWriterGamebook extends LitElementWw {
 
   /*
 
-
+  TODO: Handle Reset of Quiz and Tasks
    */
   private _handleSubmit(event: Event) {
     event.preventDefault(); // Prevent the default form submission
@@ -183,6 +183,7 @@ export class WebWriterGamebook extends LitElementWw {
         //
         else if (container instanceof WebWriterGamebookBranchContainer) {
           const nextId = this._getTargetFromRules(container);
+          console.log(nextId);
           this._navigateTo(Number(nextId));
         }
       }
@@ -220,6 +221,12 @@ export class WebWriterGamebook extends LitElementWw {
     this.gamebookContainers.forEach((container) => {
       if (container.drawflowNodeId == popupId) {
         (container as WebWriterGamebookPopupContainer).showDialog();
+        const previousContainerId = this.currentContainerId;
+
+        container.addEventListener("sl-request-close", (event) => {
+          this._initializeButtons(previousContainerId);
+          this.currentContainerId = previousContainerId;
+        });
       }
       //
       else if (container.drawflowNodeId != popupId) {
@@ -497,8 +504,9 @@ export class WebWriterGamebook extends LitElementWw {
       }
     }
 
-    //console.log("No rule satisfied");
-    return undefined;
+    //Case: No rule was satisfied
+    console.log(branchContainer.elseRule.target);
+    return Number(branchContainer.elseRule.target);
   }
 
   /*
@@ -540,36 +548,42 @@ export class WebWriterGamebook extends LitElementWw {
       button.addEventListener("click", () => this._navigateTo(targetId));
 
       if (button instanceof WebWriterSmartBranchButton) {
-        let submitElements = [];
-        let elementSubmitted = [];
-        const containersSlot = container.shadowRoot.querySelector("slot");
-        const assignedElements = containersSlot.assignedElements();
+        //In case the button already has an existing submitElements and elementSubmitted (navigated back to a page from a popup)
+        if (
+          button.submitElements.length === 0 &&
+          button.elementSubmitted.length === 0
+        ) {
+          let submitElements = [];
+          let elementSubmitted = [];
+          const containersSlot = container.shadowRoot.querySelector("slot");
+          const assignedElements = containersSlot.assignedElements();
 
-        const branchContainer = this.gamebookContainers.find((container) => {
-          return container.drawflowNodeId === targetId;
-        });
-
-        branchContainer.rules.forEach((rule) => {
-          const element = assignedElements.find((element) => {
-            return element.id === rule.elementId;
+          const branchContainer = this.gamebookContainers.find((container) => {
+            return container.drawflowNodeId === targetId;
           });
 
-          if (!submitElements.includes(element.id)) {
-            if (
-              element.tagName.toLowerCase() == "webwriter-quiz" ||
-              element.tagName.toLowerCase() == "webwriter-task"
-            ) {
-              console.log("element added", element);
-              submitElements = [...submitElements, element.id];
-              elementSubmitted = [...elementSubmitted, false];
-            }
-          }
-        });
+          branchContainer.rules.forEach((rule) => {
+            const element = assignedElements.find((element) => {
+              return element.id === rule.elementId;
+            });
 
-        button.submitElements = submitElements;
-        button.elementSubmitted = elementSubmitted;
-        if (submitElements.length !== 0) {
-          button.disabled = true;
+            if (!submitElements.includes(element.id)) {
+              if (
+                element.tagName.toLowerCase() == "webwriter-quiz" ||
+                element.tagName.toLowerCase() == "webwriter-task"
+              ) {
+                console.log("element added", element);
+                submitElements = [...submitElements, element.id];
+                elementSubmitted = [...elementSubmitted, false];
+              }
+            }
+          });
+
+          button.submitElements = submitElements;
+          button.elementSubmitted = elementSubmitted;
+          if (submitElements.length !== 0) {
+            button.disabled = true;
+          }
         }
       }
     });
