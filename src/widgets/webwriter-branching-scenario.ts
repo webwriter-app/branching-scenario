@@ -613,17 +613,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
       if (node.class == "page" || node.class == "origin") {
         this.gamebookContainerManager._createPageContainerFromPageNode(node);
         this.copyAndPasteContainerContents(this.copiedNode.id, node.id);
-        //this.copiedNode = NO_NODE_SELECTED;
       }
       //
       else if (node.class == "popup") {
         this.gamebookContainerManager._createPopupContainerFromPopupNode(node);
         this.copyAndPasteContainerContents(this.copiedNode.id, node.id);
-        //this.copiedNode = NO_NODE_SELECTED;
       }
+
       //TODO: copy and paste branch nodes need connection to the incoming node if they are connected
       else if (node.class == "branch") {
-        //console.log("branch node created");
         this.gamebookContainerManager._createBranchContainer(node);
       }
     }
@@ -829,6 +827,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
           changeOrigin.newId
         );
       (newOriginPageContainer as WebWriterGamebookPageContainer).originPage = 1;
+
+      this.updateSelectedNode(this.selectedNode.id.toString());
     }
 
     this.editorContent = { ...drawflow };
@@ -943,7 +943,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   }
 
   /*
-  TODO: make css work with hovering css
+
   */
   private _handleNodeSearch(event: Event) {
     const inputText = (event.target as SlInput).value;
@@ -1060,7 +1060,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       if ((node as DrawflowNode).class == "branch") {
         //console.log(this.gamebookContainers);
 
-        //TODO: imporve this
+        //TODO: Get another way of obtaining branch container
         const branchContainer = this.gamebookContainers.filter((container) => {
           if (container.drawflowNodeId == (node as DrawflowNode).id) {
             return true;
