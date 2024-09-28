@@ -41,26 +41,27 @@ export class GamebookContainerManager extends LitElementWw {
     };
   }
 
+  /* 
+  
+  
+  */
+  constructor() {
+    super();
+  }
+
+  /* 
+  
+  
+  */
   protected firstUpdated(_changedProperties: any): void {}
 
+  /* 
+  
+  
+  */
   render() {
     return html` <slot></slot> `;
   }
-
-  // private handleSlotChange(event) {
-  //   const slot = event.target;
-
-  //   const assignedElements = slot.assignedElements({ flatten: true });
-
-  //   const lastPos =
-  //     assignedElements.length - 1 > 0 ? assignedElements.length - 1 : 0;
-
-  //   const lastAddedContainer = assignedElements[lastPos];
-
-  //   if (lastAddedContainer?.getNodeEditor == undefined) {
-  //     lastAddedContainer.getNodeEditor = this.getNodeEditor;
-  //   }
-  // }
 
   /* 
   

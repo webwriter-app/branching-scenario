@@ -125,6 +125,19 @@ export class WebWriterBranchingScenario extends LitElementWw {
   //import CSS
   static styles = [styles];
 
+  // Create an observer instance linked to the callback function
+  private mutationObserver: MutationObserver;
+  // Create an observer instance linked to the callback function
+  private justDeletedOriginContainer: String;
+
+  /* 
+  
+  
+  */
+  constructor() {
+    super();
+    this.mutationObserver = new MutationObserver(this.mutationCallback);
+  }
   /*
   
   */
@@ -135,24 +148,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
     });
     this.handleChangesInGamebookContainers();
 
-    const dialog = this.shadowRoot.getElementById(
-      "branch_input_full_dialog"
-    ) as SlDialog;
-
-    // Prevent the dialog from closing when the user clicks on the overlay
-    dialog.addEventListener("sl-request-close", (event) => {
-      if (event.detail.source === "overlay") {
-        event.preventDefault();
-      }
-    });
-
-    // this.addEventListener("switchToPreviewMode", (event) => {
-    //   this.switchToPreviewMode((event as CustomEvent).detail.startFrom);
-    // });
-
-    // this.addEventListener("switchToNodeEditor", (event) => {
-    //   this.switchToNodeEditor();
-    // });
+    const config = {
+      attributes: false,
+      childList: true,
+      subtree: false,
+      characterData: false,
+    };
+    // Start observing the target node for configured mutations
+    this.mutationObserver.observe(this, config);
   }
 
   /*
@@ -688,10 +691,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
     }
     //
     else if (updateType == "nodeRemoved") {
-      this.focus();
-      this.gamebookContainerManager._deleteGamebookContainersById(
-        removedNodeId
-      );
+      if (this.reactToCallbackFromNodeEditor) {
+        this.focus();
+        this.gamebookContainerManager._deleteGamebookContainersById(
+          removedNodeId
+        );
+      } else {
+        this.reactToCallbackFromNodeEditor = true;
+      }
       this.updateSelectedNode(this.selectedNode.id.toString());
     }
     //
@@ -935,6 +942,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
         (event as CustomEvent).detail.highlightNode
       );
     });
+    this.addEventListener("containerDeleted", (event) => {
+      this.reactToCallbackFromNodeEditor = false;
+      this.nodeEditor.editor.removeNodeId(
+        `node-${(event as CustomEvent).detail.nodeId}`
+      );
+    });
   }
 
   /*
@@ -1157,13 +1170,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
           if (
             (node as DrawflowNode).outputs[
               branchContainer[0].elseRule?.output_id
-            ].connections.length > 0
+            ]?.connections.length > 0
           ) {
             // If the output has at least one connection, mark it as in use
-            elseRuleOutputElement.classList.add("output-in-use");
+            elseRuleOutputElement?.classList.add("output-in-use");
           } else {
             // If the output has no connections, remove the in-use class
-            elseRuleOutputElement.classList.remove("output-in-use");
+            elseRuleOutputElement?.classList.remove("output-in-use");
           }
         }
       }
@@ -1192,4 +1205,99 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     this.requestUpdate();
   }
+
+  /*
+
+  */
+  private mutationCallback = (mutationList: MutationRecord[]) => {
+    mutationList.forEach((mutation) => {
+      if (mutation.type == "childList") {
+        // console.log("removed", mutation.removedNodes);
+        // console.log("added", mutation.addedNodes);
+
+        mutation.removedNodes.forEach((node) => {
+          console.log("remove", node);
+          //this.handleSlotContentDelete(node);
+
+          if (
+            (node as HTMLElement).nodeName.toLowerCase() ==
+            "webwriter-gamebook-page-container"
+          ) {
+            if (
+              (node as HTMLElement).classList.contains("ww-widget") &&
+              (node as HTMLElement).classList.contains(
+                "ProseMirror-selectednode"
+              )
+            ) {
+              //make sure link button did not get deleted programtically
+              let container = node as WebWriterGamebookPageContainer;
+
+              const event = new CustomEvent("containerDeleted", {
+                detail: {
+                  nodeId: container.drawflowNodeId,
+                },
+                bubbles: true, // Allows the event to bubble up through the DOM
+                composed: true, // Allows the event to pass through shadow DOM boundaries
+              });
+              this.dispatchEvent(event);
+
+              //TODO: Contents get removed. Appending the container directly results in infinite loop
+              if (container.originPage == "1") {
+                this.nodeEditor.addPageNode("First Page", true);
+              }
+            }
+          }
+          //
+          else if (
+            (node as HTMLElement).nodeName.toLowerCase() ==
+            "webwriter-gamebook-popup-container"
+          ) {
+            if (
+              (node as HTMLElement).classList.contains("ww-widget") &&
+              (node as HTMLElement).classList.contains(
+                "ProseMirror-selectednode"
+              )
+            ) {
+              //make sure link button did not get deleted programtically
+              let container = node as WebWriterGamebookPopupContainer;
+
+              const event = new CustomEvent("containerDeleted", {
+                detail: {
+                  nodeId: container.drawflowNodeId,
+                },
+                bubbles: true, // Allows the event to bubble up through the DOM
+                composed: true, // Allows the event to pass through shadow DOM boundaries
+              });
+              this.dispatchEvent(event);
+            }
+          }
+          //
+          else if (
+            (node as HTMLElement).nodeName.toLowerCase() ==
+            "webwriter-gamebook-branch-container"
+          ) {
+            if (
+              (node as HTMLElement).classList.contains("ww-widget") &&
+              (node as HTMLElement).classList.contains(
+                "ProseMirror-selectednode"
+              )
+            ) {
+              console.log("we are deleting the container");
+              //make sure link button did not get deleted programtically
+              let container = node as WebWriterGamebookBranchContainer;
+
+              const event = new CustomEvent("containerDeleted", {
+                detail: {
+                  nodeId: container.drawflowNodeId,
+                },
+                bubbles: true, // Allows the event to bubble up through the DOM
+                composed: true, // Allows the event to pass through shadow DOM boundaries
+              });
+              this.dispatchEvent(event);
+            }
+          }
+        });
+      }
+    });
+  };
 }

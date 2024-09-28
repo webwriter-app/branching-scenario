@@ -112,7 +112,7 @@ export class BranchNodeDetails extends LitElementWw {
     )._getContainerByDrawflowNodeId(this.selectedNode.id.toString());
   }
   //
-
+  //TODO: this needs to happen for example when the incoming connection is removed from the editor
   //
   protected updated(_changedProperties: PropertyValues): void {
     this.branchContainer = (

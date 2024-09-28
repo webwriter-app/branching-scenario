@@ -873,12 +873,8 @@ export class NodeEditor extends LitElementWw {
     });
 
     this.editor.on("click", (event) => {
-      //console.log("before click the selected node was", this.selectedNode);
-      //console.log(this.selectedNode.class);
-
-      // //This event fires before the selection has changed in the editor.
+      //This event fires before the selection has changed in the editor.
       if (this.selectedNode.class == "branch") {
-        console.log("before click the selected node was a branch");
         this.elseRuleIsSet = this.checkIfElseRuleTargetIsSet();
       } else {
         this.elseRuleIsSet = true;
