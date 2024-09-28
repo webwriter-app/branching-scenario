@@ -1211,89 +1211,41 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   private mutationCallback = (mutationList: MutationRecord[]) => {
     mutationList.forEach((mutation) => {
-      if (mutation.type == "childList") {
-        // console.log("removed", mutation.removedNodes);
-        // console.log("added", mutation.addedNodes);
-
+      if (mutation.type === "childList") {
         mutation.removedNodes.forEach((node) => {
-          console.log("remove", node);
-          //this.handleSlotContentDelete(node);
+          const nodeName = (node as HTMLElement).nodeName.toLowerCase();
+          const isWidget = (node as HTMLElement).classList.contains(
+            "ww-widget"
+          );
+          const isSelectedNode = (node as HTMLElement).classList.contains(
+            "ProseMirror-selectednode"
+          );
 
-          if (
-            (node as HTMLElement).nodeName.toLowerCase() ==
-            "webwriter-gamebook-page-container"
-          ) {
-            if (
-              (node as HTMLElement).classList.contains("ww-widget") &&
-              (node as HTMLElement).classList.contains(
-                "ProseMirror-selectednode"
-              )
-            ) {
-              //make sure link button did not get deleted programtically
-              let container = node as WebWriterGamebookPageContainer;
-
+          if (isWidget && isSelectedNode) {
+            const containerEvent = (container: { drawflowNodeId: string }) => {
               const event = new CustomEvent("containerDeleted", {
-                detail: {
-                  nodeId: container.drawflowNodeId,
-                },
-                bubbles: true, // Allows the event to bubble up through the DOM
-                composed: true, // Allows the event to pass through shadow DOM boundaries
+                detail: { nodeId: container.drawflowNodeId },
+                bubbles: true,
+                composed: true,
               });
               this.dispatchEvent(event);
+            };
 
-              //TODO: Contents get removed. Appending the container directly results in infinite loop
-              if (container.originPage == "1") {
+            if (nodeName === "webwriter-gamebook-page-container") {
+              const container = node as WebWriterGamebookPageContainer;
+              containerEvent(container);
+              console.log(container);
+              console.log(container.originPage);
+              if (container.originPage === 1) {
+                console.log("test");
                 this.nodeEditor.addPageNode("First Page", true);
               }
-            }
-          }
-          //
-          else if (
-            (node as HTMLElement).nodeName.toLowerCase() ==
-            "webwriter-gamebook-popup-container"
-          ) {
-            if (
-              (node as HTMLElement).classList.contains("ww-widget") &&
-              (node as HTMLElement).classList.contains(
-                "ProseMirror-selectednode"
-              )
-            ) {
-              //make sure link button did not get deleted programtically
-              let container = node as WebWriterGamebookPopupContainer;
-
-              const event = new CustomEvent("containerDeleted", {
-                detail: {
-                  nodeId: container.drawflowNodeId,
-                },
-                bubbles: true, // Allows the event to bubble up through the DOM
-                composed: true, // Allows the event to pass through shadow DOM boundaries
-              });
-              this.dispatchEvent(event);
-            }
-          }
-          //
-          else if (
-            (node as HTMLElement).nodeName.toLowerCase() ==
-            "webwriter-gamebook-branch-container"
-          ) {
-            if (
-              (node as HTMLElement).classList.contains("ww-widget") &&
-              (node as HTMLElement).classList.contains(
-                "ProseMirror-selectednode"
-              )
-            ) {
-              console.log("we are deleting the container");
-              //make sure link button did not get deleted programtically
-              let container = node as WebWriterGamebookBranchContainer;
-
-              const event = new CustomEvent("containerDeleted", {
-                detail: {
-                  nodeId: container.drawflowNodeId,
-                },
-                bubbles: true, // Allows the event to bubble up through the DOM
-                composed: true, // Allows the event to pass through shadow DOM boundaries
-              });
-              this.dispatchEvent(event);
+            } else if (nodeName === "webwriter-gamebook-popup-container") {
+              const container = node as WebWriterGamebookPopupContainer;
+              containerEvent(container);
+            } else if (nodeName === "webwriter-gamebook-branch-container") {
+              const container = node as WebWriterGamebookBranchContainer;
+              containerEvent(container);
             }
           }
         });
