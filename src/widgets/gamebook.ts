@@ -503,7 +503,7 @@ export class WebWriterGamebook extends LitElementWw {
     }
 
     //Case: No rule was satisfied
-    console.log(branchContainer.elseRule.target);
+    //console.log(branchContainer.elseRule.target);
     return Number(branchContainer.elseRule.target);
   }
 
@@ -570,7 +570,7 @@ export class WebWriterGamebook extends LitElementWw {
                 element.tagName.toLowerCase() == "webwriter-quiz" ||
                 element.tagName.toLowerCase() == "webwriter-task"
               ) {
-                console.log("element added", element);
+                //console.log("element added", element);
                 submitElements = [...submitElements, element.id];
                 elementSubmitted = [...elementSubmitted, false];
               }

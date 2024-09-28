@@ -468,6 +468,67 @@ export class WebWriterBranchingScenario extends LitElementWw {
           >Delete</sl-button
         >
       </sl-dialog>
+
+      <sl-dialog
+        label="Can not connect branch nodes"
+        class="dialog"
+        id="cant_chain_branch_nodes_dialog"
+      >
+        Two Branch nodes can not be connected.
+        <sl-button
+          slot="footer"
+          variant="primary"
+          outline
+          @click=${() =>
+            (
+              this.shadowRoot.getElementById(
+                "cant_chain_branch_nodes_dialog"
+              ) as SlDialog
+            ).hide()}
+          >Understood</sl-button
+        >
+      </sl-dialog>
+
+      <sl-dialog
+        label="No self loops allowed."
+        class="dialog"
+        id="no_self_loops_via_branch_nodes_dialog"
+      >
+        You cannot connect back to the main node over the connected smart branch
+        node.
+        <sl-button
+          slot="footer"
+          variant="primary"
+          outline
+          @click=${() =>
+            (
+              this.shadowRoot.getElementById(
+                "no_self_loops_via_branch_nodes_dialog"
+              ) as SlDialog
+            ).hide()}
+          >Understood</sl-button
+        >
+      </sl-dialog>
+
+      <sl-dialog
+        label="Specify fallback rule"
+        class="dialog"
+        id="else_rule_must_be_set"
+      >
+        Please specify the smart branch nodes fallback rule.
+        <sl-button
+          slot="footer"
+          variant="primary"
+          outline
+          @click=${() =>
+            (
+              this.shadowRoot.getElementById(
+                "else_rule_must_be_set"
+              ) as SlDialog
+            ).hide()}
+          >Understood</sl-button
+        >
+      </sl-dialog>
     `;
   }
 
@@ -638,11 +699,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this._markUsedOutputs();
       //console.log("connection Created'");
       if (inputNode.class == "branch") {
-        //
         if (outputNode.class == "branch") {
-          //TODO: Dialog should say cant chain branhc nodes
           const dialog = this.shadowRoot.getElementById(
-            "branch_input_full_dialog"
+            "cant_chain_branch_nodes_dialog"
           ) as SlDialog;
           dialog.show();
           this.nodeEditor.editor.removeSingleConnection(
@@ -686,9 +745,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
             ).incomingContainerDrawflowNodeId
           )
         ) {
-          //TODO: Dialog should say no self loop via branch node allowed
           const dialog = this.shadowRoot.getElementById(
-            "branch_input_full_dialog"
+            "no_self_loops_via_branch_nodes_dialog"
           ) as SlDialog;
           dialog.show();
           this.nodeEditor.editor.removeSingleConnection(
@@ -973,7 +1031,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   }
 
   /*
-  TODO: This needs to update the nodes view!!!
+
   */
   private makeNodeOrigin(selectedNodeId: number) {
     this.nodeEditor.makeNodeOrigin(selectedNodeId);
@@ -1036,9 +1094,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
       branchContainer.elseRule !== undefined &&
       branchContainer.elseRule.target === ""
     ) {
-      //TODO: dialog should say else rule must be set
       const dialog = this.shadowRoot.getElementById(
-        "branch_input_full_dialog"
+        "else_rule_must_be_set"
       ) as SlDialog;
       dialog.show();
       return false;

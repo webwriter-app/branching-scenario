@@ -10,6 +10,7 @@ import {
 import { DrawflowNode } from "drawflow";
 
 import { WebWriterConnectionButton } from "./webwriter-connection-button";
+import { WebWriterSmartBranchButton } from "./webwriter-smart-branch-button";
 
 //Shoelace
 import { SlButton, SlDialog } from "@shoelace-style/shoelace";
@@ -138,7 +139,7 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
       });
 
       this.dialog.classList.add("hide-close-button");
-      console.log(this.dialog);
+      //console.log(this.dialog);
     }
   }
 
@@ -232,6 +233,34 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
                   {
                     detail: {
                       identifier: (node as WebWriterConnectionButton)
+                        .identifier,
+                    },
+                    bubbles: true, // Allows the event to bubble up through the DOM
+                    composed: true, // Allows the event to pass through shadow DOM boundaries
+                  }
+                );
+                this.dispatchEvent(event);
+              }
+            }
+          }
+          //
+          else if (
+            (node as HTMLElement).nodeName.toLowerCase() ==
+            "webwriter-smart-branch-button"
+          ) {
+            if ((node as HTMLElement).classList.contains("ww-widget")) {
+              //make sure link button did not get deleted programtically
+              let connButton = node as WebWriterSmartBranchButton;
+
+              //console.log("LinkButton removed:", node);
+
+              if (connButton.identifier != "x") {
+                //console.log("in mutation observer here");
+                const event = new CustomEvent(
+                  "containerDeleteConnectionButton",
+                  {
+                    detail: {
+                      identifier: (node as WebWriterSmartBranchButton)
                         .identifier,
                     },
                     bubbles: true, // Allows the event to bubble up through the DOM

@@ -856,7 +856,6 @@ export class BranchNodeDetails extends LitElementWw {
 
   */
   private _updateRuleElement(index: number, value: string) {
-    //TODO: hier
     this.branchContainer.rules[index].elementId = value;
 
     if (value == "") {
@@ -1008,7 +1007,7 @@ export class BranchNodeDetails extends LitElementWw {
       ...this.branchContainer.elseRule,
       target: value,
     };
-    console.log("target updated");
+    //console.log("target updated");
     this.requestUpdate();
   }
 

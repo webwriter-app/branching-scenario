@@ -12,8 +12,10 @@ import { WebWriterConnectionButton } from "./webwriter-connection-button";
 
 //Shoelace
 import { SlButton } from "@shoelace-style/shoelace";
+import { WebWriterSmartBranchButton } from "./webwriter-smart-branch-button";
 
 //TODO: Deleting container should delete node!
+//TODO: Mutation observer in main
 //TODO: dialog, or not offer this?
 @customElement("webwriter-gamebook-page-container")
 export class WebWriterGamebookPageContainer extends LitElementWw {
@@ -148,6 +150,34 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
                   {
                     detail: {
                       identifier: (node as WebWriterConnectionButton)
+                        .identifier,
+                    },
+                    bubbles: true, // Allows the event to bubble up through the DOM
+                    composed: true, // Allows the event to pass through shadow DOM boundaries
+                  }
+                );
+                this.dispatchEvent(event);
+              }
+            }
+          }
+          //
+          else if (
+            (node as HTMLElement).nodeName.toLowerCase() ==
+            "webwriter-smart-branch-button"
+          ) {
+            if ((node as HTMLElement).classList.contains("ww-widget")) {
+              //make sure link button did not get deleted programtically
+              let connButton = node as WebWriterSmartBranchButton;
+
+              //console.log("LinkButton removed:", node);
+
+              if (connButton.identifier != "x") {
+                //console.log("in mutation observer here");
+                const event = new CustomEvent(
+                  "containerDeleteConnectionButton",
+                  {
+                    detail: {
+                      identifier: (node as WebWriterSmartBranchButton)
                         .identifier,
                     },
                     bubbles: true, // Allows the event to bubble up through the DOM

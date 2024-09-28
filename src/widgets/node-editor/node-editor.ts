@@ -633,7 +633,7 @@ export class NodeEditor extends LitElementWw {
     // Event listener for node click
     this.editor.on("nodeSelected", (id) => {
       if (this.elseRuleIsSet) {
-        console.log("node Selected");
+        //console.log("node Selected");
         this.updateSelectedNodeCallback(id);
       }
     });
@@ -641,7 +641,7 @@ export class NodeEditor extends LitElementWw {
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
       if (this.elseRuleIsSet) {
-        console.log("node Unselected");
+        //console.log("node Unselected");
         this.updateSelectedNodeCallback(-1);
       }
     });
