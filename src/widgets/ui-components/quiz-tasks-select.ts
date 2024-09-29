@@ -82,6 +82,12 @@ export class QuizTasksSelect extends LitElement {
     .node-option-hidden {
       display: none;
     }
+
+    .icon-header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
   `;
 
   /*
@@ -139,6 +145,9 @@ export class QuizTasksSelect extends LitElement {
       multiple
       max-options-visible="1"
     >
+      <small class="icon-header" id="divider-page"
+        >Select task(s) from the quiz</small
+      >
       ${this.options.length === 0
         ? html`<small class="message">No tasks found in the quiz. </small>`
         : html` ${repeat(

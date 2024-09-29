@@ -1,5 +1,5 @@
 import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
-
+//TODO: nodes get deleted after delting connection ???
 import { repeat } from "lit/directives/repeat.js";
 import { LitElementWw } from "@webwriter/lit";
 import {
@@ -32,6 +32,9 @@ import styles from "../../css/branch-node-details-css";
 //Tabler
 import plus from "@tabler/icons/outline/plus.svg";
 import minus from "@tabler/icons/outline/minus.svg";
+
+import circleDashedX from "@tabler/icons/outline/circle-dashed-x.svg";
+import circleDashedCheck from "@tabler/icons/outline/circle-dashed-check.svg";
 
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import gripHorizontal from "@tabler/icons/outline/grip-horizontal.svg";
@@ -321,9 +324,19 @@ export class BranchNodeDetails extends LitElementWw {
                                ?disabled=${!rule.isConditionEnabled}
                              >
                                <!-- Quiz Conditions -->
-                               <sl-option value="correct">Correct</sl-option>
-                               <sl-option value="incorrect"
-                                 >Incorrect</sl-option
+                               <sl-option value="correct">
+                                 <sl-icon
+                                   slot="prefix"
+                                   src=${circleDashedCheck}
+                                 ></sl-icon>
+                                 Correct</sl-option
+                               >
+                               <sl-option value="incorrect">
+                                 <sl-icon
+                                   slot="prefix"
+                                   src=${circleDashedX}
+                                 ></sl-icon>
+                                 Incorrect</sl-option
                                >
                              </sl-select>
 
