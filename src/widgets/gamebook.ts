@@ -618,9 +618,6 @@ export class WebWriterGamebook extends LitElementWw {
     });
 
     this.requestUpdate();
-
-    //TODO: make fields required, include header in sl-select for children element that they belong to certian page
-    //TODO: include hint: no elements found
   }
 
   /*

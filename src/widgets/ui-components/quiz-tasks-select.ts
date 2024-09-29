@@ -16,6 +16,8 @@ import checkbox from "@tabler/icons/outline/checkbox.svg";
 import blockquote from "@tabler/icons/outline/blockquote.svg";
 import highlight from "@tabler/icons/outline/highlight.svg";
 import microphone from "@tabler/icons/outline/microphone.svg";
+import file from "@tabler/icons/outline/file.svg";
+import squares from "@tabler/icons/outline/squares.svg";
 
 const NO_NODE_SELECTED: DrawflowNode = {
   id: -1,

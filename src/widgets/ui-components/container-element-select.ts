@@ -13,12 +13,16 @@ import Drawflow, { DrawflowNode } from "drawflow";
 
 import helpOctagon from "@tabler/icons/outline/help-octagon.svg";
 import textSize from "@tabler/icons/outline/text-size.svg";
+import file from "@tabler/icons/outline/file.svg";
+import squares from "@tabler/icons/outline/squares.svg";
 
 import number123 from "@tabler/icons/outline/number-123.svg";
 import checkbox from "@tabler/icons/outline/checkbox.svg";
 import blockquote from "@tabler/icons/outline/blockquote.svg";
 import highlight from "@tabler/icons/outline/highlight.svg";
 import microphone from "@tabler/icons/outline/microphone.svg";
+import { WebWriterGamebookPageContainer } from "../gamebook-components/webwriter-gamebook-page-container";
+import { WebWriterGamebookPopupContainer } from "../gamebook-components/webwriter-gamebook-popup-container";
 
 const NO_NODE_SELECTED: DrawflowNode = {
   id: -1,
@@ -71,6 +75,12 @@ export class ElementChildrenSelect extends LitElement {
       font-size: 14px; /* Adjust the size of the text */
       line-height: 1.5; /* Make sure the text is well spaced */
     }
+
+    .icon-header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
   `;
 
   /*
@@ -117,6 +127,17 @@ export class ElementChildrenSelect extends LitElement {
         .value=${this.value}
         @sl-input=${this._handleElementSelect}
       >
+        ${this.container instanceof WebWriterGamebookPageContainer
+          ? html` <small class="icon-header" id="divider-page"
+              ><sl-icon src="${file}"></sl-icon>${this.container
+                ?.pageTitle}</small
+            >`
+          : this.container instanceof WebWriterGamebookPopupContainer
+          ? html`<small class="icon-header" id="divider-page"
+              ><sl-icon src="${squares}"></sl-icon>${this.container
+                ?.pageTitle}</small
+            >`
+          : null}
         ${this.options.length === 0
           ? html`<small class="message"
               >No interactive elements found on the
