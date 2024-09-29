@@ -103,8 +103,6 @@ export class NodeEditor extends LitElementWw {
   @property({ type: Boolean, attribute: true })
   accessor programmticallySelectedNode = false;
 
-  @property({ type: Boolean, attribute: false })
-  accessor elseRuleIsSet = true;
   @property({ type: Boolean, attribute: true }) accessor connectionStarted =
     false;
 
@@ -632,18 +630,14 @@ export class NodeEditor extends LitElementWw {
 
     // Event listener for node click
     this.editor.on("nodeSelected", (id) => {
-      if (this.elseRuleIsSet) {
-        //console.log("node Selected");
-        this.updateSelectedNodeCallback(id);
-      }
+      //console.log("node Selected");
+      this.updateSelectedNodeCallback(id);
     });
 
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
-      if (this.elseRuleIsSet) {
-        //console.log("node Unselected");
-        this.updateSelectedNodeCallback(-1);
-      }
+      //console.log("node Unselected");
+      this.updateSelectedNodeCallback(-1);
     });
 
     //Event listerner for creation of a node
@@ -699,25 +693,13 @@ export class NodeEditor extends LitElementWw {
 
     //Event listener for when a connection creation started via drag and drop
     this.editor.on("connectionStart", ({ output_id, output_class }) => {
+      this.updateSelectedNodeCallback(output_id);
       this.connectionStarted = true;
-      if (
-        this.editor.getNodeFromId(output_id).outputs[output_class]
-          ?.connections?.[0]?.node != undefined
-      ) {
-        //console.log("output already is connected");
-      } else {
-        //console.log("output empty");
-      }
 
-      //   this.updateSelectedNodeCallback(output_id);
-      //   this.shadowRoot
-      //     ?.getElementById(`node-${output_id}`)
-      //     ?.classList.add("selected");
       this.shadowRoot
         .querySelector('svg[class="connection"]')
         ?.querySelector("path")
         ?.classList.add("highlighted");
-      //   this.programmticallySelectedNode = true;
     });
 
     this.editor.on("connectionCancel", () => {
@@ -725,6 +707,7 @@ export class NodeEditor extends LitElementWw {
     });
 
     //Event listener for when a connection is selected
+    //TODO: active and hover takes the highlight away
     this.editor.on(
       "connectionSelected",
       ({ output_id, input_id, output_class, input_class }) => {
@@ -735,6 +718,7 @@ export class NodeEditor extends LitElementWw {
           output_class,
           input_class
         );
+        this.updateSelectedNodeCallback(output_id);
       }
     );
 
@@ -874,11 +858,17 @@ export class NodeEditor extends LitElementWw {
 
     this.editor.on("click", (event) => {
       //This event fires before the selection has changed in the editor.
-      if (this.selectedNode.class == "branch") {
-        this.elseRuleIsSet = this.checkIfElseRuleTargetIsSet();
-      } else {
-        this.elseRuleIsSet = true;
-      }
+      // if (this.selectedNode.class == "branch") {
+      //   const hitTarget = event.composedPath()[0] as HTMLElement;
+      //   const isInsideBranchNode =
+      //     this.editor.node_selected.contains(hitTarget) ||
+      //     this.editor.node_selected === hitTarget;
+      //   if (!hitTarget.classList.contains("output") && !isInsideBranchNode) {
+      //     this.elseRuleIsSet = this.checkIfElseRuleTargetIsSet();
+      //   }
+      // } else {
+      //   this.elseRuleIsSet = true;
+      // }
     });
 
     //this.editor.on("translate", ({ x, y }) => {});
@@ -1110,7 +1100,7 @@ export class NodeEditor extends LitElementWw {
   }
 
   /*
-
+TODO: highlighting branch buttons
   */
   public highlightConnectionAndNode(
     outputNodeId,

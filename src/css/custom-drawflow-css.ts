@@ -353,6 +353,22 @@ export default css`
     background: #ffca00;
   }
 
+  .drawflow .drawflow-node .output.output-has-error {
+    border: 1px solid #ff2323 !important;
+    background-color: #ff7474 !important;
+  }
+
+  .drawflow .drawflow-node .output.target-disabled {
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+      45deg,
+      #f1f1f1,
+      /* Lighter Gray */ #f1f1f1 5px,
+      #c9c9c9 5px,
+      /* Darker Gray for contrast */ #c9c9c9 10px
+    ) !important;
+  }
+
   /* ---- */
   /* INPUT OUTPUT HIGHLIGHTED */
   /* ---- */
@@ -433,6 +449,11 @@ export default css`
   .drawflow .connection .main-path.branch-highlighted,
   .drawflow .connection .main-path.branch-highlighted {
     stroke: #05ae9e;
+    stroke-width: 3px;
+  }
+
+  .drawflow .connection .main-path.highlighted {
+    stroke: #4ea9ff;
     stroke-width: 3px;
   }
 

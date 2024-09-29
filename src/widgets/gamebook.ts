@@ -22,10 +22,14 @@ import {
   SlMenu,
   SlMenuItem,
   SlIconButton,
+  SlAlert,
+  SlIcon,
 } from "@shoelace-style/shoelace";
 
 //Import Styles
 import styles from "../css/gamebook-preview-css";
+
+import alertOctagon from "@tabler/icons/outline/alert-octagon.svg";
 
 import { WebWriterConnectionButton } from "./gamebook-components/webwriter-connection-button";
 import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
@@ -47,6 +51,8 @@ export class WebWriterGamebook extends LitElementWw {
       "sl-menu-item": SlMenuItem,
       "sl-select": SlSelect,
       "sl-option": SlOption,
+      "sl-alert": SlAlert,
+      "sl-icon": SlIcon,
       "webwriter-connection-button": WebWriterConnectionButton,
     };
   }
@@ -58,6 +64,8 @@ export class WebWriterGamebook extends LitElementWw {
   @property({ type: String }) accessor gamebookTitle;
   @property({ type: String }) accessor pageTitle;
   @property({ type: Number }) accessor startPage;
+  @property({ type: Boolean }) accessor gamebookHasError;
+  @property({ type: String }) accessor containerWithError;
 
   @queryAssignedElements({
     flatten: true,
@@ -77,6 +85,7 @@ export class WebWriterGamebook extends LitElementWw {
     }
 
     this.addEventListener("submit", this._handleSubmit.bind(this));
+    this.gamebookHasError = this._checkForErrors();
   }
 
   /*
@@ -104,7 +113,7 @@ export class WebWriterGamebook extends LitElementWw {
     const containersSlot = currentContainer.shadowRoot.querySelector("slot");
     const assignedElements = containersSlot.assignedElements();
 
-    const smartBranchButtons = assignedElements.find((element) => {
+    const smartBranchButtons = assignedElements.filter((element) => {
       return element instanceof WebWriterSmartBranchButton;
     });
 
@@ -160,8 +169,25 @@ export class WebWriterGamebook extends LitElementWw {
       <div class="gamebook">
         <div class="gamebookTitle">${this.gamebookTitle}</div>
         <div class="pageTitle">${this.pageTitle}</div>
+
         <div class="page">
           <slot></slot>
+        </div>
+
+        <div
+          class="overlay"
+          style="visibility: ${this.gamebookHasError ? "visible" : "hidden"}"
+        >
+          <sl-alert variant="danger" open>
+            <sl-icon
+              slot="icon"
+              src=${alertOctagon}
+              style="font-size: 28px"
+            ></sl-icon>
+            <strong>Gamebook Error</strong><br />
+            The smart branching rule set in node
+            <em>${this.containerWithError}</em> is incomplete.
+          </sl-alert>
         </div>
       </div>
     `;
@@ -171,7 +197,8 @@ export class WebWriterGamebook extends LitElementWw {
 
   */
   private _navigateTo(targetId: number) {
-    //
+    //TODO: What if there is no container?
+    //First Step: Find container, if not throw error
     this.gamebookContainers.forEach((container) => {
       if (container.drawflowNodeId == targetId) {
         if (container instanceof WebWriterGamebookPageContainer) {
@@ -187,7 +214,7 @@ export class WebWriterGamebook extends LitElementWw {
         //
         else if (container instanceof WebWriterGamebookBranchContainer) {
           const nextId = this._getTargetFromRules(container);
-          //console.log(nextId);
+
           this._navigateTo(Number(nextId));
         }
       }
@@ -504,7 +531,7 @@ export class WebWriterGamebook extends LitElementWw {
 
     //Case: No rule was satisfied
     //console.log(branchContainer.elseRule.target);
-    return Number(branchContainer.elseRule.target);
+    return Number(branchContainer.elseRule?.target);
   }
 
   /*
@@ -582,6 +609,10 @@ export class WebWriterGamebook extends LitElementWw {
           if (submitElements.length !== 0) {
             button.disabled = true;
           }
+          //
+          else if (branchContainer.elseRule === undefined) {
+            button.disabled = true;
+          }
         }
       }
     });
@@ -590,5 +621,25 @@ export class WebWriterGamebook extends LitElementWw {
 
     //TODO: make fields required, include header in sl-select for children element that they belong to certian page
     //TODO: include hint: no elements found
+  }
+
+  /*
+
+
+  */
+  private _checkForErrors() {
+    for (const container of this.gamebookContainers) {
+      if (container instanceof WebWriterGamebookBranchContainer) {
+        if (
+          container.elseRule !== undefined &&
+          container.elseRule.target == ""
+        ) {
+          this.containerWithError = container.pageTitle;
+          console.log(this.containerWithError);
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }

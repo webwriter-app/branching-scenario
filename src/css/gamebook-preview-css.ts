@@ -13,6 +13,7 @@ export default css`
   }
 
   .gamebook {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start; /* Center items vertically */
@@ -25,6 +26,7 @@ export default css`
   }
 
   .gamebookTitle {
+    position: relative;
     font-family: "Roboto", sans-serif;
     font-weight: 600;
     background-color: #f7f7f7;
@@ -75,5 +77,17 @@ export default css`
 
   quiz-container {
     position: unset !important; /* Use !important to override any inline styles */
+  }
+
+  .overlay {
+    position: absolute; /* To overlay the .page div */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Black background with opacity */
+    display: flex; /* Flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
   }
 `;

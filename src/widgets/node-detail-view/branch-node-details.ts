@@ -111,6 +111,7 @@ export class BranchNodeDetails extends LitElementWw {
       this.gamebookContainerManager[0] as GamebookContainerManager
     )._getContainerByDrawflowNodeId(this.selectedNode.id.toString());
   }
+
   //
   //TODO: this needs to happen for example when the incoming connection is removed from the editor
   //
@@ -148,6 +149,8 @@ export class BranchNodeDetails extends LitElementWw {
   //TODO: dont let connection be deleted in the editor // node deletion does not clear target of rule
   //TODO: target of rules should be overwritten when connections get removed from outside forces
 
+  //TODO: else rule deletion deletes entire node
+  //TODO: Creation does not update the output connection thing red status
   render() {
     return html`
       <div class="title-bar">
@@ -254,14 +257,8 @@ export class BranchNodeDetails extends LitElementWw {
                                id="index"
                                style="min-width: 25px; display: flex; flex-direction: row; align-items: center; justify-content: center;"
                              >
-                               <p
-                                 style="color: darkgrey; font-size: 15px; margin-right: 15px;"
-                               >
-                                 ${index + 1}
-                               </p>
-
                                <p style="color: darkgrey; font-size: 15px;">
-                                 ${rule.output_id}
+                                 ${parseInt(rule.output_id.split("_")[1], 10)}
                                </p>
                              </div>
 
@@ -435,10 +432,6 @@ export class BranchNodeDetails extends LitElementWw {
                     </p>
                   </div>
 
-                  <p style="color: darkgrey; font-size: 15px;">
-                    ${this.branchContainer?.elseRule?.output_id}
-                  </p>
-
                   <!-- Output -->
                   <output-connection-control
                     @sl-change=${(e: Event) =>
@@ -494,6 +487,7 @@ export class BranchNodeDetails extends LitElementWw {
     }
     this.draggedIndex = -1; // Reset dragged index
     this.hoveredDividerIndex = -1; // Reset hovered divider index
+    this.markUsedOutputs();
     this.requestUpdate();
   }
 
@@ -521,19 +515,18 @@ export class BranchNodeDetails extends LitElementWw {
   }
 
   /*
-
+  TODO: The creating and removing of connections and outputs is interfering with updating the branch container from the editor. Need to fix this!
 
   */
   private _onDrop(event: DragEvent) {
     event.preventDefault();
 
-    //TODO: is it possible to move connections by manipulating the connections objects and calling editor.updateConnectionNodes(id)? May make this code way shorter
     if (
       this.draggedIndex !== -1 &&
       this.hoveredDividerIndex !== -1 &&
       this.draggedIndex !== this.hoveredDividerIndex
     ) {
-      //Step 1: Move outputs of node according to the moved rule
+      // //Step 1: Move outputs of node according to the moved rule
       const hoveredRuleOutput =
         this.branchContainer.rules[this.hoveredDividerIndex].output_id;
       const draggedRuleOutput =
@@ -648,6 +641,7 @@ export class BranchNodeDetails extends LitElementWw {
     }
 
     this._onDragEnd();
+    this.markUsedOutputs();
     this.requestUpdate();
   }
 
@@ -691,6 +685,8 @@ export class BranchNodeDetails extends LitElementWw {
     // Step 6: Add the empty rule to the branch container
     this.branchContainer.addRule(emptyRule);
 
+    console.log("created new rule at output", lastOutputClass);
+
     // Step 7: If no else rule exists, create one
     const hasElseRule = this.branchContainer.elseRule !== undefined;
 
@@ -701,6 +697,7 @@ export class BranchNodeDetails extends LitElementWw {
     else {
       this._moveElseRuleOutputToTheEnd();
     }
+    this.markUsedOutputs();
   }
 
   /*
@@ -723,22 +720,13 @@ export class BranchNodeDetails extends LitElementWw {
       0
     );
 
-    this.selectedNode.outputs[
-      this.branchContainer.elseRule.output_id
-    ].connections.forEach((connection) => {
-      this.nodeEditor.editor.addConnection(
-        this.selectedNode.id,
-        connection.node,
-        this.branchContainer.rules[highestOutputIdIndex].output_id,
-        "input_1"
-      );
-      this.nodeEditor.editor.removeSingleConnection(
-        this.selectedNode.id,
-        connection.node,
-        this.branchContainer.elseRule.output_id,
-        "input_1"
-      );
-    });
+    console.log(
+      "moving else rule to output from",
+      this.branchContainer.elseRule.output_id,
+      "to",
+      this.branchContainer.rules[highestOutputIdIndex].output_id,
+      "and reverse"
+    );
 
     const elseRuleOutputId = this.branchContainer.elseRule.output_id;
     const newRuleOutputId =
@@ -750,6 +738,23 @@ export class BranchNodeDetails extends LitElementWw {
       ...this.branchContainer.elseRule,
       output_id: newRuleOutputId,
     };
+
+    this.selectedNode.outputs[elseRuleOutputId].connections.forEach(
+      (connection) => {
+        this.nodeEditor.editor.addConnection(
+          this.selectedNode.id,
+          connection.node,
+          newRuleOutputId,
+          "input_1"
+        );
+        this.nodeEditor.editor.removeSingleConnection(
+          this.selectedNode.id,
+          connection.node,
+          elseRuleOutputId,
+          "input_1"
+        );
+      }
+    );
   }
   /*
 
@@ -849,6 +854,8 @@ export class BranchNodeDetails extends LitElementWw {
 
       this.branchContainer.removeElseRule();
     }
+
+    this.markUsedOutputs();
   }
 
   /*

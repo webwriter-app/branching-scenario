@@ -512,26 +512,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
           >Understood</sl-button
         >
       </sl-dialog>
-
-      <sl-dialog
-        label="Specify fallback rule"
-        class="dialog"
-        id="else_rule_must_be_set"
-      >
-        Please specify the smart branch nodes fallback rule.
-        <sl-button
-          slot="footer"
-          variant="primary"
-          outline
-          @click=${() =>
-            (
-              this.shadowRoot.getElementById(
-                "else_rule_must_be_set"
-              ) as SlDialog
-            ).hide()}
-          >Understood</sl-button
-        >
-      </sl-dialog>
     `;
   }
 
@@ -719,15 +699,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
           );
         }
 
-        //console.log(inputNode.inputs["input_1"]?.connections);
-        else if (inputNode.inputs["input_1"]?.connections?.length <= 1) {
-          this.gamebookContainerManager.addSmartBranchButtonToContainer(
-            outputNode,
-            inputNode,
-            outputClass,
-            inputClass
-          );
-        } else {
+        //branch node already has a connection
+        else if (inputNode.inputs["input_1"]?.connections?.length > 1) {
           const dialog = this.shadowRoot.getElementById(
             "branch_input_full_dialog"
           ) as SlDialog;
@@ -735,6 +708,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
           this.nodeEditor.editor.removeSingleConnection(
             outputNode.id,
             inputNode.id,
+            outputClass,
+            inputClass
+          );
+        }
+        //
+        else {
+          this.gamebookContainerManager.addSmartBranchButtonToContainer(
+            outputNode,
+            inputNode,
             outputClass,
             inputClass
           );
@@ -761,6 +743,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
             inputNode.id,
             outputClass,
             inputClass
+          );
+        }
+        //
+        else {
+          console.log("updating rule target", outputClass);
+          this.gamebookContainerManager.updateBranchRuleContainer(
+            outputNode.id,
+            outputClass,
+            inputNode.id
           );
         }
       }
@@ -800,6 +791,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
           this.gamebookContainerManager.removeConnectionButtonFromContainer(
             outputNode.id,
             identifier
+          );
+        }
+
+        if (outputNode.class == "branch") {
+          console.log("removing rule target", outputClass);
+          this.gamebookContainerManager.updateBranchRuleContainer(
+            outputNode.id,
+            outputClass,
+            ""
           );
         }
       }
@@ -849,6 +849,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //
     else if (updateType == "outputCreated") {
       this.updateSelectedNode(this.selectedNode.id.toString());
+      this._markUsedOutputs();
     }
     //
     else if (updateType == "outputDeleted") {
@@ -861,6 +862,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       );
 
       this.updateSelectedNode(this.selectedNode.id.toString());
+      this._markUsedOutputs();
     }
     //
     else if (updateType == "templateImported") {
@@ -1107,10 +1109,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       branchContainer.elseRule !== undefined &&
       branchContainer.elseRule.target === ""
     ) {
-      const dialog = this.shadowRoot.getElementById(
-        "else_rule_must_be_set"
-      ) as SlDialog;
-      dialog.show();
       return false;
     }
 
@@ -1143,7 +1141,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
             ?.querySelector(`.output.${rule.output_id}`);
 
           if (!rule.isTargetEnabled) {
-            outputElement?.classList.add("output-in-use");
+            outputElement?.classList.add("target-disabled");
+            outputElement?.classList.remove("output-has-error");
           }
           //
           else {
@@ -1156,11 +1155,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
             } else {
               // If the output has no connections, remove the in-use class
               outputElement.classList.remove("output-in-use");
+              outputElement?.classList.remove("target-disabled");
             }
           }
         });
 
         if (branchContainer[0].elseRule) {
+          console.log(branchContainer[0].elseRule?.output_id);
           const elseRuleOutputElement = this.nodeEditor.shadowRoot
             ?.getElementById(`node-${(node as DrawflowNode).id}`)
             ?.querySelector(
@@ -1174,9 +1175,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
           ) {
             // If the output has at least one connection, mark it as in use
             elseRuleOutputElement?.classList.add("output-in-use");
+            elseRuleOutputElement?.classList.remove("output-has-error");
           } else {
+            console.log("hier drinne");
+            console.log(elseRuleOutputElement);
             // If the output has no connections, remove the in-use class
             elseRuleOutputElement?.classList.remove("output-in-use");
+            elseRuleOutputElement?.classList.add("output-has-error");
           }
         }
       }

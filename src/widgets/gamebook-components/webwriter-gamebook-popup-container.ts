@@ -83,6 +83,9 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
   })
   accessor buttons;
 
+  @property({ type: String, attribute: true, reflect: true })
+  accessor pageTitle;
+
   @queryAssignedElements({
     flatten: true,
   })

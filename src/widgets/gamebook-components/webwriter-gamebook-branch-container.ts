@@ -30,6 +30,9 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
   @property({ type: Object, attribute: true, reflect: true })
   accessor elseRule: Rule;
 
+  @property({ type: String, attribute: true, reflect: true })
+  accessor pageTitle;
+
   //import CSS
   static get styles() {
     return css``;
@@ -126,7 +129,7 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
 
     // Update this.elseRule
     const elseRuleOutputIdNumber = parseInt(
-      this.elseRule.output_id.split("_")[1],
+      this.elseRule?.output_id.split("_")[1],
       10
     );
     if (elseRuleOutputIdNumber > removedOutputClassNumber) {
@@ -164,5 +167,35 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
   */
   public removeElseRule() {
     this.elseRule = undefined;
+  }
+
+  /*
+TODO: update does not gest noticed
+  */
+  public updateRuleTarget(output_class, input_id) {
+    // Helper function to find and update the rule in an array of rules
+    const updateTargetInArray = (ruleSet) => {
+      for (let rule of ruleSet) {
+        if (rule.output_id === output_class) {
+          console.log("rule", output_class, "target is updated to", input_id);
+          rule = { ...rule, target: input_id }; // Update target to input_id
+          return; // Exit once the rule is found and updated
+        }
+      }
+    };
+
+    // Update target in this.rules if a matching rule is found
+    if (Array.isArray(this.rules)) {
+      updateTargetInArray(this.rules);
+    }
+
+    // If this.elseRule is an object, check and update it directly
+    if (this.elseRule && this.elseRule.output_id === output_class) {
+      console.log("elseRule is updated to", output_class);
+      this.elseRule = {
+        ...this.elseRule,
+        target: input_id,
+      };
+    }
   }
 }

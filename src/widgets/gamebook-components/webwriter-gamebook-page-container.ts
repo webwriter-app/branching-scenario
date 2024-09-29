@@ -14,9 +14,6 @@ import { WebWriterConnectionButton } from "./webwriter-connection-button";
 import { SlButton } from "@shoelace-style/shoelace";
 import { WebWriterSmartBranchButton } from "./webwriter-smart-branch-button";
 
-//TODO: Deleting container should delete node!
-//TODO: Mutation observer in main
-//TODO: dialog, or not offer this?
 @customElement("webwriter-gamebook-page-container")
 export class WebWriterGamebookPageContainer extends LitElementWw {
   //import CSS

@@ -410,6 +410,7 @@ export class GamebookContainerManager extends LitElementWw {
       "webwriter-gamebook-branch-container"
     ) as WebWriterGamebookBranchContainer;
     branchContainer.setAttribute("drawflowNodeId", branchNode.id.toString());
+    branchContainer.setAttribute("pageTitle", branchNode.data.title);
 
     // const parser = new DOMParser();
     // const contentFromNode = parser.parseFromString(
@@ -477,5 +478,14 @@ export class GamebookContainerManager extends LitElementWw {
     });
 
     return matchContainerIds;
+  }
+
+  /*
+  
+  
+  */
+  public updateBranchRuleContainer(output_id, output_class, input_id) {
+    const branchContainer = this._getContainerByDrawflowNodeId(output_id);
+    branchContainer.updateRuleTarget(output_class, input_id);
   }
 }
