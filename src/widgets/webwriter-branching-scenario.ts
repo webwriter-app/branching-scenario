@@ -27,6 +27,9 @@ import {
   SlButton,
   SlSwitch,
   SlSelect,
+  SlDivider,
+  SlIconButton,
+  SlButtonGroup,
 } from "@shoelace-style/shoelace";
 
 import styles from "../css/webwriter-branching-scenario-css";
@@ -37,6 +40,7 @@ import squares from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import book from "@tabler/icons/outline/book.svg";
 import packages from "@tabler/icons/outline/packages.svg";
+import trash from "@tabler/icons/outline/trash.svg";
 
 import infoSquareRounded from "@tabler/icons/filled/info-square-rounded.svg";
 import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
@@ -115,6 +119,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "sl-button": SlButton,
       "sl-switch": SlSwitch,
       "sl-select": SlSelect,
+      "sl-divider": SlDivider,
+      "sl-icon-button": SlIconButton,
+      "sl-button-group": SlButtonGroup,
     };
   }
 
@@ -292,63 +299,52 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 </selected-node-view-renderer>
               </split-view>
         
+              <!-- Options Menu -->
               <div part="options" class="author-only">
-           
-                <div>
-                  <sl-icon src=${book} slot="prefix"></sl-icon>
+                <div class="header">
+                  <sl-icon src=${book}></sl-icon>
                   <p>Gamebook</p>
                 </div>
-                <sl-input
-                  id="searchInput"
-                  placeholder="Search for nodes, types, and content"
-                  style="padding-bottom: 15px"
-                  clearable
-                  help-text=${
-                    this.numberOfSearchNodes == 0
-                      ? ""
-                      : this.numberOfSearchNodes == 1
-                      ? `${this.numberOfSearchNodes} node found`
-                      : this.numberOfSearchNodes > 1
-                      ? `${this.numberOfSearchNodes} nodes found`
-                      : ""
-                  }
-                  @sl-input=${this._handleNodeSearch}
-                >
-                  <sl-icon src=${search} slot="prefix"></sl-icon>
-                </sl-input>
-               <sl-button 
+              
+                  <sl-input
+                    id="searchInput"
+                    placeholder="Nodes, content, ..."
+                    clearable
+                    help-text=${
+                      this.numberOfSearchNodes == 0
+                        ? ""
+                        : this.numberOfSearchNodes == 1
+                        ? `${this.numberOfSearchNodes} node found`
+                        : this.numberOfSearchNodes > 1
+                        ? `${this.numberOfSearchNodes} nodes found`
+                        : ""
+                    }
+                    @sl-input=${this._handleNodeSearch}
+                  >
+                    <sl-icon src=${search} slot="prefix"></sl-icon>
+                  </sl-input>
+        
+ 
+
+
+              <sl-button-group label="Alignment">
+                   <sl-button id="copyNodeBtn" 
+                   class="flex-item"
+                   @click=${this.copyNode}  ?disabled=${
+            this.selectedNode.id === -1
+          }
+                          >Copy</sl-button
+                        >
+               <sl-button class="flex-item"
                   @click=${() => this.pasteNode()}
                   ?disabled=${this.copiedNode.id === -1}>
-                  Paste Node
+                  Paste
                 </sl-button>
 
-                ${
-                  this.selectedNode.id != -1
-                    ? html`<div style="margin-left: 25px">
-                          ${this.selectedNode.class == "page" ||
-                          this.selectedNode.class == "origin"
-                            ? html`<sl-icon src=${file}></sl-icon>`
-                            : this.selectedNode.class == "popup"
-                            ? html`<sl-icon src=${squares}></sl-icon>`
-                            : this.selectedNode.class == "branch"
-                            ? html`<sl-icon src=${arrowsSplit2}></sl-icon>`
-                            : null}
-                          <p>${this.selectedNode.data.title}</p>
-                        </div>
-                        <p style="margin-left: auto">
-                          Internal ID: ${this.selectedNode.id}
-                        </p>
-                        <p style="margin-left: auto">
-                          Container found:
-                          ${this.gamebookContainerManager._getContainerByDrawflowNodeId(
-                            this.selectedNode.id
-                          ) != undefined}
-                        </p>
-
-                        <sl-button id="copyNodeBtn" @click=${this.copyNode}
-                          >Copy Node</sl-button
-                        >
-                        <sl-button
+                <sl-button 
+                class="square"
+      
+variant="default"
                           id="deleteNodeBtn"
                           @click=${() =>
                             (
@@ -356,13 +352,51 @@ export class WebWriterBranchingScenario extends LitElementWw {
                                 "delete_node_dialog"
                               ) as SlDialog
                             ).show()}
-                          variant="danger"
-                          outline
-                          ?disabled=${this.selectedNode.class == "origin"
-                            ? true
-                            : false}
-                          >Delete Node</sl-button
+                
+                          ?disabled=${
+                            this.selectedNode.id === -1 ||
+                            this.selectedNode.class == "origin"
+                              ? true
+                              : false
+                          }
+                          >
+                            <sl-icon src=${trash}></sl-icon>
+                          </sl-button
                         >
+
+                
+
+                   
+</sl-button-group>
+
+                ${
+                  this.selectedNode.id != -1
+                    ? html`
+                        <div class="header">
+                          ${this.selectedNode.class == "page"
+                            ? html`<sl-icon src=${file}></sl-icon>
+                                <p>Page Settings</p> `
+                            : this.selectedNode.class == "origin"
+                            ? html`<sl-icon src=${file}></sl-icon>
+                                <p>Start Page</p> `
+                            : this.selectedNode.class == "popup"
+                            ? html`<sl-icon src=${squares}></sl-icon>
+                                <p>Popup</p>`
+                            : this.selectedNode.class == "branch"
+                            ? html`<sl-icon src=${arrowsSplit2}></sl-icon>
+                                <p>Smart Branch</p>`
+                            : null}
+                        </div>
+                        <!-- <p style="margin-left: auto">
+                          Internal ID: ${this.selectedNode.id}
+                        </p> -->
+                        <!-- <p style="margin-left: auto">
+                          Container found:
+                          ${this.gamebookContainerManager._getContainerByDrawflowNodeId(
+                          this.selectedNode.id
+                        ) != undefined}
+                        </p> -->
+
                         ${this.selectedNode.class == "page" ||
                         this.selectedNode.class == "origin"
                           ? html` <sl-button
@@ -372,22 +406,31 @@ export class WebWriterBranchingScenario extends LitElementWw {
                               ?disabled=${this.selectedNode.class == "origin"
                                 ? true
                                 : false}
-                              >Make Page Origin</sl-button
+                              >Set as Origin</sl-button
                             >`
                           : null}
                         ${this.selectedNode.class == "branch"
                           ? html`
-                              <sl-icon src=${infoSquareRounded}></sl-icon>
                               <p>
-                                Set up conditions to determine how your gamebook
-                                will continue. The first condition that is met
-                                will be taken. Rearrange the conditions to
-                                determine the order.
+                                <sl-icon
+                                  src="${infoSquareRounded}"
+                                  style="vertical-align: middle;  margin: 1px;"
+                                ></sl-icon>
+                                Create rules to guide how your gamebook
+                                progresses. The first rule that applies will be
+                                used.
                               </p>
-                              <sl-icon src=${packages}></sl-icon>
                               <p>
-                                Made to work with the WebWriter Quiz Widget.
-                                Available over packages!
+                                <sl-icon
+                                  src="${packages}"
+                                  style="vertical-align: middle; margin: 1px;"
+                                ></sl-icon>
+                                Requires
+                                <a
+                                  href="https://webwriter.app/widgets/"
+                                  target="https://webwriter.app/widgets/"
+                                  >WebWriter Quiz Widget</a
+                                >.
                               </p>
                             `
                           : null}
@@ -417,7 +460,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                                 >Header</sl-switch
                               >
                             `
-                          : null} `
+                          : null}
+                      `
                     : null
                 }
               </div>
@@ -429,7 +473,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
               : "Untitled Gamebook"}
             ><slot></slot
           ></webwriter-gamebook>`}
-      <!-- </div> -->
+
+      <!-- Dialogs -->
       <sl-dialog
         label="Only one connection allowed!"
         class="dialog"

@@ -65,22 +65,11 @@ export class NodeConnectionList extends LitElementWw {
   */
   static get styles() {
     return css`
-      .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        box-sizing: border-box;
-        height: 100%;
-      }
-
       .titlebar {
         display: flex;
         flex-direction: row;
         align-items: center;
-
         border-bottom: 1px solid #d4d4d8;
-
         padding-bottom: 5px;
         width: 100%;
       }
@@ -88,12 +77,11 @@ export class NodeConnectionList extends LitElementWw {
       .titlebar p {
         font-family: "Roboto", sans-serif;
         font-size: 12px;
-
         color: #3f3f46;
         margin: 0px;
         padding: 0px;
         margin-right: auto;
-        max-width: 85px;
+        max-width: 130px;
         min-width: 70px;
         white-space: nowrap;
         overflow: hidden;
@@ -183,28 +171,18 @@ export class NodeConnectionList extends LitElementWw {
       .no-node-message {
         font-family: "Roboto", sans-serif;
         font-size: 12px;
-
         color: darkgray;
         margin: 0px;
-        padding: 0px;
+        padding-top: 10px;
       }
 
       .container {
         display: flex;
-        align-items: center;
-        justify-content: center;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: start;
         width: 100%;
         height: 100%;
-        //text-align: center;
-      }
-
-      .node-message {
-        font-family: "Roboto", sans-serif;
-        font-size: 12px;
-
-        color: darkgray;
-        margin: 0px;
-        padding: 0px;
       }
 
       .branch-item {
@@ -347,41 +325,41 @@ export class NodeConnectionList extends LitElementWw {
     return html`
       <div class="container">
         <div class="titlebar">
-          <p>
-            Accessing contents of
-            (${this.selectedNode.inputs.input_1.connections.length.toString()})
-          </p>
+          <p>Accessing</p>
         </div>
         <div class="verticalStack">
           ${Object.values(this.selectedNode.inputs.input_1.connections).length >
           0
             ? html` ${this.selectedNode.inputs.input_1.connections.map(
-                (connection, index) => html` <div class="branch-item-container">
-                  <div class="branch-item">
-                    <sl-button
-                      class="itemButton"
-                      variant="text"
-                      size="small"
-                      @mouseenter=${() =>
-                        this.nodeEditor.highlightConnectionAndNode(
-                          connection.node,
-                          this.selectedNode.id,
-                          connection.input,
-                          "input_1",
-                          connection.node
-                        )}
-                      @mouseleave=${() =>
-                        this.nodeEditor.unhighlightConnectionAndNode(
-                          connection.node,
-                          this.selectedNode.id,
-                          connection.input,
-                          "input_1",
-                          connection.node
-                        )}
-                    >
-                      ${this.nodeEditor.editor.getNodeFromId(connection.node)
-                        .data.title}
-                    </sl-button>
+                (connection, index) => html` 
+                <div class="item">
+              <p style="color: gray">${index + 1}</p>
+              <sl-button
+                class="itemButton"
+                variant="text"
+                size="small"
+                @mouseenter=${() =>
+                  this.nodeEditor.highlightConnectionAndNode(
+                    connection.node,
+                    this.selectedNode.id,
+                    connection.input,
+                    "input_1",
+                    connection.node
+                  )}
+                @mouseleave=${() =>
+                  this.nodeEditor.unhighlightConnectionAndNode(
+                    connection.node,
+                    this.selectedNode.id,
+                    connection.input,
+                    "input_1",
+                    connection.node
+                  )}
+              >
+                ${
+                  this.nodeEditor.editor.getNodeFromId(connection.node).data
+                    .title
+                }
+              </sl-button>
                     <sl-icon-button
                       src=${XCircleFill}
                       style="font-size: 14px; color: #71717A;"
@@ -396,7 +374,7 @@ export class NodeConnectionList extends LitElementWw {
               )}`
             : html` <div class="container">
                 <p class="no-node-message">
-                  Connect a node to create branching rules based on its content
+                  Connect a node to create rules based on its content!
                 </p>
               </div>`}
         </div>

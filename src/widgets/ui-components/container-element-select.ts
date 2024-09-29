@@ -21,6 +21,7 @@ import checkbox from "@tabler/icons/outline/checkbox.svg";
 import blockquote from "@tabler/icons/outline/blockquote.svg";
 import highlight from "@tabler/icons/outline/highlight.svg";
 import microphone from "@tabler/icons/outline/microphone.svg";
+import packages from "@tabler/icons/outline/packages.svg";
 import { WebWriterGamebookPageContainer } from "../gamebook-components/webwriter-gamebook-page-container";
 import { WebWriterGamebookPopupContainer } from "../gamebook-components/webwriter-gamebook-popup-container";
 
@@ -140,9 +141,14 @@ export class ElementChildrenSelect extends LitElement {
           : null}
         ${this.options.length === 0
           ? html`<small class="message"
-              >No interactive elements found on the
-              <strong>${this.container?.pageTitle}</strong></small
-            >`
+              >No quiz element found.
+              <br />
+              Download the quiz WebWriter Quiz Widget over packages
+              <sl-icon
+                src="${packages}"
+                style="vertical-align: middle; margin: 1px;"
+              ></sl-icon
+            ></small>`
           : html`${repeat(
               this.options,
               (element) => (element as HTMLElement).id, // or use another unique identifier

@@ -149,11 +149,10 @@ export class BranchNodeDetails extends LitElementWw {
   }
 
   //TODO: dialog before deletion of incoming connection
-  //TODO: dont let connection be deleted in the editor // node deletion does not clear target of rule
-  //TODO: target of rules should be overwritten when connections get removed from outside forces
-
+  //TODO: content deletion does not reset element of rule
+  //TODO: node deletion does not clear target of rule
   //TODO: else rule deletion deletes entire node
-  //TODO: Creation does not update the output connection thing red status
+
   render() {
     return html`
       <div class="title-bar">
@@ -529,7 +528,7 @@ export class BranchNodeDetails extends LitElementWw {
   }
 
   /*
-  TODO: The creating and removing of connections and outputs is interfering with updating the branch container from the editor. Need to fix this!
+
 
   */
   private _onDrop(event: DragEvent) {
