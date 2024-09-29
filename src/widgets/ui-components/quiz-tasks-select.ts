@@ -137,36 +137,38 @@ export class QuizTasksSelect extends LitElement {
       multiple
       max-options-visible="1"
     >
-      ${repeat(
-        this.options,
-        (element) => element.id,
-        (element, index) => html`
-          <sl-option value=${`${element.task.id}`}>
-            ${`${index + 1}. ${element.taskElement.tagName
-              .replace("WEBWRITER-", "")
-              .toLowerCase()
-              .replace(/^./, (str) => str.toUpperCase())}`}
-            ${element.taskElement.tagName.toLowerCase().includes("order")
-              ? html` <sl-icon slot="prefix" src=${number123}></sl-icon>`
-              : element.taskElement.tagName.toLowerCase().includes("choice")
-              ? html`<sl-icon slot="prefix" src=${checkbox}></sl-icon>`
-              : element.taskElement.tagName.toLowerCase().includes("text")
-              ? html`<sl-icon slot="prefix" src=${blockquote}></sl-icon>`
-              : element.taskElement.tagName.toLowerCase().includes("mark")
-              ? html`<sl-icon slot="prefix" src=${highlight}></sl-icon>`
-              : element.taskElement.tagName.toLowerCase().includes("speech")
-              ? html`<sl-icon slot="prefix" src=${microphone}></sl-icon>`
-              : null}
+      ${this.options.length === 0
+        ? html`<small class="message">No tasks found in the quiz. </small>`
+        : html` ${repeat(
+            this.options,
+            (element) => element.id,
+            (element, index) => html`
+              <sl-option value=${`${element.task.id}`}>
+                ${`${index + 1}. ${element.taskElement.tagName
+                  .replace("WEBWRITER-", "")
+                  .toLowerCase()
+                  .replace(/^./, (str) => str.toUpperCase())}`}
+                ${element.taskElement.tagName.toLowerCase().includes("order")
+                  ? html` <sl-icon slot="prefix" src=${number123}></sl-icon>`
+                  : element.taskElement.tagName.toLowerCase().includes("choice")
+                  ? html`<sl-icon slot="prefix" src=${checkbox}></sl-icon>`
+                  : element.taskElement.tagName.toLowerCase().includes("text")
+                  ? html`<sl-icon slot="prefix" src=${blockquote}></sl-icon>`
+                  : element.taskElement.tagName.toLowerCase().includes("mark")
+                  ? html`<sl-icon slot="prefix" src=${highlight}></sl-icon>`
+                  : element.taskElement.tagName.toLowerCase().includes("speech")
+                  ? html`<sl-icon slot="prefix" src=${microphone}></sl-icon>`
+                  : null}
 
-            <p
-              slot="suffix"
-              style="color: lightgray; margin: 0px; padding: 4px;"
-            >
-              (${element.prompt.textContent.substring(0, 10) + "..."})
-            </p>
-          </sl-option>
-        `
-      )}
+                <p
+                  slot="suffix"
+                  style="color: lightgray; margin: 0px; padding: 4px;"
+                >
+                  (${element.prompt.textContent.substring(0, 10) + "..."})
+                </p>
+              </sl-option>
+            `
+          )}`}
     </sl-select>`;
   }
 

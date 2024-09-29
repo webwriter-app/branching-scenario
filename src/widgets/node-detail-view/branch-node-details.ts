@@ -271,6 +271,7 @@ export class BranchNodeDetails extends LitElementWw {
                              <!-- TODO: incomingContainer is set during updating and this sometimes returns null, causing an undefined error in the container element select -->
                              <!-- Different kinds of matches: percent etc ... -->
 
+                             <!-- TODO: if element gets deleted on page, the value does not really change and the rule is still set does this fire the value? -->
                              <!-- Element -->
                              <element-children-select
                                .value=${rule.elementId}
@@ -321,8 +322,8 @@ export class BranchNodeDetails extends LitElementWw {
                              >
                                <!-- Quiz Conditions -->
                                <sl-option value="correct">Correct</sl-option>
-                               <sl-option value="uncorrect"
-                                 >Uncorrect</sl-option
+                               <sl-option value="incorrect"
+                                 >Incorrect</sl-option
                                >
                              </sl-select>
 
@@ -343,7 +344,7 @@ export class BranchNodeDetails extends LitElementWw {
                                        ?.tagName.toLowerCase() ==
                                        "webwriter-quiz" &&
                                      (rule.condition == "correct" ||
-                                       rule.condition == "uncorrect")
+                                       rule.condition == "incorrect")
                                    ? html`<sl-input
                                        id="percent"
                                        placeholder="..."
@@ -685,8 +686,6 @@ export class BranchNodeDetails extends LitElementWw {
     // Step 6: Add the empty rule to the branch container
     this.branchContainer.addRule(emptyRule);
 
-    console.log("created new rule at output", lastOutputClass);
-
     // Step 7: If no else rule exists, create one
     const hasElseRule = this.branchContainer.elseRule !== undefined;
 
@@ -718,14 +717,6 @@ export class BranchNodeDetails extends LitElementWw {
         return currentNumber > maxNumber ? currentIndex : maxIndex;
       },
       0
-    );
-
-    console.log(
-      "moving else rule to output from",
-      this.branchContainer.elseRule.output_id,
-      "to",
-      this.branchContainer.rules[highestOutputIdIndex].output_id,
-      "and reverse"
     );
 
     const elseRuleOutputId = this.branchContainer.elseRule.output_id;

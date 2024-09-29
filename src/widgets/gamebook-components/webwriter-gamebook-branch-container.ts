@@ -170,14 +170,14 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
   }
 
   /*
-TODO: update does not gest noticed
+
   */
   public updateRuleTarget(output_class, input_id) {
     // Helper function to find and update the rule in an array of rules
     const updateTargetInArray = (ruleSet) => {
       for (let rule of ruleSet) {
         if (rule.output_id === output_class) {
-          console.log("rule", output_class, "target is updated to", input_id);
+          //console.log("rule", output_class, "target is updated to", input_id);
           rule = { ...rule, target: input_id }; // Update target to input_id
           return; // Exit once the rule is found and updated
         }
@@ -191,7 +191,7 @@ TODO: update does not gest noticed
 
     // If this.elseRule is an object, check and update it directly
     if (this.elseRule && this.elseRule.output_id === output_class) {
-      console.log("elseRule is updated to", output_class);
+      //console.log("elseRule is updated to", output_class);
       this.elseRule = {
         ...this.elseRule,
         target: input_id,

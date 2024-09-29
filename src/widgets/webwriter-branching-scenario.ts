@@ -747,7 +747,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
         }
         //
         else {
-          console.log("updating rule target", outputClass);
+          //console.log("updating rule target", outputClass);
           this.gamebookContainerManager.updateBranchRuleContainer(
             outputNode.id,
             outputClass,
@@ -795,7 +795,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
         }
 
         if (outputNode.class == "branch") {
-          console.log("removing rule target", outputClass);
+          //console.log("removing rule target", outputClass);
           this.gamebookContainerManager.updateBranchRuleContainer(
             outputNode.id,
             outputClass,
@@ -1161,7 +1161,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
         });
 
         if (branchContainer[0].elseRule) {
-          console.log(branchContainer[0].elseRule?.output_id);
+          //console.log(branchContainer[0].elseRule?.output_id);
           const elseRuleOutputElement = this.nodeEditor.shadowRoot
             ?.getElementById(`node-${(node as DrawflowNode).id}`)
             ?.querySelector(
@@ -1177,8 +1177,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
             elseRuleOutputElement?.classList.add("output-in-use");
             elseRuleOutputElement?.classList.remove("output-has-error");
           } else {
-            console.log("hier drinne");
-            console.log(elseRuleOutputElement);
+            // console.log("hier drinne");
+            // console.log(elseRuleOutputElement);
             // If the output has no connections, remove the in-use class
             elseRuleOutputElement?.classList.remove("output-in-use");
             elseRuleOutputElement?.classList.add("output-has-error");
@@ -1239,10 +1239,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
             if (nodeName === "webwriter-gamebook-page-container") {
               const container = node as WebWriterGamebookPageContainer;
               containerEvent(container);
-              console.log(container);
-              console.log(container.originPage);
+              // console.log(container);
+              // console.log(container.originPage);
               if (container.originPage === 1) {
-                console.log("test");
                 this.nodeEditor.addPageNode("First Page", true);
               }
             } else if (nodeName === "webwriter-gamebook-popup-container") {

@@ -195,7 +195,7 @@ export class NodeConnectionList extends LitElementWw {
         justify-content: center;
         width: 100%;
         height: 100%;
-        text-align: center;
+        //text-align: center;
       }
 
       .node-message {

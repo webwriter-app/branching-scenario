@@ -46,7 +46,7 @@ export default css`
 
   sl-select::part(listbox) {
     width: 250px;
-    height: 250px;
+    height: 100px;
   }
 
   .no-node {

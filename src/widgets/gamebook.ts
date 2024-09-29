@@ -410,7 +410,7 @@ export class WebWriterGamebook extends LitElementWw {
                   }
                 }
                 //not contains
-                else if (rule.condition.toLowerCase() == "uncorrect") {
+                else if (rule.condition.toLowerCase() == "incorrect") {
                   if (1 - percentageCorrect >= match) {
                     return Number(rule.target);
                   }
@@ -437,7 +437,7 @@ export class WebWriterGamebook extends LitElementWw {
                 }
                 //
                 else if (
-                  rule.condition.toLowerCase() == "uncorrect" &&
+                  rule.condition.toLowerCase() == "incorrect" &&
                   choiceIsWrong
                 ) {
                   return Number(rule.target);
@@ -464,7 +464,7 @@ export class WebWriterGamebook extends LitElementWw {
                 }
                 //
                 else if (
-                  rule.condition.toLowerCase() == "uncorrect" &&
+                  rule.condition.toLowerCase() == "incorrect" &&
                   orderIsWrong
                 ) {
                   return Number(rule.target);
@@ -482,7 +482,7 @@ export class WebWriterGamebook extends LitElementWw {
                 }
                 //
                 else if (
-                  rule.condition.toLowerCase() == "uncorrect" &&
+                  rule.condition.toLowerCase() == "incorrect" &&
                   textIsWrong
                 ) {
                   return Number(rule.target);
@@ -508,7 +508,7 @@ export class WebWriterGamebook extends LitElementWw {
                   );
 
                   if (
-                    rule.condition.toLowerCase() == "uncorrect" &&
+                    rule.condition.toLowerCase() == "incorrect" &&
                     !userHighlightMatches
                   ) {
                     return Number(rule.target);
@@ -635,7 +635,7 @@ export class WebWriterGamebook extends LitElementWw {
           container.elseRule.target == ""
         ) {
           this.containerWithError = container.pageTitle;
-          console.log(this.containerWithError);
+          //console.log(this.containerWithError);
           return true;
         }
       }

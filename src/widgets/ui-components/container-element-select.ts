@@ -60,6 +60,17 @@ export class ElementChildrenSelect extends LitElement {
     .node-option-hidden {
       display: none;
     }
+
+    .message {
+      display: inline-block;
+      margin: 10px 20px; /* Adjust margin for padding around the small element */
+      padding: 10px; /* Optional: for internal padding */
+      border-radius: 8px; /* Soft round corners */
+      background-color: #f9f9f9; /* Light background for better readability */
+      color: #333; /* Text color */
+      font-size: 14px; /* Adjust the size of the text */
+      line-height: 1.5; /* Make sure the text is well spaced */
+    }
   `;
 
   /*
@@ -106,58 +117,104 @@ export class ElementChildrenSelect extends LitElement {
         .value=${this.value}
         @sl-input=${this._handleElementSelect}
       >
-        ${repeat(
-          this.options,
-          (element) => (element as HTMLElement).id, // or use another unique identifier
-          (element) => html`
-            <sl-option value=${`${(element as HTMLElement).id}`}>
-              ${(element as HTMLElement).tagName
-                .toLowerCase()
-                .includes("webwriter-task")
-                ? html`${(element as HTMLElement).children[1].tagName
-                    .replace("WEBWRITER-", "")
+        ${this.options.length === 0
+          ? html`<small class="message"
+              >No interactive elements found on the
+              <strong>${this.container?.pageTitle}</strong></small
+            >`
+          : html`${repeat(
+              this.options,
+              (element) => (element as HTMLElement).id, // or use another unique identifier
+              (element) => html`
+                <sl-option value=${`${(element as HTMLElement).id}`}>
+                  ${(element as HTMLElement).tagName
                     .toLowerCase()
-                    .replace(/^./, (str) => str.toUpperCase())}
-                  ${(element as HTMLElement).children[1]?.tagName
-                    .toLowerCase()
-                    .includes("order")
-                    ? html` <sl-icon slot="prefix" src=${number123}></sl-icon>`
-                    : (element as HTMLElement).children[1].tagName
+                    .includes("webwriter-task")
+                    ? html`${(element as HTMLElement).children[1].tagName
+                        .replace("WEBWRITER-", "")
                         .toLowerCase()
-                        .includes("choice")
-                    ? html`<sl-icon slot="prefix" src=${checkbox}></sl-icon>`
-                    : (element as HTMLElement).children[1].tagName
+                        .replace(/^./, (str) => str.toUpperCase())}
+                      ${(element as HTMLElement).children[1]?.tagName
                         .toLowerCase()
-                        .includes("text")
-                    ? html`<sl-icon slot="prefix" src=${blockquote}></sl-icon>`
-                    : (element as HTMLElement).children[1].tagName
+                        .includes("order")
+                        ? html`
+                            <sl-icon slot="prefix" src=${number123}></sl-icon>
+                            <p
+                              slot="suffix"
+                              style="color: lightgray; margin: 0px; padding: 4px;"
+                            >
+                              (${element.children[0].textContent + "..."})
+                            </p>
+                          `
+                        : (element as HTMLElement).children[1].tagName
+                            .toLowerCase()
+                            .includes("choice")
+                        ? html`<sl-icon slot="prefix" src=${checkbox}></sl-icon>
+                            <p
+                              slot="suffix"
+                              style="color: lightgray; margin: 0px; padding: 4px;"
+                            >
+                              (${element.children[0].textContent + "..."})
+                            </p> `
+                        : (element as HTMLElement).children[1].tagName
+                            .toLowerCase()
+                            .includes("text")
+                        ? html`<sl-icon
+                              slot="prefix"
+                              src=${blockquote}
+                            ></sl-icon>
+                            <p
+                              slot="suffix"
+                              style="color: lightgray; margin: 0px; padding: 4px;"
+                            >
+                              (${element.children[0].textContent + "..."})
+                            </p> `
+                        : (element as HTMLElement).children[1].tagName
+                            .toLowerCase()
+                            .includes("mark")
+                        ? html`<sl-icon
+                              slot="prefix"
+                              src=${highlight}
+                            ></sl-icon>
+                            <p
+                              slot="suffix"
+                              style="color: lightgray; margin: 0px; padding: 4px;"
+                            >
+                              (${element.children[0].textContent + "..."})
+                            </p> `
+                        : (element as HTMLElement).children[1].tagName
+                            .toLowerCase()
+                            .includes("speech")
+                        ? html`<sl-icon
+                              slot="prefix"
+                              src=${microphone}
+                            ></sl-icon>
+                            <p
+                              slot="suffix"
+                              style="color: lightgray; margin: 0px; padding: 4px;"
+                            >
+                              (${element.children[0].textContent + "..."})
+                            </p> `
+                        : null} `
+                    : (element as HTMLElement).tagName
                         .toLowerCase()
-                        .includes("mark")
-                    ? html`<sl-icon slot="prefix" src=${highlight}></sl-icon>`
-                    : (element as HTMLElement).children[1].tagName
-                        .toLowerCase()
-                        .includes("speech")
-                    ? html`<sl-icon slot="prefix" src=${microphone}></sl-icon>`
-                    : null} `
-                : (element as HTMLElement).tagName
-                    .toLowerCase()
-                    .includes("webwriter-quiz")
-                ? html`
-                    ${(element as HTMLElement).tagName
-                      .replace("WEBWRITER-", "")
-                      .toLowerCase()
-                      .replace(/^./, (str) => str.toUpperCase())}
-                    ${element.tagName.toLowerCase().includes("quiz")
-                      ? html`<sl-icon
-                          slot="prefix"
-                          src=${helpOctagon}
-                        ></sl-icon>`
-                      : null}
-                  `
-                : null}
-            </sl-option>
-          `
-        )}
+                        .includes("webwriter-quiz")
+                    ? html`
+                        ${(element as HTMLElement).tagName
+                          .replace("WEBWRITER-", "")
+                          .toLowerCase()
+                          .replace(/^./, (str) => str.toUpperCase())}
+                        ${element.tagName.toLowerCase().includes("quiz")
+                          ? html`<sl-icon
+                              slot="prefix"
+                              src=${helpOctagon}
+                            ></sl-icon>`
+                          : null}
+                      `
+                    : null}
+                </sl-option>
+              `
+            )}`}
       </sl-select>
     `;
   }

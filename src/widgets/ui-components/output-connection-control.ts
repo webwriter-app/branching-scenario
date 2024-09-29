@@ -37,7 +37,6 @@ export class OutputConnectionControl extends LitElement {
   @property({ type: String }) accessor outputClass;
   @property({ type: Boolean }) accessor disabled;
   @property({ type: Boolean }) accessor required;
-  @property({ type: Boolean }) accessor hasValue = false;
   @property({ type: Boolean }) accessor inOutputList; // New attribute
 
   @state() accessor searchTerm = "";
@@ -110,7 +109,7 @@ export class OutputConnectionControl extends LitElement {
     });
     openObserver.observe(this.selectElement, { attributes: true });
 
-    this.hasValue = this.selectElement.value != "-1";
+    //this.hasValue = this.selectElement.value != "-1";
   }
 
   /*
@@ -119,6 +118,11 @@ export class OutputConnectionControl extends LitElement {
   render() {
     const data = this.nodeEditor.editor.drawflow.drawflow.Home.data;
     const nodeId = this.selectedNode.id;
+
+    const dataFiltered = Object.keys(data).filter(
+      (key) =>
+        data[key].id !== nodeId && data[key].id !== Number(this.incomingNodeId)
+    );
 
     const options = (nodeClass) =>
       Object.keys(data)
@@ -150,7 +154,10 @@ export class OutputConnectionControl extends LitElement {
       <sl-select
         placement="bottom"
         hoist
-        class="${!this.hasValue && this.required && !this.disabled
+        class="${!this.selectedNode?.outputs?.[this.outputClass]
+          ?.connections?.[0]?.node &&
+        this.required &&
+        !this.disabled
           ? "no-value"
           : ""}"
         size=${this.inOutputList ? "small" : "medium"}
@@ -176,7 +183,8 @@ export class OutputConnectionControl extends LitElement {
           </sl-input>
         </div>
         <sl-divider></sl-divider>
-        ${Object.keys(data).length === 1
+
+        ${dataFiltered.length === 0
           ? html`<small>No nodes found</small>`
           : html`
               ${hasNodesOfClass("page") || hasNodesOfClass("origin")
@@ -314,7 +322,7 @@ export class OutputConnectionControl extends LitElement {
       const connections =
         this.selectedNode?.outputs?.[this.outputClass]?.connections;
 
-      this.hasValue = selectedValue !== "";
+      //this.hasValue = selectedValue !== "";
 
       if (connections?.[0]?.node === undefined && selectedValue) {
         this.nodeEditor.editor.addConnection(
