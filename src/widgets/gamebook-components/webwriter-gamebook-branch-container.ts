@@ -198,4 +198,78 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
       };
     }
   }
+
+  /*
+
+  */
+  public removeElementOfRules(element_id: string, isQuiz: boolean): string[][] {
+    const resetRule = (rule) => ({
+      ...rule,
+      elementId: "",
+      quizTasks: "",
+      condition: "",
+      match: "",
+      target: "",
+      isConditionEnabled: false,
+      isMatchEnabled: false,
+      isTargetEnabled: false,
+    });
+
+    let removeConnectionsFromOutputs = [];
+
+    for (let rule of this.rules) {
+      if (rule.elementId === element_id) {
+        if (rule.target !== "") {
+          removeConnectionsFromOutputs.push([rule.output_id, rule.target]);
+        }
+        rule = resetRule(rule);
+        this.rules = this.rules.filter(
+          (rule) => rule.output_id !== rule.output_id
+        );
+        this.addRule(rule);
+      }
+      //
+      else if (!isQuiz && rule.quizTasks.includes(element_id)) {
+        const updatedQuizTaskSelection = rule.quizTasks.replace(element_id, "");
+        if (rule.target !== "") {
+          removeConnectionsFromOutputs.push([rule.output_id, rule.target]);
+        }
+
+        if (!/\S/.test(updatedQuizTaskSelection)) {
+          rule = {
+            ...rule,
+            quizTasks: "",
+            condition: "",
+            match: "",
+            target: "",
+            isConditionEnabled: false,
+            isMatchEnabled: false,
+            isTargetEnabled: false,
+          };
+        } else {
+          rule = {
+            ...rule,
+            quizTasks: updatedQuizTaskSelection,
+            condition: "",
+            match: "",
+            target: "",
+            isConditionEnabled: true,
+            isMatchEnabled: false,
+            isTargetEnabled: false,
+          };
+        }
+
+        this.rules = this.rules.filter(
+          (rule) => rule.output_id !== rule.output_id
+        );
+        this.addRule(rule);
+      }
+    }
+
+    //reference update to trigger re-render
+    this.rules = [...this.rules];
+
+    this.requestUpdate();
+    return removeConnectionsFromOutputs;
+  }
 }

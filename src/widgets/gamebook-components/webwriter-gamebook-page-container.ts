@@ -47,6 +47,8 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
   accessor originPage;
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
+  @property({ type: Number, attribute: true, reflect: true })
+  accessor branchesOff = -1;
 
   @query("slot") accessor slotElement;
 
@@ -182,6 +184,34 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
                   }
                 );
                 this.dispatchEvent(event);
+              }
+            }
+          }
+          //
+          else if (
+            (node as HTMLElement).nodeName.toLowerCase() == "webwriter-quiz" ||
+            (node as HTMLElement).nodeName.toLowerCase() == "webwriter-task"
+          ) {
+            if ((node as HTMLElement).classList.contains("ww-widget")) {
+              if (
+                (node as HTMLElement).classList.contains(
+                  "ProseMirror-selectednode"
+                )
+              ) {
+                if (this.branchesOff !== -1) {
+                  const event = new CustomEvent("quizElementDeleted", {
+                    detail: {
+                      containerId: this.branchesOff,
+                      id: (node as HTMLElement).id,
+                      isQuiz:
+                        (node as HTMLElement).nodeName.toLowerCase() ==
+                        "webwriter-quiz",
+                    },
+                    bubbles: true, // Allows the event to bubble up through the DOM
+                    composed: true, // Allows the event to pass through shadow DOM boundaries
+                  });
+                  this.dispatchEvent(event);
+                }
               }
             }
           }

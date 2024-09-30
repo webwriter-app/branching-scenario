@@ -193,6 +193,8 @@ export class GamebookContainerManager extends LitElementWw {
     );
 
     container.appendChild(branchButton);
+
+    container.branchesOff = inputNode.id;
   }
 
   /*
@@ -244,6 +246,7 @@ export class GamebookContainerManager extends LitElementWw {
     if (branchButton) {
       branchButton.setAttribute("identifier", "x");
       branchButton.remove();
+      container.branchesOff = -1;
     }
   }
 
@@ -484,8 +487,22 @@ export class GamebookContainerManager extends LitElementWw {
   
   
   */
-  public updateBranchRuleContainer(output_id, output_class, input_id) {
+  public updateBranchContainerRuleTarget(output_id, output_class, input_id) {
     const branchContainer = this._getContainerByDrawflowNodeId(output_id);
     branchContainer.updateRuleTarget(output_class, input_id);
+  }
+
+  /*
+  
+  
+  */
+  public removeBranchContainerRuleElements(output_id, element_id, isQuiz) {
+    const branchContainer = this._getContainerByDrawflowNodeId(output_id);
+
+    const removeConnectionsFromOutputs = (
+      branchContainer as WebWriterGamebookBranchContainer
+    ).removeElementOfRules(element_id, isQuiz);
+
+    return removeConnectionsFromOutputs;
   }
 }

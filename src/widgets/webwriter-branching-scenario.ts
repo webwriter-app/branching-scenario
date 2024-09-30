@@ -375,7 +375,7 @@ variant="default"
                         <div class="header">
                           ${this.selectedNode.class == "page"
                             ? html`<sl-icon src=${file}></sl-icon>
-                                <p>Page Settings</p> `
+                                <p>Page</p> `
                             : this.selectedNode.class == "origin"
                             ? html`<sl-icon src=${file}></sl-icon>
                                 <p>Start Page</p> `
@@ -793,7 +793,7 @@ variant="default"
         //
         else {
           //console.log("updating rule target", outputClass);
-          this.gamebookContainerManager.updateBranchRuleContainer(
+          this.gamebookContainerManager.updateBranchContainerRuleTarget(
             outputNode.id,
             outputClass,
             inputNode.id
@@ -840,8 +840,9 @@ variant="default"
         }
 
         if (outputNode.class == "branch") {
+          console.log("deleted and rule updated");
           //console.log("removing rule target", outputClass);
-          this.gamebookContainerManager.updateBranchRuleContainer(
+          this.gamebookContainerManager.updateBranchContainerRuleTarget(
             outputNode.id,
             outputClass,
             ""
@@ -956,6 +957,7 @@ variant="default"
   private handleChangesInGamebookContainers() {
     this.addEventListener("containerDeleteConnectionButton", (event) => {
       //if a button is removed, remove the corresponding connection
+      this.reactToCallbackFromNodeEditor = false;
       const identifier = (event as CustomEvent).detail.identifier;
       const parsed = this.parseConnectionIdentifier(identifier);
 
@@ -994,6 +996,24 @@ variant="default"
       this.nodeEditor.editor.removeNodeId(
         `node-${(event as CustomEvent).detail.nodeId}`
       );
+    });
+    this.addEventListener("quizElementDeleted", (event) => {
+      const removeConnectionsFromOutputs =
+        this.gamebookContainerManager.removeBranchContainerRuleElements(
+          (event as CustomEvent).detail.containerId,
+          (event as CustomEvent).detail.id,
+          (event as CustomEvent).detail.isQuiz
+        );
+
+      for (let outputTargetTuple of removeConnectionsFromOutputs) {
+        this.reactToCallbackFromNodeEditor = false;
+        this.nodeEditor.editor.removeSingleConnection(
+          (event as CustomEvent).detail.containerId,
+          outputTargetTuple[1],
+          outputTargetTuple[0],
+          "input_1"
+        );
+      }
     });
   }
 

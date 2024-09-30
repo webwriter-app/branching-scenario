@@ -123,6 +123,8 @@ export class BranchNodeDetails extends LitElementWw {
       this.gamebookContainerManager[0] as GamebookContainerManager
     )._getContainerByDrawflowNodeId(this.selectedNode.id.toString());
 
+    console.log(this.branchContainer.rules);
+
     // console.log(this.selectedNode.id.toString());
     // console.log(this.branchContainer);
 
@@ -150,7 +152,6 @@ export class BranchNodeDetails extends LitElementWw {
 
   //TODO: dialog before deletion of incoming connection
   //TODO: content deletion does not reset element of rule
-  //TODO: node deletion does not clear target of rule
   //TODO: else rule deletion deletes entire node
 
   render() {
