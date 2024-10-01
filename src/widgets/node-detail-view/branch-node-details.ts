@@ -1,5 +1,4 @@
 import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
-//TODO: nodes get deleted after delting connection ???
 import { repeat } from "lit/directives/repeat.js";
 import { LitElementWw } from "@webwriter/lit";
 import {
@@ -116,17 +115,12 @@ export class BranchNodeDetails extends LitElementWw {
   }
 
   //
-  //TODO: this needs to happen for example when the incoming connection is removed from the editor
+  //
   //
   protected updated(_changedProperties: PropertyValues): void {
     this.branchContainer = (
       this.gamebookContainerManager[0] as GamebookContainerManager
     )._getContainerByDrawflowNodeId(this.selectedNode.id.toString());
-
-    console.log(this.branchContainer.rules);
-
-    // console.log(this.selectedNode.id.toString());
-    // console.log(this.branchContainer);
 
     const incomingNodeId =
       this.selectedNode.inputs["input_1"].connections?.[0]?.node;
@@ -150,10 +144,10 @@ export class BranchNodeDetails extends LitElementWw {
     }
   }
 
-  //TODO: dialog before deletion of incoming connection
-  //TODO: content deletion does not reset element of rule
   //TODO: else rule deletion deletes entire node
-
+  //TODO: nodes get deleted after delting connection
+  //TODO: deleting the incoming Node does not delete all the connections
+  //TODO: output deletion is weird
   render() {
     return html`
       <div class="title-bar">
@@ -272,9 +266,7 @@ export class BranchNodeDetails extends LitElementWw {
                              ></sl-icon>
 
                              <!-- TODO: incomingContainer is set during updating and this sometimes returns null, causing an undefined error in the container element select -->
-                             <!-- Different kinds of matches: percent etc ... -->
 
-                             <!-- TODO: if element gets deleted on page, the value does not really change and the rule is still set does this fire the value? -->
                              <!-- Element -->
                              <element-children-select
                                .value=${rule.elementId}

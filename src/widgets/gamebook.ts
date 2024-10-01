@@ -100,7 +100,7 @@ export class WebWriterGamebook extends LitElementWw {
 
   /*
 
-  TODO: Handle Reset of Quiz and Tasks
+  (TODO: after Thesis) Handle Reset of Quiz and Tasks
    */
   private _handleSubmit(event: Event) {
     event.preventDefault(); // Prevent the default form submission

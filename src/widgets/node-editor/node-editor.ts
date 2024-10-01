@@ -335,44 +335,6 @@ export class NodeEditor extends LitElementWw {
     this.backgroundIsDragging = true;
     this.backgroundLastX = event.clientX;
     this.backgroundLastY = event.clientY;
-
-    // Get the drawflow element
-    // const drawflow = this.shadowRoot?.querySelector(".drawflow");
-    // if (!drawflow) {
-    //   console.log("not found");
-    //   return;
-    // }
-
-    // // Find which child of drawflow is hit
-    // const nodes = Array.from(drawflow.children).filter((child) =>
-    //   child.classList.contains("parent-node")
-    // );
-
-    // let actualNodes = [];
-
-    // nodes.forEach((parent) => {
-    //   const childElements = (
-    //     Array.from(parent.children) as HTMLElement[]
-    //   ).filter((node) => node.id.includes("node-"));
-
-    //   actualNodes.push(...childElements);
-    // });
-
-    // const hitChild = actualNodes.find((child) => {
-    //   const rect = child.getBoundingClientRect();
-    //   return (
-    //     event.clientX >= rect.left &&
-    //     event.clientX <= rect.right &&
-    //     event.clientY >= rect.top &&
-    //     event.clientY <= rect.bottom
-    //   );
-    // });
-
-    // if (hitChild) {
-    //   console.log("Hit child element:", hitChild);
-    // } else {
-    //   console.log("No child element hit.");
-    // }
   }
 
   /*

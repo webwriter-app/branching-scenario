@@ -125,17 +125,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
     };
   }
 
-  private min = "230px";
-  private max = "350px";
-  private previousSplitPanelHeight;
-
   //import CSS
   static styles = [styles];
 
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
-  // Create an observer instance linked to the callback function
-  private justDeletedOriginContainer: String;
 
   /* 
   
@@ -210,7 +204,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
       <!-- <button @click=${() => this.exportContainersAsString()}></button> -->
       ${this.isContentEditable
         ? html`
-           <split-view .getDividerPos=${(pos) => this.serializeDividerPos(pos)} 
+           <split-view 
+                .getDividerPos=${(pos) => this.serializeDividerPos(pos)} 
                 .dividerPosition=${this.dividerPos} >
                 <node-editor
                   slot="start"
@@ -709,7 +704,7 @@ variant="default"
         this.copyAndPasteContainerContents(this.copiedNode.id, node.id);
       }
 
-      //TODO: copy and paste branch nodes need connection to the incoming node if they are connected
+      //(TODO: after Thesis) copy and paste branch nodes need connection to the incoming node if they are connected
       else if (node.class == "branch") {
         this.gamebookContainerManager._createBranchContainer(node);
       }
@@ -816,18 +811,9 @@ variant="default"
       this._markUsedOutputs();
       //if a connection is removed by the user, remove the corresponding button
       if (this.reactToCallbackFromNodeEditor) {
-        // console.log(
-        //   "connection delete",
-        //   outputNode.id,
-        //   outputClass,
-        //   inputNode.id,
-        //   inputClass
-        // );
         const identifier = `${outputNode.id}-${outputClass}-${inputNode.id}-${inputClass}`;
 
         if (inputNode.class == "branch") {
-          //TODO: dialog for confirmation needs to happen here
-          //Warn about rules being deleted!
           this.gamebookContainerManager.removeSmartBranchButtonFromContainer(
             outputNode.id,
             identifier
@@ -840,8 +826,6 @@ variant="default"
         }
 
         if (outputNode.class == "branch") {
-          console.log("deleted and rule updated");
-          //console.log("removing rule target", outputClass);
           this.gamebookContainerManager.updateBranchContainerRuleTarget(
             outputNode.id,
             outputClass,
@@ -1185,14 +1169,11 @@ variant="default"
 
   */
   private _markUsedOutputs() {
-    //console.log("we in here");
     // Loop through all nodes in drawflow
     const nodes = this.nodeEditor.editor.drawflow.drawflow.Home.data;
 
     Object.values(nodes).forEach((node) => {
       if ((node as DrawflowNode).class == "branch") {
-        //console.log(this.gamebookContainers);
-
         //TODO: Get another way of obtaining branch container
         const branchContainer = this.gamebookContainers.filter((container) => {
           if (container.drawflowNodeId == (node as DrawflowNode).id) {
@@ -1242,8 +1223,6 @@ variant="default"
             elseRuleOutputElement?.classList.add("output-in-use");
             elseRuleOutputElement?.classList.remove("output-has-error");
           } else {
-            // console.log("hier drinne");
-            // console.log(elseRuleOutputElement);
             // If the output has no connections, remove the in-use class
             elseRuleOutputElement?.classList.remove("output-in-use");
             elseRuleOutputElement?.classList.add("output-has-error");

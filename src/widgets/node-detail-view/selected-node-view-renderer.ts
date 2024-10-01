@@ -29,9 +29,6 @@ import { ToggleableInput } from "../ui-components/toggleable-input";
 import { NodeConnectionList } from "../ui-components/node-connection-list";
 
 //Tabler Icon Import
-import squares from "@tabler/icons/filled/squares.svg";
-import file from "@tabler/icons/filled/file.svg";
-import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import { BranchNodeDetails } from "./branch-node-details";
 
 @customElement("node-details-selector")
@@ -179,22 +176,5 @@ export class SelectedNodeViewRenderer extends LitElementWw {
             </div>
           `}
     `;
-  }
-
-  /*
-
-
-  */
-  private renameNode(text: String) {
-    this.nodeEditor.editor.updateNodeDataFromId(this.selectedNode.id, {
-      ...this.selectedNode.data,
-      title: text,
-    });
-
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "nodeRenamed",
-      this.selectedNode
-    );
   }
 }
