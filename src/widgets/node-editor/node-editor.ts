@@ -97,21 +97,29 @@ export class NodeEditor extends LitElementWw {
   accessor editor: Drawflow;
   @property({ type: Object, attribute: true, reflect: false })
   accessor editorContent;
-  @property({ type: Number, attribute: true, reflect: true })
-  accessor editorZoom = -1;
+
   @property({ type: String }) accessor editorZoomString = "";
-  @property({ type: Object, attribute: true }) accessor selectedNode;
-  @property({ type: String }) accessor gamebookTitle;
   @property({ type: String }) accessor selectedConnection =
     NO_CONNECTION_SELECTED;
-  @property({ type: Boolean, attribute: true })
-  accessor programmticallySelectedNode = false;
-
   @property({ type: Boolean, attribute: true }) accessor connectionStarted =
     false;
+  @property({ type: Boolean }) accessor backgroundIsDragging = false;
+  @property({ type: Number }) accessor backgroundLastX = 0;
+  @property({ type: Number }) accessor backgroundLastY = 0;
+  @property({ type: Number }) accessor backgroundTranslateX = 0;
+  @property({ type: Number }) accessor backgroundTranslateY = 0;
+  @property({ type: Number }) accessor backgroundScale = 0.45;
+  @property({ type: Number }) accessor backgroundMinScale = 0.5;
+  @property({ type: Number }) accessor backgroundMaxScale = 2;
+  @property({ type: Number }) accessor backgroundScaleFactor = 1.05;
+  @property({ type: Boolean }) accessor nodePasted = false;
 
-  //access nodes in the internal component DOM.
-  @property({ attribute: false }) accessor handleGamebookTitle = (event) => {};
+  @query("#drawflowEditorDiv") accessor drawflowEditorDiv;
+  @queryAll('div[id*="node-"]') accessor nodeDivs;
+
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default");
 
   //access nodes in the internal component DOM.
   @property({ attribute: false }) accessor changeInEditorCallback = (
@@ -132,38 +140,6 @@ export class NodeEditor extends LitElementWw {
 
   @property({ attribute: false }) accessor markUsedOutputs = () => {};
 
-  @property({ attribute: false })
-  accessor checkIfElseRuleTargetIsSet: () => boolean; // Default implementation with type
-
-  @property({ type: Boolean }) accessor backgroundIsDragging = false;
-  @property({ type: Number }) accessor backgroundLastX = 0;
-  @property({ type: Number }) accessor backgroundLastY = 0;
-  @property({ type: Number }) accessor backgroundTranslateX = 0;
-  @property({ type: Number }) accessor backgroundTranslateY = 0;
-  @property({ type: Number }) accessor backgroundScale = 0.45;
-  @property({ type: Number }) accessor backgroundMinScale = 0.5;
-  @property({ type: Number }) accessor backgroundMaxScale = 2;
-  @property({ type: Number }) accessor backgroundScaleFactor = 1.05;
-
-  // @property({ attribute: false }) accessor updateSelectedNodeCallback = (
-  //   id
-  // ) => {};
-
-  @query("#drawflowEditorDiv") accessor drawflowEditorDiv;
-
-  @queryAll('div[id*="node-"]') accessor nodeDivs;
-
-  @property({ type: Boolean }) accessor nodePasted = false;
-
-  @property({ type: Object, attribute: true, reflect: true })
-  accessor editorPosition = { x: undefined, y: undefined };
-
-  @consume({ context: gamebookStore, subscribe: true })
-  @property({ type: Object, attribute: true, reflect: true })
-  public accessor providedStore = new GamebookStore("test");
-
-  //private _myData = new ContextConsumer(this, { context: gamebookStore });
-
   /*
 
   */
@@ -179,22 +155,24 @@ export class NodeEditor extends LitElementWw {
     //scale factor
     this.editor.zoom_value = 0.05;
 
-    if (this.editorZoom == -1) {
+    if (this.providedStore.editorZoom == -1) {
+      console.log(this.providedStore.editorZoom);
       this.editor.zoom = this.backgroundScale;
     } else {
-      this.editor.zoom = this.editorZoom;
-      this.onZoom(this.editorZoom, 0.2, this.editor.zoom_max);
+      console.log(this.providedStore.editorZoom);
+      this.editor.zoom = this.providedStore.editorZoom;
+      this.onZoom(this.providedStore.editorZoom, 0.2, this.editor.zoom_max);
     }
 
     this.editor.start();
     this.editor.zoom_refresh();
 
     if (
-      this.editorPosition.x != undefined &&
-      this.editorPosition.y != undefined
+      this.providedStore.editorPosition.x != undefined &&
+      this.providedStore.editorPosition.y != undefined
     ) {
-      this.editor.canvas_x = this.editorPosition.x;
-      this.editor.canvas_y = this.editorPosition.y;
+      this.editor.canvas_x = this.providedStore.editorPosition.x;
+      this.editor.canvas_y = this.providedStore.editorPosition.y;
 
       const drawflowContainer =
         this.drawflowEditorDiv.querySelector(".drawflow");
@@ -205,7 +183,7 @@ export class NodeEditor extends LitElementWw {
     }
 
     this._registerEditorEventHandlers();
-    //this._registerBackground();
+
     if (this.editorContent == null) {
       this.addPageNode("First Page", true);
     } else {
@@ -219,26 +197,23 @@ export class NodeEditor extends LitElementWw {
 
   */
   protected updated(_changedProperties: PropertyValues): void {
-    if (this.selectedNode.id == -1) {
+    if (this.providedStore.selectedNode.id === -1) {
       this.nodeDivs.forEach((nodeDiv) => {
         nodeDiv.classList.remove("selected");
       });
       this.editor.node_selected = null;
-    } else {
+    }
+    //
+    else {
       this.nodeDivs.forEach((nodeDiv) => {
         const id = parseInt(nodeDiv.id.split("-")[1], 10);
-        if (id === this.selectedNode.id) {
+        if (id === this.providedStore.selectedNode.id) {
           nodeDiv.classList.add("selected");
           this.editor.node_selected = nodeDiv;
         } else {
           nodeDiv.classList.remove("selected");
         }
       });
-    }
-
-    if (_changedProperties.has("providedStore") && this.providedStore) {
-      console.log("node editor");
-      this.requestUpdate();
     }
   }
 
@@ -278,15 +253,12 @@ export class NodeEditor extends LitElementWw {
     return html`
       <div id="nodeEditor">
         <node-editor-controls-bar
-          .gamebookTitle=${this.gamebookTitle}
-          .handleGamebookTitle=${(event) => this.handleGamebookTitle(event)}
           .addPageNode=${(string, boolean) => this.addPageNode(string, boolean)}
           .addPopUpNode=${(string) => this.addPopUpNode(string)}
           .addBranchNode=${(string) => this.addBranchNode(string)}
           .addDecisionPopUpTemplate=${() => this.addDecisionPopUpTemplate()}
           .showDialog=${() =>
             (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
-          .selectedNode=${this.selectedNode}
         >
         </node-editor-controls-bar>
 
@@ -397,7 +369,7 @@ export class NodeEditor extends LitElementWw {
   public onMouseMove(event: MouseEvent) {
     if (
       this.backgroundIsDragging &&
-      this.selectedNode.id == -1 &&
+      this.providedStore.selectedNode.id == -1 &&
       !this.connectionStarted
     ) {
       // Check if node is not selected
@@ -418,19 +390,10 @@ export class NodeEditor extends LitElementWw {
     this.backgroundIsDragging = false;
 
     //console.log(this.editor.pos_x, this.editor.pos_y);
-    this.changeInEditorCallback(
-      { ...this.editor.drawflow },
-      "translate",
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      { x: this.editor.canvas_x, y: this.editor.canvas_y }
+
+    this.providedStore.setEditorPosition(
+      this.editor.canvas_x,
+      this.editor.canvas_y
     );
   }
 
@@ -596,19 +559,9 @@ export class NodeEditor extends LitElementWw {
       // console.log("here");
       // console.log({ x: this.editor.canvas_x, y: this.editor.canvas_y });
 
-      this.changeInEditorCallback(
-        { ...this.editor.drawflow },
-        "translate",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        { x: this.editor.canvas_x, y: this.editor.canvas_y }
+      this.providedStore.setEditorPosition(
+        this.editor.canvas_x,
+        this.editor.canvas_y
       );
     }
   }
@@ -646,12 +599,12 @@ export class NodeEditor extends LitElementWw {
 
     // Event listener for node click
     this.editor.on("nodeSelected", (id) => {
-      //console.log("node Selected");
-      //this.updateSelectedNodeCallback(id);
+      this.providedStore.setSelectedNode(this.editor.getNodeFromId(id));
     });
 
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
+      this.providedStore.setSelectedNode();
       //console.log("node Unselected");
       //this.updateSelectedNodeCallback(-1);
     });
@@ -842,33 +795,10 @@ export class NodeEditor extends LitElementWw {
         zoomValue.classList.add("fade-in-out");
       }
 
-      this.changeInEditorCallback(
-        { ...this.editor.drawflow },
-        "zoom",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        zoom_level
-      );
-
-      this.changeInEditorCallback(
-        { ...this.editor.drawflow },
-        "translate",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        { x: this.editor.canvas_x, y: this.editor.canvas_y }
+      this.providedStore.setEditorZoom(zoom_level);
+      this.providedStore.setEditorPosition(
+        this.editor.canvas_x,
+        this.editor.canvas_y
       );
     });
 

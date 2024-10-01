@@ -21,16 +21,23 @@ const NO_NODE_SELECTED: DrawflowNode = {
 export class GamebookStore {
   title: string;
   selectedNode: DrawflowNode;
+  editorZoom: number;
+  editorPosition: any;
+
   //Use observer pattern to notify main view of cahnge
   observer: Observer;
 
   constructor(
     title = "Gamebook Title",
     observer = null,
-    selectedNode = NO_NODE_SELECTED
+    selectedNode = NO_NODE_SELECTED,
+    editorZoom = -1,
+    editorPositon = { x: undefined, y: undefined }
   ) {
     this.title = title;
     this.selectedNode = selectedNode;
+    this.editorZoom = editorZoom;
+    this.editorPosition = editorPositon;
     this.observer = observer;
   }
 
@@ -41,6 +48,17 @@ export class GamebookStore {
 
   setSelectedNode(node = NO_NODE_SELECTED) {
     this.selectedNode = node;
+    this.notifyObservers(); // Notify all observers when updated
+  }
+
+  setEditorZoom(zoom = -1) {
+    this.editorZoom = zoom;
+    this.notifyObservers(); // Notify all observers when updated
+  }
+
+  setEditorPosition(x = -1, y = -1) {
+    this.editorPosition = { x: x, y: y };
+    console.log(this.editorPosition);
     this.notifyObservers(); // Notify all observers when updated
   }
 
@@ -56,12 +74,24 @@ export class GamebookStore {
 
   // Serialize the store object to a string (for attribute reflection)
   toString() {
-    return JSON.stringify({ title: this.title, observer: this.observer });
+    return JSON.stringify({
+      title: this.title,
+      observer: this.observer,
+      selectedNode: this.selectedNode,
+      editorZoom: this.editorZoom,
+      editorPosition: this.editorPosition,
+    });
   }
 
   // Static method to deserialize from string to GamebookStore instance
   static fromString(serialized: string) {
     const data = JSON.parse(serialized);
-    return new GamebookStore(data.title, data.observer);
+    return new GamebookStore(
+      data.title,
+      data.observer,
+      data.selectedNode,
+      data.editorZoom,
+      data.editorPosition
+    );
   }
 }

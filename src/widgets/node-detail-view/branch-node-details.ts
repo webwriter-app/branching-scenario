@@ -48,6 +48,9 @@ import { QuizTasksSelect } from "../ui-components/quiz-tasks-select";
 import { ToggleableInput } from "../ui-components/toggleable-input";
 import { NodeConnectionList } from "../ui-components/node-connection-list";
 
+import { provide, consume, createContext } from "@lit/context";
+import { gamebookStore, GamebookStore } from "../context-test";
+
 @customElement("branch-node-details")
 export class BranchNodeDetails extends LitElementWw {
   //registering custom elements used in the widget
@@ -76,15 +79,17 @@ export class BranchNodeDetails extends LitElementWw {
   @property({ type: Object }) accessor nodeEditor;
   @property({ type: Boolean }) accessor isConnected = false;
   //public properties are part of the component's public API
-  @property({ type: Object, attribute: false })
-  accessor selectedNode: DrawflowNode;
+
   @property({ type: Object, attribute: false })
   accessor branchContainer: WebWriterGamebookBranchContainer;
+
   @property({ type: Object, attribute: false })
   accessor incomingContainer;
+
   @property({ type: Boolean }) accessor ruleDrag = false;
   private draggedIndex = -1;
   @property({ type: Number }) accessor hoveredDividerIndex = -1;
+
   @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow,
     updateType,
@@ -106,13 +111,19 @@ export class BranchNodeDetails extends LitElementWw {
   })
   accessor gamebookContainerManager;
 
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default");
+
   //
 
   //
   protected firstUpdated(_changedProperties: PropertyValues): void {
     this.branchContainer = (
       this.gamebookContainerManager[0] as GamebookContainerManager
-    )._getContainerByDrawflowNodeId(this.selectedNode.id.toString());
+    )._getContainerByDrawflowNodeId(
+      this.providedStore.selectedNode.id.toString()
+    );
   }
 
   //
@@ -121,15 +132,17 @@ export class BranchNodeDetails extends LitElementWw {
   protected updated(_changedProperties: PropertyValues): void {
     this.branchContainer = (
       this.gamebookContainerManager[0] as GamebookContainerManager
-    )._getContainerByDrawflowNodeId(this.selectedNode.id.toString());
+    )._getContainerByDrawflowNodeId(
+      this.providedStore.selectedNode.id.toString()
+    );
 
     console.log(this.branchContainer.rules);
 
-    // console.log(this.selectedNode.id.toString());
+    // console.log(this.providedStore.selectedNode.id.toString());
     // console.log(this.branchContainer);
 
     const incomingNodeId =
-      this.selectedNode.inputs["input_1"].connections?.[0]?.node;
+      this.providedStore.selectedNode.inputs["input_1"].connections?.[0]?.node;
 
     if (incomingNodeId != undefined) {
       if (this.branchContainer) {
@@ -143,7 +156,7 @@ export class BranchNodeDetails extends LitElementWw {
 
     //
     else {
-      //TODO: since this.selectedNode updates are coming from outside, this gets executed several times because updates are thrown together.
+      //TODO: since this.providedStore.selectedNode updates are coming from outside, this gets executed several times because updates are thrown together.
       //This could really profit from a @context change
       this.clearRules();
       this.isConnected = false;
@@ -162,7 +175,7 @@ export class BranchNodeDetails extends LitElementWw {
         </div>
         <div class="div-title">
           <toggleable-input
-            .text=${this.selectedNode.data.title}
+            .text=${this.providedStore.selectedNode.data.title}
             .saveChanges=${(string) => this.renameNode(string)}
           ></toggleable-input>
           <p class="subtitle">Smart Branch</p>
@@ -171,7 +184,7 @@ export class BranchNodeDetails extends LitElementWw {
           <node-connection-list
             branch
             .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.selectedNode}
+            .selectedNode=${this.providedStore.selectedNode}
             .changeInEditorCallback=${(
               drawflow,
               updateType,
@@ -389,10 +402,9 @@ export class BranchNodeDetails extends LitElementWw {
                                      e.target as OutputConnectionControl
                                    ).selectElement.value.toString()
                                  )}
-                               .selectedNode=${this.selectedNode}
-                               .incomingNodeId=${this.selectedNode.inputs[
-                                 "input_1"
-                               ].connections?.[0]?.node}
+                               .selectedNode=${this.providedStore.selectedNode}
+                               .incomingNodeId=${this.providedStore.selectedNode
+                                 .inputs["input_1"].connections?.[0]?.node}
                                .nodeEditor=${this.nodeEditor}
                                .outputClass=${rule.output_id}
                                ?disabled=${!rule.isTargetEnabled}
@@ -454,9 +466,10 @@ export class BranchNodeDetails extends LitElementWw {
                           e.target as OutputConnectionControl
                         ).selectElement.value.toString()
                       )}
-                    .selectedNode=${this.selectedNode}
-                    .incomingNodeId=${this.selectedNode.inputs["input_1"]
-                      .connections?.[0]?.node}
+                    .selectedNode=${this.providedStore.selectedNode}
+                    .incomingNodeId=${this.providedStore.selectedNode.inputs[
+                      "input_1"
+                    ].connections?.[0]?.node}
                     .nodeEditor=${this.nodeEditor}
                     .outputClass=${this.branchContainer?.elseRule?.output_id}
                     required="true"
@@ -547,22 +560,22 @@ export class BranchNodeDetails extends LitElementWw {
         this.branchContainer.rules[this.draggedIndex].output_id;
 
       //1.1: Move connections from dragged output onto hovered output
-      this.selectedNode.outputs[draggedRuleOutput].connections.forEach(
-        (connection) => {
-          this.nodeEditor.editor.addConnection(
-            this.selectedNode.id,
-            connection.node,
-            hoveredRuleOutput,
-            "input_1"
-          );
-          this.nodeEditor.editor.removeSingleConnection(
-            this.selectedNode.id,
-            connection.node,
-            draggedRuleOutput,
-            "input_1"
-          );
-        }
-      );
+      this.providedStore.selectedNode.outputs[
+        draggedRuleOutput
+      ].connections.forEach((connection) => {
+        this.nodeEditor.editor.addConnection(
+          this.providedStore.selectedNode.id,
+          connection.node,
+          hoveredRuleOutput,
+          "input_1"
+        );
+        this.nodeEditor.editor.removeSingleConnection(
+          this.providedStore.selectedNode.id,
+          connection.node,
+          draggedRuleOutput,
+          "input_1"
+        );
+      });
 
       //1.2: For other rules update their outputs and connections accordingly
       this.branchContainer.rules.forEach((rule, index) => {
@@ -585,23 +598,23 @@ export class BranchNodeDetails extends LitElementWw {
           //Case Up
           if (this.hoveredDividerIndex > this.draggedIndex) {
             //Move the connection to the output above
-            this.selectedNode.outputs[rule.output_id].connections.forEach(
-              (connection) => {
-                this.nodeEditor.editor.removeSingleConnection(
-                  this.selectedNode.id,
-                  connection.node,
-                  `output_${outputIdNumber}`,
-                  "input_1"
-                );
+            this.providedStore.selectedNode.outputs[
+              rule.output_id
+            ].connections.forEach((connection) => {
+              this.nodeEditor.editor.removeSingleConnection(
+                this.providedStore.selectedNode.id,
+                connection.node,
+                `output_${outputIdNumber}`,
+                "input_1"
+              );
 
-                this.nodeEditor.editor.addConnection(
-                  this.selectedNode.id,
-                  connection.node,
-                  `output_${outputIdNumber - 1}`,
-                  "input_1"
-                );
-              }
-            );
+              this.nodeEditor.editor.addConnection(
+                this.providedStore.selectedNode.id,
+                connection.node,
+                `output_${outputIdNumber - 1}`,
+                "input_1"
+              );
+            });
 
             //Update rule reference
             this.branchContainer.rules[index].output_id = `output_${
@@ -611,23 +624,23 @@ export class BranchNodeDetails extends LitElementWw {
           //Case Down
           else if (this.hoveredDividerIndex < this.draggedIndex) {
             //Move the connection to the output below
-            this.selectedNode.outputs[rule.output_id].connections.forEach(
-              (connection) => {
-                this.nodeEditor.editor.removeSingleConnection(
-                  this.selectedNode.id,
-                  connection.node,
-                  `output_${outputIdNumber}`,
-                  "input_1"
-                );
+            this.providedStore.selectedNode.outputs[
+              rule.output_id
+            ].connections.forEach((connection) => {
+              this.nodeEditor.editor.removeSingleConnection(
+                this.providedStore.selectedNode.id,
+                connection.node,
+                `output_${outputIdNumber}`,
+                "input_1"
+              );
 
-                this.nodeEditor.editor.addConnection(
-                  this.selectedNode.id,
-                  connection.node,
-                  `output_${outputIdNumber + 1}`,
-                  "input_1"
-                );
-              }
-            );
+              this.nodeEditor.editor.addConnection(
+                this.providedStore.selectedNode.id,
+                connection.node,
+                `output_${outputIdNumber + 1}`,
+                "input_1"
+              );
+            });
             //Update rule reference
             this.branchContainer.rules[index].output_id = `output_${
               outputIdNumber + 1
@@ -665,7 +678,7 @@ export class BranchNodeDetails extends LitElementWw {
   */
   private _addEmptyRuleToBranchContainer() {
     // Step 1: Add a new output to the node editor
-    this.nodeEditor.editor.addNodeOutput(this.selectedNode.id);
+    this.nodeEditor.editor.addNodeOutput(this.providedStore.selectedNode.id);
 
     // Step 2: Trigger the callback to signal a change in the editor
     this.changeInEditorCallback(
@@ -674,12 +687,12 @@ export class BranchNodeDetails extends LitElementWw {
     );
 
     // Step 3: Refresh the selected node to get the updated outputs
-    this.selectedNode = this.nodeEditor.editor.getNodeFromId(
-      this.selectedNode.id
+    this.providedStore.selectedNode = this.nodeEditor.editor.getNodeFromId(
+      this.providedStore.selectedNode.id
     );
 
     // Step 4: Extract the last created output's output_class
-    const outputKeys = Object.keys(this.selectedNode.outputs);
+    const outputKeys = Object.keys(this.providedStore.selectedNode.outputs);
     const lastOutputClass = outputKeys[outputKeys.length - 1]; // Get the last key (latest output)
 
     // Step 5: Create an empty rule with the last output's output_class as output_id
@@ -743,22 +756,22 @@ export class BranchNodeDetails extends LitElementWw {
       output_id: newRuleOutputId,
     };
 
-    this.selectedNode.outputs[elseRuleOutputId].connections.forEach(
-      (connection) => {
-        this.nodeEditor.editor.addConnection(
-          this.selectedNode.id,
-          connection.node,
-          newRuleOutputId,
-          "input_1"
-        );
-        this.nodeEditor.editor.removeSingleConnection(
-          this.selectedNode.id,
-          connection.node,
-          elseRuleOutputId,
-          "input_1"
-        );
-      }
-    );
+    this.providedStore.selectedNode.outputs[
+      elseRuleOutputId
+    ].connections.forEach((connection) => {
+      this.nodeEditor.editor.addConnection(
+        this.providedStore.selectedNode.id,
+        connection.node,
+        newRuleOutputId,
+        "input_1"
+      );
+      this.nodeEditor.editor.removeSingleConnection(
+        this.providedStore.selectedNode.id,
+        connection.node,
+        elseRuleOutputId,
+        "input_1"
+      );
+    });
   }
   /*
 
@@ -766,7 +779,7 @@ export class BranchNodeDetails extends LitElementWw {
   */
   private _addElseRuleToBranchContainer() {
     // Step 1: Add a new output to the node editor
-    this.nodeEditor.editor.addNodeOutput(this.selectedNode.id);
+    this.nodeEditor.editor.addNodeOutput(this.providedStore.selectedNode.id);
 
     // Step 2: Trigger the callback to signal a change in the editor
     this.changeInEditorCallback(
@@ -775,12 +788,12 @@ export class BranchNodeDetails extends LitElementWw {
     );
 
     // Step 3: Refresh the selected node to get the updated outputs
-    this.selectedNode = this.nodeEditor.editor.getNodeFromId(
-      this.selectedNode.id
+    this.providedStore.selectedNode = this.nodeEditor.editor.getNodeFromId(
+      this.providedStore.selectedNode.id
     );
 
     // Step 4: Extract the last created output's output_class
-    const outputKeys = Object.keys(this.selectedNode.outputs);
+    const outputKeys = Object.keys(this.providedStore.selectedNode.outputs);
     const lastOutputClass = outputKeys[outputKeys.length - 1]; // Get the last key (latest output)
 
     // Step 5: Create an empty rule with the last output's output_class as output_id
@@ -805,9 +818,12 @@ export class BranchNodeDetails extends LitElementWw {
 
   */
   private _removeRuleFromSelectedBranchNode(output_id: any) {
-    //console.log("try to delete output", output_id, this.selectedNode);
+    //console.log("try to delete output", output_id, this.providedStore.selectedNode);
 
-    this.nodeEditor.editor.removeNodeOutput(this.selectedNode.id, output_id);
+    this.nodeEditor.editor.removeNodeOutput(
+      this.providedStore.selectedNode.id,
+      output_id
+    );
 
     // Step 2: Trigger the callback to signal a change in the editor
     this.changeInEditorCallback(
@@ -823,8 +839,8 @@ export class BranchNodeDetails extends LitElementWw {
     );
 
     // Step 3: Refresh the selected node to get the updated outputs
-    this.selectedNode = this.nodeEditor.editor.getNodeFromId(
-      this.selectedNode.id
+    this.providedStore.selectedNode = this.nodeEditor.editor.getNodeFromId(
+      this.providedStore.selectedNode.id
     );
 
     //Step 4
@@ -834,7 +850,7 @@ export class BranchNodeDetails extends LitElementWw {
     const noOfExistingRules = this.branchContainer.rules.length;
     if (noOfExistingRules == 0 && this.branchContainer.elseRule !== undefined) {
       this.nodeEditor.editor.removeNodeOutput(
-        this.selectedNode.id,
+        this.providedStore.selectedNode.id,
         this.branchContainer.elseRule.output_id
       );
 
@@ -852,8 +868,8 @@ export class BranchNodeDetails extends LitElementWw {
       );
 
       // Step 3: Refresh the selected node to get the updated outputs
-      this.selectedNode = this.nodeEditor.editor.getNodeFromId(
-        this.selectedNode.id
+      this.providedStore.selectedNode = this.nodeEditor.editor.getNodeFromId(
+        this.providedStore.selectedNode.id
       );
 
       this.branchContainer.removeElseRule();
@@ -996,9 +1012,9 @@ export class BranchNodeDetails extends LitElementWw {
       const outputClass = this.branchContainer.rules[index].output_id;
 
       const connections =
-        this.selectedNode?.outputs?.[outputClass]?.connections;
+        this.providedStore.selectedNode?.outputs?.[outputClass]?.connections;
       this.nodeEditor.editor.removeSingleConnection(
-        this.selectedNode.id,
+        this.providedStore.selectedNode.id,
         connections?.[0]?.node,
         outputClass,
         "input_1"
@@ -1027,15 +1043,18 @@ export class BranchNodeDetails extends LitElementWw {
 
   */
   private renameNode(text: String) {
-    this.nodeEditor.editor.updateNodeDataFromId(this.selectedNode.id, {
-      ...this.selectedNode.data,
-      title: text,
-    });
+    this.nodeEditor.editor.updateNodeDataFromId(
+      this.providedStore.selectedNode.id,
+      {
+        ...this.providedStore.selectedNode.data,
+        title: text,
+      }
+    );
 
     this.changeInEditorCallback(
       { ...this.nodeEditor.editor.drawflow },
       "nodeRenamed",
-      this.selectedNode
+      this.providedStore.selectedNode
     );
   }
 
@@ -1043,7 +1062,7 @@ export class BranchNodeDetails extends LitElementWw {
 
   */
   private clearRules() {
-    Object.keys(this.selectedNode.outputs).forEach((key) => {
+    Object.keys(this.providedStore.selectedNode.outputs).forEach((key) => {
       this._removeRuleFromSelectedBranchNode(key);
     });
   }

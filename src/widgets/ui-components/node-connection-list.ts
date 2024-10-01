@@ -270,11 +270,13 @@ export class NodeConnectionList extends LitElementWw {
         <div class="titlebar">
           <p>
             Incoming
-            (${this.selectedNode.inputs.input_1.connections.length.toString()})
+            (${this.selectedNode.inputs[
+              "input_1"
+            ]?.connections.length.toString()})
           </p>
         </div>
         <div class="verticalStack">
-          ${this.selectedNode.inputs.input_1.connections.map(
+          ${this.selectedNode.inputs["input_1"]?.connections.map(
             (connection, index) => html` <div class="item">
               <p style="color: gray">${index + 1}</p>
               <sl-button

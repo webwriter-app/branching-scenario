@@ -81,11 +81,7 @@ export class NodeEditorControlsBar extends LitElementWw {
 
   @consume({ context: gamebookStore, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
-  public accessor providedStore = new GamebookStore("Default Title");
-
-  protected firstUpdated(_changedProperties: PropertyValues): void {
-    console.log(this.providedStore);
-  }
+  public accessor providedStore = new GamebookStore("Default");
 
   render() {
     return html`

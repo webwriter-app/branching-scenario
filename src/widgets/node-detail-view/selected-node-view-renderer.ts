@@ -1,26 +1,13 @@
 import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property } from "lit/decorators.js";
-import { DrawflowNode } from "drawflow";
 import { PageNodeDetails } from "./page-node-details";
+import { provide, consume, createContext } from "@lit/context";
+import { gamebookStore, GamebookStore } from "../context-test";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import { SlIcon, SlDivider } from "@shoelace-style/shoelace";
-
-// Declare global variable of type DrawflowNode
-const NO_NODE_SELECTED: DrawflowNode = {
-  id: -1,
-  name: "unselect",
-  inputs: {},
-  outputs: {},
-  pos_x: 0,
-  pos_y: 0,
-  class: "unselect",
-  data: {},
-  html: "",
-  typenode: false,
-};
 
 //Import Styles
 import styles from "../../css/selected-node-details-css";
@@ -29,15 +16,10 @@ import { ToggleableInput } from "../ui-components/toggleable-input";
 import { NodeConnectionList } from "../ui-components/node-connection-list";
 
 //Tabler Icon Import
-import squares from "@tabler/icons/filled/squares.svg";
-import file from "@tabler/icons/filled/file.svg";
-import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import { BranchNodeDetails } from "./branch-node-details";
 
 @customElement("node-details-selector")
 export class SelectedNodeViewRenderer extends LitElementWw {
-  @property({ type: Object, attribute: true, reflect: false })
-  accessor selectedNode: DrawflowNode = NO_NODE_SELECTED;
   @property({ type: Object }) accessor nodeEditor;
   @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow,
@@ -64,20 +46,22 @@ export class SelectedNodeViewRenderer extends LitElementWw {
     };
   }
 
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default");
+
   //import CSS
   static styles = [styles];
 
   render() {
     return html`
-      ${this.selectedNode.id !== -1
+      ${this.providedStore.selectedNode.id !== -1
         ? html` <div class="selected-node">
-            ${this.selectedNode.class == "page" ||
-            this.selectedNode.class == "origin"
+            ${this.providedStore.selectedNode.class == "page" ||
+            this.providedStore.selectedNode.class == "origin"
               ? html`
                   <page-node-details
                     .nodeEditor="${this.nodeEditor}"
-                    .selectedNode="${this.selectedNode}"
-                    .selectedNodeId="${this.selectedNode.id}"
                     .changeInEditorCallback=${(
                       drawflow,
                       updateType,
@@ -105,11 +89,9 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                     <slot></slot>
                   </page-node-details>
                 `
-              : this.selectedNode.class == "branch"
+              : this.providedStore.selectedNode.class == "branch"
               ? html` <branch-node-details
                   .nodeEditor="${this.nodeEditor}"
-                  .selectedNode="${this.selectedNode}"
-                  .selectedNodeId="${this.selectedNode.id}"
                   .markUsedOutputs=${() => this.markUsedOutputs()}
                   .changeInEditorCallback=${(
                     drawflow,
@@ -137,12 +119,10 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                 >
                   <slot></slot>
                 </branch-node-details>`
-              : this.selectedNode.class == "popup"
+              : this.providedStore.selectedNode.class == "popup"
               ? html`
                   <popup-node-details
                     .nodeEditor="${this.nodeEditor}"
-                    .selectedNode="${this.selectedNode}"
-                    .selectedNodeId="${this.selectedNode.id}"
                     .changeInEditorCallback=${(
                       drawflow,
                       updateType,
@@ -186,15 +166,18 @@ export class SelectedNodeViewRenderer extends LitElementWw {
 
   */
   private renameNode(text: String) {
-    this.nodeEditor.editor.updateNodeDataFromId(this.selectedNode.id, {
-      ...this.selectedNode.data,
-      title: text,
-    });
+    this.nodeEditor.editor.updateNodeDataFromId(
+      this.providedStore.selectedNode.id,
+      {
+        ...this.providedStore.selectedNode.data,
+        title: text,
+      }
+    );
 
     this.changeInEditorCallback(
       { ...this.nodeEditor.editor.drawflow },
       "nodeRenamed",
-      this.selectedNode
+      this.providedStore.selectedNode
     );
   }
 }

@@ -95,10 +95,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
   accessor tabIndex = -1;
   @property({ type: Number, attribute: true, reflect: true })
   accessor dividerPos = 350;
-  @property({ type: Number, attribute: true, reflect: true })
-  accessor editorZoom = -1;
-  @property({ type: Object, attribute: true, reflect: true })
-  accessor editorPosition = { x: undefined, y: undefined };
 
   @state() accessor inPreviewMode = false;
   @property({ type: Number, attribute: true, reflect: false })
@@ -162,7 +158,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   
   */
   protected firstUpdated(_changedProperties: any): void {
-    this.updateSelectedNode("-1");
+    //this.updateSelectedNode("-1");
     this.gamebookContainers.forEach((container) => {
       container.hide();
     });
@@ -179,6 +175,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
     // Register an observer to react to store changes
     this.gamebookStore.addObserver(() => {
+      this.gamebookContainerManager._showGamebookContainerById(
+        this.gamebookStore.selectedNode.id
+      );
       this.reflectStoreChangesinDOM();
       this.requestUpdate(); // Ensure Lit re-renders
     });
@@ -188,9 +187,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
   
   */
   reflectStoreChangesinDOM() {
+    console.log(this.gamebookStore.editorPosition);
     this.gamebookStore = new GamebookStore(
       this.gamebookStore.title,
-      this.gamebookStore.observer
+      this.gamebookStore.observer,
+      this.gamebookStore.selectedNode,
+      this.gamebookStore.editorZoom,
+      this.gamebookStore.editorPosition
     );
   }
 
@@ -245,12 +248,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
       <!-- <button @click=${() => this.exportContainersAsString()}></button> -->
       ${this.isContentEditable
         ? html`
-        <p>${this.gamebookStore.title}</p>
+        <p>${this.gamebookStore.selectedNode.id}</p>
            <split-view .getDividerPos=${(pos) => this.serializeDividerPos(pos)} 
                 .dividerPosition=${this.dividerPos} >
                 <node-editor
                   slot="start"
-                  .selectedNode=${this.selectedNode}
+                  
                   .editorContent=${this.editorContent}
                   .changeInEditorCallback=${(
                     drawflow,
@@ -284,8 +287,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     );
                   }}
           
-                  .editorZoom=${this.editorZoom}
-                  .editorPosition=${this.editorPosition}
+    
+                  
                   .markUsedOutputs=${() => this._markUsedOutputs()}
                   .checkIfElseRuleTargetIsSet=${() =>
                     this.checkIfElseRuleTargetIsSet()}
@@ -293,7 +296,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 </node-editor>
                 <selected-node-view-renderer
                   slot="end"
-                  .selectedNode=${this.selectedNode}
                   .nodeEditor=${this.nodeEditor}
                    .markUsedOutputs=${() => this._markUsedOutputs()}
                   .changeInEditorCallback=${(
@@ -699,7 +701,7 @@ variant="default"
   ) {
     //
     if (updateType == "nodeRenamed") {
-      this.updateSelectedNode(this.selectedNode.id.toString());
+      //this.updateSelectedNode(this.selectedNode.id.toString());
       this.gamebookContainerManager._renameContainer(
         node.id.toString(),
         this.selectedNode.data.title
@@ -707,12 +709,12 @@ variant="default"
     }
     //
     else if (updateType == "customNodeDataChanged") {
-      this.updateSelectedNode(this.selectedNode.id.toString());
+      //this.updateSelectedNode(this.selectedNode.id.toString());
     }
     //
     else if (updateType == "nodeCreated") {
       this.focus();
-      this.updateSelectedNode(this.selectedNode.id.toString());
+      //this.updateSelectedNode(this.selectedNode.id.toString());
       if (node.class == "page" || node.class == "origin") {
         this.gamebookContainerManager._createPageContainerFromPageNode(node);
         //console.log(this.gamebookContainerManager.gamebookContainers);
@@ -729,7 +731,7 @@ variant="default"
     }
     //
     else if (updateType == "nodePasted") {
-      this.updateSelectedNode(this.selectedNode.id.toString());
+      //this.updateSelectedNode(this.selectedNode.id.toString());
       if (node.class == "page" || node.class == "origin") {
         this.gamebookContainerManager._createPageContainerFromPageNode(node);
         this.copyAndPasteContainerContents(this.copiedNode.id, node.id);
@@ -755,7 +757,7 @@ variant="default"
       } else {
         this.reactToCallbackFromNodeEditor = true;
       }
-      this.updateSelectedNode(this.selectedNode.id.toString());
+      //this.updateSelectedNode(this.selectedNode.id.toString());
     }
     //
     else if (updateType == "connectionCreated") {
@@ -919,13 +921,13 @@ variant="default"
     //
     else if (updateType == "editorCleared") {
       this.gamebookContainerManager._deleteAllGamebookContainers();
-      this.updateSelectedNode("-1");
+      //this.updateSelectedNode("-1");
 
       //console.log(this.gamebookContainerManager.gamebookContainers);
     }
     //
     else if (updateType == "outputCreated") {
-      this.updateSelectedNode(this.selectedNode.id.toString());
+      //this.updateSelectedNode(this.selectedNode.id.toString());
       this._markUsedOutputs();
     }
     //
@@ -938,7 +940,7 @@ variant="default"
         outputClass
       );
 
-      this.updateSelectedNode(this.selectedNode.id.toString());
+      //this.updateSelectedNode(this.selectedNode.id.toString());
       this._markUsedOutputs();
     }
     //
@@ -948,14 +950,7 @@ variant="default"
         importedGamebookContainers
       );
     }
-    //
-    else if (updateType == "zoom") {
-      this.editorZoom = Number(zoom);
-    }
-    //
-    else if (updateType == "translate") {
-      this.editorPosition = translate;
-    }
+
     //
     else if (updateType == "changeOrigin") {
       const originPageContainer =
@@ -972,7 +967,7 @@ variant="default"
         );
       (newOriginPageContainer as WebWriterGamebookPageContainer).originPage = 1;
 
-      this.updateSelectedNode(this.selectedNode.id.toString());
+      //this.updateSelectedNode(this.selectedNode.id.toString());
     }
 
     this.editorContent = { ...drawflow };
@@ -1000,7 +995,7 @@ variant="default"
       );
 
       this.editorContent = { ...this.nodeEditor.editor.drawflow };
-      this.updateSelectedNode(this.selectedNode.id.toString());
+      //this.updateSelectedNode(this.selectedNode.id.toString());
     });
     this.addEventListener("containerHighlightConnectionButton", (event) => {
       this.reactToCallbackFromNodeEditor = false;
@@ -1046,39 +1041,6 @@ variant="default"
         );
       }
     });
-  }
-
-  /*
-
-
-  */
-  private updateSelectedNode(id: String) {
-    if (id != "-1") {
-      //console.log("test");
-      try {
-        this.selectedNode = { ...this.nodeEditor.editor.getNodeFromId(id) };
-
-        if (this.selectedNode) {
-          if (
-            this.selectedNode.class === "page" ||
-            this.selectedNode.class === "origin" ||
-            this.selectedNode.class === "popup"
-          ) {
-            this.gamebookContainerManager._showGamebookContainerById(
-              this.selectedNode.id
-            );
-          }
-        }
-      } catch (error) {
-        this.selectedNode = { ...NO_NODE_SELECTED };
-        this.gamebookContainerManager._hideAllGamebookContainers();
-      }
-    }
-    //
-    else {
-      this.selectedNode = { ...NO_NODE_SELECTED };
-      this.gamebookContainerManager._hideAllGamebookContainers();
-    }
   }
 
   /*

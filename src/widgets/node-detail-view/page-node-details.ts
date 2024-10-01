@@ -22,6 +22,9 @@ import { BranchNodeDetails } from "./branch-node-details";
 import { ToggleableInput } from "../ui-components/toggleable-input";
 import { NodeConnectionList } from "../ui-components/node-connection-list";
 
+import { provide, consume, createContext } from "@lit/context";
+import { gamebookStore, GamebookStore } from "../context-test";
+
 @customElement("page-node-details")
 export class PageNodeDetails extends LitElementWw {
   //registering custom elements used in the widget
@@ -40,11 +43,6 @@ export class PageNodeDetails extends LitElementWw {
 
   //access nodes in the internal component DOM.
   @property({ type: Object }) accessor nodeEditor;
-  @property({ type: Boolean }) accessor isNodeSelected = false;
-
-  //public properties are part of the component's public API
-  @property({ type: Object, attribute: false })
-  accessor selectedNode: DrawflowNode;
 
   @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow,
@@ -58,6 +56,10 @@ export class PageNodeDetails extends LitElementWw {
     outputHadConnections?
   ) => {};
 
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default");
+
   render() {
     return html` <div class="title-bar">
         <div class="div-icon-page">
@@ -65,7 +67,7 @@ export class PageNodeDetails extends LitElementWw {
         </div>
         <div class="div-title">
           <toggleable-input
-            .text=${this.selectedNode.data.title}
+            .text=${this.providedStore.selectedNode.data.title}
             .saveChanges=${(string) => this.renameNode(string)}
           ></toggleable-input>
           <p class="subtitle">Page</p>
@@ -74,7 +76,7 @@ export class PageNodeDetails extends LitElementWw {
           <node-connection-list
             input
             .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.selectedNode}
+            .selectedNode=${this.providedStore.selectedNode}
             .changeInEditorCallback=${(
               drawflow,
               updateType,
@@ -103,7 +105,7 @@ export class PageNodeDetails extends LitElementWw {
           <node-connection-list
             output
             .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.selectedNode}
+            .selectedNode=${this.providedStore.selectedNode}
             .changeInEditorCallback=${(
               drawflow,
               updateType,
@@ -145,15 +147,18 @@ export class PageNodeDetails extends LitElementWw {
 
   */
   private renameNode(text: String) {
-    this.nodeEditor.editor.updateNodeDataFromId(this.selectedNode.id, {
-      ...this.selectedNode.data,
-      title: text,
-    });
+    this.nodeEditor.editor.updateNodeDataFromId(
+      this.providedStore.selectedNode.id,
+      {
+        ...this.providedStore.selectedNode.data,
+        title: text,
+      }
+    );
 
     this.changeInEditorCallback(
       { ...this.nodeEditor.editor.drawflow },
       "nodeRenamed",
-      this.selectedNode
+      this.providedStore.selectedNode
     );
   }
 }
