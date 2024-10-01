@@ -10,6 +10,9 @@ import gripHorizontal from "@tabler/icons/outline/grip-horizontal.svg";
 import layoutNavBarCollapse from "@tabler/icons/outline/arrow-bar-to-up.svg";
 import layoutBottomBarCollapse from "@tabler/icons/outline/arrow-bar-to-down.svg";
 
+import { provide, consume, createContext } from "@lit/context";
+import { gamebookStore, GamebookStore } from "../context-test";
+
 const DIVIDER_HEIGHT = 30;
 
 @customElement("split-view")

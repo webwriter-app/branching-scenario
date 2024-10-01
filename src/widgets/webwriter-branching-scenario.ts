@@ -1,4 +1,6 @@
 import { html, css, LitElement, PropertyValues } from "lit";
+import { provide, consume, createContext } from "@lit/context";
+
 import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
@@ -61,6 +63,8 @@ const NO_NODE_SELECTED: DrawflowNode = {
   typenode: false,
 };
 
+import { gamebookStore, GamebookStore } from "./context-test";
+
 @customElement("webwriter-branching-scenario")
 export class WebWriterBranchingScenario extends LitElementWw {
   @query("gamebook-container-manager") accessor gamebookContainerManager;
@@ -85,8 +89,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Object, attribute: true })
   accessor copiedNode: DrawflowNode = NO_NODE_SELECTED;
   @property({ type: Number, attribute: true }) accessor numberOfSearchNodes = 0;
-  @property({ type: String, attribute: true, reflect: true })
-  accessor gamebookTitle = "Untitled Gamebook";
+
   @property({ type: Boolean }) accessor reactToCallbackFromNodeEditor = true;
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
@@ -125,17 +128,24 @@ export class WebWriterBranchingScenario extends LitElementWw {
     };
   }
 
-  private min = "230px";
-  private max = "350px";
-  private previousSplitPanelHeight;
-
   //import CSS
   static styles = [styles];
 
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
-  // Create an observer instance linked to the callback function
-  private justDeletedOriginContainer: String;
+
+  //
+  @provide({ context: gamebookStore })
+  @property({
+    type: Object,
+    attribute: true,
+    reflect: true,
+    converter: {
+      fromAttribute: (value: string) => GamebookStore.fromString(value), // Deserialize
+      toAttribute: (value: GamebookStore) => value.toString(), // Serialize
+    },
+  })
+  accessor gamebookStore = new GamebookStore("Untitled Gamebook");
 
   /* 
   
@@ -144,7 +154,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
   constructor() {
     super();
     this.mutationObserver = new MutationObserver(this.mutationCallback);
+    //Initial setting necessary to notify children of change
+    this.reflectStoreChangesinDOM();
   }
+
   /*
   
   */
@@ -163,6 +176,22 @@ export class WebWriterBranchingScenario extends LitElementWw {
     };
     // Start observing the target node for configured mutations
     this.mutationObserver.observe(this, config);
+
+    // Register an observer to react to store changes
+    this.gamebookStore.addObserver(() => {
+      this.reflectStoreChangesinDOM();
+      this.requestUpdate(); // Ensure Lit re-renders
+    });
+  }
+
+  /*
+  
+  */
+  reflectStoreChangesinDOM() {
+    this.gamebookStore = new GamebookStore(
+      this.gamebookStore.title,
+      this.gamebookStore.observer
+    );
   }
 
   /*
@@ -170,14 +199,14 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   connectedCallback() {
     super.connectedCallback();
-    window.addEventListener("keydown", this._handleKeydown);
+    this.addEventListener("keydown", this._handleKeydown);
   }
   /*
   
   */
   disconnectedCallback() {
     super.disconnectedCallback();
-    window.removeEventListener("keydown", this._handleKeydown);
+    this.removeEventListener("keydown", this._handleKeydown);
   }
 
   /*
@@ -192,6 +221,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //
     else if ((event.metaKey || event.ctrlKey) && event.key === "c") {
       event.preventDefault(); // Prevent the default browser find functionality
+
+      //THIS IS HOW TO UPDATE THE CONTEXT
+      (this.gamebookStore as GamebookStore).setTitle();
+      // this.gamebookStore = new GamebookStore(this.gamebookStore.title);
+      // this.requestUpdate();
+
       this.copyNode();
     }
     //
@@ -210,6 +245,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       <!-- <button @click=${() => this.exportContainersAsString()}></button> -->
       ${this.isContentEditable
         ? html`
+        <p>${this.gamebookStore.title}</p>
            <split-view .getDividerPos=${(pos) => this.serializeDividerPos(pos)} 
                 .dividerPosition=${this.dividerPos} >
                 <node-editor
@@ -247,12 +283,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                       changeOrigin
                     );
                   }}
-                  .updateSelectedNodeCallback=${(id) => {
-                    this.updateSelectedNode(id);
-                  }}
-                  .gamebookTitle=${this.gamebookTitle}
-                  .handleGamebookTitle=${(event) =>
-                    this.handleGamebookTitle(event)}
+          
                   .editorZoom=${this.editorZoom}
                   .editorPosition=${this.editorPosition}
                   .markUsedOutputs=${() => this._markUsedOutputs()}
@@ -468,8 +499,8 @@ variant="default"
             </div>
           `
         : html`<webwriter-gamebook
-            gamebookTitle=${this.gamebookTitle != ""
-              ? this.gamebookTitle
+            gamebookTitle=${this.gamebookStore.title != ""
+              ? this.gamebookStore.title
               : "Untitled Gamebook"}
             ><slot></slot
           ></webwriter-gamebook>`}
@@ -1048,14 +1079,6 @@ variant="default"
       this.selectedNode = { ...NO_NODE_SELECTED };
       this.gamebookContainerManager._hideAllGamebookContainers();
     }
-  }
-
-  /*
-
-
-  */
-  private handleGamebookTitle(event) {
-    this.gamebookTitle = event.target.value;
   }
 
   /*

@@ -1,4 +1,6 @@
 import { html, css, PropertyValues } from "lit";
+import { provide, consume, createContext } from "@lit/context";
+import { ContextConsumer } from "@lit/context";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, query, queryAll } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -43,6 +45,8 @@ import { decisionPopUpWithFeedback } from "../node-templates/decision-popup-with
 const NO_CONNECTION_SELECTED = "output_id-input_id-output_class-input_class";
 
 const GRID_SIZE = 40;
+
+import { gamebookStore, GamebookStore } from "../context-test";
 
 @customElement("node-editor")
 export class NodeEditor extends LitElementWw {
@@ -141,9 +145,9 @@ export class NodeEditor extends LitElementWw {
   @property({ type: Number }) accessor backgroundMaxScale = 2;
   @property({ type: Number }) accessor backgroundScaleFactor = 1.05;
 
-  @property({ attribute: false }) accessor updateSelectedNodeCallback = (
-    id
-  ) => {};
+  // @property({ attribute: false }) accessor updateSelectedNodeCallback = (
+  //   id
+  // ) => {};
 
   @query("#drawflowEditorDiv") accessor drawflowEditorDiv;
 
@@ -153,6 +157,12 @@ export class NodeEditor extends LitElementWw {
 
   @property({ type: Object, attribute: true, reflect: true })
   accessor editorPosition = { x: undefined, y: undefined };
+
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: true })
+  public accessor providedStore = new GamebookStore("test");
+
+  //private _myData = new ContextConsumer(this, { context: gamebookStore });
 
   /*
 
@@ -225,7 +235,13 @@ export class NodeEditor extends LitElementWw {
         }
       });
     }
+
+    if (_changedProperties.has("providedStore") && this.providedStore) {
+      console.log("node editor");
+      this.requestUpdate();
+    }
   }
+
   /*
 
   */
@@ -631,13 +647,13 @@ export class NodeEditor extends LitElementWw {
     // Event listener for node click
     this.editor.on("nodeSelected", (id) => {
       //console.log("node Selected");
-      this.updateSelectedNodeCallback(id);
+      //this.updateSelectedNodeCallback(id);
     });
 
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
       //console.log("node Unselected");
-      this.updateSelectedNodeCallback(-1);
+      //this.updateSelectedNodeCallback(-1);
     });
 
     //Event listerner for creation of a node
@@ -693,7 +709,7 @@ export class NodeEditor extends LitElementWw {
 
     //Event listener for when a connection creation started via drag and drop
     this.editor.on("connectionStart", ({ output_id, output_class }) => {
-      this.updateSelectedNodeCallback(output_id);
+      //this.updateSelectedNodeCallback(output_id);
       this.connectionStarted = true;
 
       this.shadowRoot
@@ -718,7 +734,7 @@ export class NodeEditor extends LitElementWw {
           output_class,
           input_class
         );
-        this.updateSelectedNodeCallback(output_id);
+        //this.updateSelectedNodeCallback(output_id);
       }
     );
 
@@ -742,7 +758,7 @@ export class NodeEditor extends LitElementWw {
       ({ output_id, input_id, output_class, input_class }) => {
         this.connectionStarted = false;
         //console.log("we got here");
-        this.updateSelectedNodeCallback(this.selectedNode.id);
+        //this.updateSelectedNodeCallback(this.selectedNode.id);
         const outputNode = this.editor.getNodeFromId(output_id);
         const inputNode = this.editor.getNodeFromId(input_id);
 
@@ -771,7 +787,7 @@ export class NodeEditor extends LitElementWw {
       "connectionRemoved",
       ({ output_id, input_id, output_class, input_class }) => {
         //console.log("this nodeeditor callback");
-        this.updateSelectedNodeCallback(this.selectedNode.id);
+        //this.updateSelectedNodeCallback(this.selectedNode.id);
 
         if (this.selectedConnection != NO_CONNECTION_SELECTED) {
           const parsedConnection = this.parseConnectionIdentifier(
@@ -1298,7 +1314,7 @@ TODO: highlighting branch buttons
       mergedData.templateContainers
     );
 
-    this.updateSelectedNodeCallback(this.selectedNode.id);
+    //this.updateSelectedNodeCallback(this.selectedNode.id);
   }
 
   /*

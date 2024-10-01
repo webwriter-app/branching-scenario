@@ -1,4 +1,5 @@
-import { html, css, LitElement, unsafeCSS } from "lit";
+import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
+import { ContextConsumer } from "@lit/context";
 import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
@@ -31,16 +32,14 @@ import {
 
 //@tabler icons
 import plus from "@tabler/icons/outline/plus.svg";
-import schema from "@tabler/icons/outline/schema.svg";
 import book from "@tabler/icons/outline/book.svg";
-import questionMark from "@tabler/icons/outline/question-mark.svg";
 import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 import directions from "@tabler/icons/outline/directions.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
-import playerPlay from "@tabler/icons/filled/player-play.svg";
-import playerSkipForward from "@tabler/icons/filled/player-skip-forward.svg";
-import playerStop from "@tabler/icons/filled/player-stop.svg";
+
+import { provide, consume, createContext } from "@lit/context";
+import { gamebookStore, GamebookStore } from "../context-test";
 
 @customElement("node-edtior-controls-bar")
 export class NodeEditorControlsBar extends LitElementWw {
@@ -67,12 +66,6 @@ export class NodeEditorControlsBar extends LitElementWw {
 
   @property({ type: Boolean, reflect: true }) accessor inPreviewMode = false;
 
-  @property({ type: String }) accessor gamebookTitle = "";
-
-  //
-  @property({ type: Function }) accessor handleGamebookTitle = (
-    event: Event
-  ) => {};
   @property({ type: Function }) accessor importExample = (number: number) => {};
   @property({ type: Function }) accessor addPageNode = (
     title: string,
@@ -86,35 +79,25 @@ export class NodeEditorControlsBar extends LitElementWw {
 
   @property({ type: Object, attribute: true }) accessor selectedNode;
 
-  render() {
-    if (!this.inPreviewMode) {
-      return this.renderInNodeEditor();
-    } else {
-      return this.renderInPreviewMode();
-    }
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default Title");
+
+  protected firstUpdated(_changedProperties: PropertyValues): void {
+    console.log(this.providedStore);
   }
 
-  renderInNodeEditor() {
+  render() {
     return html`
       <div class="controls">
         <div class="first-item">
-          <!-- <sl-button-group label="Example Button Group">
-            <sl-button @click=${() => this.switchToPreviewMode()}>
-              <sl-icon slot="prefix" src=${playerPlay}></sl-icon>
-            </sl-button>
-            <sl-button
-              @click=${() => this.switchToPreviewMode(this.selectedNode.id)}
-              ><sl-icon slot="prefix" src=${playerSkipForward}></sl-icon> from
-              here</sl-button
-            >
-          </sl-button-group> -->
           <sl-input
             id="gamebookTitle"
             rows="1"
             resize="none"
             placeholder="Gamebook Title"
             @input="${this.textAreaInputChanged}"
-            .value="${this.gamebookTitle}"
+            .value="${this.providedStore.title}"
             style=${this.inPreviewMode ? "display: none;" : "display: block;"}
           >
             <sl-icon slot="prefix" src=${book}></sl-icon>
@@ -170,49 +153,11 @@ export class NodeEditorControlsBar extends LitElementWw {
     `;
   }
 
-  renderInPreviewMode() {
-    return html`
-      <div class="controls">
-        <div class="first-item">
-          <sl-button @click=${() => this.switchToNodeEditor()}>
-            <sl-icon slot="prefix" src=${playerStop}></sl-icon>
-          </sl-button>
-        </div>
-      </div>
-    `;
-  }
   /*
 
 
   */
   private textAreaInputChanged(event) {
-    this.handleGamebookTitle(event);
+    this.providedStore.setTitle(event.target.value);
   }
-
-  /*
-
-
-  */
-  // private switchToPreviewMode(containerId: Number = undefined) {
-  //   const event = new CustomEvent("switchToPreviewMode", {
-  //     detail: {
-  //       startFrom: containerId,
-  //     },
-  //     bubbles: true, // Allows the event to bubble up through the DOM
-  //     composed: true, // Allows the event to pass through shadow DOM boundaries
-  //   });
-  //   this.dispatchEvent(event);
-  // }
-
-  // /*
-
-  // */
-  // private switchToNodeEditor() {
-  //   const event = new CustomEvent("switchToNodeEditor", {
-  //     detail: {},
-  //     bubbles: true, // Allows the event to bubble up through the DOM
-  //     composed: true, // Allows the event to pass through shadow DOM boundaries
-  //   });
-  //   this.dispatchEvent(event);
-  // }
 }
