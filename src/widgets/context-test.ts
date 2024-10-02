@@ -23,6 +23,9 @@ export class GamebookStore {
   selectedNode: DrawflowNode;
   editorZoom: number;
   editorPosition: any;
+  dividerPosition: number;
+  editorIsCollapsed: boolean;
+  editorContent: any;
 
   //Use observer pattern to notify main view of cahnge
   observer: Observer;
@@ -32,13 +35,19 @@ export class GamebookStore {
     observer = null,
     selectedNode = NO_NODE_SELECTED,
     editorZoom = -1,
-    editorPositon = { x: undefined, y: undefined }
+    editorPositon = { x: undefined, y: undefined },
+    dividerPosition = 350,
+    editorIsCollapsed = false,
+    editorContent = null
   ) {
     this.title = title;
     this.selectedNode = selectedNode;
     this.editorZoom = editorZoom;
     this.editorPosition = editorPositon;
     this.observer = observer;
+    this.dividerPosition = dividerPosition;
+    this.editorIsCollapsed = editorIsCollapsed;
+    this.editorContent = editorContent;
   }
 
   setTitle(newTitle = Math.random().toString()) {
@@ -58,8 +67,22 @@ export class GamebookStore {
 
   setEditorPosition(x = -1, y = -1) {
     this.editorPosition = { x: x, y: y };
-    console.log(this.editorPosition);
     this.notifyObservers(); // Notify all observers when updated
+  }
+
+  setDividerPosition(pos = 350) {
+    this.dividerPosition = pos;
+    this.notifyObservers();
+  }
+
+  setEditorIsCollapsed(isCollapsed = false) {
+    this.editorIsCollapsed = isCollapsed;
+    this.notifyObservers();
+  }
+
+  setEditorContent(editorContent = null) {
+    this.editorContent = editorContent;
+    this.notifyObservers();
   }
 
   // Method to register an observer
@@ -80,6 +103,9 @@ export class GamebookStore {
       selectedNode: this.selectedNode,
       editorZoom: this.editorZoom,
       editorPosition: this.editorPosition,
+      dividerPosition: this.dividerPosition,
+      editorIsCollapsed: this.editorIsCollapsed,
+      editorContent: this.editorContent,
     });
   }
 
@@ -91,7 +117,10 @@ export class GamebookStore {
       data.observer,
       data.selectedNode,
       data.editorZoom,
-      data.editorPosition
+      data.editorPosition,
+      data.dividerPosition,
+      data.editorIsCollapsed,
+      data.editorContent
     );
   }
 }

@@ -64,6 +64,7 @@ const NO_NODE_SELECTED: DrawflowNode = {
 };
 
 import { gamebookStore, GamebookStore } from "./context-test";
+import { MouseController } from "./contoller-test";
 
 @customElement("webwriter-branching-scenario")
 export class WebWriterBranchingScenario extends LitElementWw {
@@ -76,16 +77,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
   })
   accessor gamebookContainers;
 
-  @query("node-editor") accessor nodeEditor;
+  @query("node-editor") public accessor nodeEditor;
   @query("sl-split-panel") accessor splitPanel;
   @query("#widget") accessor widgetDiv;
   @query("selected-node-view-renderer") accessor selectedNodeViewRenderer;
   @query("#searchInput") accessor searchInput;
 
-  @property({ type: Object, attribute: true, reflect: true })
-  accessor editorContent;
-  @property({ type: Object, attribute: true })
-  accessor selectedNode: DrawflowNode = NO_NODE_SELECTED;
   @property({ type: Object, attribute: true })
   accessor copiedNode: DrawflowNode = NO_NODE_SELECTED;
   @property({ type: Number, attribute: true }) accessor numberOfSearchNodes = 0;
@@ -93,12 +90,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Boolean }) accessor reactToCallbackFromNodeEditor = true;
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
-  @property({ type: Number, attribute: true, reflect: true })
-  accessor dividerPos = 350;
-
-  @state() accessor inPreviewMode = false;
-  @property({ type: Number, attribute: true, reflect: false })
-  accessor startContainerIdPreview = undefined;
 
   //registering custom elements used in the widget
   static get scopedElements() {
@@ -130,6 +121,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
 
+  private mouse = new MouseController(this);
+
   //
   @provide({ context: gamebookStore })
   @property({
@@ -158,7 +151,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
   
   */
   protected firstUpdated(_changedProperties: any): void {
-    //this.updateSelectedNode("-1");
     this.gamebookContainers.forEach((container) => {
       container.hide();
     });
@@ -187,13 +179,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
   
   */
   reflectStoreChangesinDOM() {
-    console.log(this.gamebookStore.editorPosition);
     this.gamebookStore = new GamebookStore(
       this.gamebookStore.title,
       this.gamebookStore.observer,
       this.gamebookStore.selectedNode,
       this.gamebookStore.editorZoom,
-      this.gamebookStore.editorPosition
+      this.gamebookStore.editorPosition,
+      this.gamebookStore.dividerPosition,
+      this.gamebookStore.editorIsCollapsed,
+      this.gamebookStore.editorContent
     );
   }
 
@@ -249,12 +243,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
       ${this.isContentEditable
         ? html`
         <p>${this.gamebookStore.selectedNode.id}</p>
-           <split-view .getDividerPos=${(pos) => this.serializeDividerPos(pos)} 
-                .dividerPosition=${this.dividerPos} >
+        <p>
+x: ${this.mouse.pos.x as number}
+y: ${this.mouse.pos.y as number}
+      </p>
+           <split-view>
                 <node-editor
                   slot="start"
-                  
-                  .editorContent=${this.editorContent}
                   .changeInEditorCallback=${(
                     drawflow,
                     updateType,
@@ -286,9 +281,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
                       changeOrigin
                     );
                   }}
-          
-    
-                  
                   .markUsedOutputs=${() => this._markUsedOutputs()}
                   .checkIfElseRuleTargetIsSet=${() =>
                     this.checkIfElseRuleTargetIsSet()}
@@ -297,7 +289,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 <selected-node-view-renderer
                   slot="end"
                   .nodeEditor=${this.nodeEditor}
-                   .markUsedOutputs=${() => this._markUsedOutputs()}
+
+                  
+                  .markUsedOutputs=${() => this._markUsedOutputs()}
                   .changeInEditorCallback=${(
                     drawflow,
                     updateType,
@@ -323,7 +317,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   }}
                 >
                   <gamebook-container-manager
-                    .editorContent=${this.editorContent}
                     .appendToShadowDom=${(container) =>
                       this._addContainerCallback(container)}
                   >
@@ -364,7 +357,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                    <sl-button id="copyNodeBtn" 
                    class="flex-item"
                    @click=${this.copyNode}  ?disabled=${
-            this.selectedNode.id === -1
+            this.gamebookStore.selectedNode.id === -1
           }
                           >Copy</sl-button
                         >
@@ -387,8 +380,8 @@ variant="default"
                             ).show()}
                 
                           ?disabled=${
-                            this.selectedNode.id === -1 ||
-                            this.selectedNode.class == "origin"
+                            this.gamebookStore.selectedNode.id === -1 ||
+                            this.gamebookStore.selectedNode.class == "origin"
                               ? true
                               : false
                           }
@@ -403,46 +396,40 @@ variant="default"
 </sl-button-group>
 
                 ${
-                  this.selectedNode.id != -1
+                  this.gamebookStore.selectedNode.id != -1
                     ? html`
                         <div class="header">
-                          ${this.selectedNode.class == "page"
+                          ${this.gamebookStore.selectedNode.class == "page"
                             ? html`<sl-icon src=${file}></sl-icon>
                                 <p>Page</p> `
-                            : this.selectedNode.class == "origin"
+                            : this.gamebookStore.selectedNode.class == "origin"
                             ? html`<sl-icon src=${file}></sl-icon>
                                 <p>Start Page</p> `
-                            : this.selectedNode.class == "popup"
+                            : this.gamebookStore.selectedNode.class == "popup"
                             ? html`<sl-icon src=${squares}></sl-icon>
                                 <p>Popup</p>`
-                            : this.selectedNode.class == "branch"
+                            : this.gamebookStore.selectedNode.class == "branch"
                             ? html`<sl-icon src=${arrowsSplit2}></sl-icon>
                                 <p>Smart Branch</p>`
                             : null}
                         </div>
-                        <!-- <p style="margin-left: auto">
-                          Internal ID: ${this.selectedNode.id}
-                        </p> -->
-                        <!-- <p style="margin-left: auto">
-                          Container found:
-                          ${this.gamebookContainerManager._getContainerByDrawflowNodeId(
-                          this.selectedNode.id
-                        ) != undefined}
-                        </p> -->
 
-                        ${this.selectedNode.class == "page" ||
-                        this.selectedNode.class == "origin"
+                        ${this.gamebookStore.selectedNode.class == "page" ||
+                        this.gamebookStore.selectedNode.class == "origin"
                           ? html` <sl-button
                               id="makeNodeOriginBtn"
                               @click=${() =>
-                                this.makeNodeOrigin(this.selectedNode.id)}
-                              ?disabled=${this.selectedNode.class == "origin"
+                                this.makeNodeOrigin(
+                                  this.gamebookStore.selectedNode.id
+                                )}
+                              ?disabled=${this.gamebookStore.selectedNode
+                                .class == "origin"
                                 ? true
                                 : false}
                               >Set as Origin</sl-button
                             >`
                           : null}
-                        ${this.selectedNode.class == "branch"
+                        ${this.gamebookStore.selectedNode.class == "branch"
                           ? html`
                               <p>
                                 <sl-icon
@@ -467,13 +454,13 @@ variant="default"
                               </p>
                             `
                           : null}
-                        ${this.selectedNode.class == "popup"
+                        ${this.gamebookStore.selectedNode.class == "popup"
                           ? html`
                               <!-- Get gamebook container manager here and get the container with the matching id, tie attributes directly to the container and let it be controlled here-->
                               <sl-switch
                                 ?checked=${(
                                   this.gamebookContainerManager._getContainerByDrawflowNodeId(
-                                    this.selectedNode.id
+                                    this.gamebookStore.selectedNode.id
                                   ) as WebWriterGamebookPopupContainer
                                 )?.preventClosing}
                                 @sl-input=${(event) =>
@@ -483,7 +470,7 @@ variant="default"
                               <sl-switch
                                 ?checked=${(
                                   this.gamebookContainerManager._getContainerByDrawflowNodeId(
-                                    this.selectedNode.id
+                                    this.gamebookStore.selectedNode.id
                                   ) as WebWriterGamebookPopupContainer
                                 )?.noHeader
                                   ? false
@@ -529,8 +516,8 @@ variant="default"
       </sl-dialog>
 
       <sl-dialog label="Delete node" class="dialog" id="delete_node_dialog">
-        You are about to delete the node "${this.selectedNode.data.title}". Do
-        you want to proceed?
+        You are about to delete the node
+        "${this.gamebookStore.selectedNode.data.title}". Do you want to proceed?
         <sl-button
           slot="footer"
           variant="primary"
@@ -598,7 +585,7 @@ variant="default"
 
   */
   private copyNode() {
-    this.copiedNode = this.selectedNode;
+    this.copiedNode = this.gamebookStore.selectedNode;
   }
 
   /*
@@ -704,7 +691,7 @@ variant="default"
       //this.updateSelectedNode(this.selectedNode.id.toString());
       this.gamebookContainerManager._renameContainer(
         node.id.toString(),
-        this.selectedNode.data.title
+        this.gamebookStore.selectedNode.data.title
       );
     }
     //
@@ -873,7 +860,6 @@ variant="default"
         }
 
         if (outputNode.class == "branch") {
-          console.log("deleted and rule updated");
           //console.log("removing rule target", outputClass);
           this.gamebookContainerManager.updateBranchContainerRuleTarget(
             outputNode.id,
@@ -895,7 +881,7 @@ variant="default"
         const identifier = `${outputNode.id}-${outputClass}-${inputNode.id}-${inputClass}`;
 
         this.gamebookContainerManager.highlightConnectionButtonInContainer(
-          this.selectedNode.id,
+          this.gamebookStore.selectedNode.id,
           identifier
         );
       } else {
@@ -911,7 +897,7 @@ variant="default"
         const identifier = `${outputNode.id}-${outputClass}-${inputNode.id}-${inputClass}`;
 
         this.gamebookContainerManager.unhighlightConnectionButtonInContainer(
-          this.selectedNode.id,
+          this.gamebookStore.selectedNode.id,
           identifier
         );
       } else {
@@ -936,7 +922,7 @@ variant="default"
       //console.log("here before", "deleted output", outputClass);
 
       this.gamebookContainerManager.updateButtonIdsAfterOutputRemove(
-        this.selectedNode.id,
+        this.gamebookStore.selectedNode.id,
         outputClass
       );
 
@@ -970,10 +956,9 @@ variant="default"
       //this.updateSelectedNode(this.selectedNode.id.toString());
     }
 
-    this.editorContent = { ...drawflow };
-
-    this.requestUpdate();
+    this.gamebookStore.setEditorContent(drawflow);
     this._markUsedOutputs();
+    this.requestUpdate();
   }
 
   /*
@@ -993,9 +978,6 @@ variant="default"
         parsed.outputClass,
         parsed.inputClass
       );
-
-      this.editorContent = { ...this.nodeEditor.editor.drawflow };
-      //this.updateSelectedNode(this.selectedNode.id.toString());
     });
     this.addEventListener("containerHighlightConnectionButton", (event) => {
       this.reactToCallbackFromNodeEditor = false;
@@ -1089,13 +1071,6 @@ variant="default"
   }
 
   /*
-  
-  */
-  private serializeDividerPos(pos: number) {
-    this.dividerPos = pos;
-  }
-
-  /*
 
   */
   private makeNodeOrigin(selectedNodeId: number) {
@@ -1112,7 +1087,7 @@ variant="default"
 
     (
       this.gamebookContainerManager._getContainerByDrawflowNodeId(
-        this.selectedNode.id
+        this.gamebookStore.selectedNode.id
       ) as WebWriterGamebookPopupContainer
     ).preventClosing = value;
 
@@ -1130,7 +1105,7 @@ variant="default"
 
     (
       this.gamebookContainerManager._getContainerByDrawflowNodeId(
-        this.selectedNode.id
+        this.gamebookStore.selectedNode.id
       ) as WebWriterGamebookPopupContainer
     ).noHeader = !value;
 
@@ -1142,7 +1117,9 @@ variant="default"
 
   */
   private deleteSelectedNode() {
-    this.nodeEditor.editor.removeNodeId(`node-${this.selectedNode.id}`);
+    this.nodeEditor.editor.removeNodeId(
+      `node-${this.gamebookStore.selectedNode.id}`
+    );
     (this.shadowRoot.getElementById("delete_node_dialog") as SlDialog).hide();
   }
 
@@ -1153,7 +1130,7 @@ variant="default"
   private checkIfElseRuleTargetIsSet() {
     const branchContainer =
       this.gamebookContainerManager._getContainerByDrawflowNodeId(
-        this.selectedNode.id
+        this.gamebookStore.selectedNode.id
       ) as WebWriterGamebookBranchContainer;
     if (
       branchContainer.elseRule !== undefined &&
@@ -1289,8 +1266,6 @@ variant="default"
             if (nodeName === "webwriter-gamebook-page-container") {
               const container = node as WebWriterGamebookPageContainer;
               containerEvent(container);
-              // console.log(container);
-              // console.log(container.originPage);
               if (container.originPage === 1) {
                 this.nodeEditor.addPageNode("First Page", true);
               }

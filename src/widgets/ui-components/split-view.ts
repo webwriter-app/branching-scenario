@@ -18,8 +18,6 @@ const DIVIDER_HEIGHT = 30;
 @customElement("split-view")
 export class SplitView extends LitElementWw {
   @property({ type: Number, attribute: true, reflect: true })
-  accessor dividerPosition = 350;
-  @property({ type: Number, attribute: true, reflect: true })
   accessor minStart = 230;
   @property({ type: Number, attribute: true, reflect: true })
   accessor maxStart = 350;
@@ -27,11 +25,11 @@ export class SplitView extends LitElementWw {
   @state() accessor isDragging = false;
   @state() accessor initialY = 0;
   @state() accessor startHeight = 0;
-  @state() accessor isCollapsed = false;
   @state() accessor previousHeight = 350;
 
-  //access nodes in the internal component DOM.
-  @property({ attribute: false }) accessor getDividerPos = (Number) => {};
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default");
 
   // Registering custom elements used in the widget
   static get scopedElements() {
@@ -126,10 +124,12 @@ export class SplitView extends LitElementWw {
         ".itemStart"
       ) as HTMLElement;
       // Set initial height of the start panel based on the dividerPosition
-      itemStart.style.height = `${this.dividerPosition}px`;
+      itemStart.style.height = `${this.providedStore.dividerPosition}px`;
       // Calculate and set the initial height of the splitPanel
       const initialSplitPanelHeight =
-        this.dividerPosition + this.itemEndHeight() + DIVIDER_HEIGHT;
+        this.providedStore.dividerPosition +
+        this.itemEndHeight() +
+        DIVIDER_HEIGHT;
       splitPanel.style.height = `${initialSplitPanelHeight}px`;
 
       // Set up a ResizeObserver on the itemEnd to adjust the splitPanel's height when content changes
@@ -145,7 +145,7 @@ export class SplitView extends LitElementWw {
   
   */
   private onMouseDown(event: MouseEvent) {
-    if (this.isCollapsed) return; // Prevent dragging when collapsed
+    if (this.providedStore.editorIsCollapsed) return; // Prevent dragging when collapsed
 
     this.isDragging = true;
     this.initialY = event.clientY;
@@ -197,8 +197,7 @@ export class SplitView extends LitElementWw {
     splitPanel.style.height = `${totalHeight}px`;
 
     // Update the dividerPosition property to reflect the new height
-    this.dividerPosition = newHeight;
-    this.getDividerPos(this.dividerPosition);
+    this.providedStore.setDividerPosition(newHeight);
   }
 
   /*
@@ -217,7 +216,9 @@ export class SplitView extends LitElementWw {
       ".splitPanel"
     ) as HTMLElement;
     const newTotalHeight =
-      this.dividerPosition + this.itemEndHeight() + DIVIDER_HEIGHT;
+      this.providedStore.dividerPosition +
+      this.itemEndHeight() +
+      DIVIDER_HEIGHT;
     splitPanel.style.height = `${newTotalHeight}px`;
   }
 
@@ -229,23 +230,26 @@ export class SplitView extends LitElementWw {
       ".itemStart"
     ) as HTMLElement;
 
-    if (this.isCollapsed) {
-      // Expand the panel to the previous height
+    if (this.providedStore.editorIsCollapsed) {
       itemStart.classList.remove("collapsed");
       itemStart.classList.add("expanded");
       itemStart.style.height = `${this.previousHeight}px`;
-      this.dividerPosition = this.previousHeight;
-    } else {
+      this.providedStore.setDividerPosition(this.previousHeight);
+    }
+    //
+    else {
       // Collapse the panel and save the current height
-      this.previousHeight = this.dividerPosition;
+      this.previousHeight = this.providedStore.dividerPosition;
       itemStart.classList.remove("expanded");
       itemStart.classList.add("collapsed");
       itemStart.style.height = `0px`;
-      this.dividerPosition = 0;
+      this.providedStore.setDividerPosition(0);
     }
 
     // Update the collapsed state and button label
-    this.isCollapsed = !this.isCollapsed;
+    this.providedStore.setEditorIsCollapsed(
+      !this.providedStore.editorIsCollapsed
+    );
 
     // Adjust the splitPanel height after collapse/expand
     this.adjustSplitPanelHeight();
@@ -266,7 +270,7 @@ export class SplitView extends LitElementWw {
           <sl-icon-button
             class="collapse-button"
             @click=${this.toggleCollapse}
-            src=${this.isCollapsed
+            src=${this.providedStore.editorIsCollapsed
               ? layoutBottomBarCollapse
               : layoutNavBarCollapse}
           >

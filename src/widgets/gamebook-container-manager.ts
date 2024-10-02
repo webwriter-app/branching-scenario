@@ -31,8 +31,6 @@ export class GamebookContainerManager extends LitElementWw {
   })
   accessor gamebookContainers;
 
-  @property({ type: Object, attribute: true }) accessor editorContent;
-
   static get scopedElements() {
     return {
       "webwriter-gamebook-page-container": WebWriterGamebookPageContainer,
