@@ -9,6 +9,9 @@ import {
   queryAssignedElements,
 } from "lit/decorators.js";
 
+import { consume } from "@lit/context";
+import { gamebookStore, GamebookStore } from "./context-test";
+
 //Drawflow Imports
 import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
 import { WebWriterConnectionButton } from "./gamebook-components/webwriter-connection-button";
@@ -19,7 +22,10 @@ import { WebWriterSmartBranchButton } from "./gamebook-components/webwriter-smar
 
 @customElement("gamebook-container-manager")
 export class GamebookContainerManager extends LitElementWw {
-  //
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default");
+
   @property({ attribute: false }) accessor appendToShadowDom = (
     element: HTMLElement
   ) => {};
@@ -88,7 +94,7 @@ export class GamebookContainerManager extends LitElementWw {
 
 
   */
-  public _getContainerByDrawflowNodeId(id: string) {
+  public _getContainerByDrawflowNodeId(id: number) {
     const container = this.gamebookContainers.find(
       (container) => container.getAttribute("drawflowNodeId") == id
     );
@@ -334,98 +340,46 @@ export class GamebookContainerManager extends LitElementWw {
     }
   }
 
-  /*
+  public createContainerFromNode(node) {
+    switch (node.class) {
+      case "page":
+      case "origin":
+        this._createContainerElement(
+          node,
+          "webwriter-gamebook-page-container",
+          node.class == "origin" ? "1" : "0"
+        );
+        break;
+      case "popup":
+        this._createContainerElement(
+          node,
+          "webwriter-gamebook-popup-container"
+        );
+        break;
+      case "branch":
+        this._createContainerElement(
+          node,
+          "webwriter-gamebook-branch-container"
+        );
+        break;
+    }
+  }
 
-  */
-  public _createPageContainerFromPageNode(pageNode: DrawflowNode) {
-    //console.log("pageNode in Manager", pageNode.id.toString());
-    const pageContainer = document.createElement(
-      "webwriter-gamebook-page-container"
-    ) as WebWriterGamebookPageContainer;
-    pageContainer.setAttribute("drawflowNodeId", pageNode.id.toString());
-    pageContainer.setAttribute("pageTitle", pageNode.data.title);
+  private _createContainerElement(
+    node: DrawflowNode,
+    tagName: string,
+    originPage?: string
+  ) {
+    const container = document.createElement(tagName) as HTMLElement;
+    container.setAttribute("drawflowNodeId", node.id.toString());
+    container.setAttribute("pageTitle", node.data.title);
 
-    if (pageNode.class == "origin") {
-      pageContainer.setAttribute("originPage", "1");
-    } else {
-      pageContainer.setAttribute("originPage", "0");
+    if (originPage) {
+      container.setAttribute("originPage", originPage);
     }
 
-    // const parser = new DOMParser();
-    // const contentFromNode = parser.parseFromString(
-    //   pageNode.data.content,
-    //   "text/html"
-    // );
-
-    // // Loop through the child nodes of the body of the parsed document
-    // contentFromNode.body.childNodes.forEach((node) => {
-    //   pageContainer.appendChild(node);
-    // });
-
-    //to let it access editor
-    pageContainer.hide();
-
-    //
-    this.appendToShadowDom(pageContainer);
-
-    //console.log("created Page Container", pageContainer);
-  }
-
-  /*
-
-
-  */
-  public _createPopupContainerFromPopupNode(popupNode: DrawflowNode) {
-    //console.log(this.gamebookContainers);
-    const popupContainer = document.createElement(
-      "webwriter-gamebook-popup-container"
-    ) as WebWriterGamebookPageContainer;
-    popupContainer.setAttribute("drawflowNodeId", popupNode.id.toString());
-    popupContainer.setAttribute("pageTitle", popupNode.data.title);
-
-    // const parser = new DOMParser();
-    // const contentFromNode = parser.parseFromString(
-    //   popupNode.data.content,
-    //   "text/html"
-    // );
-
-    // // Loop through the child nodes of the body of the parsed document
-    // contentFromNode.body.childNodes.forEach((node) => {
-    //   popupContainer.appendChild(node);
-    // });
-
-    //to let it access editor
-    popupContainer.hide();
-
-    //
-    this.appendToShadowDom(popupContainer);
-  }
-
-  /* 
-  
-  
-  */
-  public _createBranchContainer(branchNode: DrawflowNode) {
-    //console.log(this.gamebookContainers);
-    const branchContainer = document.createElement(
-      "webwriter-gamebook-branch-container"
-    ) as WebWriterGamebookBranchContainer;
-    branchContainer.setAttribute("drawflowNodeId", branchNode.id.toString());
-    branchContainer.setAttribute("pageTitle", branchNode.data.title);
-
-    // const parser = new DOMParser();
-    // const contentFromNode = parser.parseFromString(
-    //   branchNode.data.content,
-    //   "text/html"
-    // );
-    // // Loop through the child nodes of the body of the parsed document
-    // contentFromNode.body.childNodes.forEach((node) => {
-    //   branchContainer.appendChild(node);
-    // });
-    //to let it access editor
-    branchContainer.hide();
-    //
-    this.appendToShadowDom(branchContainer);
+    (container as any).hide();
+    this.appendToShadowDom(container);
   }
 
   /* 
@@ -502,5 +456,51 @@ export class GamebookContainerManager extends LitElementWw {
     ).removeElementOfRules(element_id, isQuiz);
 
     return removeConnectionsFromOutputs;
+  }
+
+  /*
+
+  */
+
+  /*
+
+
+  */
+  public copyAndPasteContainerContents(pastedNode) {
+    this.createContainerFromNode(pastedNode);
+
+    const pastedContainer = this._getContainerByDrawflowNodeId(pastedNode.id);
+
+    const copiedContainer = this._getContainerByDrawflowNodeId(
+      this.providedStore.copiedNode.id
+    );
+
+    // Iterate through each element in copiedContainer's slotContent
+    copiedContainer.slotContent.forEach((element) => {
+      // Skip elements with specific tag names
+      if (
+        element.tagName.toLowerCase() === "webwriter-connection-button" ||
+        element.tagName.toLowerCase() === "webwriter-smart-branch-button"
+      ) {
+        return; // Skip this element
+      }
+
+      // Create a new element of the same type
+      const newElement = document.createElement(element.tagName);
+
+      // Manually copy desired attributes, skipping 'id'
+      [...element.attributes].forEach((attr) => {
+        if (attr.name !== "id" && attr.name !== "contenteditable") {
+          // Skip the 'id' attribute
+          newElement.setAttribute(attr.name, attr.value);
+        }
+      });
+
+      // Copy inner content (text or children) if necessary
+      newElement.innerHTML = element.innerHTML; // or use another approach based on your needs
+
+      // Append the new element to pastedContainer's slot
+      pastedContainer.appendChild(newElement);
+    });
   }
 }

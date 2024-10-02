@@ -6,6 +6,7 @@ import { ContextConsumer } from "@lit/context";
 
 import { NodeEditor } from "./node-editor/node-editor";
 import { GamebookContainerManager } from "./gamebook-container-manager";
+import { DrawflowNode } from "drawflow";
 
 export class MouseController {
   private host: ReactiveControllerHost;
@@ -62,5 +63,19 @@ export class MouseController {
     );
 
     this.host.requestUpdate(); // Update the host component after changes
+  };
+
+  /*
+
+  */
+  _createContainerForNode = (node: DrawflowNode) => {
+    this.gamebookContainerManager.createContainerFromNode(node);
+  };
+
+  /*
+
+  */
+  _copyAndPasteContainer = (pastedNode: DrawflowNode) => {
+    this.gamebookContainerManager.copyAndPasteContainerContents(pastedNode);
   };
 }

@@ -21,6 +21,7 @@ const NO_NODE_SELECTED: DrawflowNode = {
 export class GamebookStore {
   title: string;
   selectedNode: DrawflowNode;
+  copiedNode: DrawflowNode;
   editorZoom: number;
   editorPosition: any;
   dividerPosition: number;
@@ -38,7 +39,8 @@ export class GamebookStore {
     editorPositon = { x: undefined, y: undefined },
     dividerPosition = 350,
     editorIsCollapsed = false,
-    editorContent = null
+    editorContent = null,
+    copiedNode = NO_NODE_SELECTED
   ) {
     this.title = title;
     this.selectedNode = selectedNode;
@@ -48,6 +50,7 @@ export class GamebookStore {
     this.dividerPosition = dividerPosition;
     this.editorIsCollapsed = editorIsCollapsed;
     this.editorContent = editorContent;
+    this.copiedNode = copiedNode;
   }
 
   setTitle(newTitle = Math.random().toString()) {
@@ -85,6 +88,11 @@ export class GamebookStore {
     this.notifyObservers();
   }
 
+  setCopiedNode(node = NO_NODE_SELECTED) {
+    this.copiedNode = node;
+    this.notifyObservers();
+  }
+
   // Method to register an observer
   addObserver(observer: Observer) {
     this.observer = observer;
@@ -106,6 +114,7 @@ export class GamebookStore {
       dividerPosition: this.dividerPosition,
       editorIsCollapsed: this.editorIsCollapsed,
       editorContent: this.editorContent,
+      copiedNode: this.copiedNode,
     });
   }
 
@@ -120,7 +129,8 @@ export class GamebookStore {
       data.editorPosition,
       data.dividerPosition,
       data.editorIsCollapsed,
-      data.editorContent
+      data.editorContent,
+      data.copiedNode
     );
   }
 }

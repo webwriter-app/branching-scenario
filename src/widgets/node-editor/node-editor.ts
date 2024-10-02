@@ -1,6 +1,5 @@
 import { html, css, PropertyValues } from "lit";
-import { provide, consume, createContext } from "@lit/context";
-import { ContextConsumer } from "@lit/context";
+import { consume } from "@lit/context";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, query, queryAll } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -32,7 +31,7 @@ import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import mapPin from "@tabler/icons/outline/map-pin.svg";
 
 //Drawflow Imports
-import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
+import Drawflow, { DrawflowNode } from "drawflow";
 import { style } from "drawflow/dist/drawflow.style.js";
 
 import customDrawflowStyles from "../../css/custom-drawflow-css";
@@ -251,12 +250,15 @@ export class NodeEditor extends LitElementWw {
     return html`
       <div id="nodeEditor">
         <node-editor-controls-bar
-          .addPageNode=${(string, boolean) => this.addPageNode(string, boolean)}
-          .addPopUpNode=${(string) => this.addPopUpNode(string)}
-          .addBranchNode=${(string) => this.addBranchNode(string)}
-          .addDecisionPopUpTemplate=${() => this.addDecisionPopUpTemplate()}
-          .showDialog=${() =>
-            (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
+          @addPageNode=${(e: CustomEvent) => {
+            this.addPageNode(e.detail.title, e.detail.isOrigin);
+          }}
+          @addPopUpNode=${(e: CustomEvent) => {
+            this.addPopUpNode(e.detail.title);
+          }}
+          @addBranchNode=${(e: CustomEvent) => {
+            this.addBranchNode(e.detail.title);
+          }}
         >
         </node-editor-controls-bar>
 
@@ -528,14 +530,25 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  public pasteNode(copiedNode: DrawflowNode) {
-    this.nodePasted = true;
-    if (copiedNode.class == "page" || copiedNode.class == "origin") {
-      this.addPageNode(`${copiedNode.data.title} copy`, false);
-    } else if (copiedNode.class == "popup") {
-      this.addPopUpNode(`${copiedNode.data.title} copy`);
-    } else if (copiedNode.class == "branch") {
-      this.addBranchNode(`${copiedNode.data.title} copy`);
+  public pasteNode() {
+    const copiedNode = this.providedStore.copiedNode;
+
+    if (copiedNode.id !== -1) {
+      this.nodePasted = true;
+      const titleCopy = `${copiedNode.data.title} copy`;
+
+      switch (copiedNode.class) {
+        case "page":
+        case "origin":
+          this.addPageNode(titleCopy, false);
+          break;
+        case "popup":
+          this.addPopUpNode(titleCopy);
+          break;
+        case "branch":
+          this.addBranchNode(titleCopy);
+          break;
+      }
     }
   }
 
@@ -556,23 +569,24 @@ export class NodeEditor extends LitElementWw {
 
     //Event listerner for creation of a node
     this.editor.on("nodeCreated", (id) => {
+      let createdNode = this.editor.getNodeFromId(id);
       if (this.nodePasted == false) {
-        let createdNode = this.editor.getNodeFromId(id);
-        this.changeInEditorCallback(
-          { ...this.editor.drawflow },
-          "nodeCreated",
-          createdNode
+        this.dispatchEvent(
+          new CustomEvent("nodeCreated", {
+            detail: { node: createdNode },
+            bubbles: true,
+            composed: true,
+          })
         );
-      }
-      //
-      else {
-        let createdNode = this.editor.getNodeFromId(id);
-        this.changeInEditorCallback(
-          { ...this.editor.drawflow },
-          "nodePasted",
-          createdNode
-        );
+      } else {
         this.nodePasted = false;
+        this.dispatchEvent(
+          new CustomEvent("nodePasted", {
+            detail: { node: createdNode },
+            bubbles: true,
+            composed: true,
+          })
+        );
       }
     });
 
@@ -769,84 +783,25 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  public addPageNode(title: string, isOrigin: boolean) {
-    const pageContent = {
+  private addPageNode(title: string, isOrigin: boolean) {
+    const nodeData = {
       title: title,
       content: `<p>Testing Slots HTML Editing</p>`,
     };
 
-    // Create the container div
-    const containerDiv = document.createElement("div");
-    containerDiv.classList.add("container");
+    const nodeHTML = this.createPageNodeHTML(isOrigin);
 
-    // Create page sl-icon
-    const iconDiv = document.createElement("div");
-    iconDiv.classList.add("iconDiv");
-    const icon = document.createElement("sl-icon") as SlIcon;
-    icon.setAttribute("src", file);
-    icon.classList.add("pageIcon");
-
-    iconDiv.appendChild(icon);
-    containerDiv.appendChild(iconDiv);
-
-    //
-    const contentDiv = document.createElement("div");
-    contentDiv.classList.add("content");
-
-    const input = document.createElement("input");
-    input.id = "title";
-    input.setAttribute("df-title", ""); // Adding df-title attribute
-    contentDiv.appendChild(input);
-
-    if (isOrigin) {
-      //Add Origin Page Marker
-      const badge = document.createElement("div");
-      badge.classList.add("badge");
-
-      const arrowIcon = document.createElement("sl-icon") as SlIcon;
-      arrowIcon.setAttribute("src", circleArrowRight);
-      badge.appendChild(arrowIcon);
-
-      const nameLabel = document.createElement("p");
-      nameLabel.textContent = "Start Page";
-      badge.appendChild(nameLabel);
-
-      contentDiv.appendChild(badge);
-    } else {
-      //Add label to the input for the nodes name
-      const nameLabel = document.createElement("p");
-      nameLabel.classList.add("input-label");
-      nameLabel.textContent = "Page"; // Set the text content of the label
-      contentDiv.appendChild(nameLabel);
-    }
-
-    containerDiv.appendChild(contentDiv);
-
-    // Add three dots iccon
-    const threeDotsIcon = document.createElement("sl-icon") as SlIcon;
-    threeDotsIcon.setAttribute("src", dotsVertical);
-    threeDotsIcon.classList.add("threeDots");
-    containerDiv.appendChild(threeDotsIcon);
-
-    const containerHtml = containerDiv.outerHTML;
-
-    //get current center of drawflow div
-    const rect = this.drawflowEditorDiv.getBoundingClientRect();
-    const zoom = this.editor.zoom;
-
-    //center of canvas - translation of canvas / zoom - node dimension center
-    const centerX = rect.width / 2 - this.editor.canvas_x / zoom - 320 / 2;
-    const centerY = rect.height / 2 - this.editor.canvas_y / zoom - 109 / 2;
+    const editorDivCenterPos = this.getCenterOfEditorDiv();
 
     this.editor.addNode(
       title,
       1,
       1,
-      centerX,
-      centerY,
+      editorDivCenterPos.centerX - 320 / 2,
+      editorDivCenterPos.centerY - 109 / 2,
       isOrigin ? "origin" : "page",
-      pageContent,
-      containerHtml,
+      nodeData,
+      nodeHTML,
       false
     );
   }
@@ -855,12 +810,134 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  public addPopUpNode(title: string) {
-    const popupContent = {
+  private addPopUpNode(title: string) {
+    const nodeData = {
       title: title,
       content: `<p>Testing Slots HTML Editing</p>`,
     };
 
+    const nodeHTML = this.createPopupNodeHTML();
+
+    const editorDivCenterPos = this.getCenterOfEditorDiv();
+
+    this.editor.addNode(
+      title,
+      1,
+      1,
+      editorDivCenterPos.centerX - 320 / 2,
+      editorDivCenterPos.centerY - 109 / 2,
+      "popup",
+      nodeData,
+      nodeHTML,
+      false
+    );
+  }
+
+  /*
+
+
+  */
+  private addBranchNode(title: string) {
+    const nodeData = {
+      title: title,
+      content: `<p>Testing Slots HTML Editing</p>`,
+    };
+
+    const nodeHTML = this.createBranchNodeHTML();
+
+    const editorDivCenterPos = this.getCenterOfEditorDiv();
+
+    this.editor.addNode(
+      title,
+      1,
+      1,
+      editorDivCenterPos.centerX - 320 / 2,
+      editorDivCenterPos.centerY - 109 / 2,
+      "branch",
+      nodeData,
+      nodeHTML,
+      false
+    );
+  }
+
+  /*
+
+
+  */
+  private getCenterOfEditorDiv() {
+    //get current center of drawflow div
+    const rect = this.drawflowEditorDiv.getBoundingClientRect();
+    const zoom = this.editor.zoom;
+
+    //center of canvas - translation of canvas / zoom - node dimension center
+    const centerX = rect.width / 2 - this.editor.canvas_x / zoom;
+    const centerY = rect.height / 2 - this.editor.canvas_y / zoom;
+
+    return { centerX, centerY };
+  }
+
+  /*
+
+
+  */
+  public createPageNodeHTML(isOrigin: boolean) {
+    // Create the container div and its child elements
+    const containerDiv = document.createElement("div");
+    containerDiv.classList.add("container");
+
+    // Create the page icon
+    const iconDiv = document.createElement("div");
+    iconDiv.classList.add("iconDiv");
+    const icon = document.createElement("sl-icon") as SlIcon;
+    icon.setAttribute("src", file);
+    icon.classList.add("pageIcon");
+    iconDiv.appendChild(icon);
+    containerDiv.appendChild(iconDiv);
+
+    // Create the content div with input
+    const contentDiv = document.createElement("div");
+    contentDiv.classList.add("content");
+    const input = document.createElement("input");
+    input.id = "title";
+    input.setAttribute("df-title", ""); // Adding df-title attribute
+    contentDiv.appendChild(input);
+
+    // Add origin badge or input label
+    const nameLabel = document.createElement("p");
+    if (isOrigin) {
+      const badge = document.createElement("div");
+      badge.classList.add("badge");
+
+      const arrowIcon = document.createElement("sl-icon") as SlIcon;
+      arrowIcon.setAttribute("src", circleArrowRight);
+      badge.appendChild(arrowIcon);
+
+      nameLabel.textContent = "Start Page";
+      badge.appendChild(nameLabel);
+      contentDiv.appendChild(badge);
+    } else {
+      nameLabel.classList.add("input-label");
+      nameLabel.textContent = "Page"; // Set the text content of the label
+      contentDiv.appendChild(nameLabel);
+    }
+
+    containerDiv.appendChild(contentDiv);
+
+    // Add three dots icon
+    const threeDotsIcon = document.createElement("sl-icon") as SlIcon;
+    threeDotsIcon.setAttribute("src", dotsVertical);
+    threeDotsIcon.classList.add("threeDots");
+    containerDiv.appendChild(threeDotsIcon);
+
+    const containerHtml = containerDiv.outerHTML;
+    return containerHtml;
+  }
+
+  /*
+
+
+  */
+  public createPopupNodeHTML() {
     // Create the container div
     const containerDiv = document.createElement("div");
     containerDiv.classList.add("container");
@@ -899,38 +976,14 @@ export class NodeEditor extends LitElementWw {
     containerDiv.appendChild(threeDotsIcon);
 
     const containerHtml = containerDiv.outerHTML;
-
-    //get current center of drawflow div
-    const rect = this.drawflowEditorDiv.getBoundingClientRect();
-    const zoom = this.editor.zoom;
-
-    //center of canvas - translation of canvas / zoom - node dimension center
-    const centerX = rect.width / 2 - this.editor.canvas_x / zoom - 302 / 2;
-    const centerY = rect.height / 2 - this.editor.canvas_y / zoom - 90 / 2;
-
-    this.editor.addNode(
-      title,
-      1,
-      1,
-      centerX,
-      centerY,
-      "popup",
-      popupContent,
-      containerHtml,
-      false
-    );
+    return containerHtml;
   }
 
   /*
 
 
   */
-  public addBranchNode(title: string) {
-    const branchNodeContent = {
-      title: title,
-      content: `<p>Testing Slots HTML Editing</p>`,
-    };
-
+  public createBranchNodeHTML() {
     // Create the container div
     const containerDiv = document.createElement("div");
     containerDiv.classList.add("container");
@@ -968,26 +1021,7 @@ export class NodeEditor extends LitElementWw {
     containerDiv.appendChild(threeDotsIcon);
 
     const containerHtml = containerDiv.outerHTML;
-
-    //get current center of drawflow div
-    const rect = this.drawflowEditorDiv.getBoundingClientRect();
-    const zoom = this.editor.zoom;
-
-    //center of canvas - translation of canvas / zoom - node dimension center
-    const centerX = rect.width / 2 - this.editor.canvas_x / zoom; //- 302 / 2;
-    const centerY = rect.height / 2 - this.editor.canvas_y / zoom; //- 90 / 2;
-
-    this.editor.addNode(
-      "Branch Node",
-      1,
-      1,
-      centerX,
-      centerY,
-      "branch",
-      branchNodeContent,
-      containerHtml,
-      false
-    );
+    return containerHtml;
   }
 
   /*

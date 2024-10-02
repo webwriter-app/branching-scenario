@@ -84,8 +84,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @query("selected-node-view-renderer") accessor selectedNodeViewRenderer;
   @query("#searchInput") accessor searchInput;
 
-  @property({ type: Object, attribute: true })
-  accessor copiedNode: DrawflowNode = NO_NODE_SELECTED;
   @property({ type: Number, attribute: true }) accessor numberOfSearchNodes = 0;
 
   @property({ type: Boolean }) accessor reactToCallbackFromNodeEditor = true;
@@ -152,9 +150,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
   
   */
   protected firstUpdated(_changedProperties: any): void {
-    this.gamebookContainers.forEach((container) => {
-      container.hide();
-    });
+    this.gamebookContainerManager._showGamebookContainerById(
+      this.gamebookStore.selectedNode.id
+    );
     this.handleChangesInGamebookContainers();
 
     const config = {
@@ -193,7 +191,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.gamebookStore.editorPosition,
       this.gamebookStore.dividerPosition,
       this.gamebookStore.editorIsCollapsed,
-      this.gamebookStore.editorContent
+      this.gamebookStore.editorContent,
+      this.gamebookStore.copiedNode
     );
   }
 
@@ -224,12 +223,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //
     else if ((event.metaKey || event.ctrlKey) && event.key === "c") {
       event.preventDefault(); // Prevent the default browser find functionality
-      this.copyNode();
+      this.gamebookStore.setCopiedNode(this.gamebookStore.selectedNode);
     }
     //
     else if ((event.metaKey || event.ctrlKey) && event.key === "v") {
       event.preventDefault(); // Prevent the default browser find functionality
-      this.pasteNode();
+      this.nodeEditor.pasteNode();
     }
   };
 
@@ -246,6 +245,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
            <split-view>
                 <node-editor
                   slot="start"
+                  @nodeCreated=${(e: CustomEvent) =>
+                    this.controller._createContainerForNode(e.detail.node)}
+                  @nodePasted=${(e: CustomEvent) =>
+                    this.controller._copyAndPasteContainer(e.detail.node)}
+
+
+
                   .changeInEditorCallback=${(
                     drawflow,
                     updateType,
@@ -350,17 +356,15 @@ export class WebWriterBranchingScenario extends LitElementWw {
  
 
 
-              <sl-button-group label="Alignment">
+              <!-- <sl-button-group label="Alignment">
                    <sl-button id="copyNodeBtn" 
                    class="flex-item"
-                   @click=${this.copyNode}  ?disabled=${
-            this.gamebookStore.selectedNode.id === -1
-          }
+                     ?disabled=${this.gamebookStore.selectedNode.id === -1}
                           >Copy</sl-button
                         >
                <sl-button class="flex-item"
                   @click=${() => this.pasteNode()}
-                  ?disabled=${this.copiedNode.id === -1}>
+                  ?disabled=${this.gamebookStore.copiedNode.id === -1}>
                   Paste
                 </sl-button>
 
@@ -390,7 +394,7 @@ variant="default"
                 
 
                    
-</sl-button-group>
+</sl-button-group> -->
 
                 ${
                   this.gamebookStore.selectedNode.id != -1
@@ -581,66 +585,6 @@ variant="default"
 
 
   */
-  private copyNode() {
-    this.copiedNode = this.gamebookStore.selectedNode;
-  }
-
-  /*
-
-
-  */
-  private pasteNode() {
-    if (this.copiedNode.id != -1) {
-      this.nodeEditor.pasteNode(this.copiedNode);
-    }
-  }
-
-  /*
-
-
-  */
-  private copyAndPasteContainerContents(copiedContainerId, pastedContainerId) {
-    const pastedContainer =
-      this.gamebookContainerManager._getContainerByDrawflowNodeId(
-        pastedContainerId
-      );
-    const copiedContainer =
-      this.gamebookContainerManager._getContainerByDrawflowNodeId(
-        copiedContainerId
-      );
-
-    // Iterate through each element in copiedContainer's slotContent
-    copiedContainer.slotContent.forEach((element) => {
-      // Skip elements with specific tag names
-      if (
-        element.tagName.toLowerCase() === "webwriter-connection-button" ||
-        element.tagName.toLowerCase() === "webwriter-smart-branch-button"
-      ) {
-        return; // Skip this element
-      }
-
-      // Create a new element of the same type
-      const newElement = document.createElement(element.tagName);
-
-      // Manually copy desired attributes, skipping 'id'
-      [...element.attributes].forEach((attr) => {
-        if (attr.name !== "id" && attr.name !== "contenteditable") {
-          // Skip the 'id' attribute
-          newElement.setAttribute(attr.name, attr.value);
-        }
-      });
-
-      // Copy inner content (text or children) if necessary
-      newElement.innerHTML = element.innerHTML; // or use another approach based on your needs
-
-      // Append the new element to pastedContainer's slot
-      pastedContainer.appendChild(newElement);
-    });
-  }
-  /*
-
-
-  */
   private exportContainersAsString() {
     // console.log(
     //   JSON.stringify(this.gamebookContainers, this.domElementReplacer)
@@ -683,43 +627,7 @@ variant="default"
     translate?: { x: number; y: number },
     changeOrigin?: { oldId: number; newId: number }
   ) {
-    if (updateType == "nodeCreated") {
-      this.focus();
-      //this.updateSelectedNode(this.selectedNode.id.toString());
-      if (node.class == "page" || node.class == "origin") {
-        this.gamebookContainerManager._createPageContainerFromPageNode(node);
-        //console.log(this.gamebookContainerManager.gamebookContainers);
-      }
-      //
-      else if (node.class == "popup") {
-        this.gamebookContainerManager._createPopupContainerFromPopupNode(node);
-      }
-      //
-      else if (node.class == "branch") {
-        //console.log("branch node created");
-        this.gamebookContainerManager._createBranchContainer(node);
-      }
-    }
-    //
-    else if (updateType == "nodePasted") {
-      //this.updateSelectedNode(this.selectedNode.id.toString());
-      if (node.class == "page" || node.class == "origin") {
-        this.gamebookContainerManager._createPageContainerFromPageNode(node);
-        this.copyAndPasteContainerContents(this.copiedNode.id, node.id);
-      }
-      //
-      else if (node.class == "popup") {
-        this.gamebookContainerManager._createPopupContainerFromPopupNode(node);
-        this.copyAndPasteContainerContents(this.copiedNode.id, node.id);
-      }
-
-      //TODO: copy and paste branch nodes need connection to the incoming node if they are connected
-      else if (node.class == "branch") {
-        this.gamebookContainerManager._createBranchContainer(node);
-      }
-    }
-    //
-    else if (updateType == "nodeRemoved") {
+    if (updateType == "nodeRemoved") {
       if (this.reactToCallbackFromNodeEditor) {
         this.focus();
         this.gamebookContainerManager._deleteGamebookContainersById(
