@@ -94,7 +94,7 @@ export class NodeEditor extends LitElementWw {
 
   //internal reactive state, not part of the component's API
   @property({ type: Object, attribute: true, reflect: false })
-  accessor editor: Drawflow;
+  public accessor editor: Drawflow;
 
   @property({ type: String }) accessor editorZoomString = "";
   @property({ type: String }) accessor selectedConnection =
@@ -544,17 +544,6 @@ export class NodeEditor extends LitElementWw {
 
   */
   private _registerEditorEventHandlers() {
-    this.editor.on("nodeDataChanged", (id) => {
-      //This event only picks up data changes from elements marked with df-* in the node
-      //Currently only title inputs on nodes have such elements
-      let changedNode = this.editor.getNodeFromId(id);
-      this.changeInEditorCallback(
-        { ...this.editor.drawflow },
-        "nodeRenamed",
-        changedNode
-      );
-    });
-
     // Event listener for node click
     this.editor.on("nodeSelected", (id) => {
       this.providedStore.setSelectedNode(this.editor.getNodeFromId(id));
@@ -563,8 +552,6 @@ export class NodeEditor extends LitElementWw {
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
       this.providedStore.setSelectedNode();
-      //console.log("node Unselected");
-      //this.updateSelectedNodeCallback(-1);
     });
 
     //Event listerner for creation of a node

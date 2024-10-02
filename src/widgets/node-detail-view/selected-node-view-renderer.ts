@@ -20,7 +20,6 @@ import { BranchNodeDetails } from "./branch-node-details";
 
 @customElement("node-details-selector")
 export class SelectedNodeViewRenderer extends LitElementWw {
-  @property({ type: Object }) accessor nodeEditor;
   @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow,
     updateType,
@@ -61,7 +60,6 @@ export class SelectedNodeViewRenderer extends LitElementWw {
             this.providedStore.selectedNode.class == "origin"
               ? html`
                   <page-node-details
-                    .nodeEditor="${this.nodeEditor}"
                     .changeInEditorCallback=${(
                       drawflow,
                       updateType,
@@ -91,7 +89,6 @@ export class SelectedNodeViewRenderer extends LitElementWw {
                 `
               : this.providedStore.selectedNode.class == "branch"
               ? html` <branch-node-details
-                  .nodeEditor="${this.nodeEditor}"
                   .markUsedOutputs=${() => this.markUsedOutputs()}
                   .changeInEditorCallback=${(
                     drawflow,
@@ -122,7 +119,6 @@ export class SelectedNodeViewRenderer extends LitElementWw {
               : this.providedStore.selectedNode.class == "popup"
               ? html`
                   <popup-node-details
-                    .nodeEditor="${this.nodeEditor}"
                     .changeInEditorCallback=${(
                       drawflow,
                       updateType,
@@ -166,18 +162,17 @@ export class SelectedNodeViewRenderer extends LitElementWw {
 
   */
   private renameNode(text: String) {
-    this.nodeEditor.editor.updateNodeDataFromId(
-      this.providedStore.selectedNode.id,
-      {
-        ...this.providedStore.selectedNode.data,
-        title: text,
-      }
-    );
-
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "nodeRenamed",
-      this.providedStore.selectedNode
-    );
+    // this.nodeEditor.editor.updateNodeDataFromId(
+    //   this.providedStore.selectedNode.id,
+    //   {
+    //     ...this.providedStore.selectedNode.data,
+    //     title: text,
+    //   }
+    // );
+    // this.changeInEditorCallback(
+    //   { ...this.nodeEditor.editor.drawflow },
+    //   "nodeRenamed",
+    //   this.providedStore.selectedNode
+    // );
   }
 }

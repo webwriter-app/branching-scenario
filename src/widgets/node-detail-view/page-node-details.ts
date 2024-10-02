@@ -15,10 +15,9 @@ import "@shoelace-style/shoelace/dist/themes/light.css";
 import { SlIcon, SlDivider } from "@shoelace-style/shoelace";
 
 //Tabler Icon Import
-import squares from "@tabler/icons/filled/squares.svg";
+
 import file from "@tabler/icons/filled/file.svg";
-import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
-import { BranchNodeDetails } from "./branch-node-details";
+
 import { ToggleableInput } from "../ui-components/toggleable-input";
 import { NodeConnectionList } from "../ui-components/node-connection-list";
 
@@ -40,9 +39,6 @@ export class PageNodeDetails extends LitElementWw {
 
   //import CSS
   static styles = [styles];
-
-  //access nodes in the internal component DOM.
-  @property({ type: Object }) accessor nodeEditor;
 
   @property({ attribute: false }) accessor changeInEditorCallback = (
     drawflow,
@@ -73,11 +69,22 @@ export class PageNodeDetails extends LitElementWw {
           <p class="subtitle">Page</p>
         </div>
         <div class="inputOutputControls">
-          <node-connection-list
+          <!-- <node-connection-list
             input
             .nodeEditor=${this.nodeEditor}
             .selectedNode=${this.providedStore.selectedNode}
             .changeInEditorCallback=${(
+            drawflow,
+            updateType,
+            node,
+            removedNodeId,
+            inputNode,
+            outputNode,
+            inputClass,
+            outputClass,
+            outputHadConnections
+          ) => {
+            this.changeInEditorCallback(
               drawflow,
               updateType,
               node,
@@ -87,19 +94,8 @@ export class PageNodeDetails extends LitElementWw {
               inputClass,
               outputClass,
               outputHadConnections
-            ) => {
-              this.changeInEditorCallback(
-                drawflow,
-                updateType,
-                node,
-                removedNodeId,
-                inputNode,
-                outputNode,
-                inputClass,
-                outputClass,
-                outputHadConnections
-              );
-            }}
+            );
+          }}
           ></node-connection-list>
           <sl-divider vertical style="height: 100%;"></sl-divider>
           <node-connection-list
@@ -107,6 +103,17 @@ export class PageNodeDetails extends LitElementWw {
             .nodeEditor=${this.nodeEditor}
             .selectedNode=${this.providedStore.selectedNode}
             .changeInEditorCallback=${(
+            drawflow,
+            updateType,
+            node,
+            removedNodeId,
+            inputNode,
+            outputNode,
+            inputClass,
+            outputClass,
+            outputHadConnections
+          ) => {
+            this.changeInEditorCallback(
               drawflow,
               updateType,
               node,
@@ -116,20 +123,9 @@ export class PageNodeDetails extends LitElementWw {
               inputClass,
               outputClass,
               outputHadConnections
-            ) => {
-              this.changeInEditorCallback(
-                drawflow,
-                updateType,
-                node,
-                removedNodeId,
-                inputNode,
-                outputNode,
-                inputClass,
-                outputClass,
-                outputHadConnections
-              );
-            }}
-          ></node-connection-list>
+            );
+          }}
+          ></node-connection-list> -->
         </div>
       </div>
 
@@ -147,18 +143,11 @@ export class PageNodeDetails extends LitElementWw {
 
   */
   private renameNode(text: String) {
-    this.nodeEditor.editor.updateNodeDataFromId(
-      this.providedStore.selectedNode.id,
-      {
-        ...this.providedStore.selectedNode.data,
-        title: text,
-      }
-    );
-
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "nodeRenamed",
-      this.providedStore.selectedNode
-    );
+    const event = new CustomEvent("renameSelectedNode", {
+      detail: { newTitle: text },
+      bubbles: true,
+      composed: true,
+    });
+    this.dispatchEvent(event);
   }
 }

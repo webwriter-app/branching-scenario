@@ -78,6 +78,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   accessor gamebookContainers;
 
   @query("node-editor") public accessor nodeEditor;
+
   @query("sl-split-panel") accessor splitPanel;
   @query("#widget") accessor widgetDiv;
   @query("selected-node-view-renderer") accessor selectedNodeViewRenderer;
@@ -121,7 +122,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
 
-  private mouse = new MouseController(this);
+  private controller = new MouseController(this);
 
   //
   @provide({ context: gamebookStore })
@@ -134,7 +135,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       toAttribute: (value: GamebookStore) => value.toString(), // Serialize
     },
   })
-  accessor gamebookStore = new GamebookStore("Untitled Gamebook");
+  public accessor gamebookStore = new GamebookStore("Untitled Gamebook");
 
   /* 
   
@@ -164,6 +165,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
     };
     // Start observing the target node for configured mutations
     this.mutationObserver.observe(this, config);
+
+    this.controller.initReferences(
+      this.nodeEditor,
+      this.gamebookContainerManager
+    );
 
     // Register an observer to react to store changes
     this.gamebookStore.addObserver(() => {
@@ -218,12 +224,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //
     else if ((event.metaKey || event.ctrlKey) && event.key === "c") {
       event.preventDefault(); // Prevent the default browser find functionality
-
-      //THIS IS HOW TO UPDATE THE CONTEXT
-      (this.gamebookStore as GamebookStore).setTitle();
-      // this.gamebookStore = new GamebookStore(this.gamebookStore.title);
-      // this.requestUpdate();
-
       this.copyNode();
     }
     //
@@ -243,10 +243,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       ${this.isContentEditable
         ? html`
         <p>${this.gamebookStore.selectedNode.id}</p>
-        <p>
-x: ${this.mouse.pos.x as number}
-y: ${this.mouse.pos.y as number}
-      </p>
            <split-view>
                 <node-editor
                   slot="start"
@@ -287,10 +283,11 @@ y: ${this.mouse.pos.y as number}
                 >
                 </node-editor>
                 <selected-node-view-renderer
-                  slot="end"
-                  .nodeEditor=${this.nodeEditor}
+                 slot="end"
+                 @renameSelectedNode="${(e: CustomEvent) =>
+                   this.controller._renameSelectedNode(e.detail.newTitle)}"
 
-                  
+                
                   .markUsedOutputs=${() => this._markUsedOutputs()}
                   .changeInEditorCallback=${(
                     drawflow,
@@ -686,20 +683,7 @@ variant="default"
     translate?: { x: number; y: number },
     changeOrigin?: { oldId: number; newId: number }
   ) {
-    //
-    if (updateType == "nodeRenamed") {
-      //this.updateSelectedNode(this.selectedNode.id.toString());
-      this.gamebookContainerManager._renameContainer(
-        node.id.toString(),
-        this.gamebookStore.selectedNode.data.title
-      );
-    }
-    //
-    else if (updateType == "customNodeDataChanged") {
-      //this.updateSelectedNode(this.selectedNode.id.toString());
-    }
-    //
-    else if (updateType == "nodeCreated") {
+    if (updateType == "nodeCreated") {
       this.focus();
       //this.updateSelectedNode(this.selectedNode.id.toString());
       if (node.class == "page" || node.class == "origin") {
@@ -956,6 +940,7 @@ variant="default"
       //this.updateSelectedNode(this.selectedNode.id.toString());
     }
 
+    //
     this.gamebookStore.setEditorContent(drawflow);
     this._markUsedOutputs();
     this.requestUpdate();
