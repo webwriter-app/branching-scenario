@@ -4,8 +4,6 @@ import {
   customElement,
   property,
   query,
-  state,
-  queryAll,
   queryAssignedElements,
 } from "lit/decorators.js";
 
@@ -13,7 +11,7 @@ import { consume } from "@lit/context";
 import { gamebookStore, GamebookStore } from "./context-test";
 
 //Drawflow Imports
-import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
+import { DrawflowNode } from "drawflow";
 import { WebWriterConnectionButton } from "./gamebook-components/webwriter-connection-button";
 import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
 import { WebWriterGamebookPopupContainer } from "./gamebook-components/webwriter-gamebook-popup-container";
@@ -26,16 +24,14 @@ export class GamebookContainerManager extends LitElementWw {
   @property({ type: Object, attribute: true, reflect: false })
   public accessor providedStore = new GamebookStore("Default");
 
-  @property({ attribute: false }) accessor appendToShadowDom = (
-    element: HTMLElement
-  ) => {};
-
   @queryAssignedElements({
     flatten: true,
     selector:
       "webwriter-gamebook-page-container, webwriter-gamebook-popup-container, webwriter-gamebook-branch-container",
   })
   accessor gamebookContainers;
+
+  @query("slot") accessor slot;
 
   static get scopedElements() {
     return {
@@ -79,6 +75,18 @@ export class GamebookContainerManager extends LitElementWw {
     });
   }
 
+  /*
+
+  */
+  public _notifyContainerGotDeleted(drawflowNodeId: Number) {
+    const event = new CustomEvent("containerDeleted", {
+      detail: { id: drawflowNodeId },
+      bubbles: true,
+      composed: true,
+    });
+    this.dispatchEvent(event);
+  }
+
   /* 
   
   
@@ -118,13 +126,9 @@ export class GamebookContainerManager extends LitElementWw {
 
   */
   public _showGamebookContainerById(nodeId: Number) {
-    //console.log("iteration");
     this.gamebookContainers.forEach((container) => {
-      //console.log("iteration");
       if (container.drawflowNodeId == nodeId) {
-        //console.log("enter");
         container.show();
-        //console.log(container);
       } else {
         container.hide();
       }
@@ -340,24 +344,27 @@ export class GamebookContainerManager extends LitElementWw {
     }
   }
 
+  /*
+
+  */
   public createContainerFromNode(node) {
     switch (node.class) {
       case "page":
       case "origin":
-        this._createContainerElement(
+        return this._createContainerElement(
           node,
           "webwriter-gamebook-page-container",
           node.class == "origin" ? "1" : "0"
         );
         break;
       case "popup":
-        this._createContainerElement(
+        return this._createContainerElement(
           node,
           "webwriter-gamebook-popup-container"
         );
         break;
       case "branch":
-        this._createContainerElement(
+        return this._createContainerElement(
           node,
           "webwriter-gamebook-branch-container"
         );
@@ -365,6 +372,9 @@ export class GamebookContainerManager extends LitElementWw {
     }
   }
 
+  /*
+
+  */
   private _createContainerElement(
     node: DrawflowNode,
     tagName: string,
@@ -379,7 +389,7 @@ export class GamebookContainerManager extends LitElementWw {
     }
 
     (container as any).hide();
-    this.appendToShadowDom(container);
+    return container;
   }
 
   /* 
@@ -392,7 +402,7 @@ export class GamebookContainerManager extends LitElementWw {
       this.createContainerFromImport(info)
     );
     containers.forEach((container) => {
-      this.appendToShadowDom(container);
+      //this.appendToShadowDom(container);
     });
   }
 
@@ -467,9 +477,7 @@ export class GamebookContainerManager extends LitElementWw {
 
   */
   public copyAndPasteContainerContents(pastedNode) {
-    this.createContainerFromNode(pastedNode);
-
-    const pastedContainer = this._getContainerByDrawflowNodeId(pastedNode.id);
+    const pastedContainer = this.createContainerFromNode(pastedNode);
 
     const copiedContainer = this._getContainerByDrawflowNodeId(
       this.providedStore.copiedNode.id
@@ -502,5 +510,7 @@ export class GamebookContainerManager extends LitElementWw {
       // Append the new element to pastedContainer's slot
       pastedContainer.appendChild(newElement);
     });
+
+    return pastedContainer;
   }
 }

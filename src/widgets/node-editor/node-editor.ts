@@ -592,11 +592,12 @@ export class NodeEditor extends LitElementWw {
 
     //Event listener for deletion of a node
     this.editor.on("nodeRemoved", (id) => {
-      this.changeInEditorCallback(
-        { ...this.editor.drawflow },
-        "nodeRemoved",
-        null,
-        id.toString()
+      this.dispatchEvent(
+        new CustomEvent("nodeRemoved", {
+          detail: { id: id },
+          bubbles: true,
+          composed: true,
+        })
       );
     });
 
@@ -783,7 +784,7 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  private addPageNode(title: string, isOrigin: boolean) {
+  public addPageNode(title: string, isOrigin: boolean) {
     const nodeData = {
       title: title,
       content: `<p>Testing Slots HTML Editing</p>`,
@@ -810,7 +811,7 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  private addPopUpNode(title: string) {
+  public addPopUpNode(title: string) {
     const nodeData = {
       title: title,
       content: `<p>Testing Slots HTML Editing</p>`,
@@ -837,7 +838,7 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  private addBranchNode(title: string) {
+  public addBranchNode(title: string) {
     const nodeData = {
       title: title,
       content: `<p>Testing Slots HTML Editing</p>`,

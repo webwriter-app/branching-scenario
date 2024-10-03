@@ -50,19 +50,6 @@ import { NodeEditorControlsBar } from "./node-editor/node-editor-control-bar";
 import { WebWriterGamebookPopupContainer } from "./gamebook-components/webwriter-gamebook-popup-container";
 import { WebWriterGamebookBranchContainer } from "./gamebook-components/webwriter-gamebook-branch-container";
 
-const NO_NODE_SELECTED: DrawflowNode = {
-  id: -1,
-  name: "unselect",
-  inputs: {},
-  outputs: {},
-  pos_x: 0,
-  pos_y: 0,
-  class: "unselect",
-  data: {},
-  html: "",
-  typenode: false,
-};
-
 import { gamebookStore, GamebookStore } from "./context-test";
 import { MouseController } from "./contoller-test";
 
@@ -117,12 +104,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
   //import CSS
   static styles = [styles];
 
-  // Create an observer instance linked to the callback function
-  private mutationObserver: MutationObserver;
-
   private controller = new MouseController(this);
 
-  //
   @provide({ context: gamebookStore })
   @property({
     type: Object,
@@ -141,7 +124,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   constructor() {
     super();
-    this.mutationObserver = new MutationObserver(this.mutationCallback);
     //Initial setting necessary to notify children of change
     this.reflectStoreChangesinDOM();
   }
@@ -154,15 +136,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.gamebookStore.selectedNode.id
     );
     this.handleChangesInGamebookContainers();
-
-    const config = {
-      attributes: false,
-      childList: true,
-      subtree: false,
-      characterData: false,
-    };
-    // Start observing the target node for configured mutations
-    this.mutationObserver.observe(this, config);
 
     this.controller.initReferences(
       this.nodeEditor,
@@ -249,6 +222,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     this.controller._createContainerForNode(e.detail.node)}
                   @nodePasted=${(e: CustomEvent) =>
                     this.controller._copyAndPasteContainer(e.detail.node)}
+                  @nodeRemoved=${(e: CustomEvent) =>
+                    this.controller._removeContainer(e.detail.id)}
 
 
 
@@ -292,6 +267,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                  slot="end"
                  @renameSelectedNode="${(e: CustomEvent) =>
                    this.controller._renameSelectedNode(e.detail.newTitle)}"
+                
 
                 
                   .markUsedOutputs=${() => this._markUsedOutputs()}
@@ -320,9 +296,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   }}
                 >
                   <gamebook-container-manager
-                    .appendToShadowDom=${(container) =>
-                      this._addContainerCallback(container)}
-                  >
+                  @containerDeleted=${(e: CustomEvent) =>
+                    this.controller._removeNode(e.detail.id)}>
                     <slot></slot>
                   </gamebook-container-manager>
                 </selected-node-view-renderer>
@@ -627,19 +602,8 @@ variant="default"
     translate?: { x: number; y: number },
     changeOrigin?: { oldId: number; newId: number }
   ) {
-    if (updateType == "nodeRemoved") {
-      if (this.reactToCallbackFromNodeEditor) {
-        this.focus();
-        this.gamebookContainerManager._deleteGamebookContainersById(
-          removedNodeId
-        );
-      } else {
-        this.reactToCallbackFromNodeEditor = true;
-      }
-      //this.updateSelectedNode(this.selectedNode.id.toString());
-    }
     //
-    else if (updateType == "connectionCreated") {
+    if (updateType == "connectionCreated") {
       this._markUsedOutputs();
       //console.log("connection Created'");
       if (inputNode.class == "branch") {
@@ -892,12 +856,7 @@ variant="default"
         (event as CustomEvent).detail.highlightNode
       );
     });
-    this.addEventListener("containerDeleted", (event) => {
-      this.reactToCallbackFromNodeEditor = false;
-      this.nodeEditor.editor.removeNodeId(
-        `node-${(event as CustomEvent).detail.nodeId}`
-      );
-    });
+
     this.addEventListener("quizElementDeleted", (event) => {
       const removeConnectionsFromOutputs =
         this.gamebookContainerManager.removeBranchContainerRuleElements(
@@ -1130,48 +1089,4 @@ variant="default"
 
     this.requestUpdate();
   }
-
-  /*
-
-  */
-  private mutationCallback = (mutationList: MutationRecord[]) => {
-    mutationList.forEach((mutation) => {
-      if (mutation.type === "childList") {
-        mutation.removedNodes.forEach((node) => {
-          const nodeName = (node as HTMLElement).nodeName.toLowerCase();
-          const isWidget = (node as HTMLElement).classList.contains(
-            "ww-widget"
-          );
-          const isSelectedNode = (node as HTMLElement).classList.contains(
-            "ProseMirror-selectednode"
-          );
-
-          if (isWidget && isSelectedNode) {
-            const containerEvent = (container: { drawflowNodeId: string }) => {
-              const event = new CustomEvent("containerDeleted", {
-                detail: { nodeId: container.drawflowNodeId },
-                bubbles: true,
-                composed: true,
-              });
-              this.dispatchEvent(event);
-            };
-
-            if (nodeName === "webwriter-gamebook-page-container") {
-              const container = node as WebWriterGamebookPageContainer;
-              containerEvent(container);
-              if (container.originPage === 1) {
-                this.nodeEditor.addPageNode("First Page", true);
-              }
-            } else if (nodeName === "webwriter-gamebook-popup-container") {
-              const container = node as WebWriterGamebookPopupContainer;
-              containerEvent(container);
-            } else if (nodeName === "webwriter-gamebook-branch-container") {
-              const container = node as WebWriterGamebookBranchContainer;
-              containerEvent(container);
-            }
-          }
-        });
-      }
-    });
-  };
 }
