@@ -588,6 +588,7 @@ export class NodeEditor extends LitElementWw {
           })
         );
       }
+      this.providedStore.setEditorContent(this.editor.drawflow);
     });
 
     //Event listener for deletion of a node
@@ -603,14 +604,6 @@ export class NodeEditor extends LitElementWw {
 
     //Event listener for when a node got moved
     this.editor.on("nodeMoved", (id) => {
-      const nodes = this.editor.drawflow.drawflow.Home.data;
-
-      Object.values(nodes).forEach((node) => {
-        if (node.id == id) {
-          //console.log(node.pos_x, node.pos_y);
-        }
-      });
-
       let movedNode = this.editor.getNodeFromId(id);
 
       this.changeInEditorCallback(

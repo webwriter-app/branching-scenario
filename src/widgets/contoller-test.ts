@@ -1,8 +1,4 @@
 import { LitElement, ReactiveController, ReactiveControllerHost } from "lit";
-import { provide, consume, createContext } from "@lit/context";
-import { customElement, property, query, queryAll } from "lit/decorators.js";
-import { gamebookStore, GamebookStore } from "./context-test";
-import { ContextConsumer } from "@lit/context";
 
 import { WebWriterGamebookPageContainer } from "./gamebook-components/webwriter-gamebook-page-container";
 import { WebWriterGamebookPopupContainer } from "./gamebook-components/webwriter-gamebook-popup-container";
@@ -12,7 +8,7 @@ import { NodeEditor } from "./node-editor/node-editor";
 import { GamebookContainerManager } from "./gamebook-container-manager";
 import { DrawflowNode } from "drawflow";
 
-export class MouseController {
+export class MouseController implements ReactiveController {
   private host: ReactiveControllerHost;
   nodeEditor: NodeEditor;
   gamebookContainerManager: GamebookContainerManager;
@@ -39,7 +35,9 @@ export class MouseController {
 
   */
   hostConnected() {
-    this.mutationObserver = new MutationObserver(this.mutationCallback);
+    this.mutationObserver = new MutationObserver(
+      this.monitorHostUserContainerDeletion
+    );
     const config = {
       attributes: false,
       childList: true,
@@ -119,7 +117,9 @@ export class MouseController {
   /*
 
   */
-  private mutationCallback = (mutationList: MutationRecord[]) => {
+  private monitorHostUserContainerDeletion = (
+    mutationList: MutationRecord[]
+  ) => {
     mutationList.forEach((mutation) => {
       if (mutation.type === "childList") {
         mutation.removedNodes.forEach((node) => {
