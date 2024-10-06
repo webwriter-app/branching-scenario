@@ -130,91 +130,48 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
 
   */
   private mutationCallback = (mutationList: MutationRecord[]) => {
-    mutationList.forEach((mutation) => {
-      if (mutation.type == "childList") {
-        mutation.removedNodes.forEach((node) => {
-          //this.handleSlotContentDelete(node);
+    mutationList.forEach(({ type, removedNodes }) => {
+      if (type === "childList") {
+        removedNodes.forEach((node) => {
+          const element = node as HTMLElement;
+          const nodeName = element.nodeName.toLowerCase();
 
-          if (
-            (node as HTMLElement).nodeName.toLowerCase() ==
-            "webwriter-connection-button"
-          ) {
-            if ((node as HTMLElement).classList.contains("ww-widget")) {
-              //make sure link button did not get deleted programtically
-              let connButton = node as WebWriterConnectionButton;
+          const isSelectedNode = element.classList?.contains(
+            "ProseMirror-selectednode"
+          );
 
-              //console.log("LinkButton removed:", node);
+          const dispatchEventIfNeeded = (eventName: string, detail: any) => {
+            const event = new CustomEvent(eventName, {
+              detail,
+              bubbles: true,
+              composed: true,
+            });
+            this.dispatchEvent(event);
+          };
 
-              if (connButton.identifier != "x") {
-                //console.log("in mutation observer here");
-                const event = new CustomEvent(
-                  "containerDeleteConnectionButton",
-                  {
-                    detail: {
-                      identifier: (node as WebWriterConnectionButton)
-                        .identifier,
-                    },
-                    bubbles: true, // Allows the event to bubble up through the DOM
-                    composed: true, // Allows the event to pass through shadow DOM boundaries
-                  }
-                );
-                this.dispatchEvent(event);
+          if (element.classList?.contains("ww-widget")) {
+            if (
+              nodeName === "webwriter-connection-button" ||
+              nodeName === "webwriter-smart-branch-button"
+            ) {
+              const connButton = node as
+                | WebWriterConnectionButton
+                | WebWriterSmartBranchButton;
+              if (connButton.identifier !== "x") {
+                dispatchEventIfNeeded("buttonDeleted", {
+                  identifier: connButton.identifier,
+                });
               }
-            }
-          }
-          //
-          else if (
-            (node as HTMLElement).nodeName.toLowerCase() ==
-            "webwriter-smart-branch-button"
-          ) {
-            if ((node as HTMLElement).classList.contains("ww-widget")) {
-              //make sure link button did not get deleted programtically
-              let connButton = node as WebWriterSmartBranchButton;
-
-              //console.log("LinkButton removed:", node);
-
-              if (connButton.identifier != "x") {
-                //console.log("in mutation observer here");
-                const event = new CustomEvent(
-                  "containerDeleteConnectionButton",
-                  {
-                    detail: {
-                      identifier: (node as WebWriterSmartBranchButton)
-                        .identifier,
-                    },
-                    bubbles: true, // Allows the event to bubble up through the DOM
-                    composed: true, // Allows the event to pass through shadow DOM boundaries
-                  }
-                );
-                this.dispatchEvent(event);
-              }
-            }
-          }
-          //
-          else if (
-            (node as HTMLElement).nodeName.toLowerCase() == "webwriter-quiz" ||
-            (node as HTMLElement).nodeName.toLowerCase() == "webwriter-task"
-          ) {
-            if ((node as HTMLElement).classList.contains("ww-widget")) {
-              if (
-                (node as HTMLElement).classList.contains(
-                  "ProseMirror-selectednode"
-                )
-              ) {
-                if (this.branchesOff !== -1) {
-                  const event = new CustomEvent("quizElementDeleted", {
-                    detail: {
-                      containerId: this.branchesOff,
-                      id: (node as HTMLElement).id,
-                      isQuiz:
-                        (node as HTMLElement).nodeName.toLowerCase() ==
-                        "webwriter-quiz",
-                    },
-                    bubbles: true, // Allows the event to bubble up through the DOM
-                    composed: true, // Allows the event to pass through shadow DOM boundaries
-                  });
-                  this.dispatchEvent(event);
-                }
+            } else if (
+              nodeName === "webwriter-quiz" ||
+              nodeName === "webwriter-task"
+            ) {
+              if (this.branchesOff !== -1) {
+                dispatchEventIfNeeded("quizElementDeleted", {
+                  containerId: this.branchesOff,
+                  id: element.id,
+                  isQuiz: nodeName === "webwriter-quiz",
+                });
               }
             }
           }

@@ -2,15 +2,7 @@ import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
 //TODO: nodes get deleted after delting connection ???
 import { repeat } from "lit/directives/repeat.js";
 import { LitElementWw } from "@webwriter/lit";
-import {
-  customElement,
-  property,
-  query,
-  queryAssignedElements,
-} from "lit/decorators.js";
-
-//Drawflow Imports
-import { DrawflowNode } from "drawflow";
+import { customElement, property } from "lit/decorators.js";
 
 import { QuickConnectNode } from "../ui-components/quick-connect-node";
 
@@ -39,8 +31,6 @@ import circleDashedCheck from "@tabler/icons/outline/circle-dashed-check.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import gripHorizontal from "@tabler/icons/outline/grip-horizontal.svg";
 import percentage from "@tabler/icons/outline/percentage.svg";
-import { GamebookContainerManager } from "../gamebook-container-manager";
-import { WebWriterGamebookBranchContainer } from "../gamebook-components/webwriter-gamebook-branch-container";
 import { OutputConnectionControl } from "../ui-components/output-connection-control";
 import { ElementChildrenSelect } from "../ui-components/container-element-select";
 import { QuizTasksSelect } from "../ui-components/quiz-tasks-select";
@@ -75,41 +65,11 @@ export class BranchNodeDetails extends LitElementWw {
   //import CSS
   static styles = [styles];
 
-  //access nodes in the internal component DOM.
-  @property({ type: Object }) accessor nodeEditor;
-  @property({ type: Boolean }) accessor isConnected = false;
   //public properties are part of the component's public API
-
-  @property({ type: Object, attribute: false })
-  accessor branchContainer: WebWriterGamebookBranchContainer;
-
-  @property({ type: Object, attribute: false })
-  accessor incomingContainer;
 
   @property({ type: Boolean }) accessor ruleDrag = false;
   private draggedIndex = -1;
   @property({ type: Number }) accessor hoveredDividerIndex = -1;
-
-  @property({ attribute: false }) accessor changeInEditorCallback = (
-    drawflow,
-    updateType,
-    node?,
-    removedNodeId?,
-    inputNode?,
-    outputNode?,
-    inputClass?,
-    outputClass?,
-    outputHadConnections?
-  ) => {};
-
-  @property({ attribute: false }) accessor markUsedOutputs = () => {};
-
-  // Query elements assigned to the default slot
-  @queryAssignedElements({
-    flatten: true,
-    selector: "gamebook-container-manager",
-  })
-  accessor gamebookContainerManager;
 
   @consume({ context: gamebookStore, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
@@ -118,56 +78,16 @@ export class BranchNodeDetails extends LitElementWw {
   //
 
   //
-  protected firstUpdated(_changedProperties: PropertyValues): void {
-    this.branchContainer = (
-      this.gamebookContainerManager[0] as GamebookContainerManager
-    )._getContainerByDrawflowNodeId(
-      this.providedStore.selectedNode.id.toString()
-    );
-  }
-
-  //
-  //TODO: this needs to happen for example when the incoming connection is removed from the editor
-  //
-  protected updated(_changedProperties: PropertyValues): void {
-    this.branchContainer = (
-      this.gamebookContainerManager[0] as GamebookContainerManager
-    )._getContainerByDrawflowNodeId(
-      this.providedStore.selectedNode.id.toString()
-    );
-
-    console.log(this.branchContainer.rules);
-
-    // console.log(this.providedStore.selectedNode.id.toString());
-    // console.log(this.branchContainer);
-
-    const incomingNodeId =
-      this.providedStore.selectedNode.inputs["input_1"].connections?.[0]?.node;
-
-    if (incomingNodeId != undefined) {
-      if (this.branchContainer) {
-        this.branchContainer.incomingContainerDrawflowNodeId = incomingNodeId;
-      }
-      this.isConnected = true;
-      this.incomingContainer = (
-        this.gamebookContainerManager[0] as GamebookContainerManager
-      )._getContainerByDrawflowNodeId(incomingNodeId.toString());
-    }
-
-    //
-    else {
-      //TODO: since this.providedStore.selectedNode updates are coming from outside, this gets executed several times because updates are thrown together.
-      //This could really profit from a @context change
-      this.clearRules();
-      this.isConnected = false;
-    }
-  }
+  protected firstUpdated(_changedProperties: PropertyValues): void {}
 
   //TODO: dialog before deletion of incoming connection
   //TODO: content deletion does not reset element of rule
   //TODO: else rule deletion deletes entire node
 
   render() {
+    //console.log(this.providedStore.selectedContainer.rules);
+    let isConnected =
+      this.providedStore.selectedContainer?.incomingContainerId !== -1;
     return html`
       <div class="title-bar">
         <div class="div-icon-branch">
@@ -183,58 +103,35 @@ export class BranchNodeDetails extends LitElementWw {
         <div class="inputOutputControls">
           <node-connection-list
             branch
-            .nodeEditor=${this.nodeEditor}
             .selectedNode=${this.providedStore.selectedNode}
-            .changeInEditorCallback=${(
-              drawflow,
-              updateType,
-              node,
-              removedNodeId,
-              inputNode,
-              outputNode,
-              inputClass,
-              outputClass,
-              outputHadConnections
-            ) => {
-              this.changeInEditorCallback(
-                drawflow,
-                updateType,
-                node,
-                removedNodeId,
-                inputNode,
-                outputNode,
-                inputClass,
-                outputClass,
-                outputHadConnections
-              );
-            }}
           ></node-connection-list>
         </div>
       </div>
+      ${this.providedStore.selectedContainer
+        ? html`<div class="container">
+            <div class="titlebar">
+              <p
+                class="title"
+                style=${isConnected ? "color: #505055" : "color: darkgrey"}
+              >
+                Rules
+                (${this.providedStore.selectedContainer.rules?.length.toString()})
+              </p>
+              <sl-icon-button
+                src=${plus}
+                class="add"
+                @click=${() => this.addEmptyRule()}
+                ?disabled=${!isConnected}
+              >
+              </sl-icon-button>
+            </div>
 
-      <div class="container">
-        <div class="titlebar">
-          <p
-            class="title"
-            style=${this.isConnected ? "color: #505055" : "color: darkgrey"}
-          >
-            Rules (${this.branchContainer?.rules.length.toString()})
-          </p>
-          <sl-icon-button
-            src=${plus}
-            class="add"
-            @click=${() => this._addEmptyRuleToBranchContainer()}
-            ?disabled=${!this.isConnected}
-          >
-          </sl-icon-button>
-        </div>
-
-        <div class="ruleList">
-          ${this.branchContainer?.rules.length > 0
-            ? html`
-                ${repeat(
-                  this.branchContainer?.rules,
-                  (rule, index) => html`
+            <div class="ruleList">
+              ${this.providedStore.selectedContainer?.rules?.length > 0
+                ? html`
+                    ${repeat(
+                      this.providedStore.selectedContainer?.rules as Rule[],
+                      (rule, index) => html`
                     <!-- top divider  -->
                     <sl-divider
                       class="rule-divider"
@@ -254,9 +151,8 @@ export class BranchNodeDetails extends LitElementWw {
                               "
                     ></sl-divider>
                     <!--   -->
-                     ${
-                       this.incomingContainer != undefined
-                         ? html` <div
+      
+                        <div
                              class="ruleItem"
                              id="horizontal-stack-${index}"
                              draggable="true"
@@ -274,7 +170,10 @@ export class BranchNodeDetails extends LitElementWw {
                                style="min-width: 25px; display: flex; flex-direction: row; align-items: center; justify-content: center;"
                              >
                                <p style="color: darkgrey; font-size: 15px;">
-                                 ${parseInt(rule.output_id.split("_")[1], 10)}
+                                 ${parseInt(
+                                   (rule as any).output_id.split("_")[1],
+                                   10
+                                 )}
                                </p>
                              </div>
 
@@ -284,45 +183,45 @@ export class BranchNodeDetails extends LitElementWw {
                                style="font-size: 15px; flex-shrink: 0"
                              ></sl-icon>
 
-                             <!-- TODO: incomingContainer is set during updating and this sometimes returns null, causing an undefined error in the container element select -->
-                             <!-- Different kinds of matches: percent etc ... -->
-
-                             <!-- TODO: if element gets deleted on page, the value does not really change and the rule is still set does this fire the value? -->
                              <!-- Element -->
                              <element-children-select
-                               .value=${rule.elementId}
+                               .value=${(rule as any).elementId}
                                @sl-change=${(e: Event) =>
-                                 this._updateRuleElement(
+                                 this.updateRuleElement(
                                    index,
                                    (
                                      e.target as ElementChildrenSelect
                                    ).selectElement.value.toString()
                                  )}
-                               .container=${this.incomingContainer}
+                               .container=${
+                                 this.providedStore.branchIncomingContainer
+                               }
                              >
                              </element-children-select>
 
                              <!-- Subelements -->
-                             ${rule.elementId !== "" &&
-                             rule.elementId !== "text" &&
-                             this.incomingContainer
-                               .querySelector(`#${rule.elementId}`)
-                               ?.tagName.toLowerCase() == "webwriter-quiz"
-                               ? html` <quiz-tasks-select
-                                   .value=${rule.quizTasks.split(" ")}
-                                   @sl-change=${(e: Event) =>
-                                     this._updateRuleTasks(
-                                       index,
-                                       (
-                                         e.target as ElementChildrenSelect
-                                       ).selectElement.value.toString()
+                             ${
+                               (rule as any).elementId !== "" &&
+                               rule.elementId !== "text" &&
+                               this.providedStore.branchIncomingContainer
+                                 .querySelector(`#${rule.elementId}`)
+                                 ?.tagName.toLowerCase() == "webwriter-quiz"
+                                 ? html` <quiz-tasks-select
+                                     .value=${rule.quizTasks.split(" ")}
+                                     @sl-change=${(e: Event) =>
+                                       this.updateRuleTasks(
+                                         index,
+                                         (
+                                           e.target as ElementChildrenSelect
+                                         ).selectElement.value.toString()
+                                       )}
+                                     .quiz=${this.providedStore.branchIncomingContainer.querySelector(
+                                       `#${rule.elementId}`
                                      )}
-                                   .quiz=${this.incomingContainer.querySelector(
-                                     `#${rule.elementId}`
-                                   )}
-                                 >
-                                 </quiz-tasks-select>`
-                               : null}
+                                   >
+                                   </quiz-tasks-select>`
+                                 : null
+                             }
 
                              <!-- Condition -->
                              <sl-select
@@ -330,7 +229,7 @@ export class BranchNodeDetails extends LitElementWw {
                                placeholder="Condition"
                                value=${rule.condition}
                                @sl-change=${(e: Event) =>
-                                 this._updateRuleCondition(
+                                 this.updateRuleCondition(
                                    index,
                                    (e.target as HTMLSelectElement).value
                                  )}
@@ -354,58 +253,56 @@ export class BranchNodeDetails extends LitElementWw {
                              </sl-select>
 
                              <!-- Match -->
-                             ${rule.elementId !== ""
-                               ? html`${this.incomingContainer
-                                   .querySelector(`#${rule.elementId}`)
-                                   ?.tagName?.toLowerCase() ===
-                                   "webwriter-quiz" && rule.condition == ""
-                                   ? html`
-                                       <sl-input
-                                         placeholder="Match"
-                                         ?disabled=${!rule.isMatchEnabled}
-                                       ></sl-input>
-                                     `
-                                   : this.incomingContainer
-                                       .querySelector(`#${rule.elementId}`)
-                                       ?.tagName.toLowerCase() ==
-                                       "webwriter-quiz" &&
-                                     (rule.condition == "correct" ||
-                                       rule.condition == "incorrect")
-                                   ? html`<sl-input
-                                       id="percent"
-                                       placeholder="..."
-                                       value=${rule.match}
-                                       type="number"
-                                       min="0"
-                                       max="100"
-                                       inputmode="numeric"
-                                       @sl-input=${(e: Event) =>
-                                         this._validateAndUpdateRuleMatch(
-                                           e,
-                                           index
-                                         )}
-                                     >
-                                       <sl-icon
-                                         src=${percentage}
-                                         slot="prefix"
-                                       ></sl-icon>
-                                     </sl-input>`
-                                   : null}`
-                               : null}
+                             ${
+                               rule.elementId !== ""
+                                 ? html`${this.providedStore.branchIncomingContainer
+                                     .querySelector(`#${rule.elementId}`)
+                                     ?.tagName?.toLowerCase() ===
+                                     "webwriter-quiz" && rule.condition == ""
+                                     ? html`
+                                         <sl-input
+                                           placeholder="Match"
+                                           ?disabled=${!rule.isMatchEnabled}
+                                         ></sl-input>
+                                       `
+                                     : this.providedStore.branchIncomingContainer
+                                         .querySelector(`#${rule.elementId}`)
+                                         ?.tagName.toLowerCase() ==
+                                         "webwriter-quiz" &&
+                                       (rule.condition == "correct" ||
+                                         rule.condition == "incorrect")
+                                     ? html`<sl-input
+                                         id="percent"
+                                         placeholder="..."
+                                         value=${rule.match}
+                                         type="number"
+                                         min="0"
+                                         max="100"
+                                         inputmode="numeric"
+                                         @sl-input=${(e: Event) =>
+                                           this._validateAndUpdateRuleMatch(
+                                             e,
+                                             index
+                                           )}
+                                       >
+                                         <sl-icon
+                                           src=${percentage}
+                                           slot="prefix"
+                                         ></sl-icon>
+                                       </sl-input>`
+                                     : null}`
+                                 : null
+                             }
 
                              <!-- Output -->
                              <output-connection-control
-                               @sl-change=${(e: Event) =>
-                                 this._updateRuleTarget(
-                                   index,
-                                   (
-                                     e.target as OutputConnectionControl
-                                   ).selectElement.value.toString()
-                                 )}
+                              
                                .selectedNode=${this.providedStore.selectedNode}
-                               .incomingNodeId=${this.providedStore.selectedNode
-                                 .inputs["input_1"].connections?.[0]?.node}
-                               .nodeEditor=${this.nodeEditor}
+                               .incomingNodeId=${
+                                 this.providedStore.selectedNode.inputs[
+                                   "input_1"
+                                 ].connections?.[0]?.node
+                               }
                                .outputClass=${rule.output_id}
                                ?disabled=${!rule.isTargetEnabled}
                                required="true"
@@ -416,14 +313,13 @@ export class BranchNodeDetails extends LitElementWw {
                                src=${minus}
                                style="font-size: 15px;"
                                @click=${() =>
-                                 this._removeRuleFromSelectedBranchNode(
+                                 this.providedStore.selectedContainer.deleteRule(
                                    rule.output_id
                                  )}
                                ?disabled=${!this.isConnected}
                              ></sl-icon-button>
-                           </div>`
-                         : null
-                     }
+                           </div>
+                 
                       <!-- bottom divider -->
                       <sl-divider
                         class="rule-divider"
@@ -443,43 +339,37 @@ export class BranchNodeDetails extends LitElementWw {
                       <!--  -->
                     </div>
                   `
-                )}
+                    )}
 
-                <sl-divider></sl-divider>
+                    <sl-divider></sl-divider>
 
-                <!-- the else rule  -->
-                <div class="ruleItem" id="horizontal-stack-else">
-                  <div
-                    id="index"
-                    style="min-width: 25px; display: flex; flex-direction: row; align-items: center; justify-content: center;"
-                  >
-                    <p style="color: darkgrey; font-size: 15px;">
-                      If no rule is satisfied, go to
-                    </p>
-                  </div>
+                    <!-- the else rule  -->
+                    <div class="ruleItem" id="horizontal-stack-else">
+                      <div
+                        id="index"
+                        style="min-width: 25px; display: flex; flex-direction: row; align-items: center; justify-content: center;"
+                      >
+                        <p style="color: darkgrey; font-size: 15px;">
+                          If no rule is satisfied, go to
+                        </p>
+                      </div>
 
-                  <!-- Output -->
-                  <output-connection-control
-                    @sl-change=${(e: Event) =>
-                      this._updateElseRuleTarget(
-                        (
-                          e.target as OutputConnectionControl
-                        ).selectElement.value.toString()
-                      )}
-                    .selectedNode=${this.providedStore.selectedNode}
-                    .incomingNodeId=${this.providedStore.selectedNode.inputs[
-                      "input_1"
-                    ].connections?.[0]?.node}
-                    .nodeEditor=${this.nodeEditor}
-                    .outputClass=${this.branchContainer?.elseRule?.output_id}
-                    required="true"
-                  ></output-connection-control>
-                </div>
-              `
-            : html`<p class="no-node">No branching rules</p>`}
-        </div>
-        <slot></slot>
-      </div>
+                      <!-- Output -->
+                      <output-connection-control
+                        .selectedNode=${this.providedStore.selectedNode}
+                        .incomingNodeId=${this.providedStore.selectedNode
+                          .inputs["input_1"].connections?.[0]?.node}
+                        .outputClass=${this.providedStore.selectedContainer
+                          .elseRule?.output_id}
+                        required="true"
+                      ></output-connection-control>
+                    </div>
+                  `
+                : html`<p class="no-node">No branching rules</p>`}
+            </div>
+            <slot></slot>
+          </div>`
+        : null}
     `;
   }
 
@@ -488,6 +378,8 @@ export class BranchNodeDetails extends LitElementWw {
 
   */
   private _onDragStart(event: DragEvent, index: number) {
+    console.log(this.providedStore.selectedContainer.rules);
+
     this.draggedIndex = index;
 
     const stackElement = this.shadowRoot?.getElementById(
@@ -514,7 +406,7 @@ export class BranchNodeDetails extends LitElementWw {
     }
     this.draggedIndex = -1; // Reset dragged index
     this.hoveredDividerIndex = -1; // Reset hovered divider index
-    this.markUsedOutputs();
+
     this.requestUpdate();
   }
 
@@ -542,7 +434,7 @@ export class BranchNodeDetails extends LitElementWw {
   }
 
   /*
-
+    TODO: on drop buggy
 
   */
   private _onDrop(event: DragEvent) {
@@ -553,425 +445,114 @@ export class BranchNodeDetails extends LitElementWw {
       this.hoveredDividerIndex !== -1 &&
       this.draggedIndex !== this.hoveredDividerIndex
     ) {
-      // //Step 1: Move outputs of node according to the moved rule
-      const hoveredRuleOutput =
-        this.branchContainer.rules[this.hoveredDividerIndex].output_id;
-      const draggedRuleOutput =
-        this.branchContainer.rules[this.draggedIndex].output_id;
+      const { selectedContainer, selectedNode } = this.providedStore;
 
-      //1.1: Move connections from dragged output onto hovered output
-      this.providedStore.selectedNode.outputs[
-        draggedRuleOutput
-      ].connections.forEach((connection) => {
-        this.nodeEditor.editor.addConnection(
-          this.providedStore.selectedNode.id,
-          connection.node,
-          hoveredRuleOutput,
-          "input_1"
+      let staticCopyRules = this.providedStore.selectedContainer.rules;
+
+      console.log("staticCopy", staticCopyRules);
+
+      const hoveredRuleOutput =
+        selectedContainer.rules[this.hoveredDividerIndex].output_id;
+
+      const draggedRuleOutput =
+        selectedContainer.rules[this.draggedIndex].output_id;
+
+      const outputs = selectedNode.outputs;
+
+      outputs[draggedRuleOutput].connections.forEach((connection) => {
+        const connectionDetail = {
+          outputNodeId: selectedNode.id,
+          inputNodeId: connection.node,
+          inputClass: "input_1",
+        };
+
+        this.dispatchEvent(
+          new CustomEvent("createConnection", {
+            detail: { ...connectionDetail, outputClass: hoveredRuleOutput },
+            bubbles: true,
+            composed: true,
+          })
         );
-        this.nodeEditor.editor.removeSingleConnection(
-          this.providedStore.selectedNode.id,
-          connection.node,
-          draggedRuleOutput,
-          "input_1"
+        this.dispatchEvent(
+          new CustomEvent("deleteConnection", {
+            detail: { ...connectionDetail, outputClass: draggedRuleOutput },
+            bubbles: true,
+            composed: true,
+          })
         );
       });
 
-      //1.2: For other rules update their outputs and connections accordingly
-      this.branchContainer.rules.forEach((rule, index) => {
-        const outputIdNumber = parseInt(rule.output_id.split("_")[1], 10);
-        //Check if rule is between hovered and dragged rule, but not the draggedRule (we updated this in 1.1)
+      // Extract output numbers
+      const hoveredOutputNumber = parseInt(hoveredRuleOutput.split("_")[1], 10);
+      const draggedOutputNumber = parseInt(draggedRuleOutput.split("_")[1], 10);
+
+      // Calculate range and movement direction
+      const [minOutputNumber, maxOutputNumber] = [
+        Math.min(hoveredOutputNumber, draggedOutputNumber),
+        Math.max(hoveredOutputNumber, draggedOutputNumber),
+      ];
+      const adjustment = hoveredOutputNumber < draggedOutputNumber ? 1 : -1;
+
+      // Iterate through outputs and adjust connections
+      Object.keys(outputs).forEach((outputClass, index) => {
+        const outputIdNumber = parseInt(outputClass.split("_")[1], 10);
+
+        // Check if the output is between the hovered and dragged, excluding the dragged one
         if (
-          outputIdNumber >=
-            Math.min(
-              parseInt(draggedRuleOutput.split("_")[1], 10),
-              parseInt(hoveredRuleOutput.split("_")[1], 10)
-            ) &&
-          outputIdNumber <=
-            Math.max(
-              parseInt(draggedRuleOutput.split("_")[1], 10),
-              parseInt(hoveredRuleOutput.split("_")[1], 10)
-            ) &&
-          outputIdNumber !== parseInt(draggedRuleOutput.split("_")[1], 10)
+          outputIdNumber >= minOutputNumber &&
+          outputIdNumber <= maxOutputNumber &&
+          outputIdNumber !== draggedOutputNumber
         ) {
-          //1.3 Get the direction of the drag (move up or down in the array)
-          //Case Up
-          if (this.hoveredDividerIndex > this.draggedIndex) {
-            //Move the connection to the output above
-            this.providedStore.selectedNode.outputs[
-              rule.output_id
-            ].connections.forEach((connection) => {
-              this.nodeEditor.editor.removeSingleConnection(
-                this.providedStore.selectedNode.id,
-                connection.node,
-                `output_${outputIdNumber}`,
-                "input_1"
-              );
+          const newOutputClass = `output_${outputIdNumber + adjustment}`;
 
-              this.nodeEditor.editor.addConnection(
-                this.providedStore.selectedNode.id,
-                connection.node,
-                `output_${outputIdNumber - 1}`,
-                "input_1"
-              );
-            });
+          outputs[outputClass].connections?.forEach((connection) => {
+            const connectionDetail = {
+              outputNodeId: selectedNode.id,
+              inputNodeId: connection.node,
+              inputClass: "input_1",
+            };
 
-            //Update rule reference
-            this.branchContainer.rules[index].output_id = `output_${
-              outputIdNumber - 1
-            }`;
-          }
-          //Case Down
-          else if (this.hoveredDividerIndex < this.draggedIndex) {
-            //Move the connection to the output below
-            this.providedStore.selectedNode.outputs[
-              rule.output_id
-            ].connections.forEach((connection) => {
-              this.nodeEditor.editor.removeSingleConnection(
-                this.providedStore.selectedNode.id,
-                connection.node,
-                `output_${outputIdNumber}`,
-                "input_1"
-              );
+            this.dispatchEvent(
+              new CustomEvent("createConnection", {
+                detail: { ...connectionDetail, outputClass: newOutputClass },
+                bubbles: true,
+                composed: true,
+              })
+            );
+            this.dispatchEvent(
+              new CustomEvent("deleteConnection", {
+                detail: { ...connectionDetail, outputClass: outputClass },
+                bubbles: true,
+                composed: true,
+              })
+            );
+          });
 
-              this.nodeEditor.editor.addConnection(
-                this.providedStore.selectedNode.id,
-                connection.node,
-                `output_${outputIdNumber + 1}`,
-                "input_1"
-              );
-            });
-            //Update rule reference
-            this.branchContainer.rules[index].output_id = `output_${
-              outputIdNumber + 1
-            }`;
-          }
+          staticCopyRules[index].output_id = newOutputClass;
         }
       });
 
-      //Update rule reference of dragged Rule
-      this.branchContainer.rules[this.draggedIndex].output_id =
-        hoveredRuleOutput;
+      staticCopyRules[this.draggedIndex].output_id = hoveredRuleOutput;
 
       //Update the rules index in the rules array according to drag by removing the rule and adding it at the drop position
-      let [draggedRule] = this.branchContainer.rules.splice(
-        this.draggedIndex,
-        1
-      );
-      this.branchContainer.rules.splice(
-        this.hoveredDividerIndex,
-        0,
-        draggedRule
-      );
-      //reference update to trigger re-render
-      this.branchContainer.rules = [...this.branchContainer.rules];
+      let [draggedRule] = staticCopyRules.splice(this.draggedIndex, 1);
+
+      staticCopyRules.splice(this.hoveredDividerIndex, 0, draggedRule);
+
+      this.providedStore.selectedContainer.updateRules(staticCopyRules);
     }
+
+    console.log(this.providedStore.selectedContainer.rules);
 
     this._onDragEnd();
-    this.markUsedOutputs();
-    this.requestUpdate();
-  }
 
-  /*
-
-
-  */
-  private _addEmptyRuleToBranchContainer() {
-    // Step 1: Add a new output to the node editor
-    this.nodeEditor.editor.addNodeOutput(this.providedStore.selectedNode.id);
-
-    // Step 2: Trigger the callback to signal a change in the editor
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "outputCreated"
+    this.dispatchEvent(
+      new CustomEvent("markOutputs", {
+        bubbles: true,
+        composed: true,
+      })
     );
 
-    // Step 3: Refresh the selected node to get the updated outputs
-    this.providedStore.selectedNode = this.nodeEditor.editor.getNodeFromId(
-      this.providedStore.selectedNode.id
-    );
-
-    // Step 4: Extract the last created output's output_class
-    const outputKeys = Object.keys(this.providedStore.selectedNode.outputs);
-    const lastOutputClass = outputKeys[outputKeys.length - 1]; // Get the last key (latest output)
-
-    // Step 5: Create an empty rule with the last output's output_class as output_id
-    const emptyRule: Rule = {
-      //else_rule: false,
-      output_id: lastOutputClass, // Use the last output's output_class as output_id
-      elementId: "", // Empty element
-      quizTasks: "",
-      condition: "", // Empty condition
-      match: "", // Empty match
-      target: "", // Empty target
-      isConditionEnabled: false,
-      isMatchEnabled: false,
-      isTargetEnabled: false,
-    };
-
-    // Step 6: Add the empty rule to the branch container
-    this.branchContainer.addRule(emptyRule);
-
-    // Step 7: If no else rule exists, create one
-    const hasElseRule = this.branchContainer.elseRule !== undefined;
-
-    if (!hasElseRule) {
-      this._addElseRuleToBranchContainer();
-    }
-    //
-    else {
-      this._moveElseRuleOutputToTheEnd();
-    }
-    this.markUsedOutputs();
-  }
-
-  /*
-
-
-  */
-  private _moveElseRuleOutputToTheEnd() {
-    const highestOutputIdIndex = this.branchContainer.rules.reduce(
-      (maxIndex, currentRule, currentIndex, rulesArray) => {
-        // Extract the number from output_id of the current max rule and current rule using a regular expression.
-        const maxNumber = parseInt(
-          rulesArray[maxIndex].output_id.split("_")[1],
-          10
-        );
-        const currentNumber = parseInt(currentRule.output_id.split("_")[1], 10);
-
-        // Compare and return the index of the rule with the higher number.
-        return currentNumber > maxNumber ? currentIndex : maxIndex;
-      },
-      0
-    );
-
-    const elseRuleOutputId = this.branchContainer.elseRule.output_id;
-    const newRuleOutputId =
-      this.branchContainer.rules[highestOutputIdIndex].output_id;
-
-    this.branchContainer.rules[highestOutputIdIndex].output_id =
-      elseRuleOutputId;
-    this.branchContainer.elseRule = {
-      ...this.branchContainer.elseRule,
-      output_id: newRuleOutputId,
-    };
-
-    this.providedStore.selectedNode.outputs[
-      elseRuleOutputId
-    ].connections.forEach((connection) => {
-      this.nodeEditor.editor.addConnection(
-        this.providedStore.selectedNode.id,
-        connection.node,
-        newRuleOutputId,
-        "input_1"
-      );
-      this.nodeEditor.editor.removeSingleConnection(
-        this.providedStore.selectedNode.id,
-        connection.node,
-        elseRuleOutputId,
-        "input_1"
-      );
-    });
-  }
-  /*
-
-
-  */
-  private _addElseRuleToBranchContainer() {
-    // Step 1: Add a new output to the node editor
-    this.nodeEditor.editor.addNodeOutput(this.providedStore.selectedNode.id);
-
-    // Step 2: Trigger the callback to signal a change in the editor
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "outputCreated"
-    );
-
-    // Step 3: Refresh the selected node to get the updated outputs
-    this.providedStore.selectedNode = this.nodeEditor.editor.getNodeFromId(
-      this.providedStore.selectedNode.id
-    );
-
-    // Step 4: Extract the last created output's output_class
-    const outputKeys = Object.keys(this.providedStore.selectedNode.outputs);
-    const lastOutputClass = outputKeys[outputKeys.length - 1]; // Get the last key (latest output)
-
-    // Step 5: Create an empty rule with the last output's output_class as output_id
-    const elseRule: Rule = {
-      output_id: lastOutputClass, // Use the last output's output_class as output_id
-      elementId: "", // Empty element
-      quizTasks: "",
-      condition: "", // Empty condition
-      match: "", // Empty match
-      target: "", // Empty target
-      isConditionEnabled: false,
-      isMatchEnabled: false,
-      isTargetEnabled: false,
-    };
-
-    // Step 6: Add the empty rule to the branch container
-    this.branchContainer.addElseRule(elseRule);
-  }
-
-  /*
-
-
-  */
-  private _removeRuleFromSelectedBranchNode(output_id: any) {
-    //console.log("try to delete output", output_id, this.providedStore.selectedNode);
-
-    this.nodeEditor.editor.removeNodeOutput(
-      this.providedStore.selectedNode.id,
-      output_id
-    );
-
-    // Step 2: Trigger the callback to signal a change in the editor
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "outputDeleted",
-      null,
-      null,
-      null,
-      null,
-      null,
-      output_id,
-      null
-    );
-
-    // Step 3: Refresh the selected node to get the updated outputs
-    this.providedStore.selectedNode = this.nodeEditor.editor.getNodeFromId(
-      this.providedStore.selectedNode.id
-    );
-
-    //Step 4
-    this.branchContainer.deleteRule(output_id);
-
-    //Step 5: If its the last rule, delete it
-    const noOfExistingRules = this.branchContainer.rules.length;
-    if (noOfExistingRules == 0 && this.branchContainer.elseRule !== undefined) {
-      this.nodeEditor.editor.removeNodeOutput(
-        this.providedStore.selectedNode.id,
-        this.branchContainer.elseRule.output_id
-      );
-
-      // Step 2: Trigger the callback to signal a change in the editor
-      this.changeInEditorCallback(
-        { ...this.nodeEditor.editor.drawflow },
-        "outputDeleted",
-        null,
-        null,
-        null,
-        null,
-        null,
-        this.branchContainer.elseRule.output_id,
-        null
-      );
-
-      // Step 3: Refresh the selected node to get the updated outputs
-      this.providedStore.selectedNode = this.nodeEditor.editor.getNodeFromId(
-        this.providedStore.selectedNode.id
-      );
-
-      this.branchContainer.removeElseRule();
-    }
-
-    this.markUsedOutputs();
-  }
-
-  /*
-
-
-  */
-  private _updateRuleElement(index: number, value: string) {
-    this.branchContainer.rules[index].elementId = value;
-
-    if (value == "") {
-      this.branchContainer.rules[index].isConditionEnabled = false;
-
-      this._updateRuleTasks(index, "");
-      this._updateRuleCondition(index, "");
-      this._updateRuleMatch(index, "");
-      this._updateRuleTarget(index, "");
-    }
-    //
-    else if (
-      this.incomingContainer
-        .querySelector(`#${value}`)
-        ?.tagName?.toLowerCase() == "webwriter-quiz"
-    ) {
-      this.branchContainer.rules[index].isConditionEnabled = false;
-    }
-    //
-    else {
-      this.branchContainer.rules[index].isConditionEnabled = true;
-    }
-
-    this.branchContainer.rules = [...this.branchContainer.rules];
-    this.requestUpdate();
-  }
-
-  /*
-
-
-  */
-  private _updateRuleTasks(index: number, value: string) {
-    this.branchContainer.rules[index].isConditionEnabled = value !== "";
-
-    if (value === "") {
-      this._updateRuleCondition(index, "");
-      this._updateRuleMatch(index, "");
-      this._updateRuleTarget(index, "");
-    }
-    this.branchContainer.rules[index].quizTasks = value.replace(/,/g, " ");
-    this.branchContainer.rules = [...this.branchContainer.rules];
-    this.requestUpdate();
-  }
-
-  /*
-
-
-  */
-  private _updateRuleCondition(index: number, value: string) {
-    this.branchContainer.rules[index].condition = value;
-
-    if (value == "") {
-      this._updateRuleMatch(index, "");
-      this._updateRuleTarget(index, "");
-      this.branchContainer.rules[index].isMatchEnabled = false;
-      this.branchContainer.rules[index].isTargetEnabled = false;
-    }
-    //
-    else if (
-      this.incomingContainer
-        .querySelector(`#${this.branchContainer.rules[index].elementId}`)
-        ?.tagName?.toLowerCase() == "webwriter-quiz"
-    ) {
-      this.branchContainer.rules[index].isMatchEnabled = true;
-    }
-    //
-    else {
-      this.branchContainer.rules[index].isTargetEnabled = true;
-    }
-
-    this.branchContainer.rules = [...this.branchContainer.rules];
-    this.markUsedOutputs();
-    this.requestUpdate();
-  }
-
-  /*
-
-
-  */
-  private _updateRuleMatch(index: number, value: string) {
-    this.branchContainer.rules[index].match = value;
-    this.branchContainer.rules[index].isTargetEnabled = value !== "";
-
-    if (value === "") {
-      this._updateRuleTarget(index, "");
-    }
-
-    this.branchContainer.rules = [...this.branchContainer.rules];
-    this.markUsedOutputs();
     this.requestUpdate();
   }
 
@@ -998,72 +579,108 @@ export class BranchNodeDetails extends LitElementWw {
     }
 
     // Update the rule match
-    this._updateRuleMatch(index, inputElement.value);
+    this.providedStore.selectedContainer._updateRuleMatch(
+      index,
+      inputElement.value
+    );
+    this.requestUpdate();
   }
 
   /*
 
 
   */
-  private _updateRuleTarget(index: number, value: string) {
-    this.branchContainer.rules[index].target = value;
+  private addEmptyRule() {
+    // Step 1
+    this.dispatchEvent(
+      new CustomEvent("addOutput", {
+        detail: {
+          nodeId: this.providedStore.selectedNode.id,
+        },
+        bubbles: true,
+        composed: true,
+      })
+    );
 
-    if (value == "") {
-      const outputClass = this.branchContainer.rules[index].output_id;
+    this.providedStore.selectedContainer.addEmptyRule(
+      this.providedStore.selectedNode
+    );
 
-      const connections =
-        this.providedStore.selectedNode?.outputs?.[outputClass]?.connections;
-      this.nodeEditor.editor.removeSingleConnection(
-        this.providedStore.selectedNode.id,
-        connections?.[0]?.node,
-        outputClass,
-        "input_1"
+    // Step 5: Ensure the else rule is handled properly
+    if (this.providedStore.selectedContainer.elseRule) {
+      this.providedStore.selectedContainer._moveElseRuleToLastOutput(
+        this.providedStore.selectedNode
+      );
+    } else {
+      this.dispatchEvent(
+        new CustomEvent("addOutput", {
+          detail: {
+            nodeId: this.providedStore.selectedNode.id,
+          },
+          bubbles: true,
+          composed: true,
+        })
+      );
+
+      this.providedStore.selectedContainer.addEmptyElseRule(
+        this.providedStore.selectedNode
       );
     }
 
-    this.branchContainer.rules = [...this.branchContainer.rules];
+    console.log(this.providedStore.selectedContainer.rules);
+    this.requestUpdate();
+  }
+  /*
+
+
+  */
+  private updateRuleElement(index, value) {
+    this.providedStore.selectedContainer._updateRuleElement(
+      index,
+      value,
+      this.providedStore.branchIncomingContainer
+    );
+    this.requestUpdate();
+  }
+
+  /* 
+  
+  */
+  private updateRuleTasks(index, value) {
+    this.providedStore.selectedContainer._updateRuleTasks(
+      index,
+      value,
+      this.providedStore.branchIncomingContainer
+    );
+    this.requestUpdate();
+  }
+
+  /* 
+  
+  */
+  private updateRuleCondition(index, value) {
+    this.providedStore.selectedContainer._updateRuleCondition(
+      index,
+      value,
+      this.providedStore.branchIncomingContainer
+    );
     this.requestUpdate();
   }
 
   /*
 
-
-  */
-  private _updateElseRuleTarget(value: string) {
-    this.branchContainer.elseRule = {
-      ...this.branchContainer.elseRule,
-      target: value,
-    };
-    //console.log("target updated");
-    this.requestUpdate();
-  }
+*/
 
   /*
 
 
   */
   private renameNode(text: String) {
-    this.nodeEditor.editor.updateNodeDataFromId(
-      this.providedStore.selectedNode.id,
-      {
-        ...this.providedStore.selectedNode.data,
-        title: text,
-      }
-    );
-
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "nodeRenamed",
-      this.providedStore.selectedNode
-    );
-  }
-
-  /*
-
-  */
-  private clearRules() {
-    Object.keys(this.providedStore.selectedNode.outputs).forEach((key) => {
-      this._removeRuleFromSelectedBranchNode(key);
+    const event = new CustomEvent("renameSelectedNode", {
+      detail: { newTitle: text },
+      bubbles: true,
+      composed: true,
     });
+    this.dispatchEvent(event);
   }
 }

@@ -40,18 +40,6 @@ export class PageNodeDetails extends LitElementWw {
   //import CSS
   static styles = [styles];
 
-  @property({ attribute: false }) accessor changeInEditorCallback = (
-    drawflow,
-    updateType,
-    node?,
-    removedNodeId?,
-    inputNode?,
-    outputNode?,
-    inputClass?,
-    outputClass?,
-    outputHadConnections?
-  ) => {};
-
   @consume({ context: gamebookStore, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
   public accessor providedStore = new GamebookStore("Default");
@@ -69,63 +57,9 @@ export class PageNodeDetails extends LitElementWw {
           <p class="subtitle">Page</p>
         </div>
         <div class="inputOutputControls">
-          <!-- <node-connection-list
-            input
-            .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.providedStore.selectedNode}
-            .changeInEditorCallback=${(
-            drawflow,
-            updateType,
-            node,
-            removedNodeId,
-            inputNode,
-            outputNode,
-            inputClass,
-            outputClass,
-            outputHadConnections
-          ) => {
-            this.changeInEditorCallback(
-              drawflow,
-              updateType,
-              node,
-              removedNodeId,
-              inputNode,
-              outputNode,
-              inputClass,
-              outputClass,
-              outputHadConnections
-            );
-          }}
-          ></node-connection-list>
+          <node-connection-list input></node-connection-list>
           <sl-divider vertical style="height: 100%;"></sl-divider>
-          <node-connection-list
-            output
-            .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.providedStore.selectedNode}
-            .changeInEditorCallback=${(
-            drawflow,
-            updateType,
-            node,
-            removedNodeId,
-            inputNode,
-            outputNode,
-            inputClass,
-            outputClass,
-            outputHadConnections
-          ) => {
-            this.changeInEditorCallback(
-              drawflow,
-              updateType,
-              node,
-              removedNodeId,
-              inputNode,
-              outputNode,
-              inputClass,
-              outputClass,
-              outputHadConnections
-            );
-          }}
-          ></node-connection-list> -->
+          <node-connection-list output></node-connection-list>
         </div>
       </div>
 

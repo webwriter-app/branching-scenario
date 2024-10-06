@@ -27,6 +27,8 @@ export class GamebookStore {
   dividerPosition: number;
   editorIsCollapsed: boolean;
   editorContent: any;
+  selectedContainer?: any;
+  branchIncomingContainer?: any;
 
   //Use observer pattern to notify main view of cahnge
   observer: Observer;
@@ -40,7 +42,9 @@ export class GamebookStore {
     dividerPosition = 350,
     editorIsCollapsed = false,
     editorContent = null,
-    copiedNode = NO_NODE_SELECTED
+    copiedNode = NO_NODE_SELECTED,
+    selectedContainer = undefined,
+    branchIncomingContainer = undefined
   ) {
     this.title = title;
     this.selectedNode = selectedNode;
@@ -51,6 +55,8 @@ export class GamebookStore {
     this.editorIsCollapsed = editorIsCollapsed;
     this.editorContent = editorContent;
     this.copiedNode = copiedNode;
+    this.selectedContainer = selectedContainer;
+    this.branchIncomingContainer = branchIncomingContainer;
   }
 
   setTitle(newTitle = Math.random().toString()) {
@@ -60,6 +66,17 @@ export class GamebookStore {
 
   setSelectedNode(node = NO_NODE_SELECTED) {
     this.selectedNode = node;
+
+    this.notifyObservers(); // Notify all observers when updated
+  }
+
+  setSelectedContainer(selectedContainer = undefined) {
+    this.selectedContainer = selectedContainer;
+    this.notifyObservers(); // Notify all observers when updated
+  }
+
+  setBranchIncomingContainer(incomingContainer = undefined) {
+    this.branchIncomingContainer = incomingContainer;
     this.notifyObservers(); // Notify all observers when updated
   }
 
@@ -100,27 +117,59 @@ export class GamebookStore {
 
   // Method to notify all observers
   private notifyObservers() {
-    this.observer();
+    if (this.observer !== null) {
+      this.observer();
+    }
   }
 
-  // Serialize the store object to a string (for attribute reflection)
   toString() {
-    return JSON.stringify({
-      title: this.title,
-      observer: this.observer,
-      selectedNode: this.selectedNode,
-      editorZoom: this.editorZoom,
-      editorPosition: this.editorPosition,
-      dividerPosition: this.dividerPosition,
-      editorIsCollapsed: this.editorIsCollapsed,
-      editorContent: this.editorContent,
-      copiedNode: this.copiedNode,
-    });
+    const stringify = JSON.stringify(
+      {
+        title: this.title,
+        observer: this.observer,
+        selectedNode: this.selectedNode,
+        editorZoom: this.editorZoom,
+        editorPosition: this.editorPosition,
+        dividerPosition: this.dividerPosition,
+        editorIsCollapsed: this.editorIsCollapsed,
+        editorContent: this.editorContent,
+        copiedNode: this.copiedNode,
+        selectedContainer: this.selectedContainer, // Include selectedContainer here
+        branchIncomingContainer: this.branchIncomingContainer,
+      },
+      this.replacer.bind(this)
+    );
+
+    return stringify;
+  }
+
+  replacer(key, value) {
+    // Call the domElementReplacer for selectedContainer (HTMLElement)
+    if (key === "selectedContainer" || key === "branchIncomingContainer") {
+      return this.domElementReplacer(key, value);
+    }
+    // Handle other cyclic structures or return value as is
+    return value;
+  }
+
+  private domElementReplacer(key, value) {
+    if (value instanceof HTMLElement) {
+      return {
+        tagName: value.tagName,
+        attributes: [...value.attributes].map((attr) => ({
+          name: attr.name,
+          value: attr.value,
+        })),
+        innerHTML: value.innerHTML,
+      };
+    }
+    return value;
   }
 
   // Static method to deserialize from string to GamebookStore instance
   static fromString(serialized: string) {
     const data = JSON.parse(serialized);
+
     return new GamebookStore(
       data.title,
       data.observer,
@@ -130,7 +179,9 @@ export class GamebookStore {
       data.dividerPosition,
       data.editorIsCollapsed,
       data.editorContent,
-      data.copiedNode
+      data.copiedNode,
+      data.selectedContainer,
+      data.branchIncomingContainer
     );
   }
 }

@@ -1,11 +1,4 @@
-import {
-  html,
-  css,
-  LitElement,
-  unsafeCSS,
-  PropertyValues,
-  PropertyDeclaration,
-} from "lit";
+import { html, css } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -14,36 +7,24 @@ import { repeat } from "lit/directives/repeat.js";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import { SlButton, SlIcon, SlIconButton } from "@shoelace-style/shoelace";
 
-// Drawflow Imports
-import { DrawflowNode } from "drawflow";
-
 import { OutputConnectionControl } from "./output-connection-control";
 
 import plus from "@tabler/icons/outline/plus.svg";
 import minus from "@tabler/icons/outline/minus.svg";
 import XCircleFill from "bootstrap-icons/icons/x-circle-fill.svg";
 
+import { provide, consume, createContext } from "@lit/context";
+import { gamebookStore, GamebookStore } from "../context-test";
+
 @customElement("node-connection-list")
 export class NodeConnectionList extends LitElementWw {
-  @property({ type: Object }) accessor nodeEditor;
-  @property({ type: Object, attribute: true, reflect: true })
-  accessor selectedNode: DrawflowNode;
-
   @property({ type: Boolean, reflect: true }) accessor output = false;
   @property({ type: Boolean, reflect: true }) accessor input = false;
   @property({ type: Boolean, reflect: true }) accessor branch = false;
 
-  @property({ attribute: false }) accessor changeInEditorCallback = (
-    drawflow,
-    updateType,
-    node?,
-    removedNodeId?,
-    inputNode?,
-    outputNode?,
-    inputClass?,
-    outputClass?,
-    outputHadConnections?
-  ) => {};
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default");
 
   /*
 
@@ -81,8 +62,8 @@ export class NodeConnectionList extends LitElementWw {
         margin: 0px;
         padding: 0px;
         margin-right: auto;
-        max-width: 130px;
-        min-width: 70px;
+        max-width: 150px;
+        min-width: 80px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -219,25 +200,46 @@ export class NodeConnectionList extends LitElementWw {
         <div class="titlebar">
           <p>
             Outputs
-            (${Object.keys(this.selectedNode.outputs).length.toString()})
+            (${Object.keys(
+              this.providedStore.selectedNode.outputs
+            ).length.toString()})
           </p>
-          <sl-icon-button
-            @click=${this._addOutputToSelectedNode}
-            src=${plus}
-            class="add"
-          >
+          <sl-icon-button @click=${this._addOutput} src=${plus} class="add">
           </sl-icon-button>
         </div>
         <div class="verticalStack">
           ${repeat(
-            Object.entries(this.selectedNode.outputs),
-            ([output_class]) => `${this.selectedNode.id}-${output_class}`,
+            Object.entries(this.providedStore.selectedNode.outputs),
+            ([output_class]) =>
+              `${this.providedStore.selectedNode.id}-${output_class}`,
             ([output_class, drawflowConnection], index) => html`
-              <div class="item">
+              <div
+                class="item"
+                @mouseenter=${() =>
+                  this.dispatchEvent(
+                    new CustomEvent("highlightOutput", {
+                      detail: {
+                        outputNodeId: this.providedStore.selectedNode.id,
+                        outputClass: output_class,
+                      },
+                      bubbles: true,
+                      composed: true,
+                    })
+                  )}
+                @mouseleave=${() =>
+                  this.dispatchEvent(
+                    new CustomEvent("unhighlightOutput", {
+                      detail: {
+                        outputNodeId: this.providedStore.selectedNode.id,
+                        outputClass: output_class,
+                      },
+                      bubbles: true,
+                      composed: true,
+                    })
+                  )}
+              >
                 <p style="color: gray">${index + 1}</p>
                 <output-connection-control
-                  .selectedNode=${this.selectedNode}
-                  .nodeEditor=${this.nodeEditor}
                   .outputClass=${output_class}
                   in-output-list
                   .inOutputList=${true}
@@ -246,11 +248,7 @@ export class NodeConnectionList extends LitElementWw {
                   class="minus"
                   src=${minus}
                   style="font-size: 15px;"
-                  @click=${() =>
-                    this._deleteOutputFromNode(
-                      this.selectedNode.id,
-                      output_class
-                    )}
+                  @click=${() => this._deleteOutput(output_class)}
                 ></sl-icon-button>
               </div>
             `
@@ -265,18 +263,23 @@ export class NodeConnectionList extends LitElementWw {
 
   */
   renderInputs() {
+    console.log(
+      this.providedStore.selectedNode.inputs[
+        "input_1"
+      ]?.connections.length.toString()
+    );
     return html`
       <div class="container">
         <div class="titlebar">
           <p>
             Incoming
-            (${this.selectedNode.inputs[
+            (${this.providedStore.selectedNode.inputs[
               "input_1"
             ]?.connections.length.toString()})
           </p>
         </div>
         <div class="verticalStack">
-          ${this.selectedNode.inputs["input_1"]?.connections.map(
+          ${this.providedStore.selectedNode.inputs["input_1"]?.connections.map(
             (connection, index) => html` <div class="item">
               <p style="color: gray">${index + 1}</p>
               <sl-button
@@ -284,32 +287,51 @@ export class NodeConnectionList extends LitElementWw {
                 variant="text"
                 size="small"
                 @mouseenter=${() =>
-                  this.nodeEditor.highlightConnectionAndNode(
-                    connection.node,
-                    this.selectedNode.id,
-                    connection.input,
-                    "input_1",
-                    connection.node
+                  this.dispatchEvent(
+                    new CustomEvent("highlightConnection", {
+                      detail: {
+                        outputNodeId: connection?.node,
+                        inputNodeId: this.providedStore.selectedNode.id,
+                        outputClass: connection?.input,
+                        inputClass: "input_1",
+                      },
+                      bubbles: true,
+                      composed: true,
+                    })
                   )}
                 @mouseleave=${() =>
-                  this.nodeEditor.unhighlightConnectionAndNode(
-                    connection.node,
-                    this.selectedNode.id,
-                    connection.input,
-                    "input_1",
-                    connection.node
+                  this.dispatchEvent(
+                    new CustomEvent("unhighlightConnection", {
+                      detail: {
+                        outputNodeId: connection?.node,
+                        inputNodeId: this.providedStore.selectedNode.id,
+                        outputClass: connection?.input,
+                        inputClass: "input_1",
+                      },
+                      bubbles: true,
+                      composed: true,
+                    })
                   )}
               >
-                ${this.nodeEditor.editor.getNodeFromId(connection.node).data
-                  .title}
+                ${this.providedStore.editorContent.drawflow.Home.data[
+                  connection.node
+                ].data.title}
               </sl-button>
               <sl-icon-button
                 src=${XCircleFill}
                 style="font-size: 14px; color: #71717A;"
                 @click=${() =>
-                  this._deleteOutputFromNode(
-                    parseInt(connection.node),
-                    connection.input
+                  this.dispatchEvent(
+                    new CustomEvent("deleteConnection", {
+                      detail: {
+                        outputNodeId: connection?.node,
+                        inputNodeId: this.providedStore.selectedNode.id,
+                        outputClass: connection?.input,
+                        inputClass: "input_1",
+                      },
+                      bubbles: true,
+                      composed: true,
+                    })
                   )}
               ></sl-icon-button>
             </div>`
@@ -321,18 +343,22 @@ export class NodeConnectionList extends LitElementWw {
 
   /*
 
-
+ 
   */
   renderInputsBranch() {
+    const connections =
+      this.providedStore.selectedNode.inputs.input_1?.connections;
+
+    const length = connections ? Object.values(connections).length : 0;
+
     return html`
       <div class="container">
         <div class="titlebar">
           <p>Accessing</p>
         </div>
         <div class="verticalStack">
-          ${Object.values(this.selectedNode.inputs.input_1.connections).length >
-          0
-            ? html` ${this.selectedNode.inputs.input_1.connections.map(
+          ${length > 0
+            ? html` ${connections.map(
                 (connection, index) => html` 
                 <div class="item">
               <p style="color: gray">${index + 1}</p>
@@ -340,35 +366,54 @@ export class NodeConnectionList extends LitElementWw {
                 class="itemButton"
                 variant="text"
                 size="small"
-                @mouseenter=${() =>
-                  this.nodeEditor.highlightConnectionAndNode(
-                    connection.node,
-                    this.selectedNode.id,
-                    connection.input,
-                    "input_1",
-                    connection.node
-                  )}
+                 @mouseenter=${() =>
+                   this.dispatchEvent(
+                     new CustomEvent("highlightConnection", {
+                       detail: {
+                         outputNodeId: connection?.node,
+                         inputNodeId: this.providedStore.selectedNode.id,
+                         outputClass: connection?.input,
+                         inputClass: "input_1",
+                       },
+                       bubbles: true,
+                       composed: true,
+                     })
+                   )}
                 @mouseleave=${() =>
-                  this.nodeEditor.unhighlightConnectionAndNode(
-                    connection.node,
-                    this.selectedNode.id,
-                    connection.input,
-                    "input_1",
-                    connection.node
+                  this.dispatchEvent(
+                    new CustomEvent("unhighlightConnection", {
+                      detail: {
+                        outputNodeId: connection?.node,
+                        inputNodeId: this.providedStore.selectedNode.id,
+                        outputClass: connection?.input,
+                        inputClass: "input_1",
+                      },
+                      bubbles: true,
+                      composed: true,
+                    })
                   )}
               >
-                ${
-                  this.nodeEditor.editor.getNodeFromId(connection.node).data
-                    .title
-                }
+                  ${
+                    this.providedStore.editorContent.drawflow.Home.data[
+                      connection.node
+                    ].data.title
+                  }
               </sl-button>
                     <sl-icon-button
                       src=${XCircleFill}
                       style="font-size: 14px; color: #71717A;"
                       @click=${() =>
-                        this._deleteOutputFromNode(
-                          parseInt(connection.node),
-                          connection.input
+                        this.dispatchEvent(
+                          new CustomEvent("deleteConnection", {
+                            detail: {
+                              outputNodeId: connection?.node,
+                              inputNodeId: this.providedStore.selectedNode.id,
+                              outputClass: connection?.input,
+                              inputClass: "input_1",
+                            },
+                            bubbles: true,
+                            composed: true,
+                          })
                         )}
                     ></sl-icon-button>
                   </div>
@@ -404,24 +449,16 @@ export class NodeConnectionList extends LitElementWw {
 
 
   */
-  private _deleteOutputFromNode(output_id: number, output_class: string) {
-    let outputHadConnections =
-      (this.nodeEditor.editor.getNodeFromId(output_id) as DrawflowNode).outputs[
-        output_class
-      ].connections.length != 0;
-
-    this.nodeEditor.editor.removeNodeOutput(output_id, output_class);
-
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "outputDeleted",
-      null,
-      null,
-      null,
-      null,
-      null,
-      output_class,
-      outputHadConnections
+  private _deleteOutput(output_class: string) {
+    this.dispatchEvent(
+      new CustomEvent("deleteOutput", {
+        detail: {
+          nodeId: this.providedStore.selectedNode.id,
+          outputClass: output_class,
+        },
+        bubbles: true,
+        composed: true,
+      })
     );
   }
 
@@ -429,11 +466,13 @@ export class NodeConnectionList extends LitElementWw {
 
 
   */
-  private _addOutputToSelectedNode() {
-    this.nodeEditor.editor.addNodeOutput(this.selectedNode.id);
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "outputCreated"
+  private _addOutput() {
+    this.dispatchEvent(
+      new CustomEvent("addOutput", {
+        detail: { nodeId: this.providedStore.selectedNode.id },
+        bubbles: true,
+        composed: true,
+      })
     );
   }
 }

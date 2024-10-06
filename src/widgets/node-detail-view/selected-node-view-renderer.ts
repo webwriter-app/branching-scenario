@@ -20,19 +20,6 @@ import { BranchNodeDetails } from "./branch-node-details";
 
 @customElement("node-details-selector")
 export class SelectedNodeViewRenderer extends LitElementWw {
-  @property({ attribute: false }) accessor changeInEditorCallback = (
-    drawflow,
-    updateType,
-    node?,
-    removedNodeId?,
-    inputNode?,
-    outputNode?,
-    inputClass?,
-    outputClass?,
-    outputHadConnections?
-  ) => {};
-  @property({ attribute: false }) accessor markUsedOutputs = () => {};
-
   static get scopedElements() {
     return {
       "page-node-details": PageNodeDetails,
@@ -59,90 +46,17 @@ export class SelectedNodeViewRenderer extends LitElementWw {
             ${this.providedStore.selectedNode.class == "page" ||
             this.providedStore.selectedNode.class == "origin"
               ? html`
-                  <page-node-details
-                    .changeInEditorCallback=${(
-                      drawflow,
-                      updateType,
-                      node,
-                      removedNodeId,
-                      inputNode,
-                      outputNode,
-                      inputClass,
-                      outputClass,
-                      outputHadConnections
-                    ) => {
-                      this.changeInEditorCallback(
-                        drawflow,
-                        updateType,
-                        node,
-                        removedNodeId,
-                        inputNode,
-                        outputNode,
-                        inputClass,
-                        outputClass,
-                        outputHadConnections
-                      );
-                    }}
-                  >
+                  <page-node-details>
                     <slot></slot>
                   </page-node-details>
                 `
               : this.providedStore.selectedNode.class == "branch"
-              ? html` <branch-node-details
-                  .markUsedOutputs=${() => this.markUsedOutputs()}
-                  .changeInEditorCallback=${(
-                    drawflow,
-                    updateType,
-                    node,
-                    removedNodeId,
-                    inputNode,
-                    outputNode,
-                    inputClass,
-                    outputClass,
-                    outputHadConnections
-                  ) => {
-                    this.changeInEditorCallback(
-                      drawflow,
-                      updateType,
-                      node,
-                      removedNodeId,
-                      inputNode,
-                      outputNode,
-                      inputClass,
-                      outputClass,
-                      outputHadConnections
-                    );
-                  }}
-                >
+              ? html` <branch-node-details>
                   <slot></slot>
                 </branch-node-details>`
               : this.providedStore.selectedNode.class == "popup"
               ? html`
-                  <popup-node-details
-                    .changeInEditorCallback=${(
-                      drawflow,
-                      updateType,
-                      node,
-                      removedNodeId,
-                      inputNode,
-                      outputNode,
-                      inputClass,
-                      outputClass,
-                      outputHadConnections
-                    ) => {
-                      this.changeInEditorCallback(
-                        drawflow,
-                        updateType,
-                        node,
-                        removedNodeId,
-                        inputNode,
-                        outputNode,
-                        inputClass,
-                        outputClass,
-                        outputHadConnections
-                      );
-                    }}
-                  >
+                  <popup-node-details>
                     <slot></slot>
                   </popup-node-details>
                 `

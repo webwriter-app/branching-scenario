@@ -7,9 +7,6 @@ import {
   queryAssignedElements,
 } from "lit/decorators.js";
 
-import { consume } from "@lit/context";
-import { gamebookStore, GamebookStore } from "./context-test";
-
 //Drawflow Imports
 import { DrawflowNode } from "drawflow";
 import { WebWriterConnectionButton } from "./gamebook-components/webwriter-connection-button";
@@ -18,12 +15,11 @@ import { WebWriterGamebookPopupContainer } from "./gamebook-components/webwriter
 import { WebWriterGamebookBranchContainer } from "./gamebook-components/webwriter-gamebook-branch-container";
 import { WebWriterSmartBranchButton } from "./gamebook-components/webwriter-smart-branch-button";
 
+import { provide, consume, createContext } from "@lit/context";
+import { gamebookStore, GamebookStore } from "./context-test";
+
 @customElement("gamebook-container-manager")
 export class GamebookContainerManager extends LitElementWw {
-  @consume({ context: gamebookStore, subscribe: true })
-  @property({ type: Object, attribute: true, reflect: false })
-  public accessor providedStore = new GamebookStore("Default");
-
   @queryAssignedElements({
     flatten: true,
     selector:
@@ -32,6 +28,10 @@ export class GamebookContainerManager extends LitElementWw {
   accessor gamebookContainers;
 
   @query("slot") accessor slot;
+
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default");
 
   static get scopedElements() {
     return {
@@ -53,7 +53,35 @@ export class GamebookContainerManager extends LitElementWw {
   
   
   */
-  protected firstUpdated(_changedProperties: any): void {}
+  protected firstUpdated(_changedProperties: any): void {
+    const event = new CustomEvent("managerInitialized", {
+      bubbles: true,
+      composed: true,
+    });
+    this.dispatchEvent(event);
+    if (this.providedStore.selectedContainer !== undefined) {
+      //Extraced the drawflowNodeId from the serialized container
+      const value = this.providedStore.selectedContainer.attributes.find(
+        (attr) => attr.name === "drawflownodeid"
+      ).value;
+
+      if (value) {
+        const event = new CustomEvent("containerSelectFirstUpdate", {
+          detail: { id: value },
+          bubbles: true,
+          composed: true,
+        });
+        this.dispatchEvent(event);
+      } else {
+        const event = new CustomEvent("containerError", {
+          detail: { id: value },
+          bubbles: true,
+          composed: true,
+        });
+        this.dispatchEvent(event);
+      }
+    }
+  }
 
   /* 
   
@@ -104,8 +132,12 @@ export class GamebookContainerManager extends LitElementWw {
   */
   public _getContainerByDrawflowNodeId(id: number) {
     const container = this.gamebookContainers.find(
-      (container) => container.getAttribute("drawflowNodeId") == id
+      (container) => container.drawflowNodeId === id
     );
+
+    if (!container) {
+      console.error(`No container found with drawflowNodeId: ${id}`);
+    }
 
     return container;
   }
@@ -125,14 +157,21 @@ export class GamebookContainerManager extends LitElementWw {
 
 
   */
-  public _showGamebookContainerById(nodeId: Number) {
+  public _showGamebookContainerById(nodeId: number) {
+    let isContainerShown = false; // Flag to track if any container is shown
+
     this.gamebookContainers.forEach((container) => {
       if (container.drawflowNodeId == nodeId) {
         container.show();
+        isContainerShown = true; // Set flag to true when a container is shown
       } else {
         container.hide();
       }
     });
+
+    if (!isContainerShown) {
+      console.error(`No container found with drawflowNodeId: ${nodeId}`);
+    }
   }
 
   /*
@@ -203,58 +242,49 @@ export class GamebookContainerManager extends LitElementWw {
     container.appendChild(branchButton);
 
     container.branchesOff = inputNode.id;
+
+    const branchContainer = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == inputNode.id
+    );
+
+    branchContainer.incomingContainerId = outputNode.id;
   }
 
   /*
 
 
   */
-  public removeConnectionButtonFromContainer(
-    containerId: string,
-    identifier: string
+  public removeButtonFromContainer(
+    outputId: string,
+    inputId: string,
+    outputClass: string,
+    inputClass: string
   ) {
     const container = this.gamebookContainers.find(
-      (container) => container.getAttribute("drawflowNodeId") == containerId
+      (container) => container.getAttribute("drawflowNodeId") == outputId
     );
 
-    const connButton =
-      container.shadowRoot?.querySelector(
-        `webwriter-connection-button[identifier="${identifier}"]`
-      ) ||
-      container.querySelector(
-        `webwriter-connection-button[identifier="${identifier}"]`
+    const button = Array.from(
+      container.buttons as NodeListOf<HTMLElement>
+    ).find((button) => {
+      return (
+        (button as any).identifier ===
+        `${outputId}-${outputClass}-${inputId}-${inputClass}`
       );
+    });
 
-    if (connButton) {
-      connButton.setAttribute("identifier", "x");
-      connButton.remove();
+    if (button) {
+      button.setAttribute("identifier", "x");
+      button.remove();
     }
-  }
 
-  /*
-
-
-  */
-  public removeSmartBranchButtonFromContainer(
-    containerId: string,
-    identifier: string
-  ) {
-    const container = this.gamebookContainers.find(
-      (container) => container.getAttribute("drawflowNodeId") == containerId
-    );
-
-    const branchButton =
-      container.shadowRoot?.querySelector(
-        `webwriter-smart-branch-button[identifier="${identifier}"]`
-      ) ||
-      container.querySelector(
-        `webwriter-smart-branch-button[identifier="${identifier}"]`
-      );
-
-    if (branchButton) {
-      branchButton.setAttribute("identifier", "x");
-      branchButton.remove();
+    if (button instanceof WebWriterSmartBranchButton) {
       container.branchesOff = -1;
+      const branchContainer = this.gamebookContainers.find(
+        (container) => container.getAttribute("drawflowNodeId") == inputId
+      );
+      branchContainer.incomingContainerId = -1;
+      branchContainer.clearRules();
     }
   }
 
@@ -309,6 +339,7 @@ export class GamebookContainerManager extends LitElementWw {
     const container = this.gamebookContainers.find(
       (container) => container.getAttribute("drawflowNodeId") == containerId
     );
+
     const connButton =
       container.shadowRoot?.querySelector(
         `webwriter-connection-button[identifier="${identifier}"]`
@@ -331,6 +362,7 @@ export class GamebookContainerManager extends LitElementWw {
     const container = this.gamebookContainers.find(
       (container) => container.getAttribute("drawflowNodeId") == containerId
     );
+
     const connButton =
       container.shadowRoot?.querySelector(
         `webwriter-connection-button[identifier="${identifier}"]`
@@ -396,14 +428,13 @@ export class GamebookContainerManager extends LitElementWw {
   
   
   */
-  private importContainers(template: Array<Object>) {
+  public importContainers(template: Array<Object>) {
     //console.log(template);
     let containers = template.map((info) =>
       this.createContainerFromImport(info)
     );
-    containers.forEach((container) => {
-      //this.appendToShadowDom(container);
-    });
+
+    return containers;
   }
 
   /*
@@ -451,7 +482,7 @@ export class GamebookContainerManager extends LitElementWw {
   */
   public updateBranchContainerRuleTarget(output_id, output_class, input_id) {
     const branchContainer = this._getContainerByDrawflowNodeId(output_id);
-    branchContainer.updateRuleTarget(output_class, input_id);
+    branchContainer._updateRuleTarget(output_class, input_id);
   }
 
   /*
@@ -470,10 +501,6 @@ export class GamebookContainerManager extends LitElementWw {
 
   /*
 
-  */
-
-  /*
-
 
   */
   public copyAndPasteContainerContents(pastedNode) {
@@ -484,33 +511,51 @@ export class GamebookContainerManager extends LitElementWw {
     );
 
     // Iterate through each element in copiedContainer's slotContent
-    copiedContainer.slotContent.forEach((element) => {
-      // Skip elements with specific tag names
-      if (
-        element.tagName.toLowerCase() === "webwriter-connection-button" ||
-        element.tagName.toLowerCase() === "webwriter-smart-branch-button"
-      ) {
-        return; // Skip this element
-      }
-
-      // Create a new element of the same type
-      const newElement = document.createElement(element.tagName);
-
-      // Manually copy desired attributes, skipping 'id'
-      [...element.attributes].forEach((attr) => {
-        if (attr.name !== "id" && attr.name !== "contenteditable") {
-          // Skip the 'id' attribute
-          newElement.setAttribute(attr.name, attr.value);
+    if (copiedContainer.slotContent) {
+      copiedContainer.slotContent.forEach((element) => {
+        // Skip elements with specific tag names
+        if (
+          element.tagName.toLowerCase() === "webwriter-connection-button" ||
+          element.tagName.toLowerCase() === "webwriter-smart-branch-button"
+        ) {
+          return; // Skip this element
         }
+
+        // Create a new element of the same type
+        const newElement = document.createElement(element.tagName);
+
+        // Manually copy desired attributes, skipping 'id'
+        [...element.attributes].forEach((attr) => {
+          if (attr.name !== "id" && attr.name !== "contenteditable") {
+            // Skip the 'id' attribute
+            newElement.setAttribute(attr.name, attr.value);
+          }
+        });
+
+        // Copy inner content (text or children) if necessary
+        newElement.innerHTML = element.innerHTML; // or use another approach based on your needs
+
+        // Append the new element to pastedContainer's slot
+        pastedContainer.appendChild(newElement);
       });
-
-      // Copy inner content (text or children) if necessary
-      newElement.innerHTML = element.innerHTML; // or use another approach based on your needs
-
-      // Append the new element to pastedContainer's slot
-      pastedContainer.appendChild(newElement);
-    });
+    }
 
     return pastedContainer;
+  }
+
+  /*
+
+
+  */
+  public changeOrigin(newId) {
+    const originPageContainer = this.gamebookContainers.find(
+      (container) => container.getAttribute("originPage") === "1"
+    );
+
+    if (originPageContainer) {
+      (originPageContainer as WebWriterGamebookPageContainer).originPage = 0;
+    }
+    const newOriginPageContainer = this._getContainerByDrawflowNodeId(newId);
+    (newOriginPageContainer as WebWriterGamebookPageContainer).originPage = 1;
   }
 }

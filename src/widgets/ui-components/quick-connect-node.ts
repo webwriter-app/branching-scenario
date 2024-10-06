@@ -217,9 +217,11 @@ export class QuickConnectNode extends LitElementWw {
   */
   private _addOutputToSelectedNode() {
     this.nodeEditor.editor.addNodeOutput(this.selectedNode.id);
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "outputCreated"
+    this.dispatchEvent(
+      new CustomEvent("outputCreatedSelectedNode", {
+        bubbles: true,
+        composed: true,
+      })
     );
   }
 

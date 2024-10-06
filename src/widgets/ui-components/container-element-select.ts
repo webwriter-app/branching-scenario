@@ -25,19 +25,6 @@ import packages from "@tabler/icons/outline/packages.svg";
 import { WebWriterGamebookPageContainer } from "../gamebook-components/webwriter-gamebook-page-container";
 import { WebWriterGamebookPopupContainer } from "../gamebook-components/webwriter-gamebook-popup-container";
 
-const NO_NODE_SELECTED: DrawflowNode = {
-  id: -1,
-  name: "unselect",
-  inputs: {},
-  outputs: {},
-  pos_x: 0,
-  pos_y: 0,
-  class: "unselect",
-  data: {},
-  html: "",
-  typenode: false,
-};
-
 @customElement("element-children-select")
 export class ElementChildrenSelect extends LitElement {
   @property({ type: Object }) accessor container;
@@ -91,15 +78,6 @@ export class ElementChildrenSelect extends LitElement {
   firstUpdated() {
     const containersSlot = this.container?.shadowRoot.querySelector("slot");
     const assignedElements = containersSlot.assignedElements();
-
-    // // Check if there is a non-empty <p> element in the assignedElements
-    // const hasNonEmptyP = assignedElements.some(
-    //   (el) => el.tagName === "P" && el.textContent.trim() !== ""
-    // );
-
-    // if (hasNonEmptyP) {
-    //   this.options = [...this.options, { tagName: "Text", id: "text" }];
-    // }
 
     // Filter nodes with class "ww-widget" and add them to this.options
     let wwWidgetElements = assignedElements.filter((el) =>
