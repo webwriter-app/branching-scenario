@@ -553,6 +553,10 @@ export class BranchNodeDetails extends LitElementWw {
       })
     );
 
+    this.providedStore.setSelectedContainer(
+      this.providedStore.selectedContainer
+    );
+
     this.requestUpdate();
   }
 
@@ -561,13 +565,15 @@ export class BranchNodeDetails extends LitElementWw {
 
   */
   private _validateAndUpdateRuleMatch(e: Event, index: number) {
-    const inputElement = e.target as HTMLInputElement;
+    const inputElement = e.target as SlInput;
+    console.log(inputElement);
     let value = inputElement.value;
 
     if (value != "") {
       // Remove any non-numeric characters (this makes sure input is strictly numeric)
       value = value.replace(/[^0-9]/g, "");
 
+      console.log(value);
       // Convert the value to a number and clamp it to the range 0-100
       let numericValue = Number(value);
 
@@ -583,6 +589,11 @@ export class BranchNodeDetails extends LitElementWw {
       index,
       inputElement.value
     );
+
+    this.providedStore.setSelectedContainer(
+      this.providedStore.selectedContainer
+    );
+
     this.requestUpdate();
   }
 
@@ -627,7 +638,9 @@ export class BranchNodeDetails extends LitElementWw {
       );
     }
 
-    console.log(this.providedStore.selectedContainer.rules);
+    this.providedStore.setSelectedContainer(
+      this.providedStore.selectedContainer
+    );
     this.requestUpdate();
   }
   /*
@@ -640,6 +653,11 @@ export class BranchNodeDetails extends LitElementWw {
       value,
       this.providedStore.branchIncomingContainer
     );
+
+    this.providedStore.setSelectedContainer(
+      this.providedStore.selectedContainer
+    );
+
     this.requestUpdate();
   }
 
@@ -652,6 +670,11 @@ export class BranchNodeDetails extends LitElementWw {
       value,
       this.providedStore.branchIncomingContainer
     );
+
+    this.providedStore.setSelectedContainer(
+      this.providedStore.selectedContainer
+    );
+
     this.requestUpdate();
   }
 
@@ -664,6 +687,11 @@ export class BranchNodeDetails extends LitElementWw {
       value,
       this.providedStore.branchIncomingContainer
     );
+
+    this.providedStore.setSelectedContainer(
+      this.providedStore.selectedContainer
+    );
+
     this.requestUpdate();
   }
 

@@ -14,6 +14,7 @@ import { WebWriterSmartBranchButton } from "./webwriter-smart-branch-button";
 
 //Shoelace
 import { SlButton, SlDialog } from "@shoelace-style/shoelace";
+import { WebWriterGamebookOptions } from "../webwriter-gamebook-options";
 
 @customElement("webwriter-gamebook-popup-container")
 export class WebWriterGamebookPopupContainer extends LitElementWw {
@@ -68,6 +69,7 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
     return {
       "sl-dialog": SlDialog,
       "webwriter-connection-button": WebWriterConnectionButton,
+      "webwriter-gamebook-options": WebWriterGamebookOptions,
     };
   }
   //associated node id
@@ -154,7 +156,12 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
   */
   render() {
     return html` ${this.isContentEditable
-      ? html` <slot class="page"></slot>`
+      ? html`
+          <slot class="page"></slot>
+          <webwriter-gamebook-options
+            part="options"
+          ></webwriter-gamebook-options>
+        `
       : html`
           <sl-dialog
             id="dialog"

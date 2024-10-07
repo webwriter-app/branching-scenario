@@ -16,9 +16,13 @@ import { WebWriterSmartBranchButton } from "./webwriter-smart-branch-button";
 
 import { provide, consume, createContext } from "@lit/context";
 import { gamebookStore, GamebookStore } from "../context-test";
+import { WebWriterGamebookOptions } from "../webwriter-gamebook-options";
 
 @customElement("webwriter-gamebook-page-container")
 export class WebWriterGamebookPageContainer extends LitElementWw {
+  @property({ type: Number, attribute: true, reflect: true })
+  accessor tabIndex = -1;
+
   //import CSS
   static get styles() {
     return css`
@@ -39,6 +43,7 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
     return {
       "sl-button": SlButton,
       "webwriter-connection-button": WebWriterConnectionButton,
+      "webwriter-gamebook-options": WebWriterGamebookOptions,
     };
   }
   //associated node id
@@ -48,8 +53,6 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
   accessor pageTitle;
   @property({ type: Number, attribute: true, reflect: true })
   accessor originPage;
-  @property({ type: Number, attribute: true, reflect: true })
-  accessor tabIndex = -1;
   @property({ type: Number, attribute: true, reflect: true })
   accessor branchesOff = -1;
 
@@ -107,7 +110,10 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
 
   */
   render() {
-    return html`<slot class="page"></slot>`;
+    return html`<slot class="page"></slot>
+      <webwriter-gamebook-options
+        part="options"
+      ></webwriter-gamebook-options> `;
   }
 
   /*

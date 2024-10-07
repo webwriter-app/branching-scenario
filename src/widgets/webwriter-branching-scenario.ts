@@ -95,7 +95,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.requestUpdate(); // Ensure Lit re-renders
     });
 
-    this.focus();
+    // this.addEventListener("click", function () {
+    //   this.focus(); // Focus the clicked element
+    // });
+
+    //this.focus();
   }
 
   /*
@@ -245,6 +249,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   @deleteConnection=${(e: CustomEvent) =>
                     this.controller._deleteConnection(e)}
                   @markOutputs=${() => this.controller._markUsedOutputs()}
+                  @makeSelectedNodeOrigin=${(e: CustomEvent) =>
+                    this.controller._changeOrigin(e)}
+                  @pasteNode=${() => this.controller._pasteNode()}
+                  @deleteSelectedNode=${() =>
+                    this.controller._deleteSelectedNode()}
                 >
                   <slot></slot>
                 </gamebook-container-manager>
