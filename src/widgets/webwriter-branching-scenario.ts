@@ -38,6 +38,11 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
 
+  static shadowRootOptions = {
+    ...LitElement.shadowRootOptions,
+    delegatesFocus: true,
+  };
+
   //registering custom elements used in the widget
   static get scopedElements() {
     return {
@@ -163,7 +168,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   render() {
     return html`
       <!-- <div id="widget"> -->
-      <!-- <button @click=${() => this.exportContainersAsString()}></button> -->
+      <button @click=${() => this.exportContainersAsString()}></button>
       ${this.isContentEditable
         ? html`
             <split-view>
@@ -283,9 +288,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   */
   private exportContainersAsString() {
-    // console.log(
-    //   JSON.stringify(this.gamebookContainers, this.domElementReplacer)
-    // );
+    console.log(JSON.stringify(this.nodeEditor.editor.drawflow));
+    console.log(
+      JSON.stringify(
+        this.gamebookContainerManager.gamebookContainers,
+        this.domElementReplacer
+      )
+    );
   }
 
   /*

@@ -35,6 +35,11 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
         width: 100%;
         height: 100%;
       }
+
+      :host(:not([contenteditable="true"]):not([contenteditable=""]))
+        .author-only {
+        display: none;
+      }
     `;
   }
 
@@ -103,6 +108,10 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
       const par = document.createElement("p");
       this.appendChild(par);
     }
+
+    this.addEventListener("focus", function () {
+      console.log("container focused");
+    });
   }
 
   /*
@@ -112,6 +121,7 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
   render() {
     return html`<slot class="page"></slot>
       <webwriter-gamebook-options
+        class="author-only"
         part="options"
       ></webwriter-gamebook-options> `;
   }

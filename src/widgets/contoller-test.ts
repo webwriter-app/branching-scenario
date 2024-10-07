@@ -39,7 +39,7 @@ export class MouseController implements ReactiveController {
       this.monitorHostUserContainerDeletion
     );
     const config = {
-      attributes: false,
+      attributes: true,
       childList: true,
       subtree: false,
       characterData: false,
@@ -66,7 +66,11 @@ export class MouseController implements ReactiveController {
       this.gamebookContainerManager._showGamebookContainerById(
         container.drawflowNodeId
       );
+
+      container.focus();
+
       (this.host as any).gamebookStore.setSelectedContainer(container);
+
       if (
         node.class === "branch" &&
         container instanceof WebWriterGamebookBranchContainer
@@ -281,12 +285,6 @@ export class MouseController implements ReactiveController {
 
   */
   _branchNodeConnected = (event) => {
-    console.log(
-      "update rule target",
-      event.detail.outputNode.id,
-      event.detail.outputClass,
-      event.detail.inputNode.id
-    );
     this.gamebookContainerManager.updateBranchContainerRuleTarget(
       event.detail.outputNode.id,
       event.detail.outputClass,
@@ -301,13 +299,6 @@ export class MouseController implements ReactiveController {
   */
   _outputBranchNodeConnectionRemove = (event) => {
     const selectedNodeId = (this.host as any).gamebookStore.selectedNode.id;
-
-    console.log(
-      "update rule target",
-      event.detail.outputNode.id,
-      event.detail.outputClass,
-      ""
-    );
 
     this.gamebookContainerManager.updateBranchContainerRuleTarget(
       event.detail.outputNode.id,
@@ -422,6 +413,7 @@ export class MouseController implements ReactiveController {
   */
   _editorCleared = () => {
     this.gamebookContainerManager._deleteAllGamebookContainers();
+    this._unselectContainer();
     this._markUsedOutputs();
     this.host.requestUpdate(); // Update the host component after changes
   };
@@ -493,7 +485,6 @@ export class MouseController implements ReactiveController {
   */
   _deleteOutput = (event) => {
     (event as CustomEvent).stopPropagation();
-    console.log("delete output", event.detail.nodeId, event.detail.outputClass);
     this.nodeEditor.programaticallyUnselectConnection();
     this.nodeEditor.editor.removeNodeOutput(
       event.detail.nodeId,
@@ -601,7 +592,6 @@ export class MouseController implements ReactiveController {
   
   */
   _highlightOutput = (event) => {
-    console.log("test");
     const { outputNodeId, outputClass } = event.detail;
 
     if (outputNodeId !== undefined && outputClass !== undefined) {
@@ -613,7 +603,6 @@ export class MouseController implements ReactiveController {
   
   */
   _unhighlightOutput = (event) => {
-    console.log("test");
     const { outputNodeId, outputClass } = event.detail;
 
     if (outputNodeId !== undefined && outputClass !== undefined) {

@@ -39,7 +39,6 @@ import styles from "../../css/node-editor-css";
 
 import { NodeEditorControlsBar } from "./node-editor-control-bar";
 import { DrawflowHelpPopUpControls } from "./node-editor-help-popup-controls";
-import { decisionPopUpWithFeedback } from "../node-templates/decision-popup-with-feedback";
 
 const NO_CONNECTION_SELECTED = "output_id-input_id-output_class-input_class";
 
@@ -223,6 +222,10 @@ export class NodeEditor extends LitElementWw {
           @addBranchNode=${(e: CustomEvent) => {
             this.addBranchNode(e.detail.title);
           }}
+          @addTemplate=${(e: CustomEvent) =>
+            this.addTemplate(e.detail.template)}
+          @clearDialog=${() =>
+            (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
         >
         </node-editor-controls-bar>
 
@@ -1238,13 +1241,11 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  private addDecisionPopUpTemplate() {
+  private addTemplate(template) {
     //console.log(JSON.stringify(exportdata));
     var currentNodes = this.editor.export();
     // Create a deep copy of the nodeTemplates
-    const nodeTemplatesCopy = JSON.parse(
-      JSON.stringify(decisionPopUpWithFeedback)
-    );
+    const nodeTemplatesCopy = JSON.parse(JSON.stringify(template));
     // Assuming you have the following from the drawflow editor:
     const rect = this.drawflowEditorDiv.getBoundingClientRect();
     const zoom = this.editor.zoom;
@@ -1322,14 +1323,15 @@ export class NodeEditor extends LitElementWw {
 
   */
   private mergeTemplate(currentNodes, nodeTemplates) {
-    //
     const currentData = currentNodes.drawflow.Home.data;
     const templateData = nodeTemplates.drawflow.Home.data;
     const currentMaxIndex = Math.max(...Object.keys(currentData).map(Number));
     let newIndex = currentMaxIndex + 1;
+
     const indexMap = Object.fromEntries(
       Object.keys(templateData).map((key) => [Number(key), newIndex++])
     );
+
     for (const [key, node] of Object.entries(templateData)) {
       const newId = indexMap[Number(key)];
       (node as DrawflowNode).id = newId;
@@ -1361,6 +1363,8 @@ export class NodeEditor extends LitElementWw {
       buttons.forEach((button) => {
         // Update datatargetid
         const dataTargetId = button.getAttribute("datatargetid");
+        console.log(button);
+        console.log(dataTargetId);
         if (dataTargetId) {
           const oldTargetId = Number(dataTargetId);
           button.setAttribute("datatargetid", indexMap[oldTargetId].toString());

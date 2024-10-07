@@ -30,6 +30,9 @@ import squares from "@tabler/icons/outline/squares.svg";
 import directions from "@tabler/icons/outline/directions.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 
+import { decisionPopUpWithFeedback } from "../node-templates/decision-popup-with-feedback";
+import { decisionPopUpToPage } from "../node-templates/decision-popup-to-page";
+
 import { consume } from "@lit/context";
 import { gamebookStore, GamebookStore } from "../context-test";
 
@@ -81,7 +84,7 @@ export class NodeEditorControlsBar extends LitElementWw {
             Add
             <sl-icon src=${plus} slot="prefix"></sl-icon>
           </sl-button>
-          <sl-menu style="width: 200px;" hoist>
+          <sl-menu style="width: 350px;" hoist>
             <sl-menu-label>Blank</sl-menu-label>
             <sl-menu-item
               @click=${() => {
@@ -130,8 +133,8 @@ export class NodeEditorControlsBar extends LitElementWw {
             <sl-menu-item
               @click=${() => {
                 this.dispatchEvent(
-                  new CustomEvent("addPopUpNode", {
-                    detail: { title: "Untitled Popup" },
+                  new CustomEvent("addTemplate", {
+                    detail: { template: decisionPopUpWithFeedback },
                     bubbles: true,
                     composed: true,
                   })
@@ -139,7 +142,21 @@ export class NodeEditorControlsBar extends LitElementWw {
               }}
             >
               <sl-icon slot="prefix" src=${directions}></sl-icon>
-              Decision Popup
+              Decision Popup (to Feedback Popup)
+            </sl-menu-item>
+            <sl-menu-item
+              @click=${() => {
+                this.dispatchEvent(
+                  new CustomEvent("addTemplate", {
+                    detail: { template: decisionPopUpToPage },
+                    bubbles: true,
+                    composed: true,
+                  })
+                );
+              }}
+            >
+              <sl-icon slot="prefix" src=${directions}></sl-icon>
+              Decision Popup (to Page)
             </sl-menu-item>
           </sl-menu>
         </sl-dropdown>

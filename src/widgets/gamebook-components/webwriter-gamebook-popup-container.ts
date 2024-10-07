@@ -44,6 +44,11 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
         padding: 20px;
       }
 
+      :host(:not([contenteditable="true"]):not([contenteditable=""]))
+        .author-only {
+        display: none;
+      }
+
       /* Base style for the close button visibility */
       sl-dialog::part(close-button) {
         display: var(--close-button-display, flex);
@@ -159,6 +164,7 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
       ? html`
           <slot class="page"></slot>
           <webwriter-gamebook-options
+            class="author-only"
             part="options"
           ></webwriter-gamebook-options>
         `
