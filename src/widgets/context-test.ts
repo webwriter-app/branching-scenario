@@ -29,6 +29,8 @@ export class GamebookStore {
   editorContent: any;
   selectedContainer?: any;
   branchIncomingContainer?: any;
+  searchTerm: string;
+  searchResults: any;
 
   //Use observer pattern to notify main view of cahnge
   observer: Observer;
@@ -44,7 +46,9 @@ export class GamebookStore {
     editorContent = null,
     copiedNode = NO_NODE_SELECTED,
     selectedContainer = undefined,
-    branchIncomingContainer = undefined
+    branchIncomingContainer = undefined,
+    searchTerm = "",
+    searchResults = undefined
   ) {
     this.title = title;
     this.selectedNode = selectedNode;
@@ -57,6 +61,8 @@ export class GamebookStore {
     this.copiedNode = copiedNode;
     this.selectedContainer = selectedContainer;
     this.branchIncomingContainer = branchIncomingContainer;
+    this.searchTerm = searchTerm;
+    this.searchResults = searchResults;
   }
 
   setTitle(newTitle = Math.random().toString()) {
@@ -110,6 +116,16 @@ export class GamebookStore {
     this.notifyObservers();
   }
 
+  setSearchTerm(term = "") {
+    this.searchTerm = term;
+    this.notifyObservers();
+  }
+
+  setSearchResults(results = undefined) {
+    this.searchResults = results;
+    this.notifyObservers();
+  }
+
   // Method to register an observer
   addObserver(observer: Observer) {
     this.observer = observer;
@@ -136,6 +152,8 @@ export class GamebookStore {
         copiedNode: this.copiedNode,
         selectedContainer: this.selectedContainer, // Include selectedContainer here
         branchIncomingContainer: this.branchIncomingContainer,
+        searchTerm: this.searchTerm,
+        searchResults: this.searchResults,
       },
       this.replacer.bind(this)
     );
@@ -181,7 +199,9 @@ export class GamebookStore {
       data.editorContent,
       data.copiedNode,
       data.selectedContainer,
-      data.branchIncomingContainer
+      data.branchIncomingContainer,
+      data.searchTerm,
+      data.searchResults
     );
   }
 }

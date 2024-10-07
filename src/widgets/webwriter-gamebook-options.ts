@@ -55,16 +55,6 @@ export class WebWriterGamebookOptions extends LitElementWw {
   @property({ type: Object, attribute: true, reflect: false })
   public accessor providedStore = new GamebookStore("Default");
 
-  //   help-text=${
-  //     this.numberOfSearchNodes == 0
-  //       ? ""
-  //       : this.numberOfSearchNodes == 1
-  //       ? `${this.numberOfSearchNodes} node found`
-  //       : this.numberOfSearchNodes > 1
-  //       ? `${this.numberOfSearchNodes} nodes found`
-  //       : ""
-  //   }
-
   render() {
     return html`
       <div class="author-only">
@@ -78,6 +68,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
           placeholder="Nodes, content, ..."
           clearable
           @sl-input=${this._handleNodeSearch}
+          .value=${this.providedStore.searchTerm}
         >
           <sl-icon src=${search} slot="prefix"></sl-icon>
         </sl-input>
@@ -219,21 +210,14 @@ TODO search
   private _handleNodeSearch(event: Event) {
     const inputText = (event.target as SlInput).value;
 
-    // if (inputText != "") {
-    //   let nodeIncludes = [
-    //     ...new Set([
-    //       ...this.nodeEditor.searchNodes(inputText),
-    //       ...this.gamebookContainerManager.searchContainers(inputText),
-    //     ]),
-    //   ];
+    this.providedStore.setSearchTerm(inputText);
 
-    //   this.numberOfSearchNodes = nodeIncludes.length;
-    //   this.nodeEditor.highlightSearchedNodes(nodeIncludes);
-    // } else {
-    //   //console.log("test");
-    //   this.nodeEditor.removeSearchHighlightFromAllNodes();
-    //   this.numberOfSearchNodes = 0;
-    // }
+    this.dispatchEvent(
+      new CustomEvent("nodeSearch", {
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
   /*

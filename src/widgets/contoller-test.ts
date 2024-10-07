@@ -810,4 +810,25 @@ export class MouseController implements ReactiveController {
       }
     });
   }
+
+  /*
+
+
+  */
+  public nodeSearch() {
+    let inputText = (this.host as any).gamebookStore.searchTerm;
+
+    if (inputText != "") {
+      let nodeIncludes = [
+        ...new Set([
+          ...this.nodeEditor.searchNodes(inputText),
+          ...this.gamebookContainerManager.searchContainers(inputText),
+        ]),
+      ];
+
+      this.nodeEditor.highlightSearchedNodes(nodeIncludes);
+    } else {
+      this.nodeEditor.removeSearchHighlightFromAllNodes();
+    }
+  }
 }

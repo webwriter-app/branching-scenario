@@ -122,7 +122,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.gamebookStore.editorContent,
       this.gamebookStore.copiedNode,
       this.gamebookStore.selectedContainer,
-      this.gamebookStore.branchIncomingContainer
+      this.gamebookStore.branchIncomingContainer,
+      this.gamebookStore.searchTerm,
+      this.gamebookStore.searchResults
     );
   }
 
@@ -167,8 +169,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   */
   render() {
     return html`
-      <!-- <div id="widget"> -->
-      <button @click=${() => this.exportContainersAsString()}></button>
+      <!-- <button @click=${() => this.exportContainersAsString()}></button> -->
       ${this.isContentEditable
         ? html`
             <split-view>
@@ -259,6 +260,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   @pasteNode=${() => this.controller._pasteNode()}
                   @deleteSelectedNode=${() =>
                     this.controller._deleteSelectedNode()}
+                  @nodeSearch=${() => this.controller.nodeSearch()}
                 >
                   <slot></slot>
                 </gamebook-container-manager>
@@ -272,6 +274,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 this.controller._changeOrigin(e)}
               @pasteNode=${() => this.controller._pasteNode()}
               @deleteSelectedNode=${() => this.controller._deleteSelectedNode()}
+              @nodeSearch=${() => this.controller.nodeSearch()}
             ></webwriter-gamebook-options>
           `
         : html`<webwriter-gamebook
