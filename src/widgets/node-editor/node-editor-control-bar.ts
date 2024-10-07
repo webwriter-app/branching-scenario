@@ -20,6 +20,7 @@ import {
   SlIcon,
   SlInput,
   SlButtonGroup,
+  SlBadge,
 } from "@shoelace-style/shoelace";
 
 //@tabler icons
@@ -29,9 +30,12 @@ import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 import directions from "@tabler/icons/outline/directions.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
+import helpOctagon from "@tabler/icons/outline/help-octagon.svg";
+import packages from "@tabler/icons/outline/packages.svg";
 
 import { decisionPopUpWithFeedback } from "../node-templates/decision-popup-with-feedback";
 import { decisionPopUpToPage } from "../node-templates/decision-popup-to-page";
+import { singleChoiceQuizLoop } from "../node-templates/single-choice-quiz-loop";
 
 import { consume } from "@lit/context";
 import { gamebookStore, GamebookStore } from "../context-test";
@@ -53,6 +57,7 @@ export class NodeEditorControlsBar extends LitElementWw {
       "sl-dropdown": SlDropdown,
       "sl-menu-label": SlMenuLabel,
       "sl-input": SlInput,
+      "sl-badge": SlBadge,
     };
   }
 
@@ -84,8 +89,8 @@ export class NodeEditorControlsBar extends LitElementWw {
             Add
             <sl-icon src=${plus} slot="prefix"></sl-icon>
           </sl-button>
-          <sl-menu style="width: 350px;" hoist>
-            <sl-menu-label>Blank</sl-menu-label>
+          <sl-menu style="width: 280px;" hoist>
+            <sl-menu-label>Nodes</sl-menu-label>
             <sl-menu-item
               @click=${() => {
                 this.dispatchEvent(
@@ -129,21 +134,7 @@ export class NodeEditorControlsBar extends LitElementWw {
               Smart Branch
             </sl-menu-item>
             <sl-divider></sl-divider>
-            <sl-menu-label>Template</sl-menu-label>
-            <sl-menu-item
-              @click=${() => {
-                this.dispatchEvent(
-                  new CustomEvent("addTemplate", {
-                    detail: { template: decisionPopUpWithFeedback },
-                    bubbles: true,
-                    composed: true,
-                  })
-                );
-              }}
-            >
-              <sl-icon slot="prefix" src=${directions}></sl-icon>
-              Decision Popup (to Feedback Popup)
-            </sl-menu-item>
+            <sl-menu-label>Blocks</sl-menu-label>
             <sl-menu-item
               @click=${() => {
                 this.dispatchEvent(
@@ -156,7 +147,43 @@ export class NodeEditorControlsBar extends LitElementWw {
               }}
             >
               <sl-icon slot="prefix" src=${directions}></sl-icon>
-              Decision Popup (to Page)
+              Decision Popup to Page
+            </sl-menu-item>
+
+            <sl-menu-item
+              @click=${() => {
+                this.dispatchEvent(
+                  new CustomEvent("addTemplate", {
+                    detail: { template: decisionPopUpWithFeedback },
+                    bubbles: true,
+                    composed: true,
+                  })
+                );
+              }}
+            >
+              <sl-icon slot="prefix" src=${directions}></sl-icon>
+              Decision Feedback
+            </sl-menu-item>
+
+            <sl-menu-item
+              @click=${() => {
+                this.dispatchEvent(
+                  new CustomEvent("addTemplate", {
+                    detail: { template: singleChoiceQuizLoop },
+                    bubbles: true,
+                    composed: true,
+                  })
+                );
+              }}
+            >
+              <sl-icon slot="prefix" src=${helpOctagon}></sl-icon>
+              Quiz Loop
+              <sl-badge variant="neutral" pill slot="suffix">
+                <p style="margin: 0px; padding: 0px; padding-right: 5px;">
+                  Requires Quiz
+                </p>
+                <sl-icon src=${packages}></sl-icon
+              ></sl-badge>
             </sl-menu-item>
           </sl-menu>
         </sl-dropdown>

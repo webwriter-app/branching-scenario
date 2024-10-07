@@ -1356,6 +1356,15 @@ export class NodeEditor extends LitElementWw {
         const oldId = Number(drawflowNodeIdAttr.value);
         drawflowNodeIdAttr.value = indexMap[oldId].toString();
       }
+
+      const incomingContainerIdAttr = container.attributes.find(
+        (attr) => attr.name === "incomingcontainerid"
+      );
+      if (incomingContainerIdAttr) {
+        const oldId = Number(incomingContainerIdAttr.value);
+        incomingContainerIdAttr.value = indexMap[oldId].toString();
+      }
+
       // Update the datatargetid and identifier in the innerHTML
       const parser = new DOMParser();
       const doc = parser.parseFromString(container.innerHTML, "text/html");
