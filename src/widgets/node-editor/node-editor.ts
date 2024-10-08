@@ -44,10 +44,7 @@ const NO_CONNECTION_SELECTED = "output_id-input_id-output_class-input_class";
 
 const GRID_SIZE = 40;
 
-import {
-  editorState,
-  GamebookEditorState,
-} from "../gamebook-editor-state-lit-context";
+import { editorState, GamebookEditorState } from "../editor-state-context";
 
 @customElement("node-editor")
 export class NodeEditor extends LitElementWw {

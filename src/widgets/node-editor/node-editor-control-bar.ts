@@ -38,10 +38,7 @@ import { decisionPopUpToPage } from "../node-templates/decision-popup-to-page";
 import { singleChoiceQuizLoop } from "../node-templates/single-choice-quiz-loop";
 
 import { consume } from "@lit/context";
-import {
-  editorState,
-  GamebookEditorState,
-} from "../gamebook-editor-state-lit-context";
+import { editorState, GamebookEditorState } from "../editor-state-context";
 
 @customElement("node-edtior-controls-bar")
 export class NodeEditorControlsBar extends LitElementWw {

@@ -14,10 +14,7 @@ import minus from "@tabler/icons/outline/minus.svg";
 import XCircleFill from "bootstrap-icons/icons/x-circle-fill.svg";
 
 import { provide, consume, createContext } from "@lit/context";
-import {
-  editorState,
-  GamebookEditorState,
-} from "../gamebook-editor-state-lit-context";
+import { editorState, GamebookEditorState } from "../editor-state-context";
 
 @customElement("node-connection-list")
 export class NodeConnectionList extends LitElementWw {

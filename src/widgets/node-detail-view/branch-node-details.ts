@@ -39,10 +39,7 @@ import { ToggleableInput } from "../ui-components/toggleable-input";
 import { NodeConnectionList } from "../ui-components/node-connection-list";
 
 import { provide, consume, createContext } from "@lit/context";
-import {
-  editorState,
-  GamebookEditorState,
-} from "../gamebook-editor-state-lit-context";
+import { editorState, GamebookEditorState } from "../editor-state-context";
 
 @customElement("branch-node-details")
 export class BranchNodeDetails extends LitElementWw {

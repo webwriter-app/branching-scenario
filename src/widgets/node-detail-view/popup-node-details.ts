@@ -8,10 +8,7 @@ import {
   queryAssignedElements,
 } from "lit/decorators.js";
 import { provide, consume, createContext } from "@lit/context";
-import {
-  editorState,
-  GamebookEditorState,
-} from "../gamebook-editor-state-lit-context";
+import { editorState, GamebookEditorState } from "../editor-state-context";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";

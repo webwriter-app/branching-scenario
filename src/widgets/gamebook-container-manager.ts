@@ -16,10 +16,7 @@ import { WebWriterGamebookBranchContainer } from "./gamebook-components/webwrite
 import { WebWriterSmartBranchButton } from "./gamebook-components/webwriter-smart-branch-button";
 
 import { provide, consume, createContext } from "@lit/context";
-import {
-  editorState,
-  GamebookEditorState,
-} from "./gamebook-editor-state-lit-context";
+import { editorState, GamebookEditorState } from "./editor-state-context";
 
 @customElement("gamebook-container-manager")
 export class GamebookContainerManager extends LitElementWw {

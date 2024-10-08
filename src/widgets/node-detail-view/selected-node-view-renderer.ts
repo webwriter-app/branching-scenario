@@ -3,10 +3,7 @@ import { LitElementWw } from "@webwriter/lit";
 import { customElement, property } from "lit/decorators.js";
 import { PageNodeDetails } from "./page-node-details";
 import { provide, consume, createContext } from "@lit/context";
-import {
-  editorState,
-  GamebookEditorState,
-} from "../gamebook-editor-state-lit-context";
+import { editorState, GamebookEditorState } from "../editor-state-context";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";

@@ -9,10 +9,7 @@ import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import search from "@tabler/icons/outline/search.svg";
 
 import { provide, consume, createContext } from "@lit/context";
-import {
-  editorState,
-  GamebookEditorState,
-} from "../gamebook-editor-state-lit-context";
+import { editorState, GamebookEditorState } from "../editor-state-context";
 
 @customElement("output-connection-control")
 export class OutputConnectionControl extends LitElement {

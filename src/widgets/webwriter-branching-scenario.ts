@@ -22,10 +22,7 @@ import { SlDialog } from "@shoelace-style/shoelace";
 
 import styles from "../css/webwriter-branching-scenario-css";
 
-import {
-  editorState,
-  GamebookEditorState,
-} from "./gamebook-editor-state-lit-context";
+import { editorState, GamebookEditorState } from "./editor-state-context";
 import { MouseController } from "./contoller-test";
 import { WebWriterGamebookOptions } from "./webwriter-gamebook-options";
 

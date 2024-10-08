@@ -16,10 +16,7 @@ import trash from "@tabler/icons/outline/trash.svg";
 
 import infoSquareRounded from "@tabler/icons/filled/info-square-rounded.svg";
 
-import {
-  editorState,
-  GamebookEditorState,
-} from "./gamebook-editor-state-lit-context";
+import { editorState, GamebookEditorState } from "./editor-state-context";
 
 //Drawflow Imports
 import Drawflow, { DrawflowNode } from "drawflow";

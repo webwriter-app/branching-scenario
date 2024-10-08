@@ -11,10 +11,7 @@ import layoutNavBarCollapse from "@tabler/icons/outline/arrow-bar-to-up.svg";
 import layoutBottomBarCollapse from "@tabler/icons/outline/arrow-bar-to-down.svg";
 
 import { provide, consume, createContext } from "@lit/context";
-import {
-  editorState,
-  GamebookEditorState,
-} from "../gamebook-editor-state-lit-context";
+import { editorState, GamebookEditorState } from "../editor-state-context";
 
 const DIVIDER_HEIGHT = 30;
 

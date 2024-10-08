@@ -250,6 +250,7 @@ export class MouseController implements ReactiveController {
   _removeNode = (id: number) => {
     (this.host as any).focus();
     this.nodeEditor.editor.removeNodeId(`node-${id}`);
+    this._unselectContainer();
     this.host.requestUpdate(); // Update the host component after changes
   };
 
