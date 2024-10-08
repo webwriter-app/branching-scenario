@@ -180,7 +180,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
           >
             <sl-icon src=${search} slot="prefix"></sl-icon>
           </sl-input>
-          <sl-menu hoist style="width: 150px;">
+          <sl-menu hoist style="width: 180px;">
             ${this.providedStore.searchResults
               ? html`
                   <sl-menu-label

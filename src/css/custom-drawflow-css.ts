@@ -303,9 +303,31 @@ export default css`
 
   /* ---- */
   /*  INPUT AND OUTPUTS */
+
+  .drawflow .drawflow-node .input {
+    position: relative; /* Allows positioning of the pseudo-element */
+    left: -10px;
+    background: white;
+    height: 20px;
+    width: 20px;
+    border: 1px solid #cdcdcd;
+    border-radius: 50%; /* Makes it a circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .drawflow .drawflow-node .input::before {
+    content: "";
+    position: absolute;
+    height: 10px; /* Smaller than the outer circle */
+    width: 10px;
+    border-radius: 50%; /* Make it circular */
+    border: 2px solid #cdcdcd;
+  }
+
   /* ---- */
 
-  .drawflow .drawflow-node .input,
   .drawflow .drawflow-node .output {
     height: 20px;
     width: 20px;
@@ -315,11 +337,23 @@ export default css`
     justify-content: center;
   }
 
-  .drawflow .drawflow-node .output:hover {
+  .drawflow .drawflow-node .output::before {
+    content: "";
+    position: absolute;
+    background: #dddddd;
+    border-color: #d7d7d7;
+    height: 10px; /* Smaller than the outer circle */
+    width: 10px;
+    border-radius: 50%; /* Make it circular */
+  }
+
+  .drawflow .drawflow-node .output:hover::before {
+    content: "";
     background: #4ea9ff;
   }
 
-  .drawflow .drawflow-node .output:active {
+  .drawflow .drawflow-node .output:active::before {
+    content: "";
     background: #4ea9ff;
   }
 
@@ -327,31 +361,30 @@ export default css`
     right: 10px;
   }
 
-  .drawflow .drawflow-node .input {
-    left: -10px;
-    background: white;
-  }
-
   .drawflow .drawflow-node .output[in-use="true"] {
     pointer-events: none;
-    background: #eeeeee;
+  }
+
+  .drawflow .drawflow-node .output[in-use="true"]::before {
+    content: "";
+    background: #a3a3a3;
     border-color: #d7d7d7;
     pointer-events: none;
   }
 
-  .drawflow .drawflow-node .output[has-error="true"] {
+  .drawflow .drawflow-node .output[has-error="true"]::before {
     border: 1px solid #ff2323 !important;
     background-color: #ff7474 !important;
   }
 
-  .drawflow .drawflow-node .output[target-disabled="true"] {
+  .drawflow .drawflow-node .output[target-disabled="true"]::before {
     pointer-events: none;
     background-image: repeating-linear-gradient(
       45deg,
       #f1f1f1,
-      /* Lighter Gray */ #f1f1f1 5px,
-      #c9c9c9 5px,
-      /* Darker Gray for contrast */ #c9c9c9 10px
+      /* Lighter Gray */ #f1f1f1 2px,
+      #c9c9c9 2px,
+      /* Darker Gray for contrast */ #c9c9c9 4px
     ) !important;
   }
 
@@ -359,10 +392,14 @@ export default css`
   /* INPUT OUTPUT HIGHLIGHTED */
   /* ---- */
 
-  .drawflow .drawflow-node .output[highlighted="true"],
-  .drawflow .drawflow-node .input[highlighted="true"] {
+  .drawflow .drawflow-node .output[highlighted="true"]::before {
     background: #4ea9ff;
     border: 1px solid #4ea9ff;
+  }
+
+  .drawflow .drawflow-node .input[highlighted="true"]::before {
+    border: 2px solid #4ea9ff;
+    content: ""; /* Always required for pseudo-elements like ::before and ::after */
   }
 
   /* ---- */
