@@ -38,7 +38,10 @@ import { decisionPopUpToPage } from "../node-templates/decision-popup-to-page";
 import { singleChoiceQuizLoop } from "../node-templates/single-choice-quiz-loop";
 
 import { consume } from "@lit/context";
-import { gamebookStore, GamebookStore } from "../context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../gamebook-editor-state-lit-context";
 
 @customElement("node-edtior-controls-bar")
 export class NodeEditorControlsBar extends LitElementWw {
@@ -64,9 +67,9 @@ export class NodeEditorControlsBar extends LitElementWw {
   //import CSS
   static styles = [styles];
 
-  @consume({ context: gamebookStore, subscribe: true })
+  @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
-  public accessor providedStore = new GamebookStore("Default");
+  public accessor editorStore = new GamebookEditorState("Default");
 
   render() {
     return html`
@@ -78,7 +81,7 @@ export class NodeEditorControlsBar extends LitElementWw {
             resize="none"
             placeholder="Gamebook Title"
             @input="${this.textAreaInputChanged}"
-            .value="${this.providedStore.title}"
+            .value="${this.editorStore.title}"
           >
             <sl-icon slot="prefix" src=${book}></sl-icon>
           </sl-input>
@@ -204,6 +207,6 @@ export class NodeEditorControlsBar extends LitElementWw {
 
   */
   private textAreaInputChanged(event) {
-    this.providedStore.setTitle(event.target.value);
+    this.editorStore.setTitle(event.target.value);
   }
 }

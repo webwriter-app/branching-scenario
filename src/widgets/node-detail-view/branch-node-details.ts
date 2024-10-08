@@ -39,7 +39,10 @@ import { ToggleableInput } from "../ui-components/toggleable-input";
 import { NodeConnectionList } from "../ui-components/node-connection-list";
 
 import { provide, consume, createContext } from "@lit/context";
-import { gamebookStore, GamebookStore } from "../context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../gamebook-editor-state-lit-context";
 
 @customElement("branch-node-details")
 export class BranchNodeDetails extends LitElementWw {
@@ -71,9 +74,9 @@ export class BranchNodeDetails extends LitElementWw {
   private draggedIndex = -1;
   @property({ type: Number }) accessor hoveredDividerIndex = -1;
 
-  @consume({ context: gamebookStore, subscribe: true })
+  @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
-  public accessor providedStore = new GamebookStore("Default");
+  public accessor editorStore = new GamebookEditorState("Default");
 
   //
 
@@ -82,7 +85,7 @@ export class BranchNodeDetails extends LitElementWw {
 
   render() {
     let isConnected =
-      this.providedStore.selectedContainer?.incomingContainerId !== -1;
+      this.editorStore.selectedContainer?.incomingContainerId !== -1;
     return html`
       <div class="title-bar">
         <div class="div-icon-branch">
@@ -90,7 +93,7 @@ export class BranchNodeDetails extends LitElementWw {
         </div>
         <div class="div-title">
           <toggleable-input
-            .text=${this.providedStore.selectedNode.data.title}
+            .text=${this.editorStore.selectedNode.data.title}
             .saveChanges=${(string) => this.renameNode(string)}
           ></toggleable-input>
           <p class="subtitle">Smart Branch</p>
@@ -98,11 +101,11 @@ export class BranchNodeDetails extends LitElementWw {
         <div class="inputOutputControls">
           <node-connection-list
             branch
-            .selectedNode=${this.providedStore.selectedNode}
+            .selectedNode=${this.editorStore.selectedNode}
           ></node-connection-list>
         </div>
       </div>
-      ${this.providedStore.selectedContainer
+      ${this.editorStore.selectedContainer
         ? html`<div class="container">
             <div class="titlebar">
               <p
@@ -110,7 +113,7 @@ export class BranchNodeDetails extends LitElementWw {
                 style=${isConnected ? "color: #505055" : "color: darkgrey"}
               >
                 Rules
-                (${this.providedStore.selectedContainer.rules?.length.toString()})
+                (${this.editorStore.selectedContainer.rules?.length.toString()})
               </p>
               <sl-icon-button
                 src=${plus}
@@ -122,10 +125,10 @@ export class BranchNodeDetails extends LitElementWw {
             </div>
 
             <div class="ruleList">
-              ${this.providedStore.selectedContainer?.rules?.length > 0
+              ${this.editorStore.selectedContainer?.rules?.length > 0
                 ? html`
                     ${repeat(
-                      this.providedStore.selectedContainer?.rules as Rule[],
+                      this.editorStore.selectedContainer?.rules as Rule[],
                       (rule, index) => html`
                     <!-- top divider  -->
                     <sl-divider
@@ -189,7 +192,7 @@ export class BranchNodeDetails extends LitElementWw {
                                    ).selectElement.value.toString()
                                  )}
                                .container=${
-                                 this.providedStore.branchIncomingContainer
+                                 this.editorStore.branchIncomingContainer
                                }
                              >
                              </element-children-select>
@@ -198,7 +201,7 @@ export class BranchNodeDetails extends LitElementWw {
                              ${
                                (rule as any).elementId !== "" &&
                                rule.elementId !== "text" &&
-                               this.providedStore.branchIncomingContainer
+                               this.editorStore.branchIncomingContainer
                                  .querySelector(`#${rule.elementId}`)
                                  ?.tagName.toLowerCase() == "webwriter-quiz"
                                  ? html` <quiz-tasks-select
@@ -210,7 +213,7 @@ export class BranchNodeDetails extends LitElementWw {
                                            e.target as ElementChildrenSelect
                                          ).selectElement.value.toString()
                                        )}
-                                     .quiz=${this.providedStore.branchIncomingContainer.querySelector(
+                                     .quiz=${this.editorStore.branchIncomingContainer.querySelector(
                                        `#${rule.elementId}`
                                      )}
                                    >
@@ -250,7 +253,7 @@ export class BranchNodeDetails extends LitElementWw {
                              <!-- Match -->
                              ${
                                rule.elementId !== ""
-                                 ? html`${this.providedStore.branchIncomingContainer
+                                 ? html`${this.editorStore.branchIncomingContainer
                                      .querySelector(`#${rule.elementId}`)
                                      ?.tagName?.toLowerCase() ===
                                      "webwriter-quiz" && rule.condition == ""
@@ -260,7 +263,7 @@ export class BranchNodeDetails extends LitElementWw {
                                            ?disabled=${!rule.isMatchEnabled}
                                          ></sl-input>
                                        `
-                                     : this.providedStore.branchIncomingContainer
+                                     : this.editorStore.branchIncomingContainer
                                          .querySelector(`#${rule.elementId}`)
                                          ?.tagName.toLowerCase() ==
                                          "webwriter-quiz" &&
@@ -292,11 +295,10 @@ export class BranchNodeDetails extends LitElementWw {
                              <!-- Output -->
                              <output-connection-control
                               
-                               .selectedNode=${this.providedStore.selectedNode}
+                               .selectedNode=${this.editorStore.selectedNode}
                                .incomingNodeId=${
-                                 this.providedStore.selectedNode.inputs[
-                                   "input_1"
-                                 ].connections?.[0]?.node
+                                 this.editorStore.selectedNode.inputs["input_1"]
+                                   .connections?.[0]?.node
                                }
                                .outputClass=${rule.output_id}
                                ?disabled=${!rule.isTargetEnabled}
@@ -308,7 +310,7 @@ export class BranchNodeDetails extends LitElementWw {
                                src=${minus}
                                style="font-size: 15px;"
                                @click=${() =>
-                                 this.providedStore.selectedContainer.deleteRule(
+                                 this.editorStore.selectedContainer.deleteRule(
                                    rule.output_id
                                  )}
                                ?disabled=${!this.isConnected}
@@ -351,10 +353,11 @@ export class BranchNodeDetails extends LitElementWw {
 
                       <!-- Output -->
                       <output-connection-control
-                        .selectedNode=${this.providedStore.selectedNode}
-                        .incomingNodeId=${this.providedStore.selectedNode
-                          .inputs["input_1"].connections?.[0]?.node}
-                        .outputClass=${this.providedStore.selectedContainer
+                        .selectedNode=${this.editorStore.selectedNode}
+                        .incomingNodeId=${this.editorStore.selectedNode.inputs[
+                          "input_1"
+                        ].connections?.[0]?.node}
+                        .outputClass=${this.editorStore.selectedContainer
                           .elseRule?.output_id}
                         required="true"
                       ></output-connection-control>
@@ -438,9 +441,9 @@ export class BranchNodeDetails extends LitElementWw {
       this.hoveredDividerIndex !== -1 &&
       this.draggedIndex !== this.hoveredDividerIndex
     ) {
-      const { selectedContainer, selectedNode } = this.providedStore;
+      const { selectedContainer, selectedNode } = this.editorStore;
 
-      let staticCopyRules = this.providedStore.selectedContainer.rules;
+      let staticCopyRules = this.editorStore.selectedContainer.rules;
 
       const hoveredRuleOutput =
         selectedContainer.rules[this.hoveredDividerIndex].output_id;
@@ -530,7 +533,7 @@ export class BranchNodeDetails extends LitElementWw {
 
       staticCopyRules.splice(this.hoveredDividerIndex, 0, draggedRule);
 
-      this.providedStore.selectedContainer.updateRules(staticCopyRules);
+      this.editorStore.selectedContainer.updateRules(staticCopyRules);
     }
 
     this._onDragEnd();
@@ -542,9 +545,7 @@ export class BranchNodeDetails extends LitElementWw {
       })
     );
 
-    this.providedStore.setSelectedContainer(
-      this.providedStore.selectedContainer
-    );
+    this.editorStore.setSelectedContainer(this.editorStore.selectedContainer);
 
     this.requestUpdate();
   }
@@ -573,14 +574,12 @@ export class BranchNodeDetails extends LitElementWw {
     }
 
     // Update the rule match
-    this.providedStore.selectedContainer._updateRuleMatch(
+    this.editorStore.selectedContainer._updateRuleMatch(
       index,
       inputElement.value
     );
 
-    this.providedStore.setSelectedContainer(
-      this.providedStore.selectedContainer
-    );
+    this.editorStore.setSelectedContainer(this.editorStore.selectedContainer);
 
     this.requestUpdate();
   }
@@ -594,41 +593,39 @@ export class BranchNodeDetails extends LitElementWw {
     this.dispatchEvent(
       new CustomEvent("addOutput", {
         detail: {
-          nodeId: this.providedStore.selectedNode.id,
+          nodeId: this.editorStore.selectedNode.id,
         },
         bubbles: true,
         composed: true,
       })
     );
 
-    this.providedStore.selectedContainer.addEmptyRule(
-      this.providedStore.selectedNode
+    this.editorStore.selectedContainer.addEmptyRule(
+      this.editorStore.selectedNode
     );
 
     // Step 5: Ensure the else rule is handled properly
-    if (this.providedStore.selectedContainer.elseRule) {
-      this.providedStore.selectedContainer._moveElseRuleToLastOutput(
-        this.providedStore.selectedNode
+    if (this.editorStore.selectedContainer.elseRule) {
+      this.editorStore.selectedContainer._moveElseRuleToLastOutput(
+        this.editorStore.selectedNode
       );
     } else {
       this.dispatchEvent(
         new CustomEvent("addOutput", {
           detail: {
-            nodeId: this.providedStore.selectedNode.id,
+            nodeId: this.editorStore.selectedNode.id,
           },
           bubbles: true,
           composed: true,
         })
       );
 
-      this.providedStore.selectedContainer.addEmptyElseRule(
-        this.providedStore.selectedNode
+      this.editorStore.selectedContainer.addEmptyElseRule(
+        this.editorStore.selectedNode
       );
     }
 
-    this.providedStore.setSelectedContainer(
-      this.providedStore.selectedContainer
-    );
+    this.editorStore.setSelectedContainer(this.editorStore.selectedContainer);
     this.requestUpdate();
   }
   /*
@@ -636,15 +633,13 @@ export class BranchNodeDetails extends LitElementWw {
 
   */
   private updateRuleElement(index, value) {
-    this.providedStore.selectedContainer._updateRuleElement(
+    this.editorStore.selectedContainer._updateRuleElement(
       index,
       value,
-      this.providedStore.branchIncomingContainer
+      this.editorStore.branchIncomingContainer
     );
 
-    this.providedStore.setSelectedContainer(
-      this.providedStore.selectedContainer
-    );
+    this.editorStore.setSelectedContainer(this.editorStore.selectedContainer);
 
     this.requestUpdate();
   }
@@ -653,15 +648,13 @@ export class BranchNodeDetails extends LitElementWw {
   
   */
   private updateRuleTasks(index, value) {
-    this.providedStore.selectedContainer._updateRuleTasks(
+    this.editorStore.selectedContainer._updateRuleTasks(
       index,
       value,
-      this.providedStore.branchIncomingContainer
+      this.editorStore.branchIncomingContainer
     );
 
-    this.providedStore.setSelectedContainer(
-      this.providedStore.selectedContainer
-    );
+    this.editorStore.setSelectedContainer(this.editorStore.selectedContainer);
 
     this.requestUpdate();
   }
@@ -670,15 +663,13 @@ export class BranchNodeDetails extends LitElementWw {
   
   */
   private updateRuleCondition(index, value) {
-    this.providedStore.selectedContainer._updateRuleCondition(
+    this.editorStore.selectedContainer._updateRuleCondition(
       index,
       value,
-      this.providedStore.branchIncomingContainer
+      this.editorStore.branchIncomingContainer
     );
 
-    this.providedStore.setSelectedContainer(
-      this.providedStore.selectedContainer
-    );
+    this.editorStore.setSelectedContainer(this.editorStore.selectedContainer);
 
     this.requestUpdate();
   }

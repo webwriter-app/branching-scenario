@@ -22,7 +22,10 @@ import alignRight from "@tabler/icons/outline/align-right.svg";
 import alignCenter from "@tabler/icons/outline/align-center.svg";
 
 import { provide, consume, createContext } from "@lit/context";
-import { gamebookStore, GamebookStore } from "../context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../gamebook-editor-state-lit-context";
 
 @customElement("webwriter-smart-branch-button")
 export class WebWriterSmartBranchButton extends LitElementWw {

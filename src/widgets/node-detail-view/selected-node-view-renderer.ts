@@ -3,7 +3,10 @@ import { LitElementWw } from "@webwriter/lit";
 import { customElement, property } from "lit/decorators.js";
 import { PageNodeDetails } from "./page-node-details";
 import { provide, consume, createContext } from "@lit/context";
-import { gamebookStore, GamebookStore } from "../context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../gamebook-editor-state-lit-context";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -32,29 +35,29 @@ export class SelectedNodeViewRenderer extends LitElementWw {
     };
   }
 
-  @consume({ context: gamebookStore, subscribe: true })
+  @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
-  public accessor providedStore = new GamebookStore("Default");
+  public accessor editorStore = new GamebookEditorState("Default");
 
   //import CSS
   static styles = [styles];
 
   render() {
     return html`
-      ${this.providedStore.selectedNode.id !== -1
+      ${this.editorStore.selectedNode.id !== -1
         ? html` <div class="selected-node">
-            ${this.providedStore.selectedNode.class == "page" ||
-            this.providedStore.selectedNode.class == "origin"
+            ${this.editorStore.selectedNode.class == "page" ||
+            this.editorStore.selectedNode.class == "origin"
               ? html`
                   <page-node-details>
                     <slot></slot>
                   </page-node-details>
                 `
-              : this.providedStore.selectedNode.class == "branch"
+              : this.editorStore.selectedNode.class == "branch"
               ? html` <branch-node-details>
                   <slot></slot>
                 </branch-node-details>`
-              : this.providedStore.selectedNode.class == "popup"
+              : this.editorStore.selectedNode.class == "popup"
               ? html`
                   <popup-node-details>
                     <slot></slot>
@@ -77,16 +80,16 @@ export class SelectedNodeViewRenderer extends LitElementWw {
   */
   private renameNode(text: String) {
     // this.nodeEditor.editor.updateNodeDataFromId(
-    //   this.providedStore.selectedNode.id,
+    //   this.editorStore.selectedNode.id,
     //   {
-    //     ...this.providedStore.selectedNode.data,
+    //     ...this.editorStore.selectedNode.data,
     //     title: text,
     //   }
     // );
     // this.changeInEditorCallback(
     //   { ...this.nodeEditor.editor.drawflow },
     //   "nodeRenamed",
-    //   this.providedStore.selectedNode
+    //   this.editorStore.selectedNode
     // );
   }
 }

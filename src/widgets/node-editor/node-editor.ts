@@ -44,7 +44,10 @@ const NO_CONNECTION_SELECTED = "output_id-input_id-output_class-input_class";
 
 const GRID_SIZE = 40;
 
-import { gamebookStore, GamebookStore } from "../context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../gamebook-editor-state-lit-context";
 
 @customElement("node-editor")
 export class NodeEditor extends LitElementWw {
@@ -113,9 +116,9 @@ export class NodeEditor extends LitElementWw {
   @query("#drawflowEditorDiv") accessor drawflowEditorDiv;
   @queryAll('div[id*="node-"]') accessor nodeDivs;
 
-  @consume({ context: gamebookStore, subscribe: true })
+  @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
-  public accessor providedStore = new GamebookStore("Default");
+  public accessor editorStore = new GamebookEditorState("Default");
 
   /*
 
@@ -132,22 +135,22 @@ export class NodeEditor extends LitElementWw {
     //scale factor
     this.editor.zoom_value = 0.05;
 
-    if (this.providedStore.editorZoom == -1) {
+    if (this.editorStore.editorZoom == -1) {
       this.editor.zoom = this.backgroundScale;
     } else {
-      this.editor.zoom = this.providedStore.editorZoom;
-      this.onZoom(this.providedStore.editorZoom, 0.2, this.editor.zoom_max);
+      this.editor.zoom = this.editorStore.editorZoom;
+      this.onZoom(this.editorStore.editorZoom, 0.2, this.editor.zoom_max);
     }
 
     this.editor.start();
     this.editor.zoom_refresh();
 
     if (
-      this.providedStore.editorPosition.x != undefined &&
-      this.providedStore.editorPosition.y != undefined
+      this.editorStore.editorPosition.x != undefined &&
+      this.editorStore.editorPosition.y != undefined
     ) {
-      this.editor.canvas_x = this.providedStore.editorPosition.x;
-      this.editor.canvas_y = this.providedStore.editorPosition.y;
+      this.editor.canvas_x = this.editorStore.editorPosition.x;
+      this.editor.canvas_y = this.editorStore.editorPosition.y;
 
       const drawflowContainer =
         this.drawflowEditorDiv.querySelector(".drawflow");
@@ -159,13 +162,14 @@ export class NodeEditor extends LitElementWw {
 
     this._registerEditorEventHandlers();
 
-    if (this.providedStore.editorContent == null) {
+    if (this.editorStore.editorContent == null) {
       this.addPageNode("First Page", true);
     } else {
-      this.editor.import(this.providedStore.editorContent);
-      if (this.providedStore.selectedNode.id !== -1) {
+      let editorContent = this.addHTMLToNodes(this.editorStore.editorContent);
+      this.editor.import(editorContent);
+      if (this.editorStore.selectedNode.id !== -1) {
         this.programaticallySelectNode(
-          this.providedStore.selectedNode.id.toString()
+          this.editorStore.selectedNode.id.toString()
         );
       }
       this.dispatchEvent(
@@ -236,7 +240,7 @@ export class NodeEditor extends LitElementWw {
             src=${mapPin}
             style="font-size: 18px;"
             @click=${() => {
-              const nodes = this.providedStore.editorContent.drawflow.Home.data;
+              const nodes = this.editorStore.editorContent.drawflow.Home.data;
               const originNode = Object.values(nodes).find(
                 (node: any) => node.class === "origin"
               );
@@ -287,7 +291,7 @@ export class NodeEditor extends LitElementWw {
       </sl-dialog>
       <sl-dialog label="Delete node" class="dialog" id="delete_node_dialog">
         You are about to delete the node
-        "${this.providedStore.selectedNode.data.title}". Do you want to proceed?
+        "${this.editorStore.selectedNode.data.title}". Do you want to proceed?
         <sl-button
           slot="footer"
           variant="primary"
@@ -345,7 +349,7 @@ export class NodeEditor extends LitElementWw {
   private onMouseUp() {
     this.backgroundIsDragging = false;
 
-    this.providedStore.setEditorPosition(
+    this.editorStore.setEditorPosition(
       this.editor.canvas_x,
       this.editor.canvas_y
     );
@@ -438,13 +442,38 @@ export class NodeEditor extends LitElementWw {
 
 
   */
+  private addHTMLToNodes(editorContent) {
+    let copy = editorContent;
+    if (copy) {
+      Object.values(copy.drawflow.Home.data).forEach((node) => {
+        if ((node as DrawflowNode).class === "page") {
+          (node as DrawflowNode).html = this.createPageNodeHTML(false);
+        } else if ((node as DrawflowNode).class === "origin") {
+          (node as DrawflowNode).html = this.createPageNodeHTML(true);
+        } else if ((node as DrawflowNode).class === "popup") {
+          (node as DrawflowNode).html = this.createPopupNodeHTML();
+        } else if ((node as DrawflowNode).class === "branch") {
+          (node as DrawflowNode).html = this.createBranchNodeHTML();
+        }
+      });
+    }
+
+    console.log(copy);
+
+    return copy;
+  }
+
+  /*
+
+
+  */
   private _clearEditor() {
     const dialog = this.shadowRoot.getElementById("dialog") as SlDialog;
     dialog.hide();
 
     this.editor.clear();
 
-    this.providedStore.setEditorContent(this.editor.drawflow);
+    this.editorStore.setEditorContent(this.editor.drawflow);
 
     this.dispatchEvent(
       new CustomEvent("editorCleared", {
@@ -505,7 +534,7 @@ export class NodeEditor extends LitElementWw {
         this.drawflowEditorDiv.classList.remove("smooth-background-transition");
       }, 350); // Adjust the timeout duration to match your animation duration
 
-      this.providedStore.setEditorPosition(
+      this.editorStore.setEditorPosition(
         this.editor.canvas_x,
         this.editor.canvas_y
       );
@@ -517,7 +546,7 @@ export class NodeEditor extends LitElementWw {
 
   */
   public pasteNode() {
-    const copiedNode = this.providedStore.copiedNode;
+    const copiedNode = this.editorStore.copiedNode;
 
     if (copiedNode.id !== -1) {
       this.nodePasted = true;
@@ -566,7 +595,7 @@ export class NodeEditor extends LitElementWw {
 
     //Event listerner for creation of a node
     this.editor.on("nodeCreated", (id) => {
-      this.providedStore.setEditorContent(this.editor.drawflow);
+      this.editorStore.setEditorContent(this.editor.drawflow);
       let createdNode = this.editor.getNodeFromId(id);
       if (this.nodePasted == false) {
         this.dispatchEvent(
@@ -597,12 +626,12 @@ export class NodeEditor extends LitElementWw {
           composed: true,
         })
       );
-      this.providedStore.setEditorContent(this.editor.drawflow);
+      this.editorStore.setEditorContent(this.editor.drawflow);
     });
 
     //Event listener for when a node got moved
     this.editor.on("nodeMoved", (id) => {
-      this.providedStore.setEditorContent(this.editor.drawflow);
+      this.editorStore.setEditorContent(this.editor.drawflow);
     });
 
     //
@@ -719,10 +748,8 @@ export class NodeEditor extends LitElementWw {
         const outputNode = this.editor.getNodeFromId(output_id);
         const inputNode = this.editor.getNodeFromId(input_id);
 
-        this.providedStore.setEditorContent(this.editor.drawflow);
-        this.providedStore.setSelectedNode(
-          this.editor.getNodeFromId(output_id)
-        );
+        this.editorStore.setEditorContent(this.editor.drawflow);
+        this.editorStore.setSelectedNode(this.editor.getNodeFromId(output_id));
 
         this.shadowRoot
           .querySelector(
@@ -799,7 +826,7 @@ export class NodeEditor extends LitElementWw {
         //     composed: true,
         //   })
         // );
-        this.providedStore.setEditorContent(this.editor.drawflow);
+        this.editorStore.setEditorContent(this.editor.drawflow);
 
         if (this.selectedConnection !== NO_CONNECTION_SELECTED) {
           const { outputNodeId, inputNodeId, outputClass, inputClass } =
@@ -838,9 +865,7 @@ export class NodeEditor extends LitElementWw {
           );
         }
 
-        this.providedStore.setSelectedNode(
-          this.editor.getNodeFromId(output_id)
-        );
+        this.editorStore.setSelectedNode(this.editor.getNodeFromId(output_id));
       }
     );
 
@@ -868,8 +893,8 @@ export class NodeEditor extends LitElementWw {
         zoomValue.classList.add("fade-in-out");
       }
 
-      this.providedStore.setEditorZoom(zoom_level);
-      this.providedStore.setEditorPosition(
+      this.editorStore.setEditorZoom(zoom_level);
+      this.editorStore.setEditorPosition(
         this.editor.canvas_x,
         this.editor.canvas_y
       );
@@ -883,7 +908,6 @@ export class NodeEditor extends LitElementWw {
   public addPageNode(title: string, isOrigin: boolean) {
     const nodeData = {
       title: title,
-      content: `<p>Testing Slots HTML Editing</p>`,
     };
 
     const nodeHTML = this.createPageNodeHTML(isOrigin);
@@ -910,7 +934,6 @@ export class NodeEditor extends LitElementWw {
   public addPopUpNode(title: string) {
     const nodeData = {
       title: title,
-      content: `<p>Testing Slots HTML Editing</p>`,
     };
 
     const nodeHTML = this.createPopupNodeHTML();
@@ -937,7 +960,6 @@ export class NodeEditor extends LitElementWw {
   public addBranchNode(title: string) {
     const nodeData = {
       title: title,
-      content: `<p>Testing Slots HTML Editing</p>`,
     };
 
     const nodeHTML = this.createBranchNodeHTML();
@@ -1240,6 +1262,9 @@ export class NodeEditor extends LitElementWw {
   */
   private addTemplate(template) {
     var currentNodes = this.editor.export();
+    let currentNodesWithHTML = this.addHTMLToNodes(currentNodes);
+    console.log(currentNodesWithHTML);
+
     // Create a deep copy of the nodeTemplates
     const nodeTemplatesCopy = JSON.parse(JSON.stringify(template));
     // Assuming you have the following from the drawflow editor:
@@ -1249,12 +1274,13 @@ export class NodeEditor extends LitElementWw {
     const centerY = rect.height / 2 - this.editor.canvas_y / zoom - 105 / 2;
     // Move nodes to the center of the canvas
     this.moveNodesToCenter(nodeTemplatesCopy, centerX, centerY);
+
     const mergedData = this.mergeTemplate(currentNodes, nodeTemplatesCopy);
     //
 
     this.editor.import(mergedData.currentNodes);
 
-    this.providedStore.setEditorContent(this.editor.drawflow);
+    this.editorStore.setEditorContent(this.editor.drawflow);
 
     this.dispatchEvent(
       new CustomEvent("nodeGroupImported", {
@@ -1564,7 +1590,7 @@ export class NodeEditor extends LitElementWw {
 
   */
   private deleteSelectedNode() {
-    this.editor.removeNodeId(`node-${this.providedStore.selectedNode.id}`);
+    this.editor.removeNodeId(`node-${this.editorStore.selectedNode.id}`);
     (this.shadowRoot.getElementById("delete_node_dialog") as SlDialog).hide();
   }
 

@@ -16,7 +16,10 @@ import trash from "@tabler/icons/outline/trash.svg";
 
 import infoSquareRounded from "@tabler/icons/filled/info-square-rounded.svg";
 
-import { gamebookStore, GamebookStore } from "./context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "./gamebook-editor-state-lit-context";
 
 //Drawflow Imports
 import Drawflow, { DrawflowNode } from "drawflow";
@@ -131,17 +134,17 @@ export class WebWriterGamebookOptions extends LitElementWw {
 
   @query("#searchInput") accessor searchInput;
 
-  @consume({ context: gamebookStore, subscribe: true })
+  @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
-  public accessor providedStore = new GamebookStore("Default");
+  public accessor editorStore = new GamebookEditorState("Default");
 
   render() {
     const options = (data) =>
       Object.keys(data)
         .filter(
           (key) =>
-            this.providedStore.searchResults !== undefined
-              ? this.providedStore.searchResults.includes(Number(key))
+            this.editorStore.searchResults !== undefined
+              ? this.editorStore.searchResults.includes(Number(key))
               : true // No filtering when searchResults is empty
         )
         .map(
@@ -176,21 +179,21 @@ export class WebWriterGamebookOptions extends LitElementWw {
             clearable
             @sl-input=${this._handleNodeSearch}
             @keydown=${this._handleInputKeydown}
-            .value=${this.providedStore.searchTerm}
+            .value=${this.editorStore.searchTerm}
           >
             <sl-icon src=${search} slot="prefix"></sl-icon>
           </sl-input>
           <sl-menu hoist style="width: 180px;">
-            ${this.providedStore.searchResults
+            ${this.editorStore.searchResults
               ? html`
                   <sl-menu-label
-                    >${this.providedStore.searchResults.length}
+                    >${this.editorStore.searchResults.length}
                     nodes</sl-menu-label
                   >
                   <sl-divider></sl-divider>
                 `
               : null}
-            ${options(this.providedStore.editorContent.drawflow.Home.data)}
+            ${options(this.editorStore.editorContent.drawflow.Home.data)}
           </sl-menu>
         </sl-dropdown>
 
@@ -199,8 +202,8 @@ export class WebWriterGamebookOptions extends LitElementWw {
             id="copyNodeBtn"
             class="flex-item"
             @click=${() =>
-              this.providedStore.setCopiedNode(this.providedStore.selectedNode)}
-            ?disabled=${this.providedStore.selectedNode.id === -1}
+              this.editorStore.setCopiedNode(this.editorStore.selectedNode)}
+            ?disabled=${this.editorStore.selectedNode.id === -1}
           >
             Copy
           </sl-button>
@@ -214,7 +217,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
                   composed: true,
                 })
               )}
-            ?disabled=${this.providedStore.copiedNode.id === -1}
+            ?disabled=${this.editorStore.copiedNode.id === -1}
           >
             Paste
           </sl-button>
@@ -224,8 +227,8 @@ export class WebWriterGamebookOptions extends LitElementWw {
             variant="default"
             id="deleteNodeBtn"
             @click=${() => this.deleteSelectedNode()}
-            ?disabled=${this.providedStore.selectedNode.id === -1 ||
-            this.providedStore.selectedNode.class == "origin"
+            ?disabled=${this.editorStore.selectedNode.id === -1 ||
+            this.editorStore.selectedNode.class == "origin"
               ? true
               : false}
           >
@@ -233,25 +236,25 @@ export class WebWriterGamebookOptions extends LitElementWw {
           </sl-button>
         </sl-button-group>
 
-        ${this.providedStore.selectedNode.id != -1
+        ${this.editorStore.selectedNode.id != -1
           ? html`
               <div class="header">
-                ${this.providedStore.selectedNode.class == "page"
+                ${this.editorStore.selectedNode.class == "page"
                   ? html`
                       <sl-icon src=${file}></sl-icon>
                       <p>Page</p>
                     `
-                  : this.providedStore.selectedNode.class == "origin"
+                  : this.editorStore.selectedNode.class == "origin"
                   ? html`
                       <sl-icon src=${file}></sl-icon>
                       <p>Start Page</p>
                     `
-                  : this.providedStore.selectedNode.class == "popup"
+                  : this.editorStore.selectedNode.class == "popup"
                   ? html`
                       <sl-icon src=${squares}></sl-icon>
                       <p>Popup</p>
                     `
-                  : this.providedStore.selectedNode.class == "branch"
+                  : this.editorStore.selectedNode.class == "branch"
                   ? html`
                       <sl-icon src=${arrowsSplit2}></sl-icon>
                       <p>Smart Branch</p>
@@ -259,13 +262,13 @@ export class WebWriterGamebookOptions extends LitElementWw {
                   : null}
               </div>
 
-              ${this.providedStore.selectedNode.class == "page" ||
-              this.providedStore.selectedNode.class == "origin"
+              ${this.editorStore.selectedNode.class == "page" ||
+              this.editorStore.selectedNode.class == "origin"
                 ? html`
                     <sl-button
                       id="makeNodeOriginBtn"
                       @click=${() => this.makeNodeOrigin()}
-                      ?disabled=${this.providedStore.selectedNode.class ==
+                      ?disabled=${this.editorStore.selectedNode.class ==
                       "origin"
                         ? true
                         : false}
@@ -274,7 +277,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
                     </sl-button>
                   `
                 : null}
-              ${this.providedStore.selectedNode.class == "branch"
+              ${this.editorStore.selectedNode.class == "branch"
                 ? html`
                     <p>
                       <sl-icon
@@ -299,10 +302,10 @@ export class WebWriterGamebookOptions extends LitElementWw {
                     </p>
                   `
                 : null}
-              ${this.providedStore.selectedNode.class == "popup"
+              ${this.editorStore.selectedNode.class == "popup"
                 ? html`
                     <sl-switch
-                      ?checked=${this.providedStore.selectedContainer
+                      ?checked=${this.editorStore.selectedContainer
                         .preventClosing}
                       @sl-input=${(event) =>
                         this.handleSwitchPreventClosing(event)}
@@ -310,7 +313,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
                       Prevent Closing
                     </sl-switch>
                     <sl-switch
-                      ?checked=${this.providedStore.selectedContainer.noHeader
+                      ?checked=${this.editorStore.selectedContainer.noHeader
                         ? false
                         : true}
                       @sl-input=${(event) => this.handleSwitchNoHeader(event)}
@@ -331,7 +334,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
   private _handleNodeSearch(event: Event) {
     const inputText = (event.target as SlInput).value;
 
-    this.providedStore.setSearchTerm(inputText);
+    this.editorStore.setSearchTerm(inputText);
 
     this.dispatchEvent(
       new CustomEvent("nodeSearch", {
@@ -349,7 +352,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
   private makeNodeOrigin() {
     this.dispatchEvent(
       new CustomEvent("makeSelectedNodeOrigin", {
-        detail: { newId: this.providedStore.selectedNode.id },
+        detail: { newId: this.editorStore.selectedNode.id },
         bubbles: true,
         composed: true,
       })
@@ -361,10 +364,8 @@ export class WebWriterGamebookOptions extends LitElementWw {
   */
   private handleSwitchPreventClosing(event: Event) {
     const value = (event.target as SlSwitch).checked;
-    this.providedStore.selectedContainer.preventClosing = value;
-    this.providedStore.setSelectedContainer(
-      this.providedStore.selectedContainer
-    );
+    this.editorStore.selectedContainer.preventClosing = value;
+    this.editorStore.setSelectedContainer(this.editorStore.selectedContainer);
     this.requestUpdate();
   }
 
@@ -374,10 +375,8 @@ export class WebWriterGamebookOptions extends LitElementWw {
   */
   private handleSwitchNoHeader(event: Event) {
     const value = (event.target as SlSwitch).checked;
-    this.providedStore.selectedContainer.noHeader = !value;
-    this.providedStore.setSelectedContainer(
-      this.providedStore.selectedContainer
-    );
+    this.editorStore.selectedContainer.noHeader = !value;
+    this.editorStore.setSelectedContainer(this.editorStore.selectedContainer);
     this.requestUpdate();
   }
 

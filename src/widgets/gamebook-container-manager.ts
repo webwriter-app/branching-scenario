@@ -16,7 +16,10 @@ import { WebWriterGamebookBranchContainer } from "./gamebook-components/webwrite
 import { WebWriterSmartBranchButton } from "./gamebook-components/webwriter-smart-branch-button";
 
 import { provide, consume, createContext } from "@lit/context";
-import { gamebookStore, GamebookStore } from "./context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "./gamebook-editor-state-lit-context";
 
 @customElement("gamebook-container-manager")
 export class GamebookContainerManager extends LitElementWw {
@@ -29,9 +32,9 @@ export class GamebookContainerManager extends LitElementWw {
 
   @query("slot") accessor slot;
 
-  @consume({ context: gamebookStore, subscribe: true })
+  @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
-  public accessor providedStore = new GamebookStore("Default");
+  public accessor editorStore = new GamebookEditorState("Default");
 
   static get scopedElements() {
     return {
@@ -59,9 +62,9 @@ export class GamebookContainerManager extends LitElementWw {
       composed: true,
     });
     this.dispatchEvent(event);
-    if (this.providedStore.selectedContainer !== undefined) {
+    if (this.editorStore.selectedContainer !== undefined) {
       //Extraced the drawflowNodeId from the serialized container
-      const value = this.providedStore.selectedContainer.attributes.find(
+      const value = this.editorStore.selectedContainer.attributes.find(
         (attr) => attr.name === "drawflownodeid"
       ).value;
 
@@ -513,7 +516,7 @@ export class GamebookContainerManager extends LitElementWw {
     const pastedContainer = this.createContainerFromNode(pastedNode);
 
     const copiedContainer = this._getContainerByDrawflowNodeId(
-      this.providedStore.copiedNode.id
+      this.editorStore.copiedNode.id
     );
 
     // Iterate through each element in copiedContainer's slotContent

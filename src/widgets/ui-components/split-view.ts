@@ -11,7 +11,10 @@ import layoutNavBarCollapse from "@tabler/icons/outline/arrow-bar-to-up.svg";
 import layoutBottomBarCollapse from "@tabler/icons/outline/arrow-bar-to-down.svg";
 
 import { provide, consume, createContext } from "@lit/context";
-import { gamebookStore, GamebookStore } from "../context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../gamebook-editor-state-lit-context";
 
 const DIVIDER_HEIGHT = 30;
 
@@ -27,9 +30,9 @@ export class SplitView extends LitElementWw {
   @state() accessor startHeight = 0;
   @state() accessor previousHeight = 350;
 
-  @consume({ context: gamebookStore, subscribe: true })
+  @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
-  public accessor providedStore = new GamebookStore("Default");
+  public accessor editorStore = new GamebookEditorState("Default");
 
   // Registering custom elements used in the widget
   static get scopedElements() {
@@ -124,10 +127,10 @@ export class SplitView extends LitElementWw {
         ".itemStart"
       ) as HTMLElement;
       // Set initial height of the start panel based on the dividerPosition
-      itemStart.style.height = `${this.providedStore.dividerPosition}px`;
+      itemStart.style.height = `${this.editorStore.dividerPosition}px`;
       // Calculate and set the initial height of the splitPanel
       const initialSplitPanelHeight =
-        this.providedStore.dividerPosition +
+        this.editorStore.dividerPosition +
         this.itemEndHeight() +
         DIVIDER_HEIGHT;
       splitPanel.style.height = `${initialSplitPanelHeight}px`;
@@ -145,7 +148,7 @@ export class SplitView extends LitElementWw {
   
   */
   private onMouseDown(event: MouseEvent) {
-    if (this.providedStore.editorIsCollapsed) return; // Prevent dragging when collapsed
+    if (this.editorStore.editorIsCollapsed) return; // Prevent dragging when collapsed
 
     this.isDragging = true;
     this.initialY = event.clientY;
@@ -197,7 +200,7 @@ export class SplitView extends LitElementWw {
     splitPanel.style.height = `${totalHeight}px`;
 
     // Update the dividerPosition property to reflect the new height
-    this.providedStore.setDividerPosition(newHeight);
+    this.editorStore.setDividerPosition(newHeight);
   }
 
   /*
@@ -216,9 +219,7 @@ export class SplitView extends LitElementWw {
       ".splitPanel"
     ) as HTMLElement;
     const newTotalHeight =
-      this.providedStore.dividerPosition +
-      this.itemEndHeight() +
-      DIVIDER_HEIGHT;
+      this.editorStore.dividerPosition + this.itemEndHeight() + DIVIDER_HEIGHT;
     splitPanel.style.height = `${newTotalHeight}px`;
   }
 
@@ -230,26 +231,24 @@ export class SplitView extends LitElementWw {
       ".itemStart"
     ) as HTMLElement;
 
-    if (this.providedStore.editorIsCollapsed) {
+    if (this.editorStore.editorIsCollapsed) {
       itemStart.classList.remove("collapsed");
       itemStart.classList.add("expanded");
       itemStart.style.height = `${this.previousHeight}px`;
-      this.providedStore.setDividerPosition(this.previousHeight);
+      this.editorStore.setDividerPosition(this.previousHeight);
     }
     //
     else {
       // Collapse the panel and save the current height
-      this.previousHeight = this.providedStore.dividerPosition;
+      this.previousHeight = this.editorStore.dividerPosition;
       itemStart.classList.remove("expanded");
       itemStart.classList.add("collapsed");
       itemStart.style.height = `0px`;
-      this.providedStore.setDividerPosition(0);
+      this.editorStore.setDividerPosition(0);
     }
 
     // Update the collapsed state and button label
-    this.providedStore.setEditorIsCollapsed(
-      !this.providedStore.editorIsCollapsed
-    );
+    this.editorStore.setEditorIsCollapsed(!this.editorStore.editorIsCollapsed);
 
     // Adjust the splitPanel height after collapse/expand
     this.adjustSplitPanelHeight();
@@ -270,7 +269,7 @@ export class SplitView extends LitElementWw {
           <sl-icon-button
             class="collapse-button"
             @click=${this.toggleCollapse}
-            src=${this.providedStore.editorIsCollapsed
+            src=${this.editorStore.editorIsCollapsed
               ? layoutBottomBarCollapse
               : layoutNavBarCollapse}
           >

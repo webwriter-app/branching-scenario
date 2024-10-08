@@ -14,7 +14,10 @@ import minus from "@tabler/icons/outline/minus.svg";
 import XCircleFill from "bootstrap-icons/icons/x-circle-fill.svg";
 
 import { provide, consume, createContext } from "@lit/context";
-import { gamebookStore, GamebookStore } from "../context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../gamebook-editor-state-lit-context";
 
 @customElement("node-connection-list")
 export class NodeConnectionList extends LitElementWw {
@@ -22,9 +25,9 @@ export class NodeConnectionList extends LitElementWw {
   @property({ type: Boolean, reflect: true }) accessor input = false;
   @property({ type: Boolean, reflect: true }) accessor branch = false;
 
-  @consume({ context: gamebookStore, subscribe: true })
+  @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
-  public accessor providedStore = new GamebookStore("Default");
+  public accessor editorStore = new GamebookEditorState("Default");
 
   /*
 
@@ -201,7 +204,7 @@ export class NodeConnectionList extends LitElementWw {
           <p>
             Outputs
             (${Object.keys(
-              this.providedStore.selectedNode.outputs
+              this.editorStore.selectedNode.outputs
             ).length.toString()})
           </p>
           <sl-icon-button @click=${this._addOutput} src=${plus} class="add">
@@ -209,9 +212,9 @@ export class NodeConnectionList extends LitElementWw {
         </div>
         <div class="verticalStack">
           ${repeat(
-            Object.entries(this.providedStore.selectedNode.outputs),
+            Object.entries(this.editorStore.selectedNode.outputs),
             ([output_class]) =>
-              `${this.providedStore.selectedNode.id}-${output_class}`,
+              `${this.editorStore.selectedNode.id}-${output_class}`,
             ([output_class, drawflowConnection], index) => html`
               <div
                 class="item"
@@ -219,7 +222,7 @@ export class NodeConnectionList extends LitElementWw {
                   this.dispatchEvent(
                     new CustomEvent("highlightOutput", {
                       detail: {
-                        outputNodeId: this.providedStore.selectedNode.id,
+                        outputNodeId: this.editorStore.selectedNode.id,
                         outputClass: output_class,
                       },
                       bubbles: true,
@@ -230,7 +233,7 @@ export class NodeConnectionList extends LitElementWw {
                   this.dispatchEvent(
                     new CustomEvent("unhighlightOutput", {
                       detail: {
-                        outputNodeId: this.providedStore.selectedNode.id,
+                        outputNodeId: this.editorStore.selectedNode.id,
                         outputClass: output_class,
                       },
                       bubbles: true,
@@ -268,13 +271,13 @@ export class NodeConnectionList extends LitElementWw {
         <div class="titlebar">
           <p>
             Incoming
-            (${this.providedStore.selectedNode.inputs[
+            (${this.editorStore.selectedNode.inputs[
               "input_1"
             ]?.connections.length.toString()})
           </p>
         </div>
         <div class="verticalStack">
-          ${this.providedStore.selectedNode.inputs["input_1"]?.connections.map(
+          ${this.editorStore.selectedNode.inputs["input_1"]?.connections.map(
             (connection, index) => html` <div class="item">
               <p style="color: gray">${index + 1}</p>
               <sl-button
@@ -286,7 +289,7 @@ export class NodeConnectionList extends LitElementWw {
                     new CustomEvent("highlightConnection", {
                       detail: {
                         outputNodeId: connection?.node,
-                        inputNodeId: this.providedStore.selectedNode.id,
+                        inputNodeId: this.editorStore.selectedNode.id,
                         outputClass: connection?.input,
                         inputClass: "input_1",
                         highlightButton: true,
@@ -300,7 +303,7 @@ export class NodeConnectionList extends LitElementWw {
                     new CustomEvent("unhighlightConnection", {
                       detail: {
                         outputNodeId: connection?.node,
-                        inputNodeId: this.providedStore.selectedNode.id,
+                        inputNodeId: this.editorStore.selectedNode.id,
                         outputClass: connection?.input,
                         inputClass: "input_1",
                         highlightButton: true,
@@ -310,7 +313,7 @@ export class NodeConnectionList extends LitElementWw {
                     })
                   )}
               >
-                ${this.providedStore.editorContent.drawflow.Home.data[
+                ${this.editorStore.editorContent.drawflow.Home.data[
                   connection.node
                 ].data.title}
               </sl-button>
@@ -322,7 +325,7 @@ export class NodeConnectionList extends LitElementWw {
                     new CustomEvent("deleteConnection", {
                       detail: {
                         outputNodeId: connection?.node,
-                        inputNodeId: this.providedStore.selectedNode.id,
+                        inputNodeId: this.editorStore.selectedNode.id,
                         outputClass: connection?.input,
                         inputClass: "input_1",
                       },
@@ -344,7 +347,7 @@ export class NodeConnectionList extends LitElementWw {
   */
   renderInputsBranch() {
     const connections =
-      this.providedStore.selectedNode.inputs.input_1?.connections;
+      this.editorStore.selectedNode.inputs.input_1?.connections;
 
     const length = connections ? Object.values(connections).length : 0;
 
@@ -368,7 +371,7 @@ export class NodeConnectionList extends LitElementWw {
                      new CustomEvent("highlightConnection", {
                        detail: {
                          outputNodeId: connection?.node,
-                         inputNodeId: this.providedStore.selectedNode.id,
+                         inputNodeId: this.editorStore.selectedNode.id,
                          outputClass: connection?.input,
                          inputClass: "input_1",
                          highlightButton: true,
@@ -382,7 +385,7 @@ export class NodeConnectionList extends LitElementWw {
                     new CustomEvent("unhighlightConnection", {
                       detail: {
                         outputNodeId: connection?.node,
-                        inputNodeId: this.providedStore.selectedNode.id,
+                        inputNodeId: this.editorStore.selectedNode.id,
                         outputClass: connection?.input,
                         inputClass: "input_1",
                         highlightButton: true,
@@ -393,7 +396,7 @@ export class NodeConnectionList extends LitElementWw {
                   )}
               >
                   ${
-                    this.providedStore.editorContent.drawflow.Home.data[
+                    this.editorStore.editorContent.drawflow.Home.data[
                       connection.node
                     ].data.title
                   }
@@ -406,7 +409,7 @@ export class NodeConnectionList extends LitElementWw {
                           new CustomEvent("deleteConnection", {
                             detail: {
                               outputNodeId: connection?.node,
-                              inputNodeId: this.providedStore.selectedNode.id,
+                              inputNodeId: this.editorStore.selectedNode.id,
                               outputClass: connection?.input,
                               inputClass: "input_1",
                             },
@@ -452,7 +455,7 @@ export class NodeConnectionList extends LitElementWw {
     this.dispatchEvent(
       new CustomEvent("deleteOutput", {
         detail: {
-          nodeId: this.providedStore.selectedNode.id,
+          nodeId: this.editorStore.selectedNode.id,
           outputClass: output_class,
         },
         bubbles: true,
@@ -468,7 +471,7 @@ export class NodeConnectionList extends LitElementWw {
   private _addOutput() {
     this.dispatchEvent(
       new CustomEvent("addOutput", {
-        detail: { nodeId: this.providedStore.selectedNode.id },
+        detail: { nodeId: this.editorStore.selectedNode.id },
         bubbles: true,
         composed: true,
       })

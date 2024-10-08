@@ -9,7 +9,10 @@ import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import search from "@tabler/icons/outline/search.svg";
 
 import { provide, consume, createContext } from "@lit/context";
-import { gamebookStore, GamebookStore } from "../context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../gamebook-editor-state-lit-context";
 
 @customElement("output-connection-control")
 export class OutputConnectionControl extends LitElement {
@@ -20,9 +23,9 @@ export class OutputConnectionControl extends LitElement {
   @property({ type: Boolean }) accessor inOutputList;
   @property({ type: Boolean }) accessor isOpen;
 
-  @consume({ context: gamebookStore, subscribe: true })
+  @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
-  public accessor providedStore = new GamebookStore("Default");
+  public accessor editorStore = new GamebookEditorState("Default");
 
   @state() accessor searchTerm = "";
 
@@ -101,8 +104,8 @@ export class OutputConnectionControl extends LitElement {
 
   */
   render() {
-    const data = this.providedStore.editorContent.drawflow.Home.data;
-    const nodeId = this.providedStore.selectedNode.id;
+    const data = this.editorStore.editorContent.drawflow.Home.data;
+    const nodeId = this.editorStore.selectedNode.id;
 
     const dataFiltered = Object.keys(data).filter(
       (key) =>
@@ -139,7 +142,7 @@ export class OutputConnectionControl extends LitElement {
       <sl-select
         placement="bottom"
         hoist
-        class="${!this.providedStore.selectedNode?.outputs?.[this.outputClass]
+        class="${!this.editorStore.selectedNode?.outputs?.[this.outputClass]
           ?.connections?.[0]?.node &&
         this.required &&
         !this.disabled
@@ -148,7 +151,7 @@ export class OutputConnectionControl extends LitElement {
         size=${this.inOutputList ? "small" : "medium"}
         placeholder="Not connected"
         clearable
-        .value=${this.providedStore.selectedNode.outputs?.[this.outputClass]
+        .value=${this.editorStore.selectedNode.outputs?.[this.outputClass]
           ?.connections?.[0]?.node ?? ""}
         @sl-input=${this._handleUserInputTargetPage}
         @mouseenter=${() => {
@@ -303,14 +306,13 @@ export class OutputConnectionControl extends LitElement {
       const selectedValue = (event.target as SlSelect).value;
 
       const connections =
-        this.providedStore.selectedNode?.outputs?.[this.outputClass]
-          ?.connections;
+        this.editorStore.selectedNode?.outputs?.[this.outputClass]?.connections;
 
       //this.hasValue = selectedValue !== "";
       if (connections?.[0]?.node === undefined && selectedValue) {
         const event = new CustomEvent("createConnection", {
           detail: {
-            outputNodeId: this.providedStore.selectedNode.id,
+            outputNodeId: this.editorStore.selectedNode.id,
             inputNodeId: selectedValue,
             outputClass: this.outputClass,
             inputClass: "input_1",
@@ -324,7 +326,7 @@ export class OutputConnectionControl extends LitElement {
       else if (connections?.[0]?.node !== undefined && selectedValue) {
         const removeEvent = new CustomEvent("deleteConnection", {
           detail: {
-            outputNodeId: this.providedStore.selectedNode.id,
+            outputNodeId: this.editorStore.selectedNode.id,
             inputNodeId: connections[0].node,
             outputClass: this.outputClass,
             inputClass: "input_1",
@@ -336,7 +338,7 @@ export class OutputConnectionControl extends LitElement {
 
         const createEvent = new CustomEvent("createConnection", {
           detail: {
-            outputNodeId: this.providedStore.selectedNode.id,
+            outputNodeId: this.editorStore.selectedNode.id,
             inputNodeId: selectedValue,
             outputClass: this.outputClass,
             inputClass: "input_1",
@@ -350,7 +352,7 @@ export class OutputConnectionControl extends LitElement {
       else if (!selectedValue) {
         const removeEvent = new CustomEvent("deleteConnection", {
           detail: {
-            outputNodeId: this.providedStore.selectedNode.id,
+            outputNodeId: this.editorStore.selectedNode.id,
             inputNodeId: connections?.[0]?.node,
             outputClass: this.outputClass,
             inputClass: "input_1",
@@ -375,7 +377,7 @@ export class OutputConnectionControl extends LitElement {
       this.dispatchEvent(
         new CustomEvent("highlightOutput", {
           detail: {
-            outputNodeId: this.providedStore.selectedNode.id,
+            outputNodeId: this.editorStore.selectedNode.id,
             outputClass: this.outputClass,
           },
           bubbles: true,
@@ -394,9 +396,9 @@ export class OutputConnectionControl extends LitElement {
     this.dispatchEvent(
       new CustomEvent("highlightConnection", {
         detail: {
-          outputNodeId: this.providedStore.selectedNode.id,
+          outputNodeId: this.editorStore.selectedNode.id,
           inputNodeId:
-            this.providedStore.selectedNode?.outputs?.[this.outputClass]
+            this.editorStore.selectedNode?.outputs?.[this.outputClass]
               ?.connections?.[0]?.node,
           outputClass: this.outputClass,
           inputClass: "input_1",
@@ -415,9 +417,9 @@ export class OutputConnectionControl extends LitElement {
     this.dispatchEvent(
       new CustomEvent("unhighlightConnection", {
         detail: {
-          outputNodeId: this.providedStore.selectedNode.id,
+          outputNodeId: this.editorStore.selectedNode.id,
           inputNodeId:
-            this.providedStore.selectedNode?.outputs?.[this.outputClass]
+            this.editorStore.selectedNode?.outputs?.[this.outputClass]
               ?.connections?.[0]?.node,
           outputClass: this.outputClass,
           inputClass: "input_1",

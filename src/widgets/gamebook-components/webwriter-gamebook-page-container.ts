@@ -15,7 +15,10 @@ import { SlButton } from "@shoelace-style/shoelace";
 import { WebWriterSmartBranchButton } from "./webwriter-smart-branch-button";
 
 import { provide, consume, createContext } from "@lit/context";
-import { gamebookStore, GamebookStore } from "../context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../gamebook-editor-state-lit-context";
 import { WebWriterGamebookOptions } from "../webwriter-gamebook-options";
 
 @customElement("webwriter-gamebook-page-container")

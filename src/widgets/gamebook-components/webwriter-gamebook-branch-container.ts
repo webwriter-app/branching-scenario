@@ -14,7 +14,10 @@ import { WebWriterConnectionButton } from "./webwriter-connection-button";
 import { SlButton } from "@shoelace-style/shoelace";
 
 import { provide, consume, createContext } from "@lit/context";
-import { gamebookStore, GamebookStore } from "../context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../gamebook-editor-state-lit-context";
 
 @customElement("webwriter-gamebook-branch-container")
 export class WebWriterGamebookBranchContainer extends LitElementWw {

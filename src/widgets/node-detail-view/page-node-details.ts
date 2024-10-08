@@ -22,7 +22,10 @@ import { ToggleableInput } from "../ui-components/toggleable-input";
 import { NodeConnectionList } from "../ui-components/node-connection-list";
 
 import { provide, consume, createContext } from "@lit/context";
-import { gamebookStore, GamebookStore } from "../context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../gamebook-editor-state-lit-context";
 
 @customElement("page-node-details")
 export class PageNodeDetails extends LitElementWw {
@@ -40,9 +43,9 @@ export class PageNodeDetails extends LitElementWw {
   //import CSS
   static styles = [styles];
 
-  @consume({ context: gamebookStore, subscribe: true })
+  @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
-  public accessor providedStore = new GamebookStore("Default");
+  public accessor editorStore = new GamebookEditorState("Default");
 
   render() {
     return html` <div class="title-bar">
@@ -51,7 +54,7 @@ export class PageNodeDetails extends LitElementWw {
         </div>
         <div class="div-title">
           <toggleable-input
-            .text=${this.providedStore.selectedNode.data.title}
+            .text=${this.editorStore.selectedNode.data.title}
             .saveChanges=${(string) => this.renameNode(string)}
           ></toggleable-input>
           <p class="subtitle">Page</p>

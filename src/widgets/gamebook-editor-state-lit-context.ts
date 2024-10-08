@@ -1,27 +1,28 @@
 import { provide, consume, createContext } from "@lit/context";
 import { DrawflowNode } from "drawflow";
 
-export const gamebookStore = createContext<GamebookStore>("gamebookStore");
+export const editorState = createContext<GamebookEditorState>("editorState");
 
 type Observer = () => void;
 
-const NO_NODE_SELECTED: DrawflowNode = {
+const NO_NODE_SELECTED: any = {
   id: -1,
-  name: "unselect",
   inputs: {},
   outputs: {},
-  pos_x: 0,
-  pos_y: 0,
   class: "unselect",
   data: {},
-  html: "",
-  typenode: false,
 };
 
-export class GamebookStore {
+const NO_COPY: any = {
+  id: -1,
+  class: "unselect",
+  data: {},
+};
+
+export class GamebookEditorState {
   title: string;
-  selectedNode: DrawflowNode;
-  copiedNode: DrawflowNode;
+  selectedNode: any;
+  copiedNode: any;
   editorZoom: number;
   editorPosition: any;
   dividerPosition: number;
@@ -71,12 +72,19 @@ export class GamebookStore {
   }
 
   setSelectedNode(node = NO_NODE_SELECTED) {
+    delete node.name;
+    delete node.pos_x;
+    delete node.pos_y;
+    delete node.html;
+    delete node.typenode;
     this.selectedNode = node;
-
     this.notifyObservers(); // Notify all observers when updated
   }
 
   setSelectedContainer(selectedContainer = undefined) {
+    //console.log(JSON.stringify(selectedContainer, this.containerReplacer));
+
+    console.log(selectedContainer);
     this.selectedContainer = selectedContainer;
     this.notifyObservers(); // Notify all observers when updated
   }
@@ -107,12 +115,27 @@ export class GamebookStore {
   }
 
   setEditorContent(editorContent = null) {
-    this.editorContent = editorContent;
+    let copy = editorContent;
+    Object.values(copy.drawflow.Home.data).forEach((node) => {
+      delete (node as DrawflowNode).html;
+    });
+
+    this.editorContent = copy;
     this.notifyObservers();
   }
 
-  setCopiedNode(node = NO_NODE_SELECTED) {
+  setCopiedNode(node = NO_COPY) {
+    delete node.name;
+    delete node.inputs;
+    delete node.outputs;
+    delete node.pos_x;
+    delete node.pos_y;
+    delete node.html;
+    delete node.typenode;
+    delete node.html;
+
     this.copiedNode = node;
+
     this.notifyObservers();
   }
 
@@ -174,21 +197,33 @@ export class GamebookStore {
     if (value instanceof HTMLElement) {
       return {
         tagName: value.tagName,
-        attributes: [...value.attributes].map((attr) => ({
-          name: attr.name,
-          value: attr.value,
-        })),
-        innerHTML: value.innerHTML,
+        attributes: [...value.attributes]
+          .filter(
+            (attr) =>
+              ![
+                "id",
+                "class",
+                "contenteditable",
+                "style",
+                "tabindex",
+                "draggable",
+              ].includes(attr.name)
+          )
+
+          .map((attr) => ({
+            name: attr.name,
+            value: attr.value,
+          })),
       };
     }
     return value;
   }
 
-  // Static method to deserialize from string to GamebookStore instance
+  // Static method to deserialize from string to GamebookEditorState instance
   static fromString(serialized: string) {
     const data = JSON.parse(serialized);
 
-    return new GamebookStore(
+    return new GamebookEditorState(
       data.title,
       data.observer,
       data.selectedNode,

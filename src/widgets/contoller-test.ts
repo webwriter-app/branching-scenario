@@ -69,7 +69,7 @@ export class MouseController implements ReactiveController {
 
       container.focus();
 
-      (this.host as any).gamebookStore.setSelectedContainer(container);
+      (this.host as any).editorState.setSelectedContainer(container);
 
       if (
         node.class === "branch" &&
@@ -82,16 +82,16 @@ export class MouseController implements ReactiveController {
             );
 
           if (incomingContainer) {
-            (this.host as any).gamebookStore.setBranchIncomingContainer(
+            (this.host as any).editorState.setBranchIncomingContainer(
               incomingContainer
             );
-            (this.host as any).gamebookStore.setSelectedNode(node);
+            (this.host as any).editorState.setSelectedNode(node);
           }
         } else {
-          (this.host as any).gamebookStore.setSelectedNode(node);
+          (this.host as any).editorState.setSelectedNode(node);
         }
       } else {
-        (this.host as any).gamebookStore.setSelectedNode(node);
+        (this.host as any).editorState.setSelectedNode(node);
       }
     } else {
       this._unselectContainer();
@@ -106,11 +106,11 @@ export class MouseController implements ReactiveController {
 
   */
   _unselectContainer = () => {
-    (this.host as any).gamebookStore.setSelectedNode();
+    (this.host as any).editorState.setSelectedNode();
     this.gamebookContainerManager._hideAllGamebookContainers();
 
-    (this.host as any).gamebookStore.setSelectedContainer();
-    (this.host as any).gamebookStore.setBranchIncomingContainer();
+    (this.host as any).editorState.setSelectedContainer();
+    (this.host as any).editorState.setBranchIncomingContainer();
 
     this.nodeEditor.unhighlightAllOutputs();
 
@@ -121,9 +121,9 @@ export class MouseController implements ReactiveController {
 
   */
   _renameSelectedNode = (title: string) => {
-    const selectedNode = (this.host as any).gamebookStore.selectedNode;
+    const selectedNode = (this.host as any).editorState.selectedNode;
 
-    // Use the gamebookStore property instead of casting every time
+    // Use the editorState property instead of casting every time
     this.nodeEditor.editor.updateNodeDataFromId(selectedNode.id, {
       ...selectedNode.data,
       title: title,
@@ -131,11 +131,11 @@ export class MouseController implements ReactiveController {
 
     this.gamebookContainerManager._renameContainer(selectedNode.id, title);
 
-    (this.host as any).gamebookStore.setEditorContent(
+    (this.host as any).editorState.setEditorContent(
       this.nodeEditor.editor.drawflow
     );
 
-    (this.host as any).gamebookStore.setSelectedNode(
+    (this.host as any).editorState.setSelectedNode(
       this.nodeEditor.editor.getNodeFromId(selectedNode.id)
     );
 
@@ -148,7 +148,7 @@ export class MouseController implements ReactiveController {
   _createConnection = (event) => {
     (event as CustomEvent).stopPropagation();
 
-    const selectedNodeId = (this.host as any).gamebookStore.selectedNode.id;
+    const selectedNodeId = (this.host as any).editorState.selectedNode.id;
 
     this.nodeEditor.editor.addConnection(
       event.detail.outputNodeId,
@@ -157,7 +157,7 @@ export class MouseController implements ReactiveController {
       event.detail.inputClass
     );
 
-    (this.host as any).gamebookStore.setSelectedNode(
+    (this.host as any).editorState.setSelectedNode(
       this.nodeEditor.editor.getNodeFromId(selectedNodeId)
     );
 
@@ -174,7 +174,7 @@ export class MouseController implements ReactiveController {
 
     this.nodeEditor.programaticallyUnselectConnection();
 
-    const selectedNodeId = (this.host as any).gamebookStore.selectedNode.id;
+    const selectedNodeId = (this.host as any).editorState.selectedNode.id;
 
     this.nodeEditor.editor.removeSingleConnection(
       event.detail.outputNodeId,
@@ -183,7 +183,7 @@ export class MouseController implements ReactiveController {
       "input_1"
     );
 
-    (this.host as any).gamebookStore.setSelectedNode(
+    (this.host as any).editorState.setSelectedNode(
       this.nodeEditor.editor.getNodeFromId(selectedNodeId)
     );
 
@@ -298,7 +298,7 @@ export class MouseController implements ReactiveController {
 
   */
   _outputBranchNodeConnectionRemove = (event) => {
-    const selectedNodeId = (this.host as any).gamebookStore.selectedNode.id;
+    const selectedNodeId = (this.host as any).editorState.selectedNode.id;
 
     this.gamebookContainerManager.updateBranchContainerRuleTarget(
       event.detail.outputNode.id,
@@ -307,7 +307,7 @@ export class MouseController implements ReactiveController {
     );
     this._markUsedOutputs();
 
-    (this.host as any).gamebookStore.setSelectedNode(
+    (this.host as any).editorState.setSelectedNode(
       this.nodeEditor.editor.getNodeFromId(selectedNodeId)
     );
 
@@ -348,12 +348,12 @@ export class MouseController implements ReactiveController {
     );
 
     if (
-      (this.host as any).gamebookStore.selectedNode.id ===
+      (this.host as any).editorState.selectedNode.id ===
       event.detail.inputNode.id
     ) {
       this._selectContainer(event.detail.inputNode.id);
     } else if (
-      (this.host as any).gamebookStore.selectedNode.id ===
+      (this.host as any).editorState.selectedNode.id ===
       event.detail.outputNode.id
     ) {
       this._selectContainer(event.detail.outputNode.id);
@@ -367,7 +367,7 @@ export class MouseController implements ReactiveController {
 
   */
   _removeConnection = (event) => {
-    const selectedNodeId = (this.host as any).gamebookStore.selectedNode.id;
+    const selectedNodeId = (this.host as any).editorState.selectedNode.id;
 
     const identifier = (event as CustomEvent).detail.identifier;
     const parsed = this.parseConnectionIdentifier(identifier);
@@ -400,7 +400,7 @@ export class MouseController implements ReactiveController {
       branchContainer.clearRules();
     }
 
-    (this.host as any).gamebookStore.setSelectedNode(
+    (this.host as any).editorState.setSelectedNode(
       this.nodeEditor.editor.getNodeFromId(selectedNodeId)
     );
 
@@ -424,7 +424,7 @@ export class MouseController implements ReactiveController {
     const identifier = `${event.detail.outputNode.id}-${event.detail.outputClass}-${event.detail.inputNode.id}-${event.detail.inputClass}`;
 
     this.gamebookContainerManager.selectButtonInContainer(
-      (this.host as any).gamebookStore.selectedNode.id,
+      (this.host as any).editorState.selectedNode.id,
       identifier
     );
     this.host.requestUpdate(); // Update the host component after changes
@@ -437,7 +437,7 @@ export class MouseController implements ReactiveController {
     // const identifier = `${event.detail.outputNode.id}-${event.detail.outputClass}-${event.detail.inputNode.id}-${event.detail.inputClass}`;
 
     // this.gamebookContainerManager.unhighlightButtonInContainer(
-    //   (this.host as any).gamebookStore.selectedNode.id,
+    //   (this.host as any).editorState.selectedNode.id,
     //   identifier
     // );
     this.host.requestUpdate(); // Update the host component after changes
@@ -467,12 +467,12 @@ export class MouseController implements ReactiveController {
 
     this.gamebookContainerManager.changeOrigin(event.detail.newId);
 
-    (this.host as any).gamebookStore.setEditorContent(
+    (this.host as any).editorState.setEditorContent(
       this.nodeEditor.editor.drawflow
     );
-    (this.host as any).gamebookStore.setSelectedNode(
+    (this.host as any).editorState.setSelectedNode(
       this.nodeEditor.editor.getNodeFromId(
-        (this.host as any).gamebookStore.selectedNode.id
+        (this.host as any).editorState.selectedNode.id
       )
     );
 
@@ -490,8 +490,8 @@ export class MouseController implements ReactiveController {
       event.detail.outputClass
     );
 
-    const selectedNodeId = (this.host as any).gamebookStore.selectedNode.id;
-    (this.host as any).gamebookStore.setSelectedNode(
+    const selectedNodeId = (this.host as any).editorState.selectedNode.id;
+    (this.host as any).editorState.setSelectedNode(
       this.nodeEditor.editor.getNodeFromId(selectedNodeId)
     );
 
@@ -500,7 +500,7 @@ export class MouseController implements ReactiveController {
       event.detail.outputClass
     );
 
-    (this.host as any).gamebookStore.setEditorContent(
+    (this.host as any).editorState.setEditorContent(
       this.nodeEditor.editor.drawflow
     );
 
@@ -517,12 +517,12 @@ export class MouseController implements ReactiveController {
 
     this.nodeEditor.editor.addNodeOutput(event.detail.nodeId);
 
-    (this.host as any).gamebookStore.setEditorContent(
+    (this.host as any).editorState.setEditorContent(
       this.nodeEditor.editor.drawflow
     );
 
-    const selectedNodeId = (this.host as any).gamebookStore.selectedNode.id;
-    (this.host as any).gamebookStore.setSelectedNode(
+    const selectedNodeId = (this.host as any).editorState.selectedNode.id;
+    (this.host as any).editorState.setSelectedNode(
       this.nodeEditor.editor.getNodeFromId(selectedNodeId)
     );
 
@@ -733,7 +733,7 @@ export class MouseController implements ReactiveController {
   */
   public _markUsedOutputs() {
     // Loop through all nodes in drawflow
-    const nodes = (this.host as any).gamebookStore.editorContent.drawflow.Home
+    const nodes = (this.host as any).editorState.editorContent.drawflow.Home
       .data;
 
     Object.values(nodes).forEach((node) => {
@@ -828,7 +828,7 @@ export class MouseController implements ReactiveController {
 
   */
   public nodeSearch() {
-    let inputText = (this.host as any).gamebookStore.searchTerm;
+    let inputText = (this.host as any).editorState.searchTerm;
 
     if (inputText != "") {
       let nodeIncludes = [
@@ -838,11 +838,11 @@ export class MouseController implements ReactiveController {
         ]),
       ];
 
-      (this.host as any).gamebookStore.setSearchResults(nodeIncludes);
+      (this.host as any).editorState.setSearchResults(nodeIncludes);
 
       this.nodeEditor.highlightSearchedNodes(nodeIncludes);
     } else {
-      (this.host as any).gamebookStore.setSearchResults();
+      (this.host as any).editorState.setSearchResults();
       this.nodeEditor.removeSearchHighlightFromAllNodes();
     }
 

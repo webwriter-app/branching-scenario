@@ -22,7 +22,10 @@ import { SlDialog } from "@shoelace-style/shoelace";
 
 import styles from "../css/webwriter-branching-scenario-css";
 
-import { gamebookStore, GamebookStore } from "./context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "./gamebook-editor-state-lit-context";
 import { MouseController } from "./contoller-test";
 import { WebWriterGamebookOptions } from "./webwriter-gamebook-options";
 
@@ -61,17 +64,17 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   private controller = new MouseController(this);
 
-  @provide({ context: gamebookStore })
+  @provide({ context: editorState })
   @property({
     type: Object,
     attribute: true,
     reflect: true,
     converter: {
-      fromAttribute: (value: string) => GamebookStore.fromString(value), // Deserialize
-      toAttribute: (value: GamebookStore) => value.toString(), // Serialize
+      fromAttribute: (value: string) => GamebookEditorState.fromString(value), // Deserialize
+      toAttribute: (value: GamebookEditorState) => value.toString(), // Serialize
     },
   })
-  public accessor gamebookStore = new GamebookStore("Untitled Gamebook");
+  public accessor editorState = new GamebookEditorState("Untitled Gamebook");
 
   /* 
   
@@ -93,7 +96,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     );
 
     // Register an observer to react to store changes
-    this.gamebookStore.addObserver(() => {
+    this.editorState.addObserver(() => {
       this.reflectStoreChangesinDOM();
       this.requestUpdate(); // Ensure Lit re-renders
     });
@@ -103,20 +106,20 @@ export class WebWriterBranchingScenario extends LitElementWw {
   
   */
   reflectStoreChangesinDOM() {
-    this.gamebookStore = new GamebookStore(
-      this.gamebookStore.title,
-      this.gamebookStore.observer,
-      this.gamebookStore.selectedNode,
-      this.gamebookStore.editorZoom,
-      this.gamebookStore.editorPosition,
-      this.gamebookStore.dividerPosition,
-      this.gamebookStore.editorIsCollapsed,
-      this.gamebookStore.editorContent,
-      this.gamebookStore.copiedNode,
-      this.gamebookStore.selectedContainer,
-      this.gamebookStore.branchIncomingContainer,
-      this.gamebookStore.searchTerm,
-      this.gamebookStore.searchResults
+    this.editorState = new GamebookEditorState(
+      this.editorState.title,
+      this.editorState.observer,
+      this.editorState.selectedNode,
+      this.editorState.editorZoom,
+      this.editorState.editorPosition,
+      this.editorState.dividerPosition,
+      this.editorState.editorIsCollapsed,
+      this.editorState.editorContent,
+      this.editorState.copiedNode,
+      this.editorState.selectedContainer,
+      this.editorState.branchIncomingContainer,
+      this.editorState.searchTerm,
+      this.editorState.searchResults
     );
   }
 
@@ -147,7 +150,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
     //
     else if ((event.metaKey || event.ctrlKey) && event.key === "c") {
       event.preventDefault(); // Prevent the default browser find functionality
-      this.gamebookStore.setCopiedNode(this.gamebookStore.selectedNode);
+      this.editorState.setCopiedNode(this.editorState.selectedNode);
     }
     //
     else if ((event.metaKey || event.ctrlKey) && event.key === "v") {
@@ -276,8 +279,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
             ></webwriter-gamebook-options>
           `
         : html`<webwriter-gamebook
-            gamebookTitle=${this.gamebookStore.title != ""
-              ? this.gamebookStore.title
+            gamebookTitle=${this.editorState.title != ""
+              ? this.editorState.title
               : "Untitled Gamebook"}
             ><slot></slot
           ></webwriter-gamebook>`}

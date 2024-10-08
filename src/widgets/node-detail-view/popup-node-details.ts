@@ -8,7 +8,10 @@ import {
   queryAssignedElements,
 } from "lit/decorators.js";
 import { provide, consume, createContext } from "@lit/context";
-import { gamebookStore, GamebookStore } from "../context-test";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../gamebook-editor-state-lit-context";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -76,9 +79,9 @@ export class PopupNodeDetails extends LitElementWw {
 
   @property({ type: Object }) accessor nodeEditor;
 
-  @consume({ context: gamebookStore, subscribe: true })
+  @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
-  public accessor providedStore = new GamebookStore("Default");
+  public accessor editorStore = new GamebookEditorState("Default");
 
   protected firstUpdated(_changedProperties: PropertyValues): void {}
 
@@ -93,7 +96,7 @@ export class PopupNodeDetails extends LitElementWw {
         </div>
         <div class="div-title">
           <toggleable-input
-            .text=${this.providedStore.selectedNode.data.title}
+            .text=${this.editorStore.selectedNode.data.title}
             .saveChanges=${(string) => this.renameNode(string)}
           ></toggleable-input>
           <p class="subtitle">Popup</p>
@@ -102,13 +105,13 @@ export class PopupNodeDetails extends LitElementWw {
           <node-connection-list
             input
             .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.providedStore.selectedNode}
+            .selectedNode=${this.editorStore.selectedNode}
           ></node-connection-list>
           <sl-divider vertical style="height: 100%;"></sl-divider>
           <node-connection-list
             output
             .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.providedStore.selectedNode}
+            .selectedNode=${this.editorStore.selectedNode}
           ></node-connection-list>
         </div>
       </div>
@@ -120,17 +123,17 @@ export class PopupNodeDetails extends LitElementWw {
               <div class="dialog">
                 <div
                   class="header"
-                  style=${this.providedStore.selectedContainer?.noHeader
+                  style=${this.editorStore.selectedContainer?.noHeader
                     ? "display: none"
                     : "display: flex"}
                 >
                   <sl-input
-                    value=${this.providedStore.selectedContainer?.titleLabel}
+                    value=${this.editorStore.selectedContainer?.titleLabel}
                     @sl-input=${(event) => this.handleDialogTitleChange(event)}
                   ></sl-input>
                   <sl-icon-button
                     src=${X}
-                    style=${this.providedStore.selectedContainer?.preventClosing
+                    style=${this.editorStore.selectedContainer?.preventClosing
                       ? "display: none"
                       : "display: flex"}
                   ></sl-icon-button>
@@ -149,10 +152,8 @@ export class PopupNodeDetails extends LitElementWw {
   */
   private handleDialogTitleChange(event: Event) {
     const value = ((event as SlInputEvent).target as SlInput).value;
-    this.providedStore.selectedContainer.titleLabel = value;
-    this.providedStore.setSelectedContainer(
-      this.providedStore.selectedContainer
-    );
+    this.editorStore.selectedContainer.titleLabel = value;
+    this.editorStore.setSelectedContainer(this.editorStore.selectedContainer);
   }
 
   /*
