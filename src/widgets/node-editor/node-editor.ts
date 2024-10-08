@@ -395,8 +395,6 @@ export class NodeEditor extends LitElementWw {
 
             editorElement.style.transform = `translate(${this.editor.canvas_x}px, ${this.editor.canvas_y}px) scale(${this.editor.zoom})`;
           }
-        } else {
-          console.log("No transform applied.");
         }
       }
     }
@@ -489,8 +487,6 @@ export class NodeEditor extends LitElementWw {
       const nodePosY =
         nodeCenterY * zoom + canvas_y + (rect.height - rect.height * zoom) / 2;
 
-      console.log(nodePosX - rect.width / 2);
-      console.log(nodePosY - rect.height / 2);
       // Calculate the translation required to center the node
       this.editor.canvas_x -= nodePosX - rect.width / 2;
       this.editor.canvas_y -= nodePosY - rect.height / 2;
@@ -778,7 +774,6 @@ export class NodeEditor extends LitElementWw {
             console.error("Self loops are not allowed.");
             removeConnection();
           } else {
-            console.log("test");
             triggerEvent("branchNodeConnected");
           }
         }
@@ -1244,7 +1239,6 @@ export class NodeEditor extends LitElementWw {
 
   */
   private addTemplate(template) {
-    //console.log(JSON.stringify(exportdata));
     var currentNodes = this.editor.export();
     // Create a deep copy of the nodeTemplates
     const nodeTemplatesCopy = JSON.parse(JSON.stringify(template));
@@ -1334,8 +1328,6 @@ export class NodeEditor extends LitElementWw {
       Object.keys(templateData).map((key) => [Number(key), newIndex++])
     );
 
-    console.log(indexMap);
-
     for (const [key, node] of Object.entries(templateData)) {
       const newId = indexMap[Number(key)];
       (node as DrawflowNode).id = newId;
@@ -1352,7 +1344,6 @@ export class NodeEditor extends LitElementWw {
     // Update the containers with the new indexMap values
     const templateContainers = nodeTemplates.containers;
     for (const container of templateContainers) {
-      console.log(container);
       // Update the drawflownodeid attribute
       const drawflowNodeIdAttr = container.attributes.find(
         (attr) => attr.name === "drawflownodeid"
@@ -1375,14 +1366,12 @@ export class NodeEditor extends LitElementWw {
       );
 
       if (rulesAttr) {
-        console.log(rulesAttr.value);
         const rules = JSON.parse(rulesAttr.value);
         rules.forEach((rule) => {
           const oldId = Number(rule.target);
           rule.target = indexMap[oldId].toString();
         });
         rulesAttr.value = JSON.stringify(rules);
-        console.log(rulesAttr.value);
       }
 
       const elseRuleAttr = container.attributes.find(
@@ -1459,7 +1448,6 @@ export class NodeEditor extends LitElementWw {
         node.data.title.toLowerCase().includes(value.toLowerCase()) ||
         node.class.toLowerCase().includes(value.toLowerCase())
       ) {
-        // console.log(node.data.title, "includes", value);
         matchNodeIds = [...matchNodeIds, node.id];
       }
     });
@@ -1471,7 +1459,6 @@ export class NodeEditor extends LitElementWw {
 
   */
   public highlightSearchedNodes(nodeIds: Array<Number>) {
-    //console.log("we in here");
     // Loop through all nodes in drawflow
     const nodes = this.editor.drawflow.drawflow.Home.data;
 
@@ -1493,7 +1480,6 @@ export class NodeEditor extends LitElementWw {
   
   */
   public removeSearchHighlightFromAllNodes() {
-    //console.log("we in here");
     // Loop through all nodes in drawflow
     const nodes = this.editor.drawflow.drawflow.Home.data;
 

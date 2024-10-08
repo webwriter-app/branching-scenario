@@ -300,7 +300,6 @@ export class OutputConnectionControl extends LitElement {
       event.target instanceof HTMLElement &&
       event.target.tagName.toLowerCase() === "sl-select"
     ) {
-      //console.log(event.target);
       const selectedValue = (event.target as SlSelect).value;
 
       const connections =

@@ -473,13 +473,10 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
 
   */
   public _updateRuleTarget(output_class, input_id) {
-    console.log(input_id);
-
     // Helper function to find and update the rule in an array of rules
     this.rules.forEach((rule, index) => {
       if (rule.output_id === output_class) {
         if (input_id === "") {
-          console.log("remove");
           this.dispatchEvent(
             new CustomEvent("deleteConnection", {
               detail: {
@@ -494,7 +491,6 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
           );
         }
 
-        //console.log("rule", output_class, "target is updated to", input_id);
         this.rules[index] = { ...rule, target: input_id }; // Update target to input_id
         this.rules = [...this.rules];
       }
@@ -516,8 +512,6 @@ export class WebWriterGamebookBranchContainer extends LitElementWw {
           })
         );
       }
-
-      //console.log("elseRule is updated to", output_class);
       this.elseRule = {
         ...this.elseRule,
         target: input_id,

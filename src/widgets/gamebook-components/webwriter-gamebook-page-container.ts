@@ -108,10 +108,6 @@ export class WebWriterGamebookPageContainer extends LitElementWw {
       const par = document.createElement("p");
       this.appendChild(par);
     }
-
-    this.addEventListener("focus", function () {
-      console.log("container focused");
-    });
   }
 
   /*

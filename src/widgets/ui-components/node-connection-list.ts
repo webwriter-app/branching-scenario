@@ -263,11 +263,6 @@ export class NodeConnectionList extends LitElementWw {
 
   */
   renderInputs() {
-    console.log(
-      this.providedStore.selectedNode.inputs[
-        "input_1"
-      ]?.connections.length.toString()
-    );
     return html`
       <div class="container">
         <div class="titlebar">

@@ -213,7 +213,7 @@ export class WebWriterGamebook extends LitElementWw {
         //
         else if (container instanceof WebWriterGamebookBranchContainer) {
           const nextId = this._getTargetFromRules(container);
-          console.log(nextId);
+
           this._navigateTo(Number(nextId));
         }
       }
@@ -292,8 +292,6 @@ export class WebWriterGamebook extends LitElementWw {
 
       for (const rule of branchContainer.rules) {
         if (rule.target !== "") {
-          //console.log(rule);
-
           //Case: Element Id
 
           const element = assignedElements.find((element) => {
@@ -342,7 +340,6 @@ export class WebWriterGamebook extends LitElementWw {
                     );
 
                     if (taskHasWrongChoiceItem) {
-                      //console.log(task, "is false");
                       amountFalseTasks++;
                     }
                   }
@@ -360,7 +357,6 @@ export class WebWriterGamebook extends LitElementWw {
                     });
 
                     if (taskHasWrongOrder) {
-                      //console.log(task, "is false");
                       amountFalseTasks++;
                     }
                   }
@@ -405,8 +401,6 @@ export class WebWriterGamebook extends LitElementWw {
                   relevantTasks.length;
 
                 let match = Number(rule.match) / 100;
-
-                //console.log("correct", percentageCorrect);
 
                 if (rule.condition.toLowerCase() == "correct") {
                   if (percentageCorrect >= match) {
@@ -534,7 +528,7 @@ export class WebWriterGamebook extends LitElementWw {
     }
 
     //Case: No rule was satisfied
-    //console.log(branchContainer.elseRule.target);
+
     return Number(branchContainer.elseRule?.target);
   }
 
@@ -546,8 +540,6 @@ export class WebWriterGamebook extends LitElementWw {
     const originPageContainer = this.gamebookContainers.find(
       (container) => container.getAttribute("originPage") == 1
     );
-
-    // console.log(originPageContainer);
 
     this.pageTitle = originPageContainer.pageTitle;
 
@@ -602,7 +594,6 @@ export class WebWriterGamebook extends LitElementWw {
                 element.tagName.toLowerCase() == "webwriter-quiz" ||
                 element.tagName.toLowerCase() == "webwriter-task"
               ) {
-                //console.log("element added", element);
                 submitElements = [...submitElements, element.id];
                 elementSubmitted = [...elementSubmitted, false];
               }
@@ -637,7 +628,7 @@ export class WebWriterGamebook extends LitElementWw {
           container.elseRule.target == ""
         ) {
           this.containerWithError = container.pageTitle;
-          //console.log(this.containerWithError);
+
           return true;
         }
       }

@@ -234,8 +234,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     this.controller._unselectContainer()}
                   @buttonDeleted=${(e: CustomEvent) =>
                     this.controller._removeConnection(e)}
-                  @connectionButtonHighlighted=${() => console.log("test")}
-                  @connectionButtonUnhighlighted=${() => console.log("test")}
                   @quizElementDeleted=${(e: CustomEvent) =>
                     this.controller._deleteBranchRuleElementAndConnection(e)}
                   @addOutput=${(e: CustomEvent) =>

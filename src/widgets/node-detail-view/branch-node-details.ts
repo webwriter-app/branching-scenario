@@ -81,7 +81,6 @@ export class BranchNodeDetails extends LitElementWw {
   protected firstUpdated(_changedProperties: PropertyValues): void {}
 
   render() {
-    //console.log(this.providedStore.selectedContainer.rules);
     let isConnected =
       this.providedStore.selectedContainer?.incomingContainerId !== -1;
     return html`
@@ -374,8 +373,6 @@ export class BranchNodeDetails extends LitElementWw {
 
   */
   private _onDragStart(event: DragEvent, index: number) {
-    console.log(this.providedStore.selectedContainer.rules);
-
     this.draggedIndex = index;
 
     const stackElement = this.shadowRoot?.getElementById(
@@ -444,8 +441,6 @@ export class BranchNodeDetails extends LitElementWw {
       const { selectedContainer, selectedNode } = this.providedStore;
 
       let staticCopyRules = this.providedStore.selectedContainer.rules;
-
-      console.log("staticCopy", staticCopyRules);
 
       const hoveredRuleOutput =
         selectedContainer.rules[this.hoveredDividerIndex].output_id;
@@ -538,8 +533,6 @@ export class BranchNodeDetails extends LitElementWw {
       this.providedStore.selectedContainer.updateRules(staticCopyRules);
     }
 
-    console.log(this.providedStore.selectedContainer.rules);
-
     this._onDragEnd();
 
     this.dispatchEvent(
@@ -562,14 +555,13 @@ export class BranchNodeDetails extends LitElementWw {
   */
   private _validateAndUpdateRuleMatch(e: Event, index: number) {
     const inputElement = e.target as SlInput;
-    console.log(inputElement);
+
     let value = inputElement.value;
 
     if (value != "") {
       // Remove any non-numeric characters (this makes sure input is strictly numeric)
       value = value.replace(/[^0-9]/g, "");
 
-      console.log(value);
       // Convert the value to a number and clamp it to the range 0-100
       let numericValue = Number(value);
 
