@@ -46,14 +46,6 @@
       "source": "./src/widgets/gamebook-components/webwriter-smart-branch-button.ts",
       "default": "./dist/widgets/gamebook-components/webwriter-smart-branch-button.*"
     },
-    "./widgets/split-view.*": {
-      "source": "./src/widgets/ui-components/split-view.ts",
-      "default": "./dist/widgets/ui-components/split-view.*"
-    },
-    "./widgets/webwriter-gamebook.*": {
-      "source": "./src/widgets/gamebook.ts",
-      "default": "./dist/widgets/gamebook.*"
-    },
     "./package.json": "./package.json"
   },
   "devDependencies": {
@@ -62,19 +54,20 @@
   },
   "editingConfig": {
     "./widgets/webwriter-branching-scenario": {
-      "content": "(webwriter-gamebook-page-container | webwriter-gamebook-popup-container | webwriter-gamebook-branch-container)*"
-    },
-    "./widgets/webwriter-gamebook": {
-      "content": "(webwriter-gamebook-page-container | webwriter-gamebook-popup-container | webwriter-gamebook-branch-container)*"
+      "content": "(webwriter-gamebook-page-container | webwriter-gamebook-popup-container | webwriter-gamebook-branch-container)*",
+      "definingAsContext": true,
+      "label": {
+        "en": "Branching Scenario",
+        "de": "Verzweigungs Szenarien"
+      }
     },
     "./widgets/webwriter-gamebook-page-container": {
-      "content": "(flow)*"
+      "content": "(flow)*",
+      "definingForContent": true
     },
     "./widgets/webwriter-gamebook-popup-container": {
-      "content": "(flow)*"
-    },
-    "./widgets/webwriter-split-view": {
-      "content": "flow*"
+      "content": "(flow)*",
+      "definingForContent": true
     }
   }
 }
