@@ -381,7 +381,6 @@ export class MouseController implements ReactiveController {
       parsed.inputClass
     );
 
-    //TODO: check if the input Node is of class smar t branch and reset (push functionality to the container)
     const inputNode = this.nodeEditor.editor.getNodeFromId(parsed.inputNodeId);
     if (inputNode.class === "branch") {
       const branchContainer =
@@ -553,7 +552,7 @@ export class MouseController implements ReactiveController {
 
       const identifier = `${outputNodeId}-${outputClass}-${inputNodeId}-${inputClass}`;
 
-      this.gamebookContainerManager.highlightConnectionButtonInContainer(
+      this.gamebookContainerManager.highlightButtonInContainer(
         outputNodeId,
         identifier
       );
@@ -580,8 +579,7 @@ export class MouseController implements ReactiveController {
       );
       const identifier = `${outputNodeId}-${outputClass}-${inputNodeId}-${inputClass}`;
 
-      //TODO: highlight branch button
-      this.gamebookContainerManager.unhighlightConnectionButtonInContainer(
+      this.gamebookContainerManager.unhighlightButtonInContainer(
         outputNodeId,
         identifier
       );

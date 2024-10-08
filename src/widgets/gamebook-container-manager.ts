@@ -335,18 +335,14 @@ export class GamebookContainerManager extends LitElementWw {
   /*
 
   */
-  public highlightConnectionButtonInContainer(containerId, identifier) {
+  public highlightButtonInContainer(containerId, identifier) {
     const container = this.gamebookContainers.find(
       (container) => container.getAttribute("drawflowNodeId") == containerId
     );
 
-    const connButton =
-      container.shadowRoot?.querySelector(
-        `webwriter-connection-button[identifier="${identifier}"]`
-      ) ||
-      container.querySelector(
-        `webwriter-connection-button[identifier="${identifier}"]`
-      );
+    const connButton = container.buttons.find(
+      (button) => button.identifier === identifier
+    );
 
     if (connButton) {
       if (!connButton.classList.contains("ww-selected")) {
@@ -358,18 +354,14 @@ export class GamebookContainerManager extends LitElementWw {
   /*
 
   */
-  public unhighlightConnectionButtonInContainer(containerId, identifier) {
+  public unhighlightButtonInContainer(containerId, identifier) {
     const container = this.gamebookContainers.find(
       (container) => container.getAttribute("drawflowNodeId") == containerId
     );
 
-    const connButton =
-      container.shadowRoot?.querySelector(
-        `webwriter-connection-button[identifier="${identifier}"]`
-      ) ||
-      container.querySelector(
-        `webwriter-connection-button[identifier="${identifier}"]`
-      );
+    const connButton = container.buttons.find(
+      (button) => button.identifier === identifier
+    );
 
     if (connButton) {
       connButton.classList.remove("highlighted");
