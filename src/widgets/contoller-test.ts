@@ -423,7 +423,7 @@ export class MouseController implements ReactiveController {
   _selectConnectionButton = (event) => {
     const identifier = `${event.detail.outputNode.id}-${event.detail.outputClass}-${event.detail.inputNode.id}-${event.detail.inputClass}`;
 
-    this.gamebookContainerManager.highlightConnectionButtonInContainer(
+    this.gamebookContainerManager.selectButtonInContainer(
       (this.host as any).gamebookStore.selectedNode.id,
       identifier
     );
@@ -434,12 +434,12 @@ export class MouseController implements ReactiveController {
 
   */
   _unselectConnectionButton = (event) => {
-    const identifier = `${event.detail.outputNode.id}-${event.detail.outputClass}-${event.detail.inputNode.id}-${event.detail.inputClass}`;
+    // const identifier = `${event.detail.outputNode.id}-${event.detail.outputClass}-${event.detail.inputNode.id}-${event.detail.inputClass}`;
 
-    this.gamebookContainerManager.unhighlightConnectionButtonInContainer(
-      (this.host as any).gamebookStore.selectedNode.id,
-      identifier
-    );
+    // this.gamebookContainerManager.unhighlightButtonInContainer(
+    //   (this.host as any).gamebookStore.selectedNode.id,
+    //   identifier
+    // );
     this.host.requestUpdate(); // Update the host component after changes
   };
 
@@ -534,7 +534,13 @@ export class MouseController implements ReactiveController {
   
   */
   _highlightConnection = (event) => {
-    const { outputNodeId, inputNodeId, outputClass, inputClass } = event.detail;
+    const {
+      outputNodeId,
+      inputNodeId,
+      outputClass,
+      inputClass,
+      highlightButton,
+    } = event.detail;
 
     if (
       outputNodeId !== undefined &&
@@ -552,10 +558,12 @@ export class MouseController implements ReactiveController {
 
       const identifier = `${outputNodeId}-${outputClass}-${inputNodeId}-${inputClass}`;
 
-      this.gamebookContainerManager.highlightButtonInContainer(
-        outputNodeId,
-        identifier
-      );
+      if (highlightButton) {
+        this.gamebookContainerManager.highlightButtonInContainer(
+          outputNodeId,
+          identifier
+        );
+      }
     }
   };
 
@@ -563,7 +571,13 @@ export class MouseController implements ReactiveController {
   
   */
   _unhighlightConnection = (event) => {
-    const { outputNodeId, inputNodeId, outputClass, inputClass } = event.detail;
+    const {
+      outputNodeId,
+      inputNodeId,
+      outputClass,
+      inputClass,
+      highlightButton,
+    } = event.detail;
 
     if (
       outputNodeId !== undefined &&
@@ -579,10 +593,12 @@ export class MouseController implements ReactiveController {
       );
       const identifier = `${outputNodeId}-${outputClass}-${inputNodeId}-${inputClass}`;
 
-      this.gamebookContainerManager.unhighlightButtonInContainer(
-        outputNodeId,
-        identifier
-      );
+      if (highlightButton) {
+        this.gamebookContainerManager.unhighlightButtonInContainer(
+          outputNodeId,
+          identifier
+        );
+      }
     }
   };
 
@@ -722,8 +738,6 @@ export class MouseController implements ReactiveController {
 
     Object.values(nodes).forEach((node) => {
       if ((node as DrawflowNode).class == "branch") {
-        //TODO: Get another way of obtaining branch container
-
         if (this.gamebookContainerManager.gamebookContainers.length !== 0) {
           const branchContainer =
             this.gamebookContainerManager._getContainerByDrawflowNodeId(

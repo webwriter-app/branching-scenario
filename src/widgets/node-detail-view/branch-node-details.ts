@@ -1,5 +1,5 @@
 import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
-//TODO: nodes get deleted after delting connection ???
+
 import { repeat } from "lit/directives/repeat.js";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property } from "lit/decorators.js";
@@ -79,10 +79,6 @@ export class BranchNodeDetails extends LitElementWw {
 
   //
   protected firstUpdated(_changedProperties: PropertyValues): void {}
-
-  //TODO: dialog before deletion of incoming connection
-  //TODO: content deletion does not reset element of rule
-  //TODO: else rule deletion deletes entire node
 
   render() {
     //console.log(this.providedStore.selectedContainer.rules);
@@ -434,7 +430,7 @@ export class BranchNodeDetails extends LitElementWw {
   }
 
   /*
-    TODO: on drop buggy
+
 
   */
   private _onDrop(event: DragEvent) {

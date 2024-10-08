@@ -326,7 +326,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
   }
 
   /*
-TODO search
+
   */
   private _handleNodeSearch(event: Event) {
     const inputText = (event.target as SlInput).value;
@@ -357,7 +357,7 @@ TODO search
   }
 
   /*
-TODO: does not update each other
+
   */
   private handleSwitchPreventClosing(event: Event) {
     const value = (event.target as SlSwitch).checked;

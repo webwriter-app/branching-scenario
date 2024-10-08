@@ -13,11 +13,16 @@ import {
   SlInput,
   SlColorPicker,
   SlDivider,
+  SlButtonGroup,
+  SlIcon,
 } from "@shoelace-style/shoelace";
 
 import alignLeft from "@tabler/icons/outline/align-left.svg";
 import alignRight from "@tabler/icons/outline/align-right.svg";
 import alignCenter from "@tabler/icons/outline/align-center.svg";
+
+import { provide, consume, createContext } from "@lit/context";
+import { gamebookStore, GamebookStore } from "../context-test";
 
 @customElement("webwriter-smart-branch-button")
 export class WebWriterSmartBranchButton extends LitElementWw {
@@ -51,11 +56,12 @@ export class WebWriterSmartBranchButton extends LitElementWw {
       "sl-select": SlSelect,
       "sl-option": SlOption,
       "sl-range": SlRange,
-      "sl-icon-button": SlIconButton,
+      "sl-icon": SlIcon,
       "sl-checkbox": SlCheckbox,
       "sl-input": SlInput,
       "sl-color-picker": SlColorPicker,
       "sl-divider": SlDivider,
+      "sl-button-group": SlButtonGroup,
     };
   }
 
@@ -109,8 +115,8 @@ export class WebWriterSmartBranchButton extends LitElementWw {
         margin: 0px;
       }
 
-      .active {
-        background-color: #e0e0e0; /* example color for active state */
+      sl-button.active::part(base) {
+        background-color: #efefef; /* example color for active state */
       }
     `;
   }
@@ -129,13 +135,13 @@ export class WebWriterSmartBranchButton extends LitElementWw {
 
     this.addEventListener("mouseover", () => {
       const parsed = this.parseConnectionIdentifier(this.identifier);
-      const event = new CustomEvent("containerHighlightConnectionButton", {
+      const event = new CustomEvent("hoverButton", {
         detail: {
           outputNodeId: parsed.outputNodeId,
           inputNodeId: parsed.inputNodeId,
           outputClass: parsed.outputClass,
           inputClass: "input_1",
-          highlightNode: parsed.inputNodeId,
+          highlightButton: false,
         },
         bubbles: true, // Allows the event to bubble up through the DOM
         composed: true, // Allows the event to pass through shadow DOM boundaries
@@ -145,13 +151,13 @@ export class WebWriterSmartBranchButton extends LitElementWw {
 
     this.addEventListener("mouseleave", () => {
       const parsed = this.parseConnectionIdentifier(this.identifier);
-      const event = new CustomEvent("containerUnhighlightConnectionButton", {
+      const event = new CustomEvent("leaveButton", {
         detail: {
           outputNodeId: parsed.outputNodeId,
           inputNodeId: parsed.inputNodeId,
           outputClass: parsed.outputClass,
           inputClass: "input_1",
-          highlightNode: parsed.inputNodeId,
+          highlightButton: false,
         },
         bubbles: true, // Allows the event to bubble up through the DOM
         composed: true, // Allows the event to pass through shadow DOM boundaries
@@ -202,16 +208,6 @@ export class WebWriterSmartBranchButton extends LitElementWw {
         </sl-button>
 
         <div part="options" class="author-only">
-          <span>
-            <p style="font-weight: 400;">Navigates to</p>
-            <sl-button variant="text">
-              ${(this.getNodeEditor() as NodeEditor)?.editor.getNodeFromId(
-                this.dataTargetId
-              ).data.title ?? "Test"}
-            </sl-button>
-            <p style="font-weight: 400;">in your gamebook.</p>
-          </span>
-          <sl-divider></sl-divider>
           <div class="item">
             <p>Title</p>
             <sl-input
@@ -284,29 +280,29 @@ export class WebWriterSmartBranchButton extends LitElementWw {
             ></sl-range>
           </div>
           <div
-            style="display: flex; gap: 5px; align-items: center; justify-content: flex-start; padding: 0px; margin: 0px;"
+            style="display: flex; gap: 5px; align-items: center; justify-content: flex-start; padding: 0px; margin: 0px; flex-direction: column;"
           >
             <p style="margin-right: auto;">Alignment</p>
-            <div style="display: flex; gap: 10px;">
-              <sl-icon-button
-                src=${alignLeft}
-                label="Align Left"
+            <sl-button-group style="width: 100%">
+              <sl-button
                 class=${this.alignment === "flex-start" ? "active" : ""}
                 @click=${() => this.handleAlignmentChange("flex-start")}
-              ></sl-icon-button>
-              <sl-icon-button
-                src=${alignCenter}
-                label="Align Center"
+              >
+                <sl-icon src=${alignLeft}></sl-icon>
+              </sl-button>
+              <sl-button
                 class=${this.alignment === "center" ? "active" : ""}
                 @click=${() => this.handleAlignmentChange("center")}
-              ></sl-icon-button>
-              <sl-icon-button
-                src=${alignRight}
-                label="Align Right"
+              >
+                <sl-icon src=${alignCenter}></sl-icon>
+              </sl-button>
+              <sl-button
                 class=${this.alignment === "flex-end" ? "active" : ""}
                 @click=${() => this.handleAlignmentChange("flex-end")}
-              ></sl-icon-button>
-            </div>
+              >
+                <sl-icon src=${alignRight}></sl-icon>
+              </sl-button>
+            </sl-button-group>
           </div>
         </div>
       </div>

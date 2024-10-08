@@ -463,11 +463,14 @@ export class NodeEditor extends LitElementWw {
   */
   public moveToNode(node: DrawflowNode) {
     const { zoom, canvas_x, canvas_y } = this.editor;
-    const { pos_x, pos_y } = node;
+    const { id, pos_x, pos_y } = node;
 
-    //TODO: make adaptive to dynamic width and height
-    const nodeWidth = 320;
-    const nodeHeight = 109;
+    const nodeDiv = Array.from(this.nodeDivs as NodeListOf<HTMLElement>).find(
+      (div) => parseInt(div.id.split("-")[1], 10).toString() === id.toString()
+    );
+
+    const nodeWidth = nodeDiv.offsetWidth;
+    const nodeHeight = nodeDiv.offsetHeight;
 
     const drawflowContainer = this.drawflowEditorDiv.querySelector(".drawflow");
     const rect = this.drawflowEditorDiv.getBoundingClientRect();
@@ -634,7 +637,6 @@ export class NodeEditor extends LitElementWw {
     });
 
     //Event listener for when a connection is selected
-    //TODO: active and hover takes the highlight away
     this.editor.on(
       "connectionSelected",
       ({ output_id, input_id, output_class, input_class }) => {

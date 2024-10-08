@@ -87,8 +87,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
   
   */
   protected firstUpdated(_changedProperties: any): void {
-    this.handleChangesInGamebookContainers();
-
     this.controller.initReferences(
       this.nodeEditor,
       this.gamebookContainerManager
@@ -99,12 +97,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.reflectStoreChangesinDOM();
       this.requestUpdate(); // Ensure Lit re-renders
     });
-
-    // this.addEventListener("click", function () {
-    //   this.focus(); // Focus the clicked element
-    // });
-
-    //this.focus();
   }
 
   /*
@@ -263,6 +255,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   @nodeSearch=${() => this.controller.nodeSearch()}
                   @moveTo=${(e: CustomEvent) =>
                     this.controller.moveTo(e.detail.node)}
+                  @hoverButton=${(e: CustomEvent) =>
+                    this.controller._highlightConnection(e)}
+                  @leaveButton=${(e: CustomEvent) =>
+                    this.controller._unhighlightConnection(e)}
                 >
                   <slot></slot>
                 </gamebook-container-manager>
@@ -319,32 +315,5 @@ export class WebWriterBranchingScenario extends LitElementWw {
       };
     }
     return value;
-  }
-
-  /*
-
-
-  */
-  private handleChangesInGamebookContainers() {
-    // this.addEventListener("containerHighlightConnectionButton", (event) => {
-    //   this.reactToCallbackFromNodeEditor = false;
-    //   this.nodeEditor.highlightConnectionAndNode(
-    //     (event as CustomEvent).detail.outputNodeId,
-    //     (event as CustomEvent).detail.inputNodeId,
-    //     (event as CustomEvent).detail.outputClass,
-    //     (event as CustomEvent).detail.inputClass,
-    //     (event as CustomEvent).detail.highlightNode
-    //   );
-    // });
-    // this.addEventListener("containerUnhighlightConnectionButton", (event) => {
-    //   this.reactToCallbackFromNodeEditor = false;
-    //   this.nodeEditor.unhighlightConnectionAndNode(
-    //     (event as CustomEvent).detail.outputNodeId,
-    //     (event as CustomEvent).detail.inputNodeId,
-    //     (event as CustomEvent).detail.outputClass,
-    //     (event as CustomEvent).detail.inputClass,
-    //     (event as CustomEvent).detail.highlightNode
-    //   );
-    // });
   }
 }

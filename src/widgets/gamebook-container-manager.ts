@@ -300,8 +300,6 @@ export class GamebookContainerManager extends LitElementWw {
       (container) => container.getAttribute("drawflowNodeId") == containerId
     );
 
-    //console.log(removed_output_class);
-
     // Extract the number from the output_class parameter
     const removedOutputClassNumber = parseInt(
       removed_output_class.split("_")[1],
@@ -371,6 +369,23 @@ export class GamebookContainerManager extends LitElementWw {
   /*
 
   */
+  public selectButtonInContainer(containerId, identifier) {
+    const container = this.gamebookContainers.find(
+      (container) => container.getAttribute("drawflowNodeId") == containerId
+    );
+
+    const connButton = container.buttons.find(
+      (button) => button.identifier === identifier
+    );
+
+    if (connButton) {
+      connButton.focus();
+    }
+  }
+
+  /*
+
+  */
   public createContainerFromNode(node) {
     switch (node.class) {
       case "page":
@@ -421,7 +436,6 @@ export class GamebookContainerManager extends LitElementWw {
   
   */
   public importContainers(template: Array<Object>) {
-    //console.log(template);
     let containers = template.map((info) =>
       this.createContainerFromImport(info)
     );
