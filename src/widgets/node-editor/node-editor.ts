@@ -1,4 +1,5 @@
 import { html, css, PropertyValues } from "lit";
+import { consume } from "@lit/context";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, query, queryAll } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -30,7 +31,7 @@ import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import mapPin from "@tabler/icons/outline/map-pin.svg";
 
 //Drawflow Imports
-import Drawflow, { DrawflowConnection, DrawflowNode } from "drawflow";
+import Drawflow, { DrawflowNode } from "drawflow";
 import { style } from "drawflow/dist/drawflow.style.js";
 
 import customDrawflowStyles from "../../css/custom-drawflow-css";
@@ -38,11 +39,12 @@ import styles from "../../css/node-editor-css";
 
 import { NodeEditorControlsBar } from "./node-editor-control-bar";
 import { DrawflowHelpPopUpControls } from "./node-editor-help-popup-controls";
-import { decisionPopUpWithFeedback } from "../node-templates/decision-popup-with-feedback";
 
 const NO_CONNECTION_SELECTED = "output_id-input_id-output_class-input_class";
 
 const GRID_SIZE = 40;
+
+import { gamebookStore, GamebookStore } from "../context-test";
 
 @customElement("node-editor")
 export class NodeEditor extends LitElementWw {
@@ -90,47 +92,13 @@ export class NodeEditor extends LitElementWw {
 
   //internal reactive state, not part of the component's API
   @property({ type: Object, attribute: true, reflect: false })
-  accessor editor: Drawflow;
-  @property({ type: Object, attribute: true, reflect: false })
-  accessor editorContent;
-  @property({ type: Number, attribute: true, reflect: true })
-  accessor editorZoom = -1;
+  public accessor editor: Drawflow;
+
   @property({ type: String }) accessor editorZoomString = "";
-  @property({ type: Object, attribute: true }) accessor selectedNode;
-  @property({ type: String }) accessor gamebookTitle;
   @property({ type: String }) accessor selectedConnection =
     NO_CONNECTION_SELECTED;
-  @property({ type: Boolean, attribute: true })
-  accessor programmticallySelectedNode = false;
-
   @property({ type: Boolean, attribute: true }) accessor connectionStarted =
     false;
-
-  //access nodes in the internal component DOM.
-  @property({ attribute: false }) accessor handleGamebookTitle = (event) => {};
-
-  //access nodes in the internal component DOM.
-  @property({ attribute: false }) accessor changeInEditorCallback = (
-    drawflow: Object,
-    updateType: String,
-    node?: DrawflowNode,
-    removedNodeId?: String,
-    inputNode?: DrawflowNode,
-    outputNode?: DrawflowNode,
-    inputClass?: String,
-    outputClass?: String,
-    outputHadConnections?: Boolean,
-    importedGamebookContainers?: Array<Object>,
-    zoom?: Number,
-    translate?: { x: number; y: number },
-    changeOrigin?: { oldId: number; newId: number }
-  ) => {};
-
-  @property({ attribute: false }) accessor markUsedOutputs = () => {};
-
-  @property({ attribute: false })
-  accessor checkIfElseRuleTargetIsSet: () => boolean; // Default implementation with type
-
   @property({ type: Boolean }) accessor backgroundIsDragging = false;
   @property({ type: Number }) accessor backgroundLastX = 0;
   @property({ type: Number }) accessor backgroundLastY = 0;
@@ -140,19 +108,14 @@ export class NodeEditor extends LitElementWw {
   @property({ type: Number }) accessor backgroundMinScale = 0.5;
   @property({ type: Number }) accessor backgroundMaxScale = 2;
   @property({ type: Number }) accessor backgroundScaleFactor = 1.05;
-
-  @property({ attribute: false }) accessor updateSelectedNodeCallback = (
-    id
-  ) => {};
-
-  @query("#drawflowEditorDiv") accessor drawflowEditorDiv;
-
-  @queryAll('div[id*="node-"]') accessor nodeDivs;
-
   @property({ type: Boolean }) accessor nodePasted = false;
 
-  @property({ type: Object, attribute: true, reflect: true })
-  accessor editorPosition = { x: undefined, y: undefined };
+  @query("#drawflowEditorDiv") accessor drawflowEditorDiv;
+  @queryAll('div[id*="node-"]') accessor nodeDivs;
+
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default");
 
   /*
 
@@ -169,22 +132,22 @@ export class NodeEditor extends LitElementWw {
     //scale factor
     this.editor.zoom_value = 0.05;
 
-    if (this.editorZoom == -1) {
+    if (this.providedStore.editorZoom == -1) {
       this.editor.zoom = this.backgroundScale;
     } else {
-      this.editor.zoom = this.editorZoom;
-      this.onZoom(this.editorZoom, 0.2, this.editor.zoom_max);
+      this.editor.zoom = this.providedStore.editorZoom;
+      this.onZoom(this.providedStore.editorZoom, 0.2, this.editor.zoom_max);
     }
 
     this.editor.start();
     this.editor.zoom_refresh();
 
     if (
-      this.editorPosition.x != undefined &&
-      this.editorPosition.y != undefined
+      this.providedStore.editorPosition.x != undefined &&
+      this.providedStore.editorPosition.y != undefined
     ) {
-      this.editor.canvas_x = this.editorPosition.x;
-      this.editor.canvas_y = this.editorPosition.y;
+      this.editor.canvas_x = this.providedStore.editorPosition.x;
+      this.editor.canvas_y = this.providedStore.editorPosition.y;
 
       const drawflowContainer =
         this.drawflowEditorDiv.querySelector(".drawflow");
@@ -195,37 +158,25 @@ export class NodeEditor extends LitElementWw {
     }
 
     this._registerEditorEventHandlers();
-    //this._registerBackground();
-    if (this.editorContent == null) {
+
+    if (this.providedStore.editorContent == null) {
       this.addPageNode("First Page", true);
     } else {
-      this.editor.import(this.editorContent);
-    }
-
-    this.markUsedOutputs();
-  }
-
-  /*
-
-  */
-  protected updated(_changedProperties: PropertyValues): void {
-    if (this.selectedNode.id == -1) {
-      this.nodeDivs.forEach((nodeDiv) => {
-        nodeDiv.classList.remove("selected");
-      });
-      this.editor.node_selected = null;
-    } else {
-      this.nodeDivs.forEach((nodeDiv) => {
-        const id = parseInt(nodeDiv.id.split("-")[1], 10);
-        if (id === this.selectedNode.id) {
-          nodeDiv.classList.add("selected");
-          this.editor.node_selected = nodeDiv;
-        } else {
-          nodeDiv.classList.remove("selected");
-        }
-      });
+      this.editor.import(this.providedStore.editorContent);
+      if (this.providedStore.selectedNode.id !== -1) {
+        this.programaticallySelectNode(
+          this.providedStore.selectedNode.id.toString()
+        );
+      }
+      this.dispatchEvent(
+        new CustomEvent("editorInitialized", {
+          bubbles: true,
+          composed: true,
+        })
+      );
     }
   }
+
   /*
 
   */
@@ -262,15 +213,19 @@ export class NodeEditor extends LitElementWw {
     return html`
       <div id="nodeEditor">
         <node-editor-controls-bar
-          .gamebookTitle=${this.gamebookTitle}
-          .handleGamebookTitle=${(event) => this.handleGamebookTitle(event)}
-          .addPageNode=${(string, boolean) => this.addPageNode(string, boolean)}
-          .addPopUpNode=${(string) => this.addPopUpNode(string)}
-          .addBranchNode=${(string) => this.addBranchNode(string)}
-          .addDecisionPopUpTemplate=${() => this.addDecisionPopUpTemplate()}
-          .showDialog=${() =>
+          @addPageNode=${(e: CustomEvent) => {
+            this.addPageNode(e.detail.title, e.detail.isOrigin);
+          }}
+          @addPopUpNode=${(e: CustomEvent) => {
+            this.addPopUpNode(e.detail.title);
+          }}
+          @addBranchNode=${(e: CustomEvent) => {
+            this.addBranchNode(e.detail.title);
+          }}
+          @addTemplate=${(e: CustomEvent) =>
+            this.addTemplate(e.detail.template)}
+          @clearDialog=${() =>
             (this.shadowRoot.getElementById("dialog") as SlDialog).show()}
-          .selectedNode=${this.selectedNode}
         >
         </node-editor-controls-bar>
 
@@ -280,7 +235,13 @@ export class NodeEditor extends LitElementWw {
             id="jumpToOriginBtn"
             src=${mapPin}
             style="font-size: 18px;"
-            @click=${() => this.jumpToOrigin()}
+            @click=${() => {
+              const nodes = this.providedStore.editorContent.drawflow.Home.data;
+              const originNode = Object.values(nodes).find(
+                (node: any) => node.class === "origin"
+              );
+              this.moveToNode(originNode as DrawflowNode);
+            }}
           >
           </sl-icon-button>
           <sl-divider vertical style="height: 20px; margin: 2px;"></sl-divider>
@@ -324,6 +285,27 @@ export class NodeEditor extends LitElementWw {
           >Clear</sl-button
         >
       </sl-dialog>
+      <sl-dialog label="Delete node" class="dialog" id="delete_node_dialog">
+        You are about to delete the node
+        "${this.providedStore.selectedNode.data.title}". Do you want to proceed?
+        <sl-button
+          slot="footer"
+          variant="primary"
+          outline
+          @click=${() =>
+            (
+              this.shadowRoot.getElementById("delete_node_dialog") as SlDialog
+            ).hide()}
+          >Abort</sl-button
+        >
+        <sl-button
+          slot="footer"
+          variant="danger"
+          outline
+          @click=${() => this.deleteSelectedNode()}
+          >Delete</sl-button
+        >
+      </sl-dialog>
     `;
   }
 
@@ -343,7 +325,7 @@ export class NodeEditor extends LitElementWw {
   public onMouseMove(event: MouseEvent) {
     if (
       this.backgroundIsDragging &&
-      this.selectedNode.id == -1 &&
+      this.editor.node_selected === null &&
       !this.connectionStarted
     ) {
       // Check if node is not selected
@@ -363,20 +345,9 @@ export class NodeEditor extends LitElementWw {
   private onMouseUp() {
     this.backgroundIsDragging = false;
 
-    //console.log(this.editor.pos_x, this.editor.pos_y);
-    this.changeInEditorCallback(
-      { ...this.editor.drawflow },
-      "translate",
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      { x: this.editor.canvas_x, y: this.editor.canvas_y }
+    this.providedStore.setEditorPosition(
+      this.editor.canvas_x,
+      this.editor.canvas_y
     );
   }
 
@@ -424,8 +395,6 @@ export class NodeEditor extends LitElementWw {
 
             editorElement.style.transform = `translate(${this.editor.canvas_x}px, ${this.editor.canvas_y}px) scale(${this.editor.zoom})`;
           }
-        } else {
-          console.log("No transform applied.");
         }
       }
     }
@@ -475,32 +444,31 @@ export class NodeEditor extends LitElementWw {
 
     this.editor.clear();
 
-    this.changeInEditorCallback({ ...this.editor.drawflow }, "editorCleared");
+    this.providedStore.setEditorContent(this.editor.drawflow);
+
+    this.dispatchEvent(
+      new CustomEvent("editorCleared", {
+        bubbles: true,
+        composed: true,
+      })
+    );
+
     this.addPageNode("First Page", true);
   }
 
   /*
   
   */
-  private jumpToOrigin() {
-    const nodes = this.editor.drawflow.drawflow.Home.data;
+  public moveToNode(node: DrawflowNode) {
+    const { zoom, canvas_x, canvas_y } = this.editor;
+    const { id, pos_x, pos_y } = node;
 
-    // Find the node with class 'origin'
-    const originNode = Object.values(nodes).find(
-      (node: any) => node.class === "origin"
+    const nodeDiv = Array.from(this.nodeDivs as NodeListOf<HTMLElement>).find(
+      (div) => parseInt(div.id.split("-")[1], 10).toString() === id.toString()
     );
 
-    if (!originNode) {
-      console.error("No node with class 'origin' found.");
-      return;
-    }
-
-    const { zoom, canvas_x, canvas_y } = this.editor;
-    const { pos_x, pos_y } = originNode;
-
-    //TODO: make adaptive to dynamic width and height
-    const nodeWidth = 320;
-    const nodeHeight = 109;
+    const nodeWidth = nodeDiv.offsetWidth;
+    const nodeHeight = nodeDiv.offsetHeight;
 
     const drawflowContainer = this.drawflowEditorDiv.querySelector(".drawflow");
     const rect = this.drawflowEditorDiv.getBoundingClientRect();
@@ -510,16 +478,14 @@ export class NodeEditor extends LitElementWw {
       drawflowContainer.classList.add("smooth-transition");
       this.drawflowEditorDiv.classList.add("smooth-background-transition");
       // Calculate the center of the origin node
-      const originCenterX = pos_x + nodeWidth / 2;
-      const originCenterY = pos_y + nodeHeight / 2;
+      const nodeCenterX = pos_x + nodeWidth / 2;
+      const nodeCenterY = pos_y + nodeHeight / 2;
 
       // Calculate the position of the editor and the node
       const nodePosX =
-        originCenterX * zoom + canvas_x + (rect.width - rect.width * zoom) / 2;
+        nodeCenterX * zoom + canvas_x + (rect.width - rect.width * zoom) / 2;
       const nodePosY =
-        originCenterY * zoom +
-        canvas_y +
-        (rect.height - rect.height * zoom) / 2;
+        nodeCenterY * zoom + canvas_y + (rect.height - rect.height * zoom) / 2;
 
       // Calculate the translation required to center the node
       this.editor.canvas_x -= nodePosX - rect.width / 2;
@@ -533,28 +499,15 @@ export class NodeEditor extends LitElementWw {
       this.backgroundTranslateY -= nodePosY - rect.height / 2;
       this.requestUpdate();
 
-      // // Optionally, remove the transition class after the animation is done
+      // // // Optionally, remove the transition class after the animation is done
       setTimeout(() => {
         drawflowContainer.classList.remove("smooth-transition");
         this.drawflowEditorDiv.classList.remove("smooth-background-transition");
       }, 350); // Adjust the timeout duration to match your animation duration
 
-      // console.log("here");
-      // console.log({ x: this.editor.canvas_x, y: this.editor.canvas_y });
-
-      this.changeInEditorCallback(
-        { ...this.editor.drawflow },
-        "translate",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        { x: this.editor.canvas_x, y: this.editor.canvas_y }
+      this.providedStore.setEditorPosition(
+        this.editor.canvas_x,
+        this.editor.canvas_y
       );
     }
   }
@@ -563,14 +516,25 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  public pasteNode(copiedNode: DrawflowNode) {
-    this.nodePasted = true;
-    if (copiedNode.class == "page" || copiedNode.class == "origin") {
-      this.addPageNode(`${copiedNode.data.title} copy`, false);
-    } else if (copiedNode.class == "popup") {
-      this.addPopUpNode(`${copiedNode.data.title} copy`);
-    } else if (copiedNode.class == "branch") {
-      this.addBranchNode(`${copiedNode.data.title} copy`);
+  public pasteNode() {
+    const copiedNode = this.providedStore.copiedNode;
+
+    if (copiedNode.id !== -1) {
+      this.nodePasted = true;
+      const titleCopy = `${copiedNode.data.title} copy`;
+
+      switch (copiedNode.class) {
+        case "page":
+        case "origin":
+          this.addPageNode(titleCopy, false);
+          break;
+        case "popup":
+          this.addPopUpNode(titleCopy);
+          break;
+        case "branch":
+          this.addBranchNode(titleCopy);
+          break;
+      }
     }
   }
 
@@ -579,108 +543,130 @@ export class NodeEditor extends LitElementWw {
 
   */
   private _registerEditorEventHandlers() {
-    this.editor.on("nodeDataChanged", (id) => {
-      //This event only picks up data changes from elements marked with df-* in the node
-      //Currently only title inputs on nodes have such elements
-      let changedNode = this.editor.getNodeFromId(id);
-      this.changeInEditorCallback(
-        { ...this.editor.drawflow },
-        "nodeRenamed",
-        changedNode
-      );
-    });
-
     // Event listener for node click
     this.editor.on("nodeSelected", (id) => {
-      //console.log("node Selected");
-      this.updateSelectedNodeCallback(id);
+      this.dispatchEvent(
+        new CustomEvent("nodeSelected", {
+          detail: { nodeId: id },
+          bubbles: true,
+          composed: true,
+        })
+      );
     });
 
     // Event listener for node unselected
     this.editor.on("nodeUnselected", (boolean) => {
-      //console.log("node Unselected");
-      this.updateSelectedNodeCallback(-1);
+      this.dispatchEvent(
+        new CustomEvent("nodeUnselected", {
+          bubbles: true,
+          composed: true,
+        })
+      );
     });
 
     //Event listerner for creation of a node
     this.editor.on("nodeCreated", (id) => {
+      this.providedStore.setEditorContent(this.editor.drawflow);
+      let createdNode = this.editor.getNodeFromId(id);
       if (this.nodePasted == false) {
-        let createdNode = this.editor.getNodeFromId(id);
-        this.changeInEditorCallback(
-          { ...this.editor.drawflow },
-          "nodeCreated",
-          createdNode
+        this.dispatchEvent(
+          new CustomEvent("nodeCreated", {
+            detail: { node: createdNode },
+            bubbles: true,
+            composed: true,
+          })
         );
-      }
-      //
-      else {
-        let createdNode = this.editor.getNodeFromId(id);
-        this.changeInEditorCallback(
-          { ...this.editor.drawflow },
-          "nodePasted",
-          createdNode
-        );
+      } else {
         this.nodePasted = false;
+        this.dispatchEvent(
+          new CustomEvent("nodePasted", {
+            detail: { node: createdNode },
+            bubbles: true,
+            composed: true,
+          })
+        );
       }
     });
 
     //Event listener for deletion of a node
     this.editor.on("nodeRemoved", (id) => {
-      this.changeInEditorCallback(
-        { ...this.editor.drawflow },
-        "nodeRemoved",
-        null,
-        id.toString()
+      this.dispatchEvent(
+        new CustomEvent("nodeRemoved", {
+          detail: { id: id },
+          bubbles: true,
+          composed: true,
+        })
       );
+      this.providedStore.setEditorContent(this.editor.drawflow);
     });
 
     //Event listener for when a node got moved
     this.editor.on("nodeMoved", (id) => {
-      const nodes = this.editor.drawflow.drawflow.Home.data;
-
-      Object.values(nodes).forEach((node) => {
-        if (node.id == id) {
-          //console.log(node.pos_x, node.pos_y);
-        }
-      });
-
-      let movedNode = this.editor.getNodeFromId(id);
-
-      this.changeInEditorCallback(
-        { ...this.editor.drawflow },
-        "nodeMoved",
-        movedNode
-      );
+      this.providedStore.setEditorContent(this.editor.drawflow);
     });
 
+    //
+    //
     //Event listener for when a connection creation started via drag and drop
     this.editor.on("connectionStart", ({ output_id, output_class }) => {
-      this.updateSelectedNodeCallback(output_id);
+      this.programaticallySelectNode(output_id);
+      this.dispatchEvent(
+        new CustomEvent("nodeSelected", {
+          detail: { nodeId: output_id },
+          bubbles: true,
+          composed: true,
+        })
+      );
+
       this.connectionStarted = true;
 
       this.shadowRoot
         .querySelector('svg[class="connection"]')
         ?.querySelector("path")
-        ?.classList.add("highlighted");
+        ?.setAttribute("highlighted", "true");
     });
 
+    //
+    //
     this.editor.on("connectionCancel", () => {
       this.connectionStarted = false;
     });
 
     //Event listener for when a connection is selected
-    //TODO: active and hover takes the highlight away
     this.editor.on(
       "connectionSelected",
       ({ output_id, input_id, output_class, input_class }) => {
+        const outputNode = this.editor.getNodeFromId(output_id);
+        const inputNode = this.editor.getNodeFromId(input_id);
         this.selectedConnection = `${output_id}-${input_id}-${output_class}-${input_class}`;
+
+        this.dispatchEvent(
+          new CustomEvent("nodeSelected", {
+            detail: { nodeId: output_id },
+            bubbles: true,
+            composed: true,
+          })
+        );
+
         this._highlightConnection(
           output_id,
           input_id,
           output_class,
           input_class
         );
-        this.updateSelectedNodeCallback(output_id);
+
+        this.dispatchEvent(
+          new CustomEvent("connectionSelected", {
+            detail: {
+              outputNode: outputNode,
+              inputNode: inputNode,
+              outputClass: output_class,
+              inputClass: input_class,
+            },
+            bubbles: true,
+            composed: true,
+          })
+        );
       }
     );
 
@@ -689,13 +675,40 @@ export class NodeEditor extends LitElementWw {
       const parsedConnection = this.parseConnectionIdentifier(
         this.selectedConnection
       );
+
       this._unhighlightConnection(
         parsedConnection.outputNodeId,
         parsedConnection.inputNodeId,
         parsedConnection.outputClass,
         parsedConnection.inputClass
       );
+
+      const outputNode = this.editor.getNodeFromId(
+        parsedConnection.outputNodeId
+      );
+      const inputNode = this.editor.getNodeFromId(parsedConnection.inputNodeId);
+
       this.selectedConnection = NO_CONNECTION_SELECTED;
+
+      this.dispatchEvent(
+        new CustomEvent("connectionUnselected", {
+          detail: {
+            outputNode: outputNode,
+            inputNode: inputNode,
+            outputClass: parsedConnection.outputClass,
+            inputClass: parsedConnection.inputClass,
+          },
+          bubbles: true,
+          composed: true,
+        })
+      );
+
+      this.dispatchEvent(
+        new CustomEvent("nodeUnselected", {
+          bubbles: true,
+          composed: true,
+        })
+      );
     });
 
     //Event for created connections done e.g. via drag and drop
@@ -703,63 +716,130 @@ export class NodeEditor extends LitElementWw {
       "connectionCreated",
       ({ output_id, input_id, output_class, input_class }) => {
         this.connectionStarted = false;
-        //console.log("we got here");
-        this.updateSelectedNodeCallback(this.selectedNode.id);
         const outputNode = this.editor.getNodeFromId(output_id);
         const inputNode = this.editor.getNodeFromId(input_id);
+
+        this.providedStore.setEditorContent(this.editor.drawflow);
+        this.providedStore.setSelectedNode(
+          this.editor.getNodeFromId(output_id)
+        );
 
         this.shadowRoot
           .querySelector(
-            `svg[class="connection node_in_node-${input_id} node_out_node-${output_id} ${output_class} ${input_class}"]`
+            `svg.connection.node_in_node-${input_id}.node_out_node-${output_id}.${output_class}.${input_class}`
           )
           ?.querySelector("path")
-          ?.classList.remove("highlighted");
+          ?.removeAttribute("highlighted");
 
-        this.changeInEditorCallback(
-          { ...this.editor.drawflow },
-          "connectionCreated",
-          null,
-          null,
-          inputNode,
-          outputNode,
-          input_class,
-          output_class
-        );
+        const removeConnection = () =>
+          this.editor.removeSingleConnection(
+            outputNode.id,
+            inputNode.id,
+            output_class,
+            input_class
+          );
+
+        const triggerEvent = (eventName) =>
+          this.dispatchEvent(
+            new CustomEvent(eventName, {
+              detail: {
+                outputNode,
+                inputNode,
+                outputClass: output_class,
+                inputClass: input_class,
+              },
+              bubbles: true,
+              composed: true,
+            })
+          );
+
+        // Branch node checks
+        if (inputNode.class === "branch") {
+          if (inputNode.inputs["input_1"]?.connections?.length > 1) {
+            console.error("The branch node is already connected");
+            removeConnection();
+          } else if (outputNode.class === "branch") {
+            console.error("Connecting branch nodes is not allowed.");
+            removeConnection();
+          } else {
+            triggerEvent("nodeConnectedToBranchNode");
+          }
+        }
+        // Output node is a branch
+        else if (outputNode.class === "branch") {
+          if (
+            inputNode.id ===
+            Number(outputNode.inputs["input_1"]?.connections[0]?.node)
+          ) {
+            console.error("Self loops are not allowed.");
+            removeConnection();
+          } else {
+            triggerEvent("branchNodeConnected");
+          }
+        }
+        // General case
+        else {
+          triggerEvent("nodesConnected");
+        }
       }
     );
 
-    //Event listener for when a connection is removed, e.g. by click in editor
     this.editor.on(
       "connectionRemoved",
       ({ output_id, input_id, output_class, input_class }) => {
-        //console.log("this nodeeditor callback");
-        this.updateSelectedNodeCallback(this.selectedNode.id);
+        const outputNode = this.editor.getNodeFromId(output_id);
+        const inputNode = this.editor.getNodeFromId(input_id);
+        const isBranchInput = inputNode.class === "branch";
+        const isBranchOutput = outputNode.class === "branch";
 
-        if (this.selectedConnection != NO_CONNECTION_SELECTED) {
-          const parsedConnection = this.parseConnectionIdentifier(
-            this.selectedConnection
-          );
+        // this.dispatchEvent(
+        //   new CustomEvent("nodeSelected", {
+        //     detail: { nodeId: output_id },
+        //     bubbles: true,
+        //     composed: true,
+        //   })
+        // );
+        this.providedStore.setEditorContent(this.editor.drawflow);
+
+        if (this.selectedConnection !== NO_CONNECTION_SELECTED) {
+          const { outputNodeId, inputNodeId, outputClass, inputClass } =
+            this.parseConnectionIdentifier(this.selectedConnection);
           this._unhighlightConnection(
-            parsedConnection.outputNodeId,
-            parsedConnection.inputNodeId,
-            parsedConnection.outputClass,
-            parsedConnection.inputClass
+            outputNodeId,
+            inputNodeId,
+            outputClass,
+            inputClass
           );
           this.selectedConnection = NO_CONNECTION_SELECTED;
         }
+        if (isBranchOutput) {
+          this.dispatchEvent(
+            new CustomEvent("branchNodeConnectionRemoved", {
+              detail: { outputNode: outputNode, outputClass: output_class },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+        //
+        else {
+          const eventDetail = {
+            outputNode: outputNode,
+            outputClass: output_class,
+            inputNode: inputNode,
+            inputClass: input_class,
+          };
+          this.dispatchEvent(
+            new CustomEvent("connectionRemoved", {
+              detail: eventDetail,
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
 
-        const outputNode = this.editor.getNodeFromId(output_id);
-        const inputNode = this.editor.getNodeFromId(input_id);
-
-        this.changeInEditorCallback(
-          { ...this.editor.drawflow },
-          "connectionRemoved",
-          null,
-          null,
-          inputNode,
-          outputNode,
-          input_class,
-          output_class
+        this.providedStore.setSelectedNode(
+          this.editor.getNodeFromId(output_id)
         );
       }
     );
@@ -788,52 +868,12 @@ export class NodeEditor extends LitElementWw {
         zoomValue.classList.add("fade-in-out");
       }
 
-      this.changeInEditorCallback(
-        { ...this.editor.drawflow },
-        "zoom",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        zoom_level
-      );
-
-      this.changeInEditorCallback(
-        { ...this.editor.drawflow },
-        "translate",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        { x: this.editor.canvas_x, y: this.editor.canvas_y }
+      this.providedStore.setEditorZoom(zoom_level);
+      this.providedStore.setEditorPosition(
+        this.editor.canvas_x,
+        this.editor.canvas_y
       );
     });
-
-    this.editor.on("click", (event) => {
-      //This event fires before the selection has changed in the editor.
-      // if (this.selectedNode.class == "branch") {
-      //   const hitTarget = event.composedPath()[0] as HTMLElement;
-      //   const isInsideBranchNode =
-      //     this.editor.node_selected.contains(hitTarget) ||
-      //     this.editor.node_selected === hitTarget;
-      //   if (!hitTarget.classList.contains("output") && !isInsideBranchNode) {
-      //     this.elseRuleIsSet = this.checkIfElseRuleTargetIsSet();
-      //   }
-      // } else {
-      //   this.elseRuleIsSet = true;
-      // }
-    });
-
-    //this.editor.on("translate", ({ x, y }) => {});
   }
 
   /*
@@ -841,83 +881,24 @@ export class NodeEditor extends LitElementWw {
 
   */
   public addPageNode(title: string, isOrigin: boolean) {
-    const pageContent = {
+    const nodeData = {
       title: title,
       content: `<p>Testing Slots HTML Editing</p>`,
     };
 
-    // Create the container div
-    const containerDiv = document.createElement("div");
-    containerDiv.classList.add("container");
+    const nodeHTML = this.createPageNodeHTML(isOrigin);
 
-    // Create page sl-icon
-    const iconDiv = document.createElement("div");
-    iconDiv.classList.add("iconDiv");
-    const icon = document.createElement("sl-icon") as SlIcon;
-    icon.setAttribute("src", file);
-    icon.classList.add("pageIcon");
-
-    iconDiv.appendChild(icon);
-    containerDiv.appendChild(iconDiv);
-
-    //
-    const contentDiv = document.createElement("div");
-    contentDiv.classList.add("content");
-
-    const input = document.createElement("input");
-    input.id = "title";
-    input.setAttribute("df-title", ""); // Adding df-title attribute
-    contentDiv.appendChild(input);
-
-    if (isOrigin) {
-      //Add Origin Page Marker
-      const badge = document.createElement("div");
-      badge.classList.add("badge");
-
-      const arrowIcon = document.createElement("sl-icon") as SlIcon;
-      arrowIcon.setAttribute("src", circleArrowRight);
-      badge.appendChild(arrowIcon);
-
-      const nameLabel = document.createElement("p");
-      nameLabel.textContent = "Start Page";
-      badge.appendChild(nameLabel);
-
-      contentDiv.appendChild(badge);
-    } else {
-      //Add label to the input for the nodes name
-      const nameLabel = document.createElement("p");
-      nameLabel.classList.add("input-label");
-      nameLabel.textContent = "Page"; // Set the text content of the label
-      contentDiv.appendChild(nameLabel);
-    }
-
-    containerDiv.appendChild(contentDiv);
-
-    // Add three dots iccon
-    const threeDotsIcon = document.createElement("sl-icon") as SlIcon;
-    threeDotsIcon.setAttribute("src", dotsVertical);
-    threeDotsIcon.classList.add("threeDots");
-    containerDiv.appendChild(threeDotsIcon);
-
-    const containerHtml = containerDiv.outerHTML;
-
-    //get current center of drawflow div
-    const rect = this.drawflowEditorDiv.getBoundingClientRect();
-    const zoom = this.editor.zoom;
-
-    //center of canvas - translation of canvas / zoom - node dimension center
-    const centerX = rect.width / 2 - this.editor.canvas_x / zoom - 320 / 2;
-    const centerY = rect.height / 2 - this.editor.canvas_y / zoom - 109 / 2;
+    const editorDivCenterPos = this.getCenterOfEditorDiv();
 
     this.editor.addNode(
       title,
       1,
       1,
-      centerX,
-      centerY,
+      editorDivCenterPos.centerX - 320 / 2,
+      editorDivCenterPos.centerY - 109 / 2,
       isOrigin ? "origin" : "page",
-      pageContent,
-      containerHtml,
+      nodeData,
+      nodeHTML,
       false
     );
   }
@@ -927,11 +908,133 @@ export class NodeEditor extends LitElementWw {
 
   */
   public addPopUpNode(title: string) {
-    const popupContent = {
+    const nodeData = {
       title: title,
       content: `<p>Testing Slots HTML Editing</p>`,
     };
 
+    const nodeHTML = this.createPopupNodeHTML();
+
+    const editorDivCenterPos = this.getCenterOfEditorDiv();
+
+    this.editor.addNode(
+      title,
+      1,
+      1,
+      editorDivCenterPos.centerX - 320 / 2,
+      editorDivCenterPos.centerY - 109 / 2,
+      "popup",
+      nodeData,
+      nodeHTML,
+      false
+    );
+  }
+
+  /*
+
+
+  */
+  public addBranchNode(title: string) {
+    const nodeData = {
+      title: title,
+      content: `<p>Testing Slots HTML Editing</p>`,
+    };
+
+    const nodeHTML = this.createBranchNodeHTML();
+
+    const editorDivCenterPos = this.getCenterOfEditorDiv();
+
+    this.editor.addNode(
+      title,
+      1,
+      0,
+      editorDivCenterPos.centerX - 320 / 2,
+      editorDivCenterPos.centerY - 109 / 2,
+      "branch",
+      nodeData,
+      nodeHTML,
+      false
+    );
+  }
+
+  /*
+
+
+  */
+  private getCenterOfEditorDiv() {
+    //get current center of drawflow div
+    const rect = this.drawflowEditorDiv.getBoundingClientRect();
+    const zoom = this.editor.zoom;
+
+    //center of canvas - translation of canvas / zoom - node dimension center
+    const centerX = rect.width / 2 - this.editor.canvas_x / zoom;
+    const centerY = rect.height / 2 - this.editor.canvas_y / zoom;
+
+    return { centerX, centerY };
+  }
+
+  /*
+
+
+  */
+  public createPageNodeHTML(isOrigin: boolean) {
+    // Create the container div and its child elements
+    const containerDiv = document.createElement("div");
+    containerDiv.classList.add("container");
+
+    // Create the page icon
+    const iconDiv = document.createElement("div");
+    iconDiv.classList.add("iconDiv");
+    const icon = document.createElement("sl-icon") as SlIcon;
+    icon.setAttribute("src", file);
+    icon.classList.add("pageIcon");
+    iconDiv.appendChild(icon);
+    containerDiv.appendChild(iconDiv);
+
+    // Create the content div with input
+    const contentDiv = document.createElement("div");
+    contentDiv.classList.add("content");
+    const input = document.createElement("input");
+    input.id = "title";
+    input.setAttribute("df-title", ""); // Adding df-title attribute
+    contentDiv.appendChild(input);
+
+    // Add origin badge or input label
+    const nameLabel = document.createElement("p");
+    if (isOrigin) {
+      const badge = document.createElement("div");
+      badge.classList.add("badge");
+
+      const arrowIcon = document.createElement("sl-icon") as SlIcon;
+      arrowIcon.setAttribute("src", circleArrowRight);
+      badge.appendChild(arrowIcon);
+
+      nameLabel.textContent = "Start Page";
+      badge.appendChild(nameLabel);
+      contentDiv.appendChild(badge);
+    } else {
+      nameLabel.classList.add("input-label");
+      nameLabel.textContent = "Page"; // Set the text content of the label
+      contentDiv.appendChild(nameLabel);
+    }
+
+    containerDiv.appendChild(contentDiv);
+
+    // Add three dots icon
+    const threeDotsIcon = document.createElement("sl-icon") as SlIcon;
+    threeDotsIcon.setAttribute("src", dotsVertical);
+    threeDotsIcon.classList.add("threeDots");
+    containerDiv.appendChild(threeDotsIcon);
+
+    const containerHtml = containerDiv.outerHTML;
+    return containerHtml;
+  }
+
+  /*
+
+
+  */
+  public createPopupNodeHTML() {
     // Create the container div
     const containerDiv = document.createElement("div");
     containerDiv.classList.add("container");
@@ -970,38 +1073,14 @@ export class NodeEditor extends LitElementWw {
     containerDiv.appendChild(threeDotsIcon);
 
     const containerHtml = containerDiv.outerHTML;
-
-    //get current center of drawflow div
-    const rect = this.drawflowEditorDiv.getBoundingClientRect();
-    const zoom = this.editor.zoom;
-
-    //center of canvas - translation of canvas / zoom - node dimension center
-    const centerX = rect.width / 2 - this.editor.canvas_x / zoom - 302 / 2;
-    const centerY = rect.height / 2 - this.editor.canvas_y / zoom - 90 / 2;
-
-    this.editor.addNode(
-      title,
-      1,
-      1,
-      centerX,
-      centerY,
-      "popup",
-      popupContent,
-      containerHtml,
-      false
-    );
+    return containerHtml;
   }
 
   /*
 
 
   */
-  public addBranchNode(title: string) {
-    const branchNodeContent = {
-      title: title,
-      content: `<p>Testing Slots HTML Editing</p>`,
-    };
-
+  public createBranchNodeHTML() {
     // Create the container div
     const containerDiv = document.createElement("div");
     containerDiv.classList.add("container");
@@ -1039,86 +1118,7 @@ export class NodeEditor extends LitElementWw {
     containerDiv.appendChild(threeDotsIcon);
 
     const containerHtml = containerDiv.outerHTML;
-
-    //get current center of drawflow div
-    const rect = this.drawflowEditorDiv.getBoundingClientRect();
-    const zoom = this.editor.zoom;
-
-    //center of canvas - translation of canvas / zoom - node dimension center
-    const centerX = rect.width / 2 - this.editor.canvas_x / zoom; //- 302 / 2;
-    const centerY = rect.height / 2 - this.editor.canvas_y / zoom; //- 90 / 2;
-
-    this.editor.addNode(
-      "Branch Node",
-      1,
-      1,
-      centerX,
-      centerY,
-      "branch",
-      branchNodeContent,
-      containerHtml,
-      false
-    );
-  }
-
-  /*
-TODO: highlighting branch buttons
-  */
-  public highlightConnectionAndNode(
-    outputNodeId,
-    inputNodeId,
-    outputClass,
-    inputClass,
-    highlightNodeId
-  ) {
-    this._highlightConnection(
-      outputNodeId,
-      inputNodeId,
-      outputClass,
-      inputClass
-    );
-
-    this._highlightNode(highlightNodeId);
-    this.changeInEditorCallback(
-      { ...this.editor.drawflow },
-      "connectionHighlighted",
-      null,
-      null,
-      this.editor.getNodeFromId(inputNodeId),
-      this.editor.getNodeFromId(outputNodeId),
-      inputClass,
-      outputClass
-    );
-  }
-
-  /*
-
-  */
-  public unhighlightConnectionAndNode(
-    outputNodeId,
-    inputNodeId,
-    outputClass,
-    inputClass,
-    highlightNodeId
-  ) {
-    this._unhighlightConnection(
-      outputNodeId,
-      inputNodeId,
-      outputClass,
-      inputClass
-    );
-    this._unhighlightNode(highlightNodeId);
-
-    this.changeInEditorCallback(
-      { ...this.editor.drawflow },
-      "connectionUnhighlighted",
-      null,
-      null,
-      this.editor.getNodeFromId(inputNodeId),
-      this.editor.getNodeFromId(outputNodeId),
-      inputClass,
-      outputClass
-    );
+    return containerHtml;
   }
 
   /*
@@ -1140,7 +1140,7 @@ TODO: highlighting branch buttons
       if (nodeDiv) {
         nodeDiv
           .querySelector(`.${type}.${cls}`)
-          .classList.add(`${inputNodeClass}-highlighted`);
+          .setAttribute(`highlighted`, "true");
       }
     });
 
@@ -1149,7 +1149,7 @@ TODO: highlighting branch buttons
         `svg[class="connection node_in_node-${inputNodeId} node_out_node-${outputNodeId} ${outputClass} ${inputClass}"]`
       )
       ?.querySelector("path")
-      ?.classList.add(`${inputNodeClass}-highlighted`);
+      ?.setAttribute(`highlighted`, "true");
   }
 
   /*
@@ -1171,7 +1171,7 @@ TODO: highlighting branch buttons
       if (nodeDiv) {
         nodeDiv
           .querySelector(`.${type}.${cls}`)
-          .classList.remove(`${inputNodeClass}-highlighted`);
+          ?.removeAttribute("highlighted");
       }
     });
 
@@ -1180,7 +1180,7 @@ TODO: highlighting branch buttons
         `svg[class="connection node_in_node-${inputNodeId} node_out_node-${outputNodeId} ${outputClass} ${inputClass}"]`
       )
       ?.querySelector("path")
-      ?.classList.remove(`${inputNodeClass}-highlighted`);
+      ?.removeAttribute("highlighted");
   }
 
   /*
@@ -1188,15 +1188,17 @@ TODO: highlighting branch buttons
   */
   public _highlightNode(nodeId) {
     const selector = `div#node-${nodeId}.drawflow-node`;
-    this.shadowRoot.querySelector(selector)?.classList.add("highlighted");
+    this.shadowRoot
+      .querySelector(selector)
+      ?.setAttribute("highlighted", "true");
   }
 
   /*
-
-  */
+  
+    */
   public _unhighlightNode(nodeId) {
     const selector = `div#node-${nodeId}.drawflow-node`;
-    this.shadowRoot.querySelector(selector)?.classList.remove("highlighted");
+    this.shadowRoot.querySelector(selector)?.removeAttribute("highlighted");
   }
 
   /*
@@ -1207,7 +1209,7 @@ TODO: highlighting branch buttons
       this.shadowRoot
         ?.getElementById(`node-${nodeId}`)
         ?.querySelector(`.${type}.${cls}`)
-        ?.classList.add("highlighted");
+        ?.setAttribute("highlighted", "true");
     });
   }
 
@@ -1219,7 +1221,16 @@ TODO: highlighting branch buttons
       this.shadowRoot
         ?.getElementById(`node-${nodeId}`)
         ?.querySelector(`.${type}.${cls}`)
-        ?.classList.remove("highlighted");
+        ?.removeAttribute("highlighted");
+    });
+  }
+
+  public unhighlightAllOutputs() {
+    Array.from(this.nodeDivs as NodeListOf<HTMLElement>).forEach((nodeDiv) => {
+      const outputs = nodeDiv.querySelectorAll(".output");
+      outputs.forEach((output) => {
+        output.removeAttribute("highlighted");
+      });
     });
   }
 
@@ -1227,13 +1238,10 @@ TODO: highlighting branch buttons
 
 
   */
-  private addDecisionPopUpTemplate() {
-    //console.log(JSON.stringify(exportdata));
+  private addTemplate(template) {
     var currentNodes = this.editor.export();
     // Create a deep copy of the nodeTemplates
-    const nodeTemplatesCopy = JSON.parse(
-      JSON.stringify(decisionPopUpWithFeedback)
-    );
+    const nodeTemplatesCopy = JSON.parse(JSON.stringify(template));
     // Assuming you have the following from the drawflow editor:
     const rect = this.drawflowEditorDiv.getBoundingClientRect();
     const zoom = this.editor.zoom;
@@ -1246,21 +1254,36 @@ TODO: highlighting branch buttons
 
     this.editor.import(mergedData.currentNodes);
 
-    //console.log(mergedData.templateContainers);
-    this.changeInEditorCallback(
-      { ...this.editor.drawflow },
-      "templateImported",
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      mergedData.templateContainers
-    );
+    this.providedStore.setEditorContent(this.editor.drawflow);
 
-    this.updateSelectedNodeCallback(this.selectedNode.id);
+    this.dispatchEvent(
+      new CustomEvent("nodeGroupImported", {
+        detail: { templateContainers: mergedData.templateContainers },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  /*
+
+
+  */
+  private moveNodesToCenter(nodeTemplate, targetCenterX, targetCenterY) {
+    const data = nodeTemplate.drawflow.Home.data;
+    // Step 1: Get the current center of the bounding box
+    const { centerX: currentCenterX, centerY: currentCenterY } =
+      this.getCenterOfBoundingBox(nodeTemplate.drawflow.Home.data);
+
+    // Step 2: Calculate the translation required to move the nodes to the target center
+    const deltaX = targetCenterX - currentCenterX;
+    const deltaY = targetCenterY - currentCenterY;
+
+    // Step 3: Update each node's position
+    Object.values(data).forEach((node) => {
+      (node as DrawflowNode).pos_x += deltaX;
+      (node as DrawflowNode).pos_y += deltaY;
+    });
   }
 
   /*
@@ -1295,36 +1318,16 @@ TODO: highlighting branch buttons
 
 
   */
-  private moveNodesToCenter(nodeTemplate, targetCenterX, targetCenterY) {
-    const data = nodeTemplate.drawflow.Home.data;
-    // Step 1: Get the current center of the bounding box
-    const { centerX: currentCenterX, centerY: currentCenterY } =
-      this.getCenterOfBoundingBox(nodeTemplate.drawflow.Home.data);
-
-    // Step 2: Calculate the translation required to move the nodes to the target center
-    const deltaX = targetCenterX - currentCenterX;
-    const deltaY = targetCenterY - currentCenterY;
-
-    // Step 3: Update each node's position
-    Object.values(data).forEach((node) => {
-      (node as DrawflowNode).pos_x += deltaX;
-      (node as DrawflowNode).pos_y += deltaY;
-    });
-  }
-
-  /*
-
-
-  */
   private mergeTemplate(currentNodes, nodeTemplates) {
-    //
     const currentData = currentNodes.drawflow.Home.data;
     const templateData = nodeTemplates.drawflow.Home.data;
     const currentMaxIndex = Math.max(...Object.keys(currentData).map(Number));
     let newIndex = currentMaxIndex + 1;
+
     const indexMap = Object.fromEntries(
       Object.keys(templateData).map((key) => [Number(key), newIndex++])
     );
+
     for (const [key, node] of Object.entries(templateData)) {
       const newId = indexMap[Number(key)];
       (node as DrawflowNode).id = newId;
@@ -1349,13 +1352,50 @@ TODO: highlighting branch buttons
         const oldId = Number(drawflowNodeIdAttr.value);
         drawflowNodeIdAttr.value = indexMap[oldId].toString();
       }
+
+      const incomingContainerIdAttr = container.attributes.find(
+        (attr) => attr.name === "incomingcontainerid"
+      );
+      if (incomingContainerIdAttr) {
+        const oldId = Number(incomingContainerIdAttr.value);
+        incomingContainerIdAttr.value = indexMap[oldId].toString();
+      }
+
+      const rulesAttr = container.attributes.find(
+        (attr) => attr.name === "rules"
+      );
+
+      if (rulesAttr) {
+        const rules = JSON.parse(rulesAttr.value);
+        rules.forEach((rule) => {
+          const oldId = Number(rule.target);
+          rule.target = indexMap[oldId].toString();
+        });
+        rulesAttr.value = JSON.stringify(rules);
+      }
+
+      const elseRuleAttr = container.attributes.find(
+        (attr) => attr.name === "elserule"
+      );
+
+      if (elseRuleAttr) {
+        const elseRule = JSON.parse(elseRuleAttr.value);
+        const oldId = Number(elseRule.target);
+        elseRule.target = indexMap[oldId].toString();
+        elseRuleAttr.value = JSON.stringify(elseRule);
+      }
+
       // Update the datatargetid and identifier in the innerHTML
       const parser = new DOMParser();
       const doc = parser.parseFromString(container.innerHTML, "text/html");
-      const buttons = doc.querySelectorAll("webwriter-connection-button");
+      const buttons = doc.querySelectorAll(
+        "webwriter-connection-button, webwriter-smart-branch-button"
+      );
+
       buttons.forEach((button) => {
         // Update datatargetid
         const dataTargetId = button.getAttribute("datatargetid");
+
         if (dataTargetId) {
           const oldTargetId = Number(dataTargetId);
           button.setAttribute("datatargetid", indexMap[oldTargetId].toString());
@@ -1408,7 +1448,6 @@ TODO: highlighting branch buttons
         node.data.title.toLowerCase().includes(value.toLowerCase()) ||
         node.class.toLowerCase().includes(value.toLowerCase())
       ) {
-        // console.log(node.data.title, "includes", value);
         matchNodeIds = [...matchNodeIds, node.id];
       }
     });
@@ -1420,7 +1459,6 @@ TODO: highlighting branch buttons
 
   */
   public highlightSearchedNodes(nodeIds: Array<Number>) {
-    //console.log("we in here");
     // Loop through all nodes in drawflow
     const nodes = this.editor.drawflow.drawflow.Home.data;
 
@@ -1428,11 +1466,11 @@ TODO: highlighting branch buttons
       if (nodeIds.includes(node.id)) {
         this.shadowRoot
           ?.getElementById(`node-${(node as DrawflowNode).id}`)
-          .classList.add("searched");
+          .setAttribute("searched", "true");
       } else {
         this.shadowRoot
           ?.getElementById(`node-${(node as DrawflowNode).id}`)
-          .classList.remove("searched");
+          .removeAttribute("searched");
       }
     });
   }
@@ -1442,14 +1480,13 @@ TODO: highlighting branch buttons
   
   */
   public removeSearchHighlightFromAllNodes() {
-    //console.log("we in here");
     // Loop through all nodes in drawflow
     const nodes = this.editor.drawflow.drawflow.Home.data;
 
     Object.values(nodes).forEach((node) => {
       this.shadowRoot
         ?.getElementById(`node-${(node as DrawflowNode).id}`)
-        .classList.remove("searched");
+        .removeAttribute("searched");
     });
   }
 
@@ -1519,22 +1556,55 @@ TODO: highlighting branch buttons
       }
     });
 
-    this.changeInEditorCallback(
-      { ...this.editor.drawflow },
-      "changeOrigin",
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      { oldId: originNodeId, newId: nodeId }
+    this.requestUpdate();
+  }
+
+  /*
+
+
+  */
+  private deleteSelectedNode() {
+    this.editor.removeNodeId(`node-${this.providedStore.selectedNode.id}`);
+    (this.shadowRoot.getElementById("delete_node_dialog") as SlDialog).hide();
+  }
+
+  /*
+
+
+  */
+  public programaticallySelectNode(id) {
+    this.nodeDivs.forEach((nodeDiv) => {
+      (nodeDiv as HTMLElement).classList.remove("selected");
+    });
+
+    let nodeDiv = Array.from(this.nodeDivs as NodeListOf<HTMLElement>).find(
+      (nodeDiv) => {
+        return (
+          parseInt(nodeDiv.id.split("-")[1], 10).toString() === id.toString()
+        );
+      }
     );
 
-    this.requestUpdate();
+    nodeDiv.classList.add("selected");
+
+    this.editor.node_selected = nodeDiv;
+  }
+
+  /*
+
+
+  */
+  public programaticallyUnselectConnection() {
+    if (this.selectedConnection !== NO_CONNECTION_SELECTED) {
+      const parsedConnection = this.parseConnectionIdentifier(
+        this.selectedConnection
+      );
+
+      const deleteButton = this.shadowRoot.querySelector(".drawflow-delete");
+      deleteButton.remove();
+
+      this.editor.connection_selected = null;
+      this.editor.ele_selected = null;
+    }
   }
 }

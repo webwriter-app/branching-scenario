@@ -1,13 +1,6 @@
-import { html, css, LitElement, unsafeCSS } from "lit";
+import { html } from "lit";
 import { LitElementWw } from "@webwriter/lit";
-import {
-  customElement,
-  property,
-  query,
-  state,
-  queryAll,
-  queryAssignedElements,
-} from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 //Import Styles
 import styles from "../../css/branching-controls-css";
@@ -27,20 +20,25 @@ import {
   SlIcon,
   SlInput,
   SlButtonGroup,
+  SlBadge,
 } from "@shoelace-style/shoelace";
 
 //@tabler icons
 import plus from "@tabler/icons/outline/plus.svg";
-import schema from "@tabler/icons/outline/schema.svg";
 import book from "@tabler/icons/outline/book.svg";
-import questionMark from "@tabler/icons/outline/question-mark.svg";
 import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 import directions from "@tabler/icons/outline/directions.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
-import playerPlay from "@tabler/icons/filled/player-play.svg";
-import playerSkipForward from "@tabler/icons/filled/player-skip-forward.svg";
-import playerStop from "@tabler/icons/filled/player-stop.svg";
+import helpOctagon from "@tabler/icons/outline/help-octagon.svg";
+import packages from "@tabler/icons/outline/packages.svg";
+
+import { decisionPopUpWithFeedback } from "../node-templates/decision-popup-with-feedback";
+import { decisionPopUpToPage } from "../node-templates/decision-popup-to-page";
+import { singleChoiceQuizLoop } from "../node-templates/single-choice-quiz-loop";
+
+import { consume } from "@lit/context";
+import { gamebookStore, GamebookStore } from "../context-test";
 
 @customElement("node-edtior-controls-bar")
 export class NodeEditorControlsBar extends LitElementWw {
@@ -59,110 +57,141 @@ export class NodeEditorControlsBar extends LitElementWw {
       "sl-dropdown": SlDropdown,
       "sl-menu-label": SlMenuLabel,
       "sl-input": SlInput,
+      "sl-badge": SlBadge,
     };
   }
 
   //import CSS
   static styles = [styles];
 
-  @property({ type: Boolean, reflect: true }) accessor inPreviewMode = false;
-
-  @property({ type: String }) accessor gamebookTitle = "";
-
-  //
-  @property({ type: Function }) accessor handleGamebookTitle = (
-    event: Event
-  ) => {};
-  @property({ type: Function }) accessor importExample = (number: number) => {};
-  @property({ type: Function }) accessor addPageNode = (
-    title: string,
-    isOrigin: boolean
-  ) => {};
-  @property({ type: Function }) accessor addPopUpNode = (title: string) => {};
-  @property({ type: Function }) accessor addBranchNode = (title: string) => {};
-  @property({ type: Function }) accessor addQuestionNode = () => {};
-  @property({ type: Function }) accessor addDecisionPopUpTemplate = () => {};
-  @property({ type: Function }) accessor showDialog = () => {};
-
-  @property({ type: Object, attribute: true }) accessor selectedNode;
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default");
 
   render() {
-    if (!this.inPreviewMode) {
-      return this.renderInNodeEditor();
-    } else {
-      return this.renderInPreviewMode();
-    }
-  }
-
-  renderInNodeEditor() {
     return html`
       <div class="controls">
         <div class="first-item">
-          <!-- <sl-button-group label="Example Button Group">
-            <sl-button @click=${() => this.switchToPreviewMode()}>
-              <sl-icon slot="prefix" src=${playerPlay}></sl-icon>
-            </sl-button>
-            <sl-button
-              @click=${() => this.switchToPreviewMode(this.selectedNode.id)}
-              ><sl-icon slot="prefix" src=${playerSkipForward}></sl-icon> from
-              here</sl-button
-            >
-          </sl-button-group> -->
           <sl-input
             id="gamebookTitle"
             rows="1"
             resize="none"
             placeholder="Gamebook Title"
             @input="${this.textAreaInputChanged}"
-            .value="${this.gamebookTitle}"
-            style=${this.inPreviewMode ? "display: none;" : "display: block;"}
+            .value="${this.providedStore.title}"
           >
             <sl-icon slot="prefix" src=${book}></sl-icon>
           </sl-input>
         </div>
 
-        <sl-dropdown
-          placement="bottom-end"
-          style=${this.inPreviewMode ? "display: none;" : "display: block;"}
-          hoist
-        >
+        <sl-dropdown placement="bottom-end" hoist>
           <sl-button slot="trigger">
             Add
             <sl-icon src=${plus} slot="prefix"></sl-icon>
           </sl-button>
-          <sl-menu style="width: 200px;" hoist>
-            <sl-menu-label>Blank</sl-menu-label>
+          <sl-menu style="width: 280px;" hoist>
+            <sl-menu-label>Nodes</sl-menu-label>
             <sl-menu-item
-              @click=${() => this.addPageNode("Untitled Page", false)}
-              ><sl-icon slot="prefix" src=${file}></sl-icon>
+              @click=${() => {
+                this.dispatchEvent(
+                  new CustomEvent("addPageNode", {
+                    detail: { title: "Untitled Page", isOrigin: false },
+                    bubbles: true,
+                    composed: true,
+                  })
+                );
+              }}
+            >
+              <sl-icon slot="prefix" src=${file}></sl-icon>
               Page
             </sl-menu-item>
-            <sl-menu-item @click=${() => this.addPopUpNode("Untitled Popup")}>
+            <sl-menu-item
+              @click=${() => {
+                this.dispatchEvent(
+                  new CustomEvent("addPopUpNode", {
+                    detail: { title: "Untitled Popup" },
+                    bubbles: true,
+                    composed: true,
+                  })
+                );
+              }}
+            >
               <sl-icon slot="prefix" src=${squares}></sl-icon>
               Popup
             </sl-menu-item>
-            <sl-menu-item @click=${() => this.addBranchNode("Untitled Branch")}>
+            <sl-menu-item
+              @click=${() => {
+                this.dispatchEvent(
+                  new CustomEvent("addBranchNode", {
+                    detail: { title: "Untitled Branch" },
+                    bubbles: true,
+                    composed: true,
+                  })
+                );
+              }}
+            >
               <sl-icon slot="prefix" src=${arrowsSplit2}></sl-icon>
               Smart Branch
             </sl-menu-item>
             <sl-divider></sl-divider>
-            <sl-menu-label>Template</sl-menu-label>
-            <sl-menu-item @click=${() => this.addDecisionPopUpTemplate()}>
+            <sl-menu-label>Blocks</sl-menu-label>
+            <sl-menu-item
+              @click=${() => {
+                this.dispatchEvent(
+                  new CustomEvent("addTemplate", {
+                    detail: { template: decisionPopUpToPage },
+                    bubbles: true,
+                    composed: true,
+                  })
+                );
+              }}
+            >
               <sl-icon slot="prefix" src=${directions}></sl-icon>
-              Decision Popup
+              Decision Popup to Page
+            </sl-menu-item>
+
+            <sl-menu-item
+              @click=${() => {
+                this.dispatchEvent(
+                  new CustomEvent("addTemplate", {
+                    detail: { template: decisionPopUpWithFeedback },
+                    bubbles: true,
+                    composed: true,
+                  })
+                );
+              }}
+            >
+              <sl-icon slot="prefix" src=${directions}></sl-icon>
+              Decision Feedback
+            </sl-menu-item>
+
+            <sl-menu-item
+              @click=${() => {
+                this.dispatchEvent(
+                  new CustomEvent("addTemplate", {
+                    detail: { template: singleChoiceQuizLoop },
+                    bubbles: true,
+                    composed: true,
+                  })
+                );
+              }}
+            >
+              <sl-icon slot="prefix" src=${helpOctagon}></sl-icon>
+              Quiz Loop
+              <sl-badge variant="neutral" pill slot="suffix">
+                <p style="margin: 0px; padding: 0px; padding-right: 5px;">
+                  Requires Quiz
+                </p>
+                <sl-icon src=${packages}></sl-icon
+              ></sl-badge>
             </sl-menu-item>
           </sl-menu>
         </sl-dropdown>
-        <sl-divider
-          vertical
-          style=${this.inPreviewMode
-            ? "display: none;"
-            : "display: block; height: 30px;"}
-        >
-        </sl-divider>
+        <sl-divider vertical style="height: 30px"> </sl-divider>
         <sl-button
-          style=${this.inPreviewMode ? "display: none;" : "display: block;"}
-          @click=${() => this.showDialog()}
+          @click=${() => {
+            this.dispatchEvent(new CustomEvent("clearDialog"));
+          }}
         >
           Clear
         </sl-button>
@@ -170,49 +199,11 @@ export class NodeEditorControlsBar extends LitElementWw {
     `;
   }
 
-  renderInPreviewMode() {
-    return html`
-      <div class="controls">
-        <div class="first-item">
-          <sl-button @click=${() => this.switchToNodeEditor()}>
-            <sl-icon slot="prefix" src=${playerStop}></sl-icon>
-          </sl-button>
-        </div>
-      </div>
-    `;
-  }
   /*
 
 
   */
   private textAreaInputChanged(event) {
-    this.handleGamebookTitle(event);
+    this.providedStore.setTitle(event.target.value);
   }
-
-  /*
-
-
-  */
-  // private switchToPreviewMode(containerId: Number = undefined) {
-  //   const event = new CustomEvent("switchToPreviewMode", {
-  //     detail: {
-  //       startFrom: containerId,
-  //     },
-  //     bubbles: true, // Allows the event to bubble up through the DOM
-  //     composed: true, // Allows the event to pass through shadow DOM boundaries
-  //   });
-  //   this.dispatchEvent(event);
-  // }
-
-  // /*
-
-  // */
-  // private switchToNodeEditor() {
-  //   const event = new CustomEvent("switchToNodeEditor", {
-  //     detail: {},
-  //     bubbles: true, // Allows the event to bubble up through the DOM
-  //     composed: true, // Allows the event to pass through shadow DOM boundaries
-  //   });
-  //   this.dispatchEvent(event);
-  // }
 }

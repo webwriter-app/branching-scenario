@@ -95,16 +95,14 @@ export class WebWriterGamebook extends LitElementWw {
   _handleSlotChange() {
     this.currentContainerId = this._resetGamebookToOrigin();
     this._initializeButtons(this.currentContainerId);
-    //console.log("setting this", this.currentContainerId);
   }
 
   /*
 
-  (TODO: after Thesis) Handle Reset of Quiz and Tasks
+  TODO: after Thesis - Handle Reset of Quiz and Tasks
    */
   private _handleSubmit(event: Event) {
     event.preventDefault(); // Prevent the default form submission
-    // console.log(event);
 
     const currentContainer = this.gamebookContainers.find((container) => {
       return container.drawflowNodeId === this.currentContainerId;
@@ -156,7 +154,6 @@ export class WebWriterGamebook extends LitElementWw {
       }
     });
 
-    //console.log(submitElements, smartBranchButton.elementSubmitted);
     this.requestUpdate();
   }
 
@@ -197,10 +194,12 @@ export class WebWriterGamebook extends LitElementWw {
 
   */
   private _navigateTo(targetId: number) {
-    //TODO: What if there is no container?
-    //First Step: Find container, if not throw error
+    let containerFound = false; // Flag to check if a container was found
+
     this.gamebookContainers.forEach((container) => {
       if (container.drawflowNodeId == targetId) {
+        containerFound = true; // Set flag to true when a matching container is found
+
         if (container instanceof WebWriterGamebookPageContainer) {
           this._navigateToPage(targetId);
           this._initializeButtons(targetId);
@@ -219,6 +218,11 @@ export class WebWriterGamebook extends LitElementWw {
         }
       }
     });
+
+    // If no container was found, react accordingly
+    if (!containerFound) {
+      console.error(`No container found for targetId: ${targetId}`);
+    }
   }
 
   /*
@@ -288,8 +292,6 @@ export class WebWriterGamebook extends LitElementWw {
 
       for (const rule of branchContainer.rules) {
         if (rule.target !== "") {
-          //console.log(rule);
-
           //Case: Element Id
 
           const element = assignedElements.find((element) => {
@@ -338,7 +340,6 @@ export class WebWriterGamebook extends LitElementWw {
                     );
 
                     if (taskHasWrongChoiceItem) {
-                      //console.log(task, "is false");
                       amountFalseTasks++;
                     }
                   }
@@ -356,7 +357,6 @@ export class WebWriterGamebook extends LitElementWw {
                     });
 
                     if (taskHasWrongOrder) {
-                      //console.log(task, "is false");
                       amountFalseTasks++;
                     }
                   }
@@ -401,8 +401,6 @@ export class WebWriterGamebook extends LitElementWw {
                   relevantTasks.length;
 
                 let match = Number(rule.match) / 100;
-
-                //console.log("correct", percentageCorrect);
 
                 if (rule.condition.toLowerCase() == "correct") {
                   if (percentageCorrect >= match) {
@@ -530,7 +528,7 @@ export class WebWriterGamebook extends LitElementWw {
     }
 
     //Case: No rule was satisfied
-    //console.log(branchContainer.elseRule.target);
+
     return Number(branchContainer.elseRule?.target);
   }
 
@@ -542,8 +540,6 @@ export class WebWriterGamebook extends LitElementWw {
     const originPageContainer = this.gamebookContainers.find(
       (container) => container.getAttribute("originPage") == 1
     );
-
-    // console.log(originPageContainer);
 
     this.pageTitle = originPageContainer.pageTitle;
 
@@ -571,6 +567,7 @@ export class WebWriterGamebook extends LitElementWw {
     container.buttons.forEach((button) => {
       const targetId = parseInt(button.getAttribute("dataTargetId"), 10);
       button.addEventListener("click", () => this._navigateTo(targetId));
+      button.classList.remove("highlighted");
 
       if (button instanceof WebWriterSmartBranchButton) {
         //In case the button already has an existing submitElements and elementSubmitted (navigated back to a page from a popup)
@@ -597,7 +594,6 @@ export class WebWriterGamebook extends LitElementWw {
                 element.tagName.toLowerCase() == "webwriter-quiz" ||
                 element.tagName.toLowerCase() == "webwriter-task"
               ) {
-                //console.log("element added", element);
                 submitElements = [...submitElements, element.id];
                 elementSubmitted = [...elementSubmitted, false];
               }
@@ -632,7 +628,7 @@ export class WebWriterGamebook extends LitElementWw {
           container.elseRule.target == ""
         ) {
           this.containerWithError = container.pageTitle;
-          //console.log(this.containerWithError);
+
           return true;
         }
       }

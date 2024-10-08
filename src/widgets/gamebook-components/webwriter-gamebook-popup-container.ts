@@ -14,6 +14,7 @@ import { WebWriterSmartBranchButton } from "./webwriter-smart-branch-button";
 
 //Shoelace
 import { SlButton, SlDialog } from "@shoelace-style/shoelace";
+import { WebWriterGamebookOptions } from "../webwriter-gamebook-options";
 
 @customElement("webwriter-gamebook-popup-container")
 export class WebWriterGamebookPopupContainer extends LitElementWw {
@@ -43,6 +44,11 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
         padding: 20px;
       }
 
+      :host(:not([contenteditable="true"]):not([contenteditable=""]))
+        .author-only {
+        display: none;
+      }
+
       /* Base style for the close button visibility */
       sl-dialog::part(close-button) {
         display: var(--close-button-display, flex);
@@ -68,6 +74,7 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
     return {
       "sl-dialog": SlDialog,
       "webwriter-connection-button": WebWriterConnectionButton,
+      "webwriter-gamebook-options": WebWriterGamebookOptions,
     };
   }
   //associated node id
@@ -144,7 +151,6 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
       });
 
       this.dialog.classList.add("hide-close-button");
-      //console.log(this.dialog);
     }
   }
 
@@ -154,7 +160,13 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
   */
   render() {
     return html` ${this.isContentEditable
-      ? html` <slot class="page"></slot>`
+      ? html`
+          <slot class="page"></slot>
+          <webwriter-gamebook-options
+            class="author-only"
+            part="options"
+          ></webwriter-gamebook-options>
+        `
       : html`
           <sl-dialog
             id="dialog"
@@ -208,16 +220,10 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
     mutationList.forEach((mutation) => {
       if (mutation.type == "childList") {
         mutation.addedNodes.forEach((node) => {
-          // (node as HTMLElement).setAttribute(
-          //   "ww-gamebook-id",
-          //   this.generateUniqueId()
-          // );
-
           if (
             (node as Element).nodeName.toLowerCase() ==
             "webwriter-connection-button"
           ) {
-            //console.log("LinkButton added:", node);
           }
         });
         mutation.removedNodes.forEach((node) => {
@@ -229,21 +235,14 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
               //make sure link button did not get deleted programtically
               let connButton = node as WebWriterConnectionButton;
 
-              //console.log("noticed");
-
               if (connButton.identifier != "connectionDeletedInNodeEditor") {
-                //console.log("in mutation observer here");
-                const event = new CustomEvent(
-                  "containerDeleteConnectionButton",
-                  {
-                    detail: {
-                      identifier: (node as WebWriterConnectionButton)
-                        .identifier,
-                    },
-                    bubbles: true, // Allows the event to bubble up through the DOM
-                    composed: true, // Allows the event to pass through shadow DOM boundaries
-                  }
-                );
+                const event = new CustomEvent("connectionButtonDeleted", {
+                  detail: {
+                    identifier: (node as WebWriterConnectionButton).identifier,
+                  },
+                  bubbles: true, // Allows the event to bubble up through the DOM
+                  composed: true, // Allows the event to pass through shadow DOM boundaries
+                });
                 this.dispatchEvent(event);
               }
             }
@@ -257,10 +256,7 @@ export class WebWriterGamebookPopupContainer extends LitElementWw {
               //make sure link button did not get deleted programtically
               let connButton = node as WebWriterSmartBranchButton;
 
-              //console.log("LinkButton removed:", node);
-
               if (connButton.identifier != "x") {
-                //console.log("in mutation observer here");
                 const event = new CustomEvent(
                   "containerDeleteConnectionButton",
                   {

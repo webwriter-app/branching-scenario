@@ -1,43 +1,28 @@
 import { html, css, LitElement, PropertyValues } from "lit";
-
-import { classMap } from "lit-html/directives/class-map.js";
 import { customElement, property, state, query } from "lit/decorators.js";
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import {
-  SlSelect,
-  SlOption,
-  SlDivider,
-  SlIcon,
-  SlInput,
-} from "@shoelace-style/shoelace";
+import { SlSelect, SlInput } from "@shoelace-style/shoelace";
 import Drawflow, { DrawflowNode } from "drawflow";
 import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import search from "@tabler/icons/outline/search.svg";
 
-const NO_NODE_SELECTED: DrawflowNode = {
-  id: -1,
-  name: "unselect",
-  inputs: {},
-  outputs: {},
-  pos_x: 0,
-  pos_y: 0,
-  class: "unselect",
-  data: {},
-  html: "",
-  typenode: false,
-};
+import { provide, consume, createContext } from "@lit/context";
+import { gamebookStore, GamebookStore } from "../context-test";
 
 @customElement("output-connection-control")
 export class OutputConnectionControl extends LitElement {
-  @property({ type: Object }) accessor nodeEditor;
-  @property({ type: Object }) accessor selectedNode;
   @property({ type: Number }) accessor incomingNodeId;
   @property({ type: String }) accessor outputClass;
   @property({ type: Boolean }) accessor disabled;
   @property({ type: Boolean }) accessor required;
-  @property({ type: Boolean }) accessor inOutputList; // New attribute
+  @property({ type: Boolean }) accessor inOutputList;
+  @property({ type: Boolean }) accessor isOpen;
+
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default");
 
   @state() accessor searchTerm = "";
 
@@ -116,8 +101,8 @@ export class OutputConnectionControl extends LitElement {
 
   */
   render() {
-    const data = this.nodeEditor.editor.drawflow.drawflow.Home.data;
-    const nodeId = this.selectedNode.id;
+    const data = this.providedStore.editorContent.drawflow.Home.data;
+    const nodeId = this.providedStore.selectedNode.id;
 
     const dataFiltered = Object.keys(data).filter(
       (key) =>
@@ -136,8 +121,8 @@ export class OutputConnectionControl extends LitElement {
           (key) => html`<sl-option
             value="${data[key].id}"
             class="node-option-visible ${data[key].class}"
-            @mouseenter=${() => this.nodeEditor._highlightNode(data[key].id)}
-            @mouseleave=${() => this.nodeEditor._unhighlightNode(data[key].id)}
+            @mouseenter=${() => this.highlightNode(data[key].id)}
+            @mouseleave=${() => this.unhighlightNode(data[key].id)}
             >${data[key].data.title}</sl-option
           >`
         );
@@ -154,7 +139,7 @@ export class OutputConnectionControl extends LitElement {
       <sl-select
         placement="bottom"
         hoist
-        class="${!this.selectedNode?.outputs?.[this.outputClass]
+        class="${!this.providedStore.selectedNode?.outputs?.[this.outputClass]
           ?.connections?.[0]?.node &&
         this.required &&
         !this.disabled
@@ -163,11 +148,19 @@ export class OutputConnectionControl extends LitElement {
         size=${this.inOutputList ? "small" : "medium"}
         placeholder="Not connected"
         clearable
-        .value=${this.selectedNode?.outputs?.[this.outputClass]
-          ?.connections?.[0]?.node ?? "-1"}
+        .value=${this.providedStore.selectedNode.outputs?.[this.outputClass]
+          ?.connections?.[0]?.node ?? ""}
         @sl-input=${this._handleUserInputTargetPage}
-        @mouseenter=${() => this._highlightConnectionAndNode()}
-        @mouseleave=${() => this._unhighlightConnectionAndNode()}
+        @mouseenter=${() => {
+          if (!this.isOpen) {
+            this.highlightConnection();
+          }
+        }}
+        @mouseleave=${() => {
+          if (!this.isOpen) {
+            this.unhighlightConnection();
+          }
+        }}
         ?disabled=${this.disabled}
       >
         <div style="padding: 10px">
@@ -303,117 +296,166 @@ export class OutputConnectionControl extends LitElement {
 
   */
   private _handleUserInputTargetPage(event: Event) {
-    // console.log(this.selectElement);
-    // const partElement = this.selectElement.shadowRoot?.querySelector(
-    //   `[part="display-input"]`
-    // );
-
-    // console.log(partElement);
-
-    // const placeholder = partElement.children;
-    // console.log(placeholder);
-
     if (
       event.target instanceof HTMLElement &&
       event.target.tagName.toLowerCase() === "sl-select"
     ) {
-      //console.log(event.target);
       const selectedValue = (event.target as SlSelect).value;
+
       const connections =
-        this.selectedNode?.outputs?.[this.outputClass]?.connections;
+        this.providedStore.selectedNode?.outputs?.[this.outputClass]
+          ?.connections;
 
       //this.hasValue = selectedValue !== "";
-
       if (connections?.[0]?.node === undefined && selectedValue) {
-        this.nodeEditor.editor.addConnection(
-          this.selectedNode.id,
-          selectedValue,
-          this.outputClass,
-          "input_1"
-        );
+        const event = new CustomEvent("createConnection", {
+          detail: {
+            outputNodeId: this.providedStore.selectedNode.id,
+            inputNodeId: selectedValue,
+            outputClass: this.outputClass,
+            inputClass: "input_1",
+          },
+          bubbles: true,
+          composed: true,
+        });
+        this.dispatchEvent(event);
       }
       //
       else if (connections?.[0]?.node !== undefined && selectedValue) {
-        this.nodeEditor.editor.removeSingleConnection(
-          this.selectedNode.id,
-          connections[0].node,
-          this.outputClass,
-          "input_1"
-        );
-        this.nodeEditor.editor.addConnection(
-          this.selectedNode.id,
-          selectedValue,
-          this.outputClass,
-          "input_1"
-        );
+        const removeEvent = new CustomEvent("deleteConnection", {
+          detail: {
+            outputNodeId: this.providedStore.selectedNode.id,
+            inputNodeId: connections[0].node,
+            outputClass: this.outputClass,
+            inputClass: "input_1",
+          },
+          bubbles: true,
+          composed: true,
+        });
+        this.dispatchEvent(removeEvent);
+
+        const createEvent = new CustomEvent("createConnection", {
+          detail: {
+            outputNodeId: this.providedStore.selectedNode.id,
+            inputNodeId: selectedValue,
+            outputClass: this.outputClass,
+            inputClass: "input_1",
+          },
+          bubbles: true,
+          composed: true,
+        });
+        this.dispatchEvent(createEvent);
       }
       //
       else if (!selectedValue) {
-        this._unhighlightConnectionAndNode();
-        this.nodeEditor.editor.removeSingleConnection(
-          this.selectedNode.id,
-          connections?.[0]?.node,
-          this.outputClass,
-          "input_1"
-        );
+        const removeEvent = new CustomEvent("deleteConnection", {
+          detail: {
+            outputNodeId: this.providedStore.selectedNode.id,
+            inputNodeId: connections?.[0]?.node,
+            outputClass: this.outputClass,
+            inputClass: "input_1",
+          },
+          bubbles: true,
+          composed: true,
+        });
+        this.dispatchEvent(removeEvent);
       }
     }
-  }
 
-  /*
-
-  */
-  private _highlightConnectionAndNode() {
-    const inputNodeId =
-      this.selectedNode?.outputs?.[
-        this.outputClass
-      ]?.connections?.[0]?.node.toString();
-    if (!this.selectElement.open && inputNodeId) {
-      this.nodeEditor.highlightConnectionAndNode(
-        this.selectedNode.id,
-        inputNodeId,
-        this.outputClass,
-        "input_1",
-        inputNodeId
-      );
-    }
-  }
-
-  /*
-
-  */
-  private _unhighlightConnectionAndNode() {
-    const inputNodeId =
-      this.selectedNode?.outputs?.[
-        this.outputClass
-      ]?.connections?.[0]?.node.toString();
-    if (inputNodeId) {
-      this.nodeEditor.unhighlightConnectionAndNode(
-        this.selectedNode.id,
-        inputNodeId,
-        this.outputClass,
-        "input_1",
-        inputNodeId
-      );
-    }
+    this.requestUpdate();
   }
 
   /*
 
   */
   private onOpenChange(isOpen: boolean) {
-    const nodeId =
-      this.selectedNode?.outputs?.[
-        this.outputClass
-      ]?.connections?.[0]?.node.toString();
+    this.isOpen = isOpen;
     if (isOpen) {
-      this._unhighlightConnectionAndNode();
-      this.nodeEditor._highlightOutput(this.selectedNode.id, this.outputClass);
-    } else {
-      this.nodeEditor._unhighlightOutput(
-        this.selectedNode.id,
-        this.outputClass
+      this.unhighlightConnection();
+      this.dispatchEvent(
+        new CustomEvent("highlightOutput", {
+          detail: {
+            outputNodeId: this.providedStore.selectedNode.id,
+            outputClass: this.outputClass,
+          },
+          bubbles: true,
+          composed: true,
+        })
       );
+    } else {
+      this.unhighlightConnection();
     }
+  }
+
+  /*
+
+  */
+  private highlightConnection() {
+    this.dispatchEvent(
+      new CustomEvent("highlightConnection", {
+        detail: {
+          outputNodeId: this.providedStore.selectedNode.id,
+          inputNodeId:
+            this.providedStore.selectedNode?.outputs?.[this.outputClass]
+              ?.connections?.[0]?.node,
+          outputClass: this.outputClass,
+          inputClass: "input_1",
+          highlightButton: true,
+        },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  /*
+
+  */
+  private unhighlightConnection() {
+    this.dispatchEvent(
+      new CustomEvent("unhighlightConnection", {
+        detail: {
+          outputNodeId: this.providedStore.selectedNode.id,
+          inputNodeId:
+            this.providedStore.selectedNode?.outputs?.[this.outputClass]
+              ?.connections?.[0]?.node,
+          outputClass: this.outputClass,
+          inputClass: "input_1",
+          highlightButton: true,
+        },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  /*
+
+  */
+  private highlightNode(nodeId) {
+    this.dispatchEvent(
+      new CustomEvent("highlightNode", {
+        detail: {
+          nodeId: nodeId,
+        },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  /*
+
+  */
+  private unhighlightNode(nodeId) {
+    this.dispatchEvent(
+      new CustomEvent("unhighlightNode", {
+        detail: {
+          nodeId: nodeId,
+        },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 }

@@ -57,7 +57,7 @@ export default css`
     position: absolute;
     bottom: 10px;
     right: 10px;
-    z-index: 1;
+    z-index: 0;
 
     padding: 0px;
 
@@ -89,7 +89,7 @@ export default css`
     position: absolute;
     bottom: 45px;
     right: 20px;
-    z-index: 1;
+    z-index: 0;
 
     /* 
     padding-inline: 5px;

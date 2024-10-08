@@ -7,9 +7,8 @@ import {
   state,
   queryAssignedElements,
 } from "lit/decorators.js";
-
-//Drawflow Imports
-import { DrawflowNode } from "drawflow";
+import { provide, consume, createContext } from "@lit/context";
+import { gamebookStore, GamebookStore } from "../context-test";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -33,7 +32,6 @@ import { WebWriterConnectionButton } from "../gamebook-components/webwriter-conn
 import { ToggleableInput } from "../ui-components/toggleable-input";
 import { NodeConnectionList } from "../ui-components/node-connection-list";
 import { QuickConnectNode } from "../ui-components/quick-connect-node";
-import { GamebookContainerManager } from "../gamebook-container-manager";
 
 import squares from "@tabler/icons/filled/squares.svg";
 
@@ -42,7 +40,6 @@ import X from "@tabler/icons/outline/x.svg";
 
 //CSS
 import styles from "../../css/popup-node-details-css";
-import { WebWriterGamebookPopupContainer } from "../gamebook-components/webwriter-gamebook-popup-container";
 
 @customElement("popup-node-details")
 export class PopupNodeDetails extends LitElementWw {
@@ -79,44 +76,11 @@ export class PopupNodeDetails extends LitElementWw {
 
   @property({ type: Object }) accessor nodeEditor;
 
-  @property({ type: Boolean }) accessor isNodeSelected = false;
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default");
 
-  //public properties are part of the component's public API
-  @property({ type: Object, attribute: false })
-  accessor selectedNode: DrawflowNode;
-
-  @property({ type: Function }) accessor _hoverConnection = (string) => {};
-  @property({ type: Function }) accessor _unhoverConnection = (string) => {};
-
-  @property({ attribute: false }) accessor changeInEditorCallback = (
-    drawflow,
-    updateType,
-    node?,
-    removedNodeId?,
-    inputNode?,
-    outputNode?,
-    inputClass?,
-    outputClass?,
-    outputHadConnections?
-  ) => {};
-
-  @queryAssignedElements({
-    flatten: true,
-  })
-  accessor slotElements;
-
-  @property({ type: Object, attribute: false })
-  accessor popupContainer: WebWriterGamebookPopupContainer;
-
-  protected firstUpdated(_changedProperties: PropertyValues): void {
-    const gamebookContainerManager = this
-      .slotElements[0] as GamebookContainerManager;
-
-    this.popupContainer =
-      gamebookContainerManager._getContainerByDrawflowNodeId(
-        this.selectedNode.id.toString()
-      );
-  }
+  protected firstUpdated(_changedProperties: PropertyValues): void {}
 
   /*
 
@@ -129,7 +93,7 @@ export class PopupNodeDetails extends LitElementWw {
         </div>
         <div class="div-title">
           <toggleable-input
-            .text=${this.selectedNode.data.title}
+            .text=${this.providedStore.selectedNode.data.title}
             .saveChanges=${(string) => this.renameNode(string)}
           ></toggleable-input>
           <p class="subtitle">Popup</p>
@@ -138,59 +102,13 @@ export class PopupNodeDetails extends LitElementWw {
           <node-connection-list
             input
             .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.selectedNode}
-            .changeInEditorCallback=${(
-              drawflow,
-              updateType,
-              node,
-              removedNodeId,
-              inputNode,
-              outputNode,
-              inputClass,
-              outputClass,
-              outputHadConnections
-            ) => {
-              this.changeInEditorCallback(
-                drawflow,
-                updateType,
-                node,
-                removedNodeId,
-                inputNode,
-                outputNode,
-                inputClass,
-                outputClass,
-                outputHadConnections
-              );
-            }}
+            .selectedNode=${this.providedStore.selectedNode}
           ></node-connection-list>
           <sl-divider vertical style="height: 100%;"></sl-divider>
           <node-connection-list
             output
             .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.selectedNode}
-            .changeInEditorCallback=${(
-              drawflow,
-              updateType,
-              node,
-              removedNodeId,
-              inputNode,
-              outputNode,
-              inputClass,
-              outputClass,
-              outputHadConnections
-            ) => {
-              this.changeInEditorCallback(
-                drawflow,
-                updateType,
-                node,
-                removedNodeId,
-                inputNode,
-                outputNode,
-                inputClass,
-                outputClass,
-                outputHadConnections
-              );
-            }}
+            .selectedNode=${this.providedStore.selectedNode}
           ></node-connection-list>
         </div>
       </div>
@@ -202,17 +120,17 @@ export class PopupNodeDetails extends LitElementWw {
               <div class="dialog">
                 <div
                   class="header"
-                  style=${this.popupContainer?.noHeader
+                  style=${this.providedStore.selectedContainer?.noHeader
                     ? "display: none"
                     : "display: flex"}
                 >
                   <sl-input
-                    value=${this.popupContainer?.titleLabel}
+                    value=${this.providedStore.selectedContainer?.titleLabel}
                     @sl-input=${(event) => this.handleDialogTitleChange(event)}
                   ></sl-input>
                   <sl-icon-button
                     src=${X}
-                    style=${this.popupContainer?.preventClosing
+                    style=${this.providedStore.selectedContainer?.preventClosing
                       ? "display: none"
                       : "display: flex"}
                   ></sl-icon-button>
@@ -231,7 +149,10 @@ export class PopupNodeDetails extends LitElementWw {
   */
   private handleDialogTitleChange(event: Event) {
     const value = ((event as SlInputEvent).target as SlInput).value;
-    this.popupContainer.titleLabel = value;
+    this.providedStore.selectedContainer.titleLabel = value;
+    this.providedStore.setSelectedContainer(
+      this.providedStore.selectedContainer
+    );
   }
 
   /*
@@ -239,15 +160,11 @@ export class PopupNodeDetails extends LitElementWw {
 
   */
   private renameNode(text: String) {
-    this.nodeEditor.editor.updateNodeDataFromId(this.selectedNode.id, {
-      ...this.selectedNode.data,
-      title: text,
+    const event = new CustomEvent("renameSelectedNode", {
+      detail: { newTitle: text },
+      bubbles: true,
+      composed: true,
     });
-
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "nodeRenamed",
-      this.selectedNode
-    );
+    this.dispatchEvent(event);
   }
 }

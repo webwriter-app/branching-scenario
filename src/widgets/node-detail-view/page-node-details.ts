@@ -1,4 +1,4 @@
-import { html, css, LitElement, unsafeCSS } from "lit";
+import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -15,12 +15,14 @@ import "@shoelace-style/shoelace/dist/themes/light.css";
 import { SlIcon, SlDivider } from "@shoelace-style/shoelace";
 
 //Tabler Icon Import
-import squares from "@tabler/icons/filled/squares.svg";
+
 import file from "@tabler/icons/filled/file.svg";
-import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
-import { BranchNodeDetails } from "./branch-node-details";
+
 import { ToggleableInput } from "../ui-components/toggleable-input";
 import { NodeConnectionList } from "../ui-components/node-connection-list";
+
+import { provide, consume, createContext } from "@lit/context";
+import { gamebookStore, GamebookStore } from "../context-test";
 
 @customElement("page-node-details")
 export class PageNodeDetails extends LitElementWw {
@@ -38,25 +40,9 @@ export class PageNodeDetails extends LitElementWw {
   //import CSS
   static styles = [styles];
 
-  //access nodes in the internal component DOM.
-  @property({ type: Object }) accessor nodeEditor;
-  @property({ type: Boolean }) accessor isNodeSelected = false;
-
-  //public properties are part of the component's public API
-  @property({ type: Object, attribute: false })
-  accessor selectedNode: DrawflowNode;
-
-  @property({ attribute: false }) accessor changeInEditorCallback = (
-    drawflow,
-    updateType,
-    node?,
-    removedNodeId?,
-    inputNode?,
-    outputNode?,
-    inputClass?,
-    outputClass?,
-    outputHadConnections?
-  ) => {};
+  @consume({ context: gamebookStore, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor providedStore = new GamebookStore("Default");
 
   render() {
     return html` <div class="title-bar">
@@ -65,69 +51,15 @@ export class PageNodeDetails extends LitElementWw {
         </div>
         <div class="div-title">
           <toggleable-input
-            .text=${this.selectedNode.data.title}
+            .text=${this.providedStore.selectedNode.data.title}
             .saveChanges=${(string) => this.renameNode(string)}
           ></toggleable-input>
           <p class="subtitle">Page</p>
         </div>
         <div class="inputOutputControls">
-          <node-connection-list
-            input
-            .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.selectedNode}
-            .changeInEditorCallback=${(
-              drawflow,
-              updateType,
-              node,
-              removedNodeId,
-              inputNode,
-              outputNode,
-              inputClass,
-              outputClass,
-              outputHadConnections
-            ) => {
-              this.changeInEditorCallback(
-                drawflow,
-                updateType,
-                node,
-                removedNodeId,
-                inputNode,
-                outputNode,
-                inputClass,
-                outputClass,
-                outputHadConnections
-              );
-            }}
-          ></node-connection-list>
+          <node-connection-list input></node-connection-list>
           <sl-divider vertical style="height: 100%;"></sl-divider>
-          <node-connection-list
-            output
-            .nodeEditor=${this.nodeEditor}
-            .selectedNode=${this.selectedNode}
-            .changeInEditorCallback=${(
-              drawflow,
-              updateType,
-              node,
-              removedNodeId,
-              inputNode,
-              outputNode,
-              inputClass,
-              outputClass,
-              outputHadConnections
-            ) => {
-              this.changeInEditorCallback(
-                drawflow,
-                updateType,
-                node,
-                removedNodeId,
-                inputNode,
-                outputNode,
-                inputClass,
-                outputClass,
-                outputHadConnections
-              );
-            }}
-          ></node-connection-list>
+          <node-connection-list output></node-connection-list>
         </div>
       </div>
 
@@ -145,15 +77,11 @@ export class PageNodeDetails extends LitElementWw {
 
   */
   private renameNode(text: String) {
-    this.nodeEditor.editor.updateNodeDataFromId(this.selectedNode.id, {
-      ...this.selectedNode.data,
-      title: text,
+    const event = new CustomEvent("renameSelectedNode", {
+      detail: { newTitle: text },
+      bubbles: true,
+      composed: true,
     });
-
-    this.changeInEditorCallback(
-      { ...this.nodeEditor.editor.drawflow },
-      "nodeRenamed",
-      this.selectedNode
-    );
+    this.dispatchEvent(event);
   }
 }

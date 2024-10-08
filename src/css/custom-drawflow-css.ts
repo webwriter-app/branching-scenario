@@ -6,16 +6,16 @@ export default css`
   /* ------- */
 
   .smooth-transition {
-    transition: transform 0.4s ease !important; /* Adjust duration and easing as needed */
+    transition: transform 0.6s ease !important; /* Adjust duration and easing as needed */
   }
 
   .smooth-background-transition {
-    transition: background-position 0.4s ease; /* Adjust duration and easing as needed */
+    transition: background-position 0.6s ease; /* Adjust duration and easing as needed */
   }
 
-  /* .drawflow {
-    border: 1.5px solid blue;
-  } */
+  .drawflow {
+    overflow: visible; /* Ensure container is not clipped */
+  }
 
   .drawflow .drawflow-node.page,
   .drawflow .drawflow-node.origin,
@@ -191,20 +191,20 @@ export default css`
   /* highlighted nodes  */
   /* ------- */
 
-  .drawflow-node.branch.highlighted {
+  .drawflow-node.branch[highlighted="true"] {
     border: 3px solid #05ae9e;
     -webkit-box-shadow: 0 4px 60px 6px #b0b0b0;
     box-shadow: 0 4px 60px 6px #b0b0b0;
   }
 
-  .drawflow-node.highlighted.page,
-  .drawflow-node.highlighted.origin {
+  .drawflow-node.page[highlighted="true"],
+  .drawflow-node.origin[highlighted="true"] {
     border: 3px solid #3077ba;
     -webkit-box-shadow: 0 4px 60px 6px #b0b0b0;
     box-shadow: 0 4px 60px 6px #b0b0b0;
   }
 
-  .drawflow-node.popup.highlighted {
+  .drawflow-node.popup[highlighted="true"] {
     border: 3px solid #9762b4;
     -webkit-box-shadow: 0 4px 60px 6px #b0b0b0;
     box-shadow: 0 4px 60px 6px #b0b0b0;
@@ -214,25 +214,25 @@ export default css`
   /* searched nodes  */
   /* ------- */
 
-  .drawflow-node.searched.branch,
-  .drawflow-node.searched.page,
-  .drawflow-node.searched.origin,
-  .drawflow-node.searched.popup {
+  .drawflow-node.branch[searched="true"],
+  .drawflow-node.page[searched="true"],
+  .drawflow-node.origin[searched="true"],
+  .drawflow-node.popup[searched="true"] {
     outline: 3px solid yellow;
     background-color: #ffffe6;
   }
 
-  .drawflow-node.selected.branch.searched,
-  .drawflow-node.selected.page.searched,
-  .drawflow-node.selected.origin.searched,
-  .drawflow-node.selected.popup.searched {
+  .drawflow-node.selected.branch[searched="true"],
+  .drawflow-node.selected.page[searched="true"],
+  .drawflow-node.selected.origin[searched="true"],
+  .drawflow-node.selected.popup[searched="true"] {
     outline: 3px solid yellow !important;
   }
 
-  .drawflow-node:hover.branch.searched,
-  .drawflow-node:hover.page.searched,
-  .drawflow-node:hover.origin.searched,
-  .drawflow-node:hover.popup.searched {
+  .drawflow-node:hover.branch[searched="true"],
+  .drawflow-node:hover.page[searched="true"],
+  .drawflow-node:hover.origin[searched="true"],
+  .drawflow-node:hover.popup[searched="true"] {
     outline: 3px solid yellow !important;
   }
 
@@ -303,9 +303,31 @@ export default css`
 
   /* ---- */
   /*  INPUT AND OUTPUTS */
+
+  .drawflow .drawflow-node .input {
+    position: relative; /* Allows positioning of the pseudo-element */
+    left: -10px;
+    background: white;
+    height: 20px;
+    width: 20px;
+    border: 1px solid #cdcdcd;
+    border-radius: 50%; /* Makes it a circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .drawflow .drawflow-node .input::before {
+    content: "";
+    position: absolute;
+    height: 10px; /* Smaller than the outer circle */
+    width: 10px;
+    border-radius: 50%; /* Make it circular */
+    border: 2px solid #cdcdcd;
+  }
+
   /* ---- */
 
-  .drawflow .drawflow-node .input,
   .drawflow .drawflow-node .output {
     height: 20px;
     width: 20px;
@@ -315,16 +337,23 @@ export default css`
     justify-content: center;
   }
 
-  .drawflow .drawflow-node .input *,
-  .drawflow .drawflow-node .output * {
-    pointer-events: none;
+  .drawflow .drawflow-node .output::before {
+    content: "";
+    position: absolute;
+    background: #dddddd;
+    border-color: #d7d7d7;
+    height: 10px; /* Smaller than the outer circle */
+    width: 10px;
+    border-radius: 50%; /* Make it circular */
   }
 
-  .drawflow .drawflow-node .output:hover {
+  .drawflow .drawflow-node .output:hover::before {
+    content: "";
     background: #4ea9ff;
   }
 
-  .drawflow .drawflow-node .output:active {
+  .drawflow .drawflow-node .output:active::before {
+    content: "";
     background: #4ea9ff;
   }
 
@@ -332,40 +361,30 @@ export default css`
     right: 10px;
   }
 
-  .drawflow .drawflow-node .input {
-    left: -10px;
-    background: white;
-  }
-
-  .drawflow .drawflow-node .output.output-in-use {
+  .drawflow .drawflow-node .output[in-use="true"] {
     pointer-events: none;
-    background: #eeeeee;
+  }
+
+  .drawflow .drawflow-node .output[in-use="true"]::before {
+    content: "";
+    background: #a3a3a3;
     border-color: #d7d7d7;
+    pointer-events: none;
   }
 
-  .drawflow .drawflow-node .input.input-in-use {
-    background: #eeeeee;
-    border-color: #d7d7d7;
-  }
-
-  .drawflow .drawflow-node .output.selected,
-  .drawflow .drawflow-node .input.selected {
-    background: #ffca00;
-  }
-
-  .drawflow .drawflow-node .output.output-has-error {
+  .drawflow .drawflow-node .output[has-error="true"]::before {
     border: 1px solid #ff2323 !important;
     background-color: #ff7474 !important;
   }
 
-  .drawflow .drawflow-node .output.target-disabled {
+  .drawflow .drawflow-node .output[target-disabled="true"]::before {
     pointer-events: none;
     background-image: repeating-linear-gradient(
       45deg,
       #f1f1f1,
-      /* Lighter Gray */ #f1f1f1 5px,
-      #c9c9c9 5px,
-      /* Darker Gray for contrast */ #c9c9c9 10px
+      /* Lighter Gray */ #f1f1f1 2px,
+      #c9c9c9 2px,
+      /* Darker Gray for contrast */ #c9c9c9 4px
     ) !important;
   }
 
@@ -373,30 +392,14 @@ export default css`
   /* INPUT OUTPUT HIGHLIGHTED */
   /* ---- */
 
-  .drawflow .drawflow-node .output.highlighted,
-  .drawflow .drawflow-node .input.highlighted {
+  .drawflow .drawflow-node .output[highlighted="true"]::before {
     background: #4ea9ff;
     border: 1px solid #4ea9ff;
   }
 
-  .drawflow .drawflow-node .output.page-highlighted,
-  .drawflow .drawflow-node .input.page-highlighted,
-  .drawflow .drawflow-node .output.origin-highlighted,
-  .drawflow .drawflow-node .input.origin-highlighted {
-    background: #3077ba;
-    border: 1px solid #3077ba;
-  }
-
-  .drawflow .drawflow-node .output.branch-highlighted,
-  .drawflow .drawflow-node .input.branch-highlighted {
-    background: #05ae9e;
-    border: 1px solid #05ae9e;
-  }
-
-  .drawflow .drawflow-node .output.popup-highlighted,
-  .drawflow .drawflow-node .input.popup-highlighted {
-    background: #9762b4;
-    border: 1px solid #9762b4;
+  .drawflow .drawflow-node .input[highlighted="true"]::before {
+    border: 2px solid #4ea9ff;
+    content: ""; /* Always required for pseudo-elements like ::before and ::after */
   }
 
   /* ---- */
@@ -435,7 +438,7 @@ export default css`
   /* CONNECTIONS HIGHLIGHTED */
   /* ---- */
 
-  .drawflow .connection .main-path.popup-highlighted {
+  /* .drawflow .connection .main-path.popup-highlighted {
     stroke: #9762b4;
     stroke-width: 3px;
   }
@@ -450,9 +453,9 @@ export default css`
   .drawflow .connection .main-path.branch-highlighted {
     stroke: #05ae9e;
     stroke-width: 3px;
-  }
+  } */
 
-  .drawflow .connection .main-path.highlighted {
+  .drawflow .connection .main-path[highlighted="true"] {
     stroke: #4ea9ff;
     stroke-width: 3px;
   }
