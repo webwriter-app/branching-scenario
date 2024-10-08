@@ -189,6 +189,14 @@ export class GamebookEditorState {
     if (key === "selectedContainer" || key === "branchIncomingContainer") {
       return this.domElementReplacer(key, value);
     }
+
+    if (key === "editorContent") {
+      if (value) {
+        Object.values(value.drawflow.Home.data).forEach((node) => {
+          delete (node as DrawflowNode).html;
+        });
+      }
+    }
     // Handle other cyclic structures or return value as is
     return value;
   }
