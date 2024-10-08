@@ -826,9 +826,24 @@ export class MouseController implements ReactiveController {
         ]),
       ];
 
+      (this.host as any).gamebookStore.setSearchResults(nodeIncludes);
+
       this.nodeEditor.highlightSearchedNodes(nodeIncludes);
     } else {
+      (this.host as any).gamebookStore.setSearchResults();
       this.nodeEditor.removeSearchHighlightFromAllNodes();
     }
+
+    this.host.requestUpdate(); // Update the host component after changes
+  }
+
+  /*
+
+
+  */
+  public moveTo(node: DrawflowNode) {
+    this.nodeEditor.moveToNode(node);
+    this._selectContainer(node.id);
+    this.nodeEditor.programaticallySelectNode(node.id);
   }
 }

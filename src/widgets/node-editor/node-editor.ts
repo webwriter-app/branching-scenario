@@ -1332,6 +1332,8 @@ export class NodeEditor extends LitElementWw {
       Object.keys(templateData).map((key) => [Number(key), newIndex++])
     );
 
+    console.log(indexMap);
+
     for (const [key, node] of Object.entries(templateData)) {
       const newId = indexMap[Number(key)];
       (node as DrawflowNode).id = newId;
@@ -1348,6 +1350,7 @@ export class NodeEditor extends LitElementWw {
     // Update the containers with the new indexMap values
     const templateContainers = nodeTemplates.containers;
     for (const container of templateContainers) {
+      console.log(container);
       // Update the drawflownodeid attribute
       const drawflowNodeIdAttr = container.attributes.find(
         (attr) => attr.name === "drawflownodeid"
@@ -1365,15 +1368,43 @@ export class NodeEditor extends LitElementWw {
         incomingContainerIdAttr.value = indexMap[oldId].toString();
       }
 
+      const rulesAttr = container.attributes.find(
+        (attr) => attr.name === "rules"
+      );
+
+      if (rulesAttr) {
+        console.log(rulesAttr.value);
+        const rules = JSON.parse(rulesAttr.value);
+        rules.forEach((rule) => {
+          const oldId = Number(rule.target);
+          rule.target = indexMap[oldId].toString();
+        });
+        rulesAttr.value = JSON.stringify(rules);
+        console.log(rulesAttr.value);
+      }
+
+      const elseRuleAttr = container.attributes.find(
+        (attr) => attr.name === "elserule"
+      );
+
+      if (elseRuleAttr) {
+        const elseRule = JSON.parse(elseRuleAttr.value);
+        const oldId = Number(elseRule.target);
+        elseRule.target = indexMap[oldId].toString();
+        elseRuleAttr.value = JSON.stringify(elseRule);
+      }
+
       // Update the datatargetid and identifier in the innerHTML
       const parser = new DOMParser();
       const doc = parser.parseFromString(container.innerHTML, "text/html");
-      const buttons = doc.querySelectorAll("webwriter-connection-button");
+      const buttons = doc.querySelectorAll(
+        "webwriter-connection-button, webwriter-smart-branch-button"
+      );
+
       buttons.forEach((button) => {
         // Update datatargetid
         const dataTargetId = button.getAttribute("datatargetid");
-        console.log(button);
-        console.log(dataTargetId);
+
         if (dataTargetId) {
           const oldTargetId = Number(dataTargetId);
           button.setAttribute("datatargetid", indexMap[oldTargetId].toString());
@@ -1553,10 +1584,16 @@ export class NodeEditor extends LitElementWw {
 
 
   */
-  private programaticallySelectNode(id) {
+  public programaticallySelectNode(id) {
+    this.nodeDivs.forEach((nodeDiv) => {
+      (nodeDiv as HTMLElement).classList.remove("selected");
+    });
+
     let nodeDiv = Array.from(this.nodeDivs as NodeListOf<HTMLElement>).find(
       (nodeDiv) => {
-        return parseInt(nodeDiv.id.split("-")[1], 10).toString() === id;
+        return (
+          parseInt(nodeDiv.id.split("-")[1], 10).toString() === id.toString()
+        );
       }
     );
 

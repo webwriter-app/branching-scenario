@@ -187,7 +187,7 @@ export class NodeEditorControlsBar extends LitElementWw {
             </sl-menu-item>
           </sl-menu>
         </sl-dropdown>
-        <sl-divider vertical> </sl-divider>
+        <sl-divider vertical style="height: 30px"> </sl-divider>
         <sl-button
           @click=${() => {
             this.dispatchEvent(new CustomEvent("clearDialog"));

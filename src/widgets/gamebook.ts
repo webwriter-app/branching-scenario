@@ -214,7 +214,7 @@ export class WebWriterGamebook extends LitElementWw {
         //
         else if (container instanceof WebWriterGamebookBranchContainer) {
           const nextId = this._getTargetFromRules(container);
-
+          console.log(nextId);
           this._navigateTo(Number(nextId));
         }
       }

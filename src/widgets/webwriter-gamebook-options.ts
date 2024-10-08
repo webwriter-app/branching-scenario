@@ -18,6 +18,9 @@ import infoSquareRounded from "@tabler/icons/filled/info-square-rounded.svg";
 
 import { gamebookStore, GamebookStore } from "./context-test";
 
+//Drawflow Imports
+import Drawflow, { DrawflowNode } from "drawflow";
+
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import {
@@ -29,11 +32,84 @@ import {
   SlDivider,
   SlIconButton,
   SlButtonGroup,
+  SlDropdown,
+  SlMenu,
+  SlMenuItem,
+  SlMenuLabel,
 } from "@shoelace-style/shoelace";
 
 @customElement("webwriter-gamebook-options")
 export class WebWriterGamebookOptions extends LitElementWw {
-  static styles = [styles];
+  static get styles() {
+    return css`
+      :host {
+        padding-left: 10px;
+      }
+      .author-only {
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        gap: 10px;
+        width: 180px;
+      }
+
+      .author-only .header p {
+        margin: 0px;
+        font-weight: 500;
+        font-size: 15px;
+        box-sizing: border-box;
+        color: #52525b;
+      }
+
+      .author-only .header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-items: center;
+        border-bottom: 2px solid #52525b;
+        gap: 7px;
+        padding-bottom: 10px;
+      }
+
+      .author-only .searchBar {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-items: center;
+        width: 100%;
+        height: 65px;
+      }
+
+      .author-only .searchBar * {
+        width: 100%;
+      }
+
+      .author-only sl-icon {
+        color: #52525b;
+      }
+
+      .author-only .horizontalStack {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+        width: 100%;
+      }
+
+      sl-button.square {
+        width: 42px; /* Set this value to whatever size you want */
+        height: 42px; /* Same value as width to ensure it's a square */
+      }
+
+      p {
+        margin: 0px;
+        font-weight: 400;
+        font-size: 15px;
+        box-sizing: border-box;
+        color: #52525b;
+      }
+    `;
+  }
 
   //registering custom elements used in the widget
   static get scopedElements() {
@@ -46,6 +122,10 @@ export class WebWriterGamebookOptions extends LitElementWw {
       "sl-divider": SlDivider,
       "sl-icon-button": SlIconButton,
       "sl-switch": SlSwitch,
+      "sl-dropdown": SlDropdown,
+      "sl-menu": SlMenu,
+      "sl-menu-item": SlMenuItem,
+      "sl-menu-label": SlMenuLabel,
     };
   }
 
@@ -56,6 +136,30 @@ export class WebWriterGamebookOptions extends LitElementWw {
   public accessor providedStore = new GamebookStore("Default");
 
   render() {
+    const options = (data) =>
+      Object.keys(data)
+        .filter(
+          (key) =>
+            this.providedStore.searchResults !== undefined
+              ? this.providedStore.searchResults.includes(Number(key))
+              : true // No filtering when searchResults is empty
+        )
+        .map(
+          (key) => html`<sl-menu-item
+              value="${data[key].id}"
+              @click=${() => this.moveTo(data[key])}
+              ><p>${data[key].data.title}</p>
+              ${data[key].class === "page" || data[key].class === "origin"
+                ? html` <sl-icon slot="prefix" src=${file}></sl-icon> `
+                : data[key].class === "popup"
+                ? html` <sl-icon slot="prefix" src=${squares}></sl-icon>`
+                : data[key].class === "branch"
+                ? html` <sl-icon slot="prefix" src=${arrowsSplit2}></sl-icon>`
+                : null}
+            </sl-menu-item>
+            <sl-divider></sl-divider> `
+        );
+
     return html`
       <div class="author-only">
         <div class="header">
@@ -63,15 +167,32 @@ export class WebWriterGamebookOptions extends LitElementWw {
           <p>Gamebook</p>
         </div>
 
-        <sl-input
-          id="searchInput"
-          placeholder="Nodes, content, ..."
-          clearable
-          @sl-input=${this._handleNodeSearch}
-          .value=${this.providedStore.searchTerm}
-        >
-          <sl-icon src=${search} slot="prefix"></sl-icon>
-        </sl-input>
+        <sl-dropdown>
+          <sl-input
+            style="max-width: 180px"
+            slot="trigger"
+            id="searchInput"
+            placeholder="Search..."
+            clearable
+            @sl-input=${this._handleNodeSearch}
+            @keydown=${this._handleInputKeydown}
+            .value=${this.providedStore.searchTerm}
+          >
+            <sl-icon src=${search} slot="prefix"></sl-icon>
+          </sl-input>
+          <sl-menu hoist style="width: 150px;">
+            ${this.providedStore.searchResults
+              ? html`
+                  <sl-menu-label
+                    >${this.providedStore.searchResults.length}
+                    nodes</sl-menu-label
+                  >
+                  <sl-divider></sl-divider>
+                `
+              : null}
+            ${options(this.providedStore.editorContent.drawflow.Home.data)}
+          </sl-menu>
+        </sl-dropdown>
 
         <sl-button-group label="Alignment">
           <sl-button
@@ -218,6 +339,8 @@ TODO search
         composed: true,
       })
     );
+
+    this.requestUpdate();
   }
 
   /*
@@ -269,5 +392,30 @@ TODO: does not update each other
         composed: true,
       })
     );
+  }
+
+  /*
+
+
+  */
+  private moveTo(node: DrawflowNode) {
+    this.dispatchEvent(
+      new CustomEvent("moveTo", {
+        detail: { node: node },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  /*
+
+
+  */
+  _handleInputKeydown(event) {
+    if (event.key === " ") {
+      // Prevent space from triggering any unwanted events (e.g., dropdown closing)
+      event.stopPropagation();
+    }
   }
 }

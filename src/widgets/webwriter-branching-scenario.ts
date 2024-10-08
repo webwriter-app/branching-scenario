@@ -261,6 +261,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   @deleteSelectedNode=${() =>
                     this.controller._deleteSelectedNode()}
                   @nodeSearch=${() => this.controller.nodeSearch()}
+                  @moveTo=${(e: CustomEvent) =>
+                    this.controller.moveTo(e.detail.node)}
                 >
                   <slot></slot>
                 </gamebook-container-manager>
@@ -275,6 +277,8 @@ export class WebWriterBranchingScenario extends LitElementWw {
               @pasteNode=${() => this.controller._pasteNode()}
               @deleteSelectedNode=${() => this.controller._deleteSelectedNode()}
               @nodeSearch=${() => this.controller.nodeSearch()}
+              @moveTo=${(e: CustomEvent) =>
+                this.controller.moveTo(e.detail.node)}
             ></webwriter-gamebook-options>
           `
         : html`<webwriter-gamebook
