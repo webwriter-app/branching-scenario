@@ -186,20 +186,32 @@ export class NodeEditor extends LitElementWw {
   */
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener("mousemove", this.onMouseMove);
-    this.addEventListener("mousedown", this.onMouseDown);
-    this.addEventListener("mouseup", this.onMouseUp);
-    this.addEventListener("mouseleave", this.onMouseLeave);
+    this.shadowRoot?.addEventListener("mousemove", this.onMouseMove.bind(this));
+    this.shadowRoot?.addEventListener("mousedown", this.onMouseDown.bind(this));
+    this.shadowRoot?.addEventListener("mouseup", this.onMouseUp.bind(this));
+    this.shadowRoot?.addEventListener(
+      "mouseleave",
+      this.onMouseLeave.bind(this)
+    );
   }
 
   /*
 
   */
   disconnectedCallback() {
-    this.removeEventListener("mousemove", this.onMouseMove);
-    this.removeEventListener("mousedown", this.onMouseDown);
-    this.removeEventListener("mouseup", this.onMouseUp);
-    this.removeEventListener("mouseleave", this.onMouseLeave);
+    this.shadowRoot?.removeEventListener(
+      "mousemove",
+      this.onMouseMove.bind(this)
+    );
+    this.shadowRoot?.removeEventListener(
+      "mousedown",
+      this.onMouseDown.bind(this)
+    );
+    this.shadowRoot?.removeEventListener("mouseup", this.onMouseUp.bind(this));
+    this.shadowRoot?.removeEventListener(
+      "mouseleave",
+      this.onMouseLeave.bind(this)
+    );
     super.disconnectedCallback();
   }
 
@@ -234,6 +246,7 @@ export class NodeEditor extends LitElementWw {
         </node-editor-toolbar>
 
         <div id="drawflowEditorDiv" style=${styleMap(gridStyles)}></div>
+
         <div class="zoomControls">
           <sl-icon-button
             id="jumpToOriginBtn"
@@ -249,7 +262,6 @@ export class NodeEditor extends LitElementWw {
           >
           </sl-icon-button>
           <sl-divider vertical style="height: 20px; margin: 2px;"></sl-divider>
-
           <sl-icon-button
             id="zoomInBtn"
             src=${zoomIn}
@@ -265,9 +277,11 @@ export class NodeEditor extends LitElementWw {
           >
           </sl-icon-button>
         </div>
+
         <div class="zoomValue">
           <p>${this.editorZoomString}</p>
         </div>
+
         <node-editor-help-menu></node-editor-help-menu>
       </div>
       <!-- Dialog for clearing editor-->
@@ -317,10 +331,14 @@ export class NodeEditor extends LitElementWw {
 
   */
   private onMouseDown(event: MouseEvent) {
-    // Check if node is not selected
-    this.backgroundIsDragging = true;
-    this.backgroundLastX = event.clientX;
-    this.backgroundLastY = event.clientY;
+    if (
+      (event.target as HTMLElement).classList.contains("drawflow") ||
+      (event.target as HTMLElement).id === "drawflowEditorDiv"
+    ) {
+      this.backgroundIsDragging = true;
+      this.backgroundLastX = event.clientX;
+      this.backgroundLastY = event.clientY;
+    }
   }
 
   /*
@@ -347,12 +365,14 @@ export class NodeEditor extends LitElementWw {
 
   */
   private onMouseUp() {
-    this.backgroundIsDragging = false;
+    if (this.backgroundIsDragging) {
+      this.backgroundIsDragging = false;
 
-    this.editorStore.setEditorPosition(
-      this.editor.canvas_x,
-      this.editor.canvas_y
-    );
+      this.editorStore.setEditorPosition(
+        this.editor.canvas_x,
+        this.editor.canvas_y
+      );
+    }
   }
 
   /*
@@ -817,13 +837,6 @@ export class NodeEditor extends LitElementWw {
         const isBranchInput = inputNode.class === "branch";
         const isBranchOutput = outputNode.class === "branch";
 
-        // this.dispatchEvent(
-        //   new CustomEvent("nodeSelected", {
-        //     detail: { nodeId: output_id },
-        //     bubbles: true,
-        //     composed: true,
-        //   })
-        // );
         this.editorStore.setEditorContent(this.editor.drawflow);
 
         if (this.selectedConnection !== NO_CONNECTION_SELECTED) {
