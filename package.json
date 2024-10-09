@@ -26,25 +26,26 @@
       "source": "./src/widgets/webwriter-branching-scenario.ts",
       "default": "./dist/widgets/webwriter-branching-scenario.*"
     },
-    "./widgets/webwriter-gamebook-page-container.*": {
-      "source": "./src/widgets/gamebook-components/webwriter-gamebook-page-container.ts",
-      "default": "./dist/widgets/gamebook-components/webwriter-gamebook-page-container.*"
+    "./snippets/example.html": "./src/snippets/example.html",
+    "./widgets/webwriter-gamebook-page.*": {
+      "source": "./src/components/gamebook/gamebook-components/gamebook-containers/gamebook-page/webwriter-gamebook-page.ts",
+      "default": "./dist/components/gamebook/gamebook-components/gamebook-containers/gamebook-page/webwriter-gamebook-page.*"
     },
-    "./widgets/webwriter-gamebook-popup-container.*": {
-      "source": "./src/widgets/gamebook-components/webwriter-gamebook-popup-container.ts",
-      "default": "./dist/widgets/gamebook-components/webwriter-gamebook-popup-container.*"
+    "./widgets/webwriter-gamebook-popup.*": {
+      "source": "./src/components/gamebook/gamebook-components/gamebook-containers/gamebook-popup/webwriter-gamebook-popup.ts",
+      "default": "./dist/components/gamebook/gamebook-components/gamebook-containers/gamebook-popup/webwriter-gamebook-popup.*"
     },
-    "./widgets/webwriter-gamebook-branch-container.*": {
-      "source": "./src/widgets/gamebook-components/webwriter-gamebook-branch-container.ts",
-      "default": "./dist/widgets/gamebook-components/webwriter-gamebook-branch-container.*"
+    "./widgets/webwriter-gamebook-branch.*": {
+      "source": "./src/components/gamebook/gamebook-components/gamebook-containers/gamebook-branch/webwriter-gamebook-branch.ts",
+      "default": "./dist/components/gamebook/gamebook-components/gamebook-containers/gamebook-branch/webwriter-gamebook-branch.*"
     },
-    "./widgets/webwriter-connection-button.*": {
-      "source": "./src/widgets/gamebook-components/webwriter-connection-button.ts",
-      "default": "./dist/widgets/gamebook-components/webwriter-connection-button.*"
+    "./widgets/webwriter-gamebook-button.*": {
+      "source": "./src/components/gamebook/gamebook-components/gamebook-button/webwriter-gamebook-button.ts",
+      "default": "./dist/components/gamebook/gamebook-components/gamebook-button/webwriter-gamebook-button.*"
     },
-    "./widgets/webwriter-smart-branch-button.*": {
-      "source": "./src/widgets/gamebook-components/webwriter-smart-branch-button.ts",
-      "default": "./dist/widgets/gamebook-components/webwriter-smart-branch-button.*"
+    "./widgets/webwriter-gamebook-branch-button.*": {
+      "source": "./src/components/gamebook/gamebook-components/gamebook-branch-button/webwriter-gamebook-branch-button.ts",
+      "default": "./dist/components/gamebook/gamebook-components/gamebook-branch-button/webwriter-gamebook-branch-button.*"
     },
     "./package.json": "./package.json"
   },
@@ -54,20 +55,37 @@
   },
   "editingConfig": {
     "./widgets/webwriter-branching-scenario": {
-      "content": "(webwriter-gamebook-page-container | webwriter-gamebook-popup-container | webwriter-gamebook-branch-container)*",
+      "content": "(webwriter-gamebook-page | webwriter-gamebook-popup | webwriter-gamebook-branch)*",
       "definingAsContext": true,
       "label": {
         "en": "Branching Scenario",
         "de": "Verzweigungs Szenarien"
       }
     },
-    "./widgets/webwriter-gamebook-page-container": {
+    "./widgets/webwriter-gamebook-page": {
       "content": "(flow)*",
-      "definingForContent": true
+      "definingForContent": true,
+      "uninsertable": true,
+      "draggable": false
     },
-    "./widgets/webwriter-gamebook-popup-container": {
+    "./widgets/webwriter-gamebook-popup": {
       "content": "(flow)*",
-      "definingForContent": true
+      "definingForContent": true,
+      "uninsertable": true,
+      "draggable": false
+    },
+    "./widgets/webwriter-gamebook-branch": {
+      "content": "",
+      "uninsertable": true,
+      "draggable": false
+    },
+    "./widgets/webwriter-gamebook-branch-button": {
+      "content": "",
+      "uninsertable": true
+    },
+    "./widgets/webwriter-gamebook-button": {
+      "content": "",
+      "uninsertable": true
     }
   }
 }

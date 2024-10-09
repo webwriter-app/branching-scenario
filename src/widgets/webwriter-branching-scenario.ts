@@ -2,29 +2,26 @@ import { html, css, LitElement, PropertyValues } from "lit";
 import { provide, consume, createContext } from "@lit/context";
 
 import { LitElementWw } from "@webwriter/lit";
-import {
-  customElement,
-  property,
-  state,
-  query,
-  queryAssignedElements,
-} from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
 
-import { SelectedNodeViewRenderer } from "./node-detail-view/selected-node-view-renderer";
-import { WebWriterGamebook } from "./gamebook";
-import { GamebookContainerManager } from "./gamebook-container-manager";
-import { NodeEditor } from "./node-editor/node-editor";
-import { SplitView } from "./ui-components/split-view";
+import { NodeDetailsView } from "../components/node-detail-view/node-detail-view";
+import { WebWriterGamebookViewer } from "../components/gamebook/gamebook-viewer/webwriter-gamebook-viewer";
+import { GamebookContainerManager } from "../utils/gamebook-container-manager";
+import { NodeEditor } from "../components/node-editor/node-editor";
+import { SplitView } from "../components/split-view/split-view";
 
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import { SlDialog } from "@shoelace-style/shoelace";
 
-import styles from "../css/webwriter-branching-scenario-css";
+import styles from "./webwriter-branching-scenario-css";
 
-import { editorState, GamebookEditorState } from "./editor-state-context";
-import { MouseController } from "./contoller-test";
-import { WebWriterGamebookOptions } from "./webwriter-gamebook-options";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../utils/gamebook-editor-state-context";
+import { GamebookEditorController } from "../utils/gamebook-editor-controller";
+import { WebWriterGamebookOptions } from "../components/options-panel/webwriter-gamebook-options";
 
 @customElement("webwriter-branching-scenario")
 export class WebWriterBranchingScenario extends LitElementWw {
@@ -32,8 +29,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @query("node-editor") public accessor nodeEditor;
   @query("webwriter-gamebook-options") accessor gamebookOptions;
   @query("sl-split-panel") accessor splitPanel;
-
-  @property({ type: Number, attribute: true }) accessor numberOfSearchNodes = 0;
 
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
@@ -46,9 +41,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
   //registering custom elements used in the widget
   static get scopedElements() {
     return {
-      "webwriter-gamebook": WebWriterGamebook,
+      "webwriter-gamebook-viewer": WebWriterGamebookViewer,
       "gamebook-container-manager": GamebookContainerManager,
-      "selected-node-view-renderer": SelectedNodeViewRenderer,
+      "node-detail-view": NodeDetailsView,
       "node-editor": NodeEditor,
       "webwriter-gamebook-options": WebWriterGamebookOptions,
       "split-view": SplitView,
@@ -59,7 +54,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
   //import CSS
   static styles = [styles];
 
-  private controller = new MouseController(this);
+  private controller = new GamebookEditorController(this);
 
   @provide({ context: editorState })
   @property({
@@ -198,7 +193,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   this.controller._importTemplateContainers(e)}
               >
               </node-editor>
-              <selected-node-view-renderer
+              <node-detail-view
                 slot="end"
                 @renameSelectedNode="${(e: CustomEvent) =>
                   this.controller._renameSelectedNode(e.detail.newTitle)}"
@@ -260,7 +255,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 >
                   <slot></slot>
                 </gamebook-container-manager>
-              </selected-node-view-renderer>
+              </node-detail-view>
             </split-view>
 
             <!-- Options Menu -->
@@ -275,12 +270,12 @@ export class WebWriterBranchingScenario extends LitElementWw {
                 this.controller.moveTo(e.detail.node)}
             ></webwriter-gamebook-options>
           `
-        : html`<webwriter-gamebook
+        : html` <webwriter-gamebook-viewer
             gamebookTitle=${this.editorState.title != ""
               ? this.editorState.title
               : "Untitled Gamebook"}
             ><slot></slot
-          ></webwriter-gamebook>`}
+          ></webwriter-gamebook-viewer>`}
     `;
   }
 
