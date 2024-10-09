@@ -29,15 +29,6 @@ export default css`
     background: white;
   }
 
-  /* .author-only .horizontalStack .flex-item {
-    flex: 1;
-    width: 65px;
-  }
-
-  .author-only sl-button {
-    flex: 0;
-  } */
-
   sl-dialog::part(base) {
     position: absolute;
   }

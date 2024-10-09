@@ -8,7 +8,6 @@ import {
   SlSelect,
   SlButton,
   SlRange,
-  SlIconButton,
   SlCheckbox,
   SlInput,
   SlColorPicker,

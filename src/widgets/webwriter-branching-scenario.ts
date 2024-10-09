@@ -14,7 +14,7 @@ import { SplitView } from "../components/split-view/split-view";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import { SlDialog } from "@shoelace-style/shoelace";
 
-import styles from "./webwriter-branching-scenario-css";
+import styles from "./webwriter-branching-scenario.styles";
 
 import {
   editorState,

@@ -59,7 +59,7 @@
       "definingAsContext": true,
       "label": {
         "en": "Branching Scenario",
-        "de": "Verzweigungs Szenarien"
+        "de": "Verzweigungs-Szenarien"
       }
     },
     "./widgets/webwriter-gamebook-page": {
