@@ -94,7 +94,7 @@ export class BranchNodeDetailView extends LitElementWw {
             .text=${this.editorStore.selectedNode.data.title}
             .saveChanges=${(string) => this.renameNode(string)}
           ></toggle-text-input>
-          <p class="subtitle">Smart Branch</p>
+          <p class="subtitle">Branch</p>
         </div>
         <div class="inputOutputControls">
           <node-connection-list

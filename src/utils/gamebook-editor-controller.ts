@@ -67,7 +67,7 @@ export class GamebookEditorController implements ReactiveController {
         container.drawflowNodeId
       );
 
-      container.focus();
+      //container.focus();
 
       (this.host as any).editorState.setSelectedContainer(container);
 
@@ -99,6 +99,7 @@ export class GamebookEditorController implements ReactiveController {
 
     this.nodeEditor.unhighlightAllOutputs();
 
+    (this.host as any).focus(); // Update the host component after changes
     this.host.requestUpdate(); // Update the host component after changes
   };
 
@@ -201,6 +202,7 @@ export class GamebookEditorController implements ReactiveController {
     (this.host as any).appendChild(container);
     this._markUsedOutputs();
     this.host.requestUpdate(); // Update the host component after changes
+    (this.host as any).focus(); // Update the host component after changes
   };
 
   /* 

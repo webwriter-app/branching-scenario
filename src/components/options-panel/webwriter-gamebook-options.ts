@@ -256,7 +256,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
                   : this.editorStore.selectedNode.class == "branch"
                   ? html`
                       <sl-icon src=${arrowsSplit2}></sl-icon>
-                      <p>Smart Branch</p>
+                      <p>Branch</p>
                     `
                   : null}
               </div>

@@ -26,7 +26,7 @@
       "source": "./src/widgets/webwriter-branching-scenario.ts",
       "default": "./dist/widgets/webwriter-branching-scenario.*"
     },
-    "./snippets/example.html": "./src/snippets/example.html",
+    "./snippets/art-of-europe.html": "./src/snippets/art-of-europe.html",
     "./widgets/webwriter-gamebook-page.*": {
       "source": "./src/components/gamebook/gamebook-components/gamebook-containers/gamebook-page/webwriter-gamebook-page.ts",
       "default": "./dist/components/gamebook/gamebook-components/gamebook-containers/gamebook-page/webwriter-gamebook-page.*"
@@ -59,7 +59,7 @@
       "definingAsContext": true,
       "label": {
         "en": "Branching Scenario",
-        "de": "Verzweigungs-Szenarien"
+        "de": "Verzweigungszenarien"
       }
     },
     "./widgets/webwriter-gamebook-page": {

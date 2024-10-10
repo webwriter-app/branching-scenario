@@ -182,7 +182,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
               style="font-size: 28px"
             ></sl-icon>
             <strong>Gamebook Error</strong><br />
-            The smart branching rule set in node
+            The branching rule set in node
             <em>${this.containerWithError}</em> is incomplete.
           </sl-alert>
         </div>

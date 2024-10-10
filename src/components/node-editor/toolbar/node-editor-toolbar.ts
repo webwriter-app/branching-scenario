@@ -32,6 +32,8 @@ import directions from "@tabler/icons/outline/directions.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import helpOctagon from "@tabler/icons/outline/help-octagon.svg";
 import packages from "@tabler/icons/outline/packages.svg";
+import messageForward from "@tabler/icons/outline/message-forward.svg";
+import fileArrowRight from "@tabler/icons/outline/file-arrow-right.svg";
 
 import { templatePopupToPopup } from "../node-container-templates/template-popup-to-popup";
 import { templatePopUpToPages } from "../node-container-templates/template-popup-to-pages";
@@ -92,7 +94,7 @@ export class NodeEditorToolbar extends LitElementWw {
             Add
             <sl-icon src=${plus} slot="prefix"></sl-icon>
           </sl-button>
-          <sl-menu style="width: 280px;" hoist>
+          <sl-menu style="width: 200px;" hoist>
             <sl-menu-label>Nodes</sl-menu-label>
             <sl-menu-item
               @click=${() => {
@@ -134,10 +136,10 @@ export class NodeEditorToolbar extends LitElementWw {
               }}
             >
               <sl-icon slot="prefix" src=${arrowsSplit2}></sl-icon>
-              Smart Branch
+              Branch
             </sl-menu-item>
             <sl-divider></sl-divider>
-            <sl-menu-label>Blocks</sl-menu-label>
+            <sl-menu-label>Node Blocks</sl-menu-label>
             <sl-menu-item
               @click=${() => {
                 this.dispatchEvent(
@@ -149,8 +151,8 @@ export class NodeEditorToolbar extends LitElementWw {
                 );
               }}
             >
-              <sl-icon slot="prefix" src=${directions}></sl-icon>
-              Decision Popup to Page
+              <sl-icon slot="prefix" src=${fileArrowRight}></sl-icon>
+              Popup to Pages
             </sl-menu-item>
 
             <sl-menu-item
@@ -164,8 +166,8 @@ export class NodeEditorToolbar extends LitElementWw {
                 );
               }}
             >
-              <sl-icon slot="prefix" src=${directions}></sl-icon>
-              Decision Feedback
+              <sl-icon slot="prefix" src=${messageForward}></sl-icon>
+              Popup to Popups
             </sl-menu-item>
 
             <sl-menu-item
@@ -180,11 +182,8 @@ export class NodeEditorToolbar extends LitElementWw {
               }}
             >
               <sl-icon slot="prefix" src=${helpOctagon}></sl-icon>
-              Quiz Loop
-              <sl-badge variant="neutral" pill slot="suffix">
-                <p style="margin: 0px; padding: 0px; padding-right: 5px;">
-                  Requires Quiz
-                </p>
+              Quiz to Branch to Pages
+              <sl-badge variant="primary" pill slot="suffix">
                 <sl-icon src=${packages}></sl-icon
               ></sl-badge>
             </sl-menu-item>

@@ -208,8 +208,7 @@ export class NodeOutputSelect extends LitElement {
               ${hasNodesOfClass("branch")
                 ? html`
                     <small class="icon-header" id="divider-branch"
-                      ><sl-icon src="${arrowsSplit2}"></sl-icon> Smart
-                      Branch</small
+                      ><sl-icon src="${arrowsSplit2}"></sl-icon> Branch</small
                     >
                     ${options("branch")}
                   `

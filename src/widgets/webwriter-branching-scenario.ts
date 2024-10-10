@@ -33,11 +33,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
 
-  static shadowRootOptions = {
-    ...LitElement.shadowRootOptions,
-    delegatesFocus: true,
-  };
-
   //registering custom elements used in the widget
   static get scopedElements() {
     return {
@@ -91,6 +86,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
     this.editorState.addObserver(() => {
       this.reflectStoreChangesinDOM();
       this.requestUpdate(); // Ensure Lit re-renders
+    });
+
+    this.addEventListener("click", function () {
+      //this.focus();
     });
   }
 

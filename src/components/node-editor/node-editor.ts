@@ -1139,7 +1139,7 @@ export class NodeEditor extends LitElementWw {
     //Add label to the input for the nodes name
     const nameLabel = document.createElement("p");
     nameLabel.classList.add("input-label");
-    nameLabel.textContent = "Smart Branch"; // Set the text content of the label
+    nameLabel.textContent = "Branch"; // Set the text content of the label
     contentDiv.appendChild(nameLabel);
 
     containerDiv.appendChild(contentDiv);
@@ -1276,7 +1276,7 @@ export class NodeEditor extends LitElementWw {
     let currentNodesWithHTML = this.addHTMLToNodes(currentNodes);
 
     // Create a deep copy of the nodeTemplates
-    const nodeTemplatesCopy = JSON.parse(JSON.stringify(template));
+    let nodeTemplatesCopy = JSON.parse(JSON.stringify(template));
     // Assuming you have the following from the drawflow editor:
     const rect = this.drawflowEditorDiv.getBoundingClientRect();
     const zoom = this.editor.zoom;
@@ -1285,7 +1285,11 @@ export class NodeEditor extends LitElementWw {
     // Move nodes to the center of the canvas
     this.moveNodesToCenter(nodeTemplatesCopy, centerX, centerY);
 
-    const mergedData = this.mergeTemplate(currentNodes, nodeTemplatesCopy);
+    nodeTemplatesCopy = this.addHTMLToNodes(nodeTemplatesCopy);
+    const mergedData = this.mergeTemplate(
+      currentNodesWithHTML,
+      nodeTemplatesCopy
+    );
     //
 
     this.editor.import(mergedData.currentNodes);

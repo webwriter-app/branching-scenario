@@ -39,6 +39,9 @@ export class NodeDetailsView extends LitElementWw {
   @property({ type: Object, attribute: true, reflect: false })
   public accessor editorStore = new GamebookEditorState("Default");
 
+  @property({ type: Number, attribute: true, reflect: true })
+  accessor tabIndex = -1;
+
   //import CSS
   static styles = [styles];
 

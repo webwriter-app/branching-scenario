@@ -117,6 +117,7 @@ export class GamebookEditorState {
     let copy = editorContent;
     Object.values(copy.drawflow.Home.data).forEach((node) => {
       delete (node as DrawflowNode).html;
+      delete (node as DrawflowNode).name;
     });
 
     this.editorContent = copy;
