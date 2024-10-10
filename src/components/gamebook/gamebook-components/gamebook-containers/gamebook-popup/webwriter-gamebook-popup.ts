@@ -60,11 +60,12 @@ export class WebWriterGamebookPopup extends LitElementWw {
       }
 
       sl-dialog::part(base) {
-        position: absolute;
+        position: absolute; /* Make the overlay absolute */
       }
 
       sl-dialog::part(overlay) {
-        position: absolute;
+        position: absolute; /* Make the overlay absolute */
+        background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
       }
     `;
   }

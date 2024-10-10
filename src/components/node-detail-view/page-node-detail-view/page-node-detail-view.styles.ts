@@ -40,7 +40,7 @@ export default css`
     width: 100%;
 
     height: auto;
-    min-height: 800px;
+    min-height: 400px;
     color: black;
 
     /* box-shadow: 0 2px 20px 2px #d0d0d0; */

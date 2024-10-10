@@ -5,9 +5,14 @@ export default css`
     width: 100%;
     height: fit-content;
     box-sizing: border-box;
-    border: 1px solid #e4e4e4;
+
     overflow: hidden;
     display: flex;
+  }
+
+  :host([contenteditable="true"]),
+  :host([contenteditable=""]) {
+    border: 1px solid #e4e4e4;
   }
 
   :host * {

@@ -47,6 +47,7 @@ export class SplitView extends LitElementWw {
     return css`
       :host {
         box-sizing: border-box;
+
         width: 100%;
       }
 

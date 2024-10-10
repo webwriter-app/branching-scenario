@@ -25,12 +25,24 @@ export default css`
     width: 100%;
   }
 
+  .titlebar {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    width: 100%;
+    background-color: #666666;
+    color: white;
+
+    border-left: 1px solid #5a5a5a;
+    border-right: 1px solid #5a5a5a;
+    border-top: 1px solid #5a5a5a;
+  }
+
   .gamebookTitle {
     position: relative;
     font-family: "Roboto", sans-serif;
     font-weight: 600;
-    background-color: #f7f7f7;
+
     box-sizing: border-box;
+    font-size: 22px;
 
     padding-top: 10px;
     padding-left: 10px;
@@ -47,11 +59,7 @@ export default css`
 
   .pageTitle {
     font-family: "Roboto", sans-serif;
-    font-size: 14px;
-
-    background-color: #f7f7f7;
-
-    border-bottom: 1px solid #e4e4e4;
+    font-size: 16px;
 
     height: auto;
     display: flex;
@@ -64,18 +72,38 @@ export default css`
     padding-bottom: 10px;
   }
 
+  .surrounding {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fbfbfb;
+    padding: 20px;
+    box-shadow: inset 0px 4px 8px rgba(0, 0, 0, 0.1); /* Drop-in shadow */
+    min-width: 100%;
+    position: relative;
+
+    border-left: 1px solid #e4e4e4;
+
+    border-right: 1px solid #e4e4e4;
+
+    border-bottom: 1px solid #e4e4e4;
+  }
+
   .page {
     display: flex;
     position: relative;
     flex-direction: column;
     gap: 10px; /* Adjust the value to your desired spacing */
     box-sizing: border-box;
-    width: 100%;
+    min-width: 100%;
+    height: 600px; /* Set a fixed height (adjust as needed) */
     background-color: white;
-    min-height: 800px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+    overflow-y: auto; /* Make the content scrollable if it overflows */
+    z-index: 1; /* Ensure content in page appears above the overlay */
   }
 
-  quiz-container {
+  webwriter-gamebook-popup {
     position: unset !important; /* Use !important to override any inline styles */
   }
 

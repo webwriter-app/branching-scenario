@@ -31,6 +31,7 @@ export class WebWriterGamebookPage extends LitElementWw {
         padding: 20px;
         box-sizing: border-box;
         width: 100%;
+        min-height: 400px;
         height: 100%;
       }
 

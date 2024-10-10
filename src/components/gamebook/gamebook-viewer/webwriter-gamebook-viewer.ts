@@ -164,11 +164,14 @@ export class WebWriterGamebookViewer extends LitElementWw {
   render() {
     return html`
       <div class="gamebook">
-        <div class="gamebookTitle">${this.gamebookTitle}</div>
-        <div class="pageTitle">${this.pageTitle}</div>
-
-        <div class="page">
-          <slot></slot>
+        <div class="titlebar">
+          <div class="gamebookTitle">${this.gamebookTitle}</div>
+          <div class="pageTitle">${this.pageTitle}</div>
+        </div>
+        <div class="surrounding">
+          <div class="page" id="pageViewer">
+            <slot></slot>
+          </div>
         </div>
 
         <div
@@ -203,17 +206,26 @@ export class WebWriterGamebookViewer extends LitElementWw {
         if (container instanceof WebWriterGamebookPage) {
           this._navigateToPage(targetId);
           this._initializeButtons(targetId);
+          const pageViewer = this.shadowRoot.getElementById("pageViewer");
+          if (pageViewer) {
+            pageViewer.scrollTop = 0;
+            pageViewer.style.overflowY = "auto"; // Enable scrolling
+          }
         }
         //
         else if (container instanceof WebWriterGamebookPopup) {
           this._showPopupContainerDialog(targetId);
           this._initializeButtons(targetId);
+          const pageViewer = this.shadowRoot.getElementById("pageViewer");
+          if (pageViewer) {
+            pageViewer.scrollTop = 0;
+            pageViewer.style.overflowY = "hidden"; // Disable scrolling
+          }
         }
 
         //
         else if (container instanceof WebWriterGamebookBranch) {
           const nextId = this._getTargetFromRules(container);
-
           this._navigateTo(Number(nextId));
         }
       }
@@ -255,6 +267,12 @@ export class WebWriterGamebookViewer extends LitElementWw {
   private _showPopupContainerDialog(popupId: number) {
     this.gamebookContainers.forEach((container) => {
       if (container.drawflowNodeId == popupId) {
+        // let scrollY = 0;
+        // const pageViewer = this.shadowRoot.getElementById("pageViewer");
+        // if (pageViewer) {
+        //   scrollY = pageViewer.scrollTop;
+        // }
+
         (container as WebWriterGamebookPopup).showDialog();
         const previousContainerId = this.currentContainerId;
 
