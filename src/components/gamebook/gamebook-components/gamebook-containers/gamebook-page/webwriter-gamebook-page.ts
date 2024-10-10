@@ -127,6 +127,9 @@ export class WebWriterGamebookPage extends LitElementWw {
   */
   public hide() {
     this.style.display = "none";
+    this.style.visibility = "hidden";
+
+    //TODO after Thesis: stop interactive content from playing
   }
 
   /*
@@ -135,6 +138,7 @@ export class WebWriterGamebookPage extends LitElementWw {
   */
   public show() {
     this.style.display = "block";
+    this.style.visibility = "visible";
   }
 
   /*

@@ -267,12 +267,6 @@ export class WebWriterGamebookViewer extends LitElementWw {
   private _showPopupContainerDialog(popupId: number) {
     this.gamebookContainers.forEach((container) => {
       if (container.drawflowNodeId == popupId) {
-        // let scrollY = 0;
-        // const pageViewer = this.shadowRoot.getElementById("pageViewer");
-        // if (pageViewer) {
-        //   scrollY = pageViewer.scrollTop;
-        // }
-
         (container as WebWriterGamebookPopup).showDialog();
         const previousContainerId = this.currentContainerId;
 
