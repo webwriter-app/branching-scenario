@@ -123,7 +123,6 @@ export default css`
   }
 
   .dialog {
-    font-family: "Roboto", sans-serif;
   }
 
   sl-dialog::part(base) {

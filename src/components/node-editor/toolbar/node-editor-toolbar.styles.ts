@@ -17,7 +17,6 @@ export default css`
     padding-top: 10px;
     padding-bottom: 10px;
 
-    font-family: "Roboto", sans-serif;
     font-size: 20px;
     font-weight: bold;
     user-select: none;

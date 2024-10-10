@@ -154,7 +154,6 @@ export default css`
   }
 
   .subtitle {
-    font-family: "Roboto", sans-serif;
     font-size: 12px;
     color: gray;
     margin: 0px;

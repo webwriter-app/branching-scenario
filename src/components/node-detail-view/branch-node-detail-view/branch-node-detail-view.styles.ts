@@ -15,7 +15,6 @@ export default css`
   }
 
   .title {
-    font-family: "Roboto", sans-serif;
     font-size: 16px;
     font-weight: bold;
     color: #505055;
@@ -108,7 +107,6 @@ export default css`
   }
 
   .subtitle {
-    font-family: "Roboto", sans-serif;
     font-size: 12px;
     color: gray;
     margin: 0px;

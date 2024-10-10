@@ -59,7 +59,6 @@ export class NodeConnectionList extends LitElementWw {
       }
 
       .titlebar p {
-        font-family: "Roboto", sans-serif;
         font-size: 12px;
         color: #3f3f46;
         margin: 0px;
@@ -153,7 +152,6 @@ export class NodeConnectionList extends LitElementWw {
       }
 
       .no-node-message {
-        font-family: "Roboto", sans-serif;
         font-size: 12px;
         color: darkgray;
         margin: 0px;

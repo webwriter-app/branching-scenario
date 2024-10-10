@@ -38,8 +38,6 @@ export class ToggleTextInput extends LitElementWw {
       }
 
       input {
-        font-family: "Roboto", sans-serif;
-        font-size: 16px;
         font-weight: bold;
         color: #3f3f46;
         margin: 0;
@@ -55,7 +53,6 @@ export class ToggleTextInput extends LitElementWw {
       }
 
       p {
-        font-family: "Roboto", sans-serif;
         font-size: 16px;
         font-weight: bold;
         color: #3f3f46;

@@ -23,22 +23,20 @@ export default css`
 
     box-sizing: border-box;
     width: 100%;
+    border: 1px solid #e4e4e4;
   }
 
   .titlebar {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
     width: 100%;
-    background-color: #666666;
-    color: white;
-
-    border-left: 1px solid #5a5a5a;
-    border-right: 1px solid #5a5a5a;
-    border-top: 1px solid #5a5a5a;
+    background-color: white;
+    color: #3f3f46;
+    border-bottom: 1px solid #e4e4e4;
   }
 
   .gamebookTitle {
     position: relative;
-    font-family: "Roboto", sans-serif;
+
     font-weight: 600;
 
     box-sizing: border-box;
@@ -58,7 +56,6 @@ export default css`
   }
 
   .pageTitle {
-    font-family: "Roboto", sans-serif;
     font-size: 16px;
 
     height: auto;
@@ -81,12 +78,6 @@ export default css`
     box-shadow: inset 0px 4px 8px rgba(0, 0, 0, 0.1); /* Drop-in shadow */
     min-width: 100%;
     position: relative;
-
-    border-left: 1px solid #e4e4e4;
-
-    border-right: 1px solid #e4e4e4;
-
-    border-bottom: 1px solid #e4e4e4;
   }
 
   .page {

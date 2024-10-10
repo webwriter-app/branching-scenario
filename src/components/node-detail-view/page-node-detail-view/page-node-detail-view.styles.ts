@@ -47,7 +47,6 @@ export default css`
   }
 
   .gamebookTitle {
-    font-family: "Roboto", sans-serif;
     font-weight: 600;
     background-color: #f7f7f7;
     box-sizing: border-box;
@@ -66,7 +65,6 @@ export default css`
   }
 
   .pageTitle {
-    font-family: "Roboto", sans-serif;
     font-size: 14px;
 
     background-color: #f7f7f7;
@@ -121,7 +119,6 @@ export default css`
   }
 
   .title {
-    font-family: "Roboto", sans-serif;
     font-size: 16px;
     font-weight: bold;
     color: #3077ba;
@@ -129,7 +126,6 @@ export default css`
   }
 
   .subtitle {
-    font-family: "Roboto", sans-serif;
     font-size: 12px;
     color: gray;
     margin: 0px;
@@ -137,7 +133,6 @@ export default css`
   }
 
   .number {
-    font-family: "Roboto", sans-serif;
     font-size: 14px;
     color: black;
     margin: 0px;
@@ -238,7 +233,6 @@ export default css`
   }
 
   .subtitle {
-    font-family: "Roboto", sans-serif;
     font-size: 12px;
     color: gray;
     margin: 0px;

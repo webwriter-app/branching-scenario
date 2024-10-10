@@ -109,7 +109,7 @@ export default css`
   .drawflow-node.branch .content #title {
     padding: 0px;
     margin: 0px;
-    font-family: "Roboto", sans-serif;
+
     font-size: 20px;
     color: #3f3f46;
     pointer-events: none;
