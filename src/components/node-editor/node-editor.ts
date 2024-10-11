@@ -1462,7 +1462,7 @@ export class NodeEditor extends LitElementWw {
             const y = Number(identifierParts[2]);
             const newX = indexMap[x];
             const newY = indexMap[y];
-            const newIdentifier = `${newX}-output_1-${newY}-input_1`;
+            const newIdentifier = `${newX}-${identifierParts[1]}-${newY}-input_1`;
             button.setAttribute("identifier", newIdentifier);
           }
         }

@@ -86,6 +86,9 @@
     "./widgets/webwriter-gamebook-button": {
       "content": "",
       "uninsertable": true
+    },
+    "./widgets/node-detail-view": {
+      "selectable": false
     }
   }
 }
