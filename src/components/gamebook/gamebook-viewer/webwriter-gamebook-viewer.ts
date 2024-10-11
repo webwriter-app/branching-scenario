@@ -206,6 +206,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
         if (container instanceof WebWriterGamebookPage) {
           this._navigateToPage(targetId);
           this._initializeButtons(targetId);
+          //
           const pageViewer = this.shadowRoot.getElementById("pageViewer");
           if (pageViewer) {
             pageViewer.scrollTop = 0;
@@ -273,6 +274,11 @@ export class WebWriterGamebookViewer extends LitElementWw {
         container.addEventListener("sl-request-close", (event) => {
           this._initializeButtons(previousContainerId);
           this.currentContainerId = previousContainerId;
+          const pageViewer = this.shadowRoot.getElementById("pageViewer");
+          if (pageViewer) {
+            pageViewer.scrollTop = 0;
+            pageViewer.style.overflowY = "auto"; // Disable scrolling
+          }
         });
       }
       //
