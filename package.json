@@ -4,7 +4,7 @@
   "keywords": [
     "webwriter-widget"
   ],
-  "description": "WIP: Create adaptive learning experiences by authoring a gamebook, where you present the student with choices on how to continue. The content in the gamebook can be based on a all other WebWriter content types.",
+  "description": "Create adaptive learning experiences by authoring a gamebook, where you present the student with choices on how to continue. The content in the gamebook can be based on a all other WebWriter content types.",
   "license": "MIT",
   "author": "Andreas Dymek",
   "dependencies": {
