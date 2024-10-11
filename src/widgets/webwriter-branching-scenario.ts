@@ -63,6 +63,13 @@ export class WebWriterBranchingScenario extends LitElementWw {
   })
   public accessor editorState = new GamebookEditorState("Untitled Gamebook");
 
+  // public static get shadowRootOptions(): ShadowRootInit {
+  //   return {
+  //     ...LitElement.shadowRootOptions,
+  //     delegatesFocus: true,
+  //   };
+  // }
+
   /* 
   
   
@@ -87,6 +94,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.reflectStoreChangesinDOM();
       this.requestUpdate(); // Ensure Lit re-renders
     });
+
+    // this.addEventListener("click", function () {
+    //   this.focus();
+    // });
   }
 
   /*
