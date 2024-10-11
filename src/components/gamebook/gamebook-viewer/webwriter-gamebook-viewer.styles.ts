@@ -32,6 +32,7 @@ export default css`
     background-color: white;
     color: #3f3f46;
     border-bottom: 1px solid #e4e4e4;
+    padding: 10px;
   }
 
   .gamebookTitle {
@@ -53,10 +54,12 @@ export default css`
     justify-content: flex-start; /* Horizontally align at the start */
 
     width: 100%;
+    margin: 0px;
+    padding: 0px;
   }
 
   .pageTitle {
-    font-size: 16px;
+    font-size: 14px;
 
     height: auto;
     display: flex;
@@ -67,6 +70,9 @@ export default css`
     width: 100%; /* Adjust width to account for padding */
     padding-left: 10px;
     padding-bottom: 10px;
+
+    margin: 0px;
+    padding: 0px;
   }
 
   .surrounding {
@@ -74,7 +80,7 @@ export default css`
     align-items: center;
     justify-content: center;
     background-color: #fbfbfb;
-    padding: 20px;
+    padding: 8px;
     box-shadow: inset 0px 4px 8px rgba(0, 0, 0, 0.1); /* Drop-in shadow */
     min-width: 100%;
     position: relative;
@@ -87,7 +93,7 @@ export default css`
     gap: 10px; /* Adjust the value to your desired spacing */
     box-sizing: border-box;
     min-width: 100%;
-    height: 600px; /* Set a fixed height (adjust as needed) */
+    height: 700px; /* Set a fixed height (adjust as needed) */
     background-color: white;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow */
     overflow-y: auto; /* Make the content scrollable if it overflows */

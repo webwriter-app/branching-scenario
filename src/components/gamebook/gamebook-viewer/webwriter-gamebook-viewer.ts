@@ -165,8 +165,8 @@ export class WebWriterGamebookViewer extends LitElementWw {
     return html`
       <div class="gamebook">
         <div class="titlebar">
-          <div class="gamebookTitle">${this.gamebookTitle}</div>
-          <div class="pageTitle">${this.pageTitle}</div>
+          <p class="gamebookTitle">${this.gamebookTitle}</p>
+          <p class="pageTitle">${this.pageTitle}</p>
         </div>
         <div class="surrounding">
           <div class="page" id="pageViewer">

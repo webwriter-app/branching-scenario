@@ -381,10 +381,10 @@ export class NodeEditor extends LitElementWw {
     if (this.backgroundIsDragging) {
       this.backgroundIsDragging = false;
 
-      this.editorStore.setEditorPosition(
-        this.editor.canvas_x,
-        this.editor.canvas_y
-      );
+      // this.editorStore.setEditorPosition(
+      //   this.editor.canvas_x,
+      //   this.editor.canvas_y
+      // );
     }
   }
 
@@ -565,10 +565,10 @@ export class NodeEditor extends LitElementWw {
         this.drawflowEditorDiv.classList.remove("smooth-background-transition");
       }, 350); // Adjust the timeout duration to match your animation duration
 
-      this.editorStore.setEditorPosition(
-        this.editor.canvas_x,
-        this.editor.canvas_y
-      );
+      // this.editorStore.setEditorPosition(
+      //   this.editor.canvas_x,
+      //   this.editor.canvas_y
+      // );
     }
   }
 
@@ -917,11 +917,11 @@ export class NodeEditor extends LitElementWw {
         zoomValue.classList.add("fade-in-out");
       }
 
-      this.editorStore.setEditorZoom(zoom_level);
-      this.editorStore.setEditorPosition(
-        this.editor.canvas_x,
-        this.editor.canvas_y
-      );
+      //this.editorStore.setEditorZoom(zoom_level);
+      // this.editorStore.setEditorPosition(
+      //   this.editor.canvas_x,
+      //   this.editor.canvas_y
+      // );
     });
   }
 

@@ -127,8 +127,9 @@ export class WebWriterGamebookPage extends LitElementWw {
   */
   public hide() {
     this.style.display = "none";
-
+    //TODO after Thesis: move it to the right in viewer
     //TODO after Thesis: stop interactive content from playing
+    //this.stopAllMedia();
   }
 
   /*

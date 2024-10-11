@@ -10,7 +10,7 @@ export default css`
   }
 
   .smooth-background-transition {
-    transition: background-position 0.6s ease; /* Adjust duration and easing as needed */
+    transition: background-position 0.4s ease; /* Adjust duration and easing as needed */
   }
 
   .drawflow {
