@@ -6,7 +6,7 @@
   ],
   "description": "WIP: Create adaptive learning experiences by authoring a gamebook, where you present the student with choices on how to continue. The content in the gamebook can be based on a all other WebWriter content types.",
   "license": "MIT",
-  "author": "",
+  "author": "Andreas Dymek",
   "dependencies": {
     "@lit/context": "^1.1.2",
     "@shoelace-style/shoelace": "^2.15.0",
@@ -19,7 +19,8 @@
     "styled-components": "^6.1.11"
   },
   "scripts": {
-    "prepublishonly": "npx @webwriter/build"
+    "prepublishOnly": "npx @webwriter/build",
+    "preview": "npx @webwriter/build preview webwriter-branching-scenario"
   },
   "exports": {
     "./widgets/webwriter-branching-scenario.*": {

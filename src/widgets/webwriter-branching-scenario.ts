@@ -87,10 +87,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.reflectStoreChangesinDOM();
       this.requestUpdate(); // Ensure Lit re-renders
     });
-
-    this.addEventListener("click", function () {
-      //this.focus();
-    });
   }
 
   /*

@@ -181,6 +181,19 @@ export class NodeEditor extends LitElementWw {
     }
   }
 
+  protected updated(_changedProperties: PropertyValues): void {
+    if (_changedProperties.has("editorStore")) {
+      //TODO: support undo/redo
+      // let editorContent = this.addHTMLToNodes(this.editorStore.editorContent);
+      // this.editor.import(editorContent);
+      // if (this.editorStore.selectedNode.id !== -1) {
+      //   this.programaticallySelectNode(
+      //     this.editorStore.selectedNode.id.toString()
+      //   );
+      // }
+    }
+  }
+
   /*
 
   */
