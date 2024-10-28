@@ -53,7 +53,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
       "sl-option": SlOption,
       "sl-alert": SlAlert,
       "sl-icon": SlIcon,
-      "webwriter-gamebook-button": WebWriterGamebookButton,
+      //"webwriter-gamebook-button": WebWriterGamebookButton,
     };
   }
 

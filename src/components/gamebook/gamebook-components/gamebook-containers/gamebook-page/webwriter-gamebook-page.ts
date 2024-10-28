@@ -47,7 +47,7 @@ export class WebWriterGamebookPage extends LitElementWw {
     return {
       "sl-button": SlButton,
       //"webwriter-gamebook-button": WebWriterGamebookButton,
-      "webwriter-gamebook-options": WebWriterGamebookOptions,
+      //"webwriter-gamebook-options": WebWriterGamebookOptions,
     };
   }
   //associated node id

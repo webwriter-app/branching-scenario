@@ -38,9 +38,9 @@ export class GamebookContainerManager extends LitElementWw {
 
   static get scopedElements() {
     return {
-      "webwriter-gamebook-page": WebWriterGamebookPage,
-      "webwriter-gamebook-popup": WebWriterGamebookPopup,
-      "webwriter-gamebook-branch": WebWriterGamebookBranch,
+      // "webwriter-gamebook-page": WebWriterGamebookPage,
+      // "webwriter-gamebook-popup": WebWriterGamebookPopup,
+      // "webwriter-gamebook-branch": WebWriterGamebookBranch,
     };
   }
 
