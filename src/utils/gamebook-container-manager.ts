@@ -279,15 +279,15 @@ export class GamebookContainerManager extends LitElementWw {
     if (button) {
       button.setAttribute("identifier", "x");
       button.remove();
-    }
 
-    if (button instanceof WebWriterGamebookBranchButton) {
-      container.branchesOff = -1;
-      const branchContainer = this.gamebookContainers.find(
-        (container) => container.getAttribute("drawflowNodeId") == inputId
-      );
-      branchContainer.incomingContainerId = -1;
-      branchContainer.clearRules();
+      if (button instanceof WebWriterGamebookBranchButton) {
+        container.branchesOff = -1;
+        const branchContainer = this.gamebookContainers.find(
+          (container) => container.getAttribute("drawflowNodeId") == inputId
+        );
+        branchContainer.incomingContainerId = -1;
+        branchContainer.clearRules();
+      }
     }
   }
 
