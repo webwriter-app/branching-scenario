@@ -1665,7 +1665,9 @@ export class NodeEditor extends LitElementWw {
       );
 
       const deleteButton = this.shadowRoot.querySelector(".drawflow-delete");
-      deleteButton.remove();
+      if (deleteButton) {
+        deleteButton.remove();
+      }
 
       this.editor.connection_selected = null;
       this.editor.ele_selected = null;
