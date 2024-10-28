@@ -179,6 +179,12 @@ export class NodeEditor extends LitElementWw {
         })
       );
     }
+
+    const nodes = this.editorStore.editorContent.drawflow.Home.data;
+    const originNode = Object.values(nodes).find(
+      (node: any) => node.class === "origin"
+    );
+    this.moveToNode(originNode as DrawflowNode, false);
   }
 
   protected updated(_changedProperties: PropertyValues): void {
@@ -270,7 +276,7 @@ export class NodeEditor extends LitElementWw {
               const originNode = Object.values(nodes).find(
                 (node: any) => node.class === "origin"
               );
-              this.moveToNode(originNode as DrawflowNode);
+              this.moveToNode(originNode as DrawflowNode, true);
             }}
           >
           </sl-icon-button>
@@ -519,7 +525,7 @@ export class NodeEditor extends LitElementWw {
   /*
   
   */
-  public moveToNode(node: DrawflowNode) {
+  public moveToNode(node: DrawflowNode, withAnimation: Boolean) {
     const { zoom, canvas_x, canvas_y } = this.editor;
     const { id, pos_x, pos_y } = node;
 
@@ -535,8 +541,10 @@ export class NodeEditor extends LitElementWw {
 
     if (drawflowContainer) {
       // Add the transition class for smooth animation
-      drawflowContainer.classList.add("smooth-transition");
-      this.drawflowEditorDiv.classList.add("smooth-background-transition");
+      if (withAnimation) {
+        drawflowContainer.classList.add("smooth-transition");
+        this.drawflowEditorDiv.classList.add("smooth-background-transition");
+      }
       // Calculate the center of the origin node
       const nodeCenterX = pos_x + nodeWidth / 2;
       const nodeCenterY = pos_y + nodeHeight / 2;
@@ -559,12 +567,15 @@ export class NodeEditor extends LitElementWw {
       this.backgroundTranslateY -= nodePosY - rect.height / 2;
       this.requestUpdate();
 
-      // // // Optionally, remove the transition class after the animation is done
-      setTimeout(() => {
-        drawflowContainer.classList.remove("smooth-transition");
-        this.drawflowEditorDiv.classList.remove("smooth-background-transition");
-      }, 350); // Adjust the timeout duration to match your animation duration
-
+      if (withAnimation) {
+        // // // Optionally, remove the transition class after the animation is done
+        setTimeout(() => {
+          drawflowContainer.classList.remove("smooth-transition");
+          this.drawflowEditorDiv.classList.remove(
+            "smooth-background-transition"
+          );
+        }, 350); // Adjust the timeout duration to match your animation duration
+      }
       // this.editorStore.setEditorPosition(
       //   this.editor.canvas_x,
       //   this.editor.canvas_y

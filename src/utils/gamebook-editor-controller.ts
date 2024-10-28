@@ -857,7 +857,7 @@ export class GamebookEditorController implements ReactiveController {
 
   */
   public moveTo(node: DrawflowNode) {
-    this.nodeEditor.moveToNode(node);
+    this.nodeEditor.moveToNode(node, true);
     this._selectContainer(node.id);
     this.nodeEditor.programaticallySelectNode(node.id);
   }
