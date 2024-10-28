@@ -42,7 +42,7 @@ export class WebWriterGamebookBranch extends LitElementWw {
   static get scopedElements() {
     return {
       "sl-button": SlButton,
-      "webwriter-gamebook-button": WebWriterGamebookButton,
+      //"webwriter-gamebook-button": WebWriterGamebookButton,
     };
   }
 

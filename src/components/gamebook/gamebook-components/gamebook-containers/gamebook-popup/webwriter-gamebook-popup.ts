@@ -74,7 +74,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
   static get scopedElements() {
     return {
       "sl-dialog": SlDialog,
-      "webwriter-gamebook-button": WebWriterGamebookButton,
+      //"webwriter-gamebook-button": WebWriterGamebookButton,
       "webwriter-gamebook-options": WebWriterGamebookOptions,
     };
   }

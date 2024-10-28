@@ -60,7 +60,7 @@ export class PopupNodeDetailView extends LitElementWw {
       "sl-input": SlInput,
       "sl-icon": SlIcon,
       "sl-dialog": SlDialog,
-      "webwriter-gamebook-button": WebWriterGamebookButton,
+      //"webwriter-gamebook-button": WebWriterGamebookButton,
       "toggle-text-input": ToggleTextInput,
       "node-connection-list": NodeConnectionList,
     };

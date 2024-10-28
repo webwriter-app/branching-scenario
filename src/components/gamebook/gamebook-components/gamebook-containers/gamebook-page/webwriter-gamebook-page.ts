@@ -46,7 +46,7 @@ export class WebWriterGamebookPage extends LitElementWw {
   static get scopedElements() {
     return {
       "sl-button": SlButton,
-      "webwriter-gamebook-button": WebWriterGamebookButton,
+      //"webwriter-gamebook-button": WebWriterGamebookButton,
       "webwriter-gamebook-options": WebWriterGamebookOptions,
     };
   }
@@ -172,6 +172,7 @@ export class WebWriterGamebookPage extends LitElementWw {
                 | WebWriterGamebookButton
                 | WebWriterGamebookBranchButton;
               if (connButton.identifier !== "x") {
+                console.log(connButton.identifier);
                 dispatchEventIfNeeded("buttonDeleted", {
                   identifier: connButton.identifier,
                 });
