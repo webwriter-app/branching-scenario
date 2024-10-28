@@ -126,8 +126,8 @@ export class GamebookEditorState {
 
   setCopiedNode(node = NO_COPY) {
     delete node.name;
-    delete node.inputs;
-    delete node.outputs;
+    //delete node.inputs;
+    //delete node.outputs;
     delete node.pos_x;
     delete node.pos_y;
     delete node.html;

@@ -114,5 +114,6 @@ export default css`
     display: flex; /* Flexbox for centering */
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
+    z-index: 100;
   }
 `;
