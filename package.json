@@ -9,7 +9,7 @@
   "author": "Andreas Dymek",
   "dependencies": {
     "@lit/context": "^1.1.2",
-    "@shoelace-style/shoelace": "^2.15.0",
+    "@shoelace-style/shoelace": "2.15.0",
     "@tabler/icons": "^3.7.0",
     "@webwriter/lit": "^2.0.0",
     "bootstrap-icons": "^1.11.3",
