@@ -40,7 +40,6 @@ import {
   SlMenuLabel,
 } from "@shoelace-style/shoelace";
 
-@customElement("webwriter-gamebook-options")
 export class WebWriterGamebookOptions extends LitElementWw {
   static get styles() {
     return css`

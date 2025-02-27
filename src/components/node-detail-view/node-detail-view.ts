@@ -1,7 +1,7 @@
 import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property } from "lit/decorators.js";
-import { PageNodeDetailView } from "./page-node-detail-view/page-node-detail-view";
+import { PageNodeDetailView } from "../page-node-detail-view/page-node-detail-view";
 import { provide, consume, createContext } from "@lit/context";
 import {
   editorState,
@@ -14,14 +14,13 @@ import { SlIcon, SlDivider } from "@shoelace-style/shoelace";
 
 //Import Styles
 import styles from "./node-detail-view.styles";
-import { PopupNodeDetailView } from "./popup-node-detail-view/popup-node-detail-view";
+import { PopupNodeDetailView } from "../popup-node-detail-view/popup-node-detail-view";
 import { ToggleTextInput } from "../toggle-text-input/toggle-text-input";
 import { NodeConnectionList } from "../node-connection-list/node-connection-list";
 
 //Tabler Icon Import
-import { BranchNodeDetailView } from "./branch-node-detail-view/branch-node-detail-view";
+import { BranchNodeDetailView } from "../branch-node-detail-view/branch-node-detail-view";
 
-@customElement("node-detail-view")
 export class NodeDetailsView extends LitElementWw {
   static get scopedElements() {
     return {

@@ -9,17 +9,17 @@ import {
 
 //Drawflow Imports
 import { DrawflowNode } from "drawflow";
-import { WebWriterGamebookButton } from "../components/gamebook/gamebook-components/gamebook-button/webwriter-gamebook-button";
-import { WebWriterGamebookPage } from "../components/gamebook/gamebook-components/gamebook-containers/gamebook-page/webwriter-gamebook-page";
-import { WebWriterGamebookPopup } from "../components/gamebook/gamebook-components/gamebook-containers/gamebook-popup/webwriter-gamebook-popup";
-import { WebWriterGamebookBranch } from "../components/gamebook/gamebook-components/gamebook-containers/gamebook-branch/webwriter-gamebook-branch";
-import { WebWriterGamebookBranchButton } from "../components/gamebook/gamebook-components/gamebook-branch-button/webwriter-gamebook-branch-button";
 
 import { provide, consume, createContext } from "@lit/context";
 import {
   editorState,
   GamebookEditorState,
 } from "./gamebook-editor-state-context";
+import { WebWriterGamebookPage } from "../widgets/webwriter-gamebook-page/webwriter-gamebook-page.component";
+import { WebWriterGamebookButton } from "../widgets/webwriter-gamebook-button/webwriter-gamebook-button.component";
+import { WebWriterGamebookBranchButton } from "../widgets/webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component";
+import { WebWriterGamebookPopup } from "../widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.component";
+import { WebWriterGamebookBranch } from "../widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.component";
 
 @customElement("gamebook-container-manager")
 export class GamebookContainerManager extends LitElementWw {

@@ -37,8 +37,8 @@ import { style } from "drawflow/dist/drawflow.style.js";
 import customDrawflowStyles from "./drawflow.styles";
 import styles from "./node-editor.styles";
 
-import { NodeEditorToolbar } from "./toolbar/node-editor-toolbar";
-import { NodeEditorHelpMenu } from "./help-menu/node-editor-help-menu";
+import { NodeEditorToolbar } from "../node-editor-toolbar/node-editor-toolbar";
+import { NodeEditorHelpMenu } from "../help-menu/node-editor-help-menu";
 
 const NO_CONNECTION_SELECTED = "output_id-input_id-output_class-input_class";
 
@@ -49,7 +49,6 @@ import {
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
-@customElement("node-editor")
 export class NodeEditor extends LitElementWw {
   //registering custom elements used in the Web component
   static get scopedElements() {

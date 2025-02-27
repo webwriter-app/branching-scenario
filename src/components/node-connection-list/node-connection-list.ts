@@ -19,7 +19,6 @@ import {
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
-@customElement("node-connection-list")
 export class NodeConnectionList extends LitElementWw {
   @property({ type: Boolean, reflect: true }) accessor output = false;
   @property({ type: Boolean, reflect: true }) accessor input = false;

@@ -1,12 +1,11 @@
 import { LitElement, ReactiveController, ReactiveControllerHost } from "lit";
 
-import { WebWriterGamebookPage } from "../components/gamebook/gamebook-components/gamebook-containers/gamebook-page/webwriter-gamebook-page";
-import { WebWriterGamebookPopup } from "../components/gamebook/gamebook-components/gamebook-containers/gamebook-popup/webwriter-gamebook-popup";
-import { WebWriterGamebookBranch } from "../components/gamebook/gamebook-components/gamebook-containers/gamebook-branch/webwriter-gamebook-branch";
-
 import { NodeEditor } from "../components/node-editor/node-editor";
 import { GamebookContainerManager } from "./gamebook-container-manager";
 import { DrawflowNode } from "drawflow";
+import { WebWriterGamebookBranch } from "../widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.component";
+import { WebWriterGamebookPage } from "../widgets/webwriter-gamebook-page/webwriter-gamebook-page.component";
+import { WebWriterGamebookPopup } from "../widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.component";
 
 export class GamebookEditorController implements ReactiveController {
   private host: ReactiveControllerHost;

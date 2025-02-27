@@ -14,7 +14,6 @@ import {
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
-@customElement("node-output-select")
 export class NodeOutputSelect extends LitElement {
   @property({ type: Number }) accessor incomingNodeId;
   @property({ type: String }) accessor outputClass;
