@@ -169,7 +169,6 @@ export class WebWriterGamebookPage extends LitElementWw {
                 | WebWriterGamebookButton
                 | WebWriterGamebookBranchButton;
               if (connButton.identifier !== "x") {
-                console.log(connButton.identifier);
                 dispatchEventIfNeeded("buttonDeleted", {
                   identifier: connButton.identifier,
                 });
