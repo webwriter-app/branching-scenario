@@ -49,7 +49,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
       "sl-select": SlSelect,
       "sl-option": SlOption,
       "sl-alert": SlAlert,
-      "sl-icon": SlIcon
+      "sl-icon": SlIcon,
     };
   }
 
@@ -108,7 +108,10 @@ export class WebWriterGamebookViewer extends LitElementWw {
     const assignedElements = containersSlot.assignedElements();
 
     const smartBranchButtons = assignedElements.filter((element) => {
-      return element instanceof WebWriterGamebookBranchButton;
+      return (
+        element.constructor ===
+        customElements.get("webwriter-gamebook-branch-button")
+      );
     });
 
     smartBranchButtons.forEach((smartBranchButton) => {
@@ -199,7 +202,10 @@ export class WebWriterGamebookViewer extends LitElementWw {
       if (container.drawflowNodeId == targetId) {
         containerFound = true; // Set flag to true when a matching container is found
 
-        if (container instanceof WebWriterGamebookPage) {
+        if (
+          container.constructor ===
+          customElements.get("webwriter-gamebook-page")
+        ) {
           this._navigateToPage(targetId);
           this._initializeButtons(targetId);
           //
@@ -210,7 +216,10 @@ export class WebWriterGamebookViewer extends LitElementWw {
           }
         }
         //
-        else if (container instanceof WebWriterGamebookPopup) {
+        else if (
+          container.constructor ===
+          customElements.get("webwriter-gamebook-popup")
+        ) {
           this._showPopupContainerDialog(targetId);
           this._initializeButtons(targetId);
           const pageViewer = this.shadowRoot.getElementById("pageViewer");
@@ -221,7 +230,10 @@ export class WebWriterGamebookViewer extends LitElementWw {
         }
 
         //
-        else if (container instanceof WebWriterGamebookBranch) {
+        else if (
+          container.constructor ===
+          customElements.get("webwriter-gamebook-branch")
+        ) {
           const nextId = this._getTargetFromRules(container);
           this._navigateTo(Number(nextId));
         }
@@ -244,7 +256,10 @@ export class WebWriterGamebookViewer extends LitElementWw {
         container.show();
         this.pageTitle = container.pageTitle;
       } else {
-        if (container instanceof WebWriterGamebookPopup) {
+        if (
+          container.constructor ===
+          customElements.get("webwriter-gamebook-popup")
+        ) {
           container.hideDialog();
         }
         //
@@ -279,7 +294,10 @@ export class WebWriterGamebookViewer extends LitElementWw {
       }
       //
       else if (container.drawflowNodeId != popupId) {
-        if (container instanceof WebWriterGamebookPopup) {
+        if (
+          container.constructor ===
+          customElements.get("webwriter-gamebook-popup")
+        ) {
           container.hideDialog();
           container.hide();
         }
@@ -313,7 +331,10 @@ export class WebWriterGamebookViewer extends LitElementWw {
           });
 
           const smartBranchButton = assignedElements.find((element) => {
-            return element instanceof WebWriterGamebookBranchButton;
+            return (
+              element.constructor ===
+              customElements.get("webwriter-gamebook-branch-button")
+            );
           });
 
           let submitElements = smartBranchButton.submitElements;
@@ -580,10 +601,14 @@ export class WebWriterGamebookViewer extends LitElementWw {
     //initialise the elements on the origin page
     container.buttons.forEach((button) => {
       const targetId = parseInt(button.getAttribute("dataTargetId"), 10);
+
       button.addEventListener("click", () => this._navigateTo(targetId));
       button.classList.remove("highlighted");
 
-      if (button instanceof WebWriterGamebookBranchButton) {
+      if (
+        button.constructor ===
+        customElements.get("webwriter-gamebook-branch-button")
+      ) {
         //In case the button already has an existing submitElements and elementSubmitted (navigated back to a page from a popup)
         if (
           button.submitElements.length === 0 &&
@@ -636,7 +661,10 @@ export class WebWriterGamebookViewer extends LitElementWw {
   */
   private _checkForErrors() {
     for (const container of this.gamebookContainers) {
-      if (container instanceof WebWriterGamebookBranch) {
+      if (
+        container.constructor ===
+        customElements.get("webwriter-gamebook-branch-button")
+      ) {
         if (
           container.elseRule !== undefined &&
           container.elseRule.target == ""
