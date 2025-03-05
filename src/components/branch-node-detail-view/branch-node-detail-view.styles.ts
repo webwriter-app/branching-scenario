@@ -5,6 +5,14 @@ export default css`
     box-sizing: border-box;
   }
 
+  .container {
+    background-color: #fbfbfb;
+    display: flex;
+    flex-direction: column;
+    min-height: min-content;
+    height: 100%;
+  }
+
   .titlebar {
     display: flex;
     justify-content: left;
@@ -54,7 +62,6 @@ export default css`
     align-items: center;
     justify-content: center;
     height: 80px;
-    background-color: #fbfbfb;
     color: darkgray;
   }
 

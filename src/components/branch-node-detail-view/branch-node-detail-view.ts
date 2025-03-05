@@ -146,7 +146,6 @@ export class BranchNodeDetailView extends LitElementWw {
                               "
                     ></sl-divider>
                     <!--   -->
-      
                         <div
                              class="ruleItem"
                              id="horizontal-stack-${index}"

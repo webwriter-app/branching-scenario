@@ -15,6 +15,9 @@ export default css`
     align-items: center;
     flex-direction: column;
 
+    min-height: min-content;
+    height: 100%;
+
     background-color: #fbfbfb;
     padding: 10px;
   }
@@ -22,10 +25,11 @@ export default css`
   .preview {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+
     align-items: center;
 
     width: 100%;
+    min-height: min-content;
     height: 100%;
 
     background: #fbfbfb;
@@ -38,9 +42,8 @@ export default css`
     box-sizing: border-box;
     border: 1px solid #d4d4d8;
     width: 100%;
-
     height: auto;
-    min-height: 400px;
+    min-height: min-content;
     color: black;
 
     /* box-shadow: 0 2px 20px 2px #d0d0d0; */

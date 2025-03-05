@@ -152,7 +152,7 @@ export class NodeConnectionList extends LitElementWw {
 
       .no-node-message {
         font-size: 12px;
-        color: darkgray;
+        color: red;
         margin: 0px;
         padding-top: 10px;
       }

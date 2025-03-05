@@ -167,6 +167,9 @@ export class SplitView extends LitElementWw {
     this.addEventListener("mouseup", this.onMouseUp);
   }
 
+  /*
+  
+  */
   private onMouseUp(_event: MouseEvent) {
     this.isDragging = false;
 

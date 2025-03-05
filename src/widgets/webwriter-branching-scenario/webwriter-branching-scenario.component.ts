@@ -9,6 +9,7 @@ import { WebWriterGamebookViewer } from "../../components/gamebook-viewer/webwri
 import { GamebookContainerManager } from "../../utils/gamebook-container-manager";
 import { NodeEditor } from "../../components/node-editor/node-editor";
 import { SplitView } from "../../components/split-view/split-view";
+import { VerticalResizeView } from "../../components/vertical-resize-view/vertical-resize-view";
 
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -41,6 +42,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       "node-editor": NodeEditor,
       "webwriter-gamebook-options": WebWriterGamebookOptions,
       "split-view": SplitView,
+      "vertical-resize-view": VerticalResizeView,
       "sl-dialog": SlDialog,
     };
   }
@@ -198,44 +200,10 @@ export class WebWriterBranchingScenario extends LitElementWw {
                   this.controller._importTemplateContainers(e)}
               >
               </node-editor>
-              <node-detail-view
-                slot="end"
-                @renameSelectedNode="${(e: CustomEvent) =>
-                  this.controller._renameSelectedNode(e.detail.newTitle)}"
-                @addOutput=${(e: CustomEvent) => this.controller._addOutput(e)}
-                @deleteOutput=${(e: CustomEvent) =>
-                  this.controller._deleteOutput(e)}
-                @createConnection=${(e: CustomEvent) =>
-                  this.controller._createConnection(e)}
-                @deleteConnection=${(e: CustomEvent) =>
-                  this.controller._deleteConnection(e)}
-                @highlightConnection=${(e: CustomEvent) =>
-                  this.controller._highlightConnection(e)}
-                @unhighlightConnection=${(e: CustomEvent) =>
-                  this.controller._unhighlightConnection(e)}
-                @highlightOutput=${(e: CustomEvent) =>
-                  this.controller._highlightOutput(e)}
-                @unhighlightOutput=${(e: CustomEvent) =>
-                  this.controller._unhighlightOutput(e)}
-                @highlightNode=${(e: CustomEvent) =>
-                  this.controller._highlightNode(e)}
-                @unhighlightNode=${(e: CustomEvent) =>
-                  this.controller._unhighlightNode(e)}
-                @markOutputs=${() => this.controller._markUsedOutputs()}
-              >
-                <gamebook-container-manager
-                  @managerInitialized=${() =>
-                    this.controller._markUsedOutputs()}
-                  @containerDeleted=${(e: CustomEvent) =>
-                    this.controller._removeNode(e.detail.id)}
-                  @containerSelectFirstUpdate=${(e: CustomEvent) =>
-                    this.controller._selectContainer(e.detail.id)}
-                  @containerError=${(e: CustomEvent) =>
-                    this.controller._unselectContainer()}
-                  @buttonDeleted=${(e: CustomEvent) =>
-                    this.controller._removeConnection(e)}
-                  @quizElementDeleted=${(e: CustomEvent) =>
-                    this.controller._deleteBranchRuleElementAndConnection(e)}
+              <vertical-resize-view slot="end">
+                <node-detail-view
+                  @renameSelectedNode="${(e: CustomEvent) =>
+                    this.controller._renameSelectedNode(e.detail.newTitle)}"
                   @addOutput=${(e: CustomEvent) =>
                     this.controller._addOutput(e)}
                   @deleteOutput=${(e: CustomEvent) =>
@@ -244,23 +212,59 @@ export class WebWriterBranchingScenario extends LitElementWw {
                     this.controller._createConnection(e)}
                   @deleteConnection=${(e: CustomEvent) =>
                     this.controller._deleteConnection(e)}
-                  @markOutputs=${() => this.controller._markUsedOutputs()}
-                  @makeSelectedNodeOrigin=${(e: CustomEvent) =>
-                    this.controller._changeOrigin(e)}
-                  @pasteNode=${() => this.controller._pasteNode()}
-                  @deleteSelectedNode=${() =>
-                    this.controller._deleteSelectedNode()}
-                  @nodeSearch=${() => this.controller.nodeSearch()}
-                  @moveTo=${(e: CustomEvent) =>
-                    this.controller.moveTo(e.detail.node)}
-                  @hoverButton=${(e: CustomEvent) =>
+                  @highlightConnection=${(e: CustomEvent) =>
                     this.controller._highlightConnection(e)}
-                  @leaveButton=${(e: CustomEvent) =>
+                  @unhighlightConnection=${(e: CustomEvent) =>
                     this.controller._unhighlightConnection(e)}
+                  @highlightOutput=${(e: CustomEvent) =>
+                    this.controller._highlightOutput(e)}
+                  @unhighlightOutput=${(e: CustomEvent) =>
+                    this.controller._unhighlightOutput(e)}
+                  @highlightNode=${(e: CustomEvent) =>
+                    this.controller._highlightNode(e)}
+                  @unhighlightNode=${(e: CustomEvent) =>
+                    this.controller._unhighlightNode(e)}
+                  @markOutputs=${() => this.controller._markUsedOutputs()}
                 >
-                  <slot></slot>
-                </gamebook-container-manager>
-              </node-detail-view>
+                  <gamebook-container-manager
+                    @managerInitialized=${() =>
+                      this.controller._markUsedOutputs()}
+                    @containerDeleted=${(e: CustomEvent) =>
+                      this.controller._removeNode(e.detail.id)}
+                    @containerSelectFirstUpdate=${(e: CustomEvent) =>
+                      this.controller._selectContainer(e.detail.id)}
+                    @containerError=${(e: CustomEvent) =>
+                      this.controller._unselectContainer()}
+                    @buttonDeleted=${(e: CustomEvent) =>
+                      this.controller._removeConnection(e)}
+                    @quizElementDeleted=${(e: CustomEvent) =>
+                      this.controller._deleteBranchRuleElementAndConnection(e)}
+                    @addOutput=${(e: CustomEvent) =>
+                      this.controller._addOutput(e)}
+                    @deleteOutput=${(e: CustomEvent) =>
+                      this.controller._deleteOutput(e)}
+                    @createConnection=${(e: CustomEvent) =>
+                      this.controller._createConnection(e)}
+                    @deleteConnection=${(e: CustomEvent) =>
+                      this.controller._deleteConnection(e)}
+                    @markOutputs=${() => this.controller._markUsedOutputs()}
+                    @makeSelectedNodeOrigin=${(e: CustomEvent) =>
+                      this.controller._changeOrigin(e)}
+                    @pasteNode=${() => this.controller._pasteNode()}
+                    @deleteSelectedNode=${() =>
+                      this.controller._deleteSelectedNode()}
+                    @nodeSearch=${() => this.controller.nodeSearch()}
+                    @moveTo=${(e: CustomEvent) =>
+                      this.controller.moveTo(e.detail.node)}
+                    @hoverButton=${(e: CustomEvent) =>
+                      this.controller._highlightConnection(e)}
+                    @leaveButton=${(e: CustomEvent) =>
+                      this.controller._unhighlightConnection(e)}
+                  >
+                    <slot></slot>
+                  </gamebook-container-manager>
+                </node-detail-view>
+              </vertical-resize-view>
             </split-view>
 
             <!-- Options Menu -->
