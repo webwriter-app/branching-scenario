@@ -280,7 +280,10 @@ export class GamebookContainerManager extends LitElementWw {
       button.setAttribute("identifier", "x");
       button.remove();
 
-      if (button instanceof WebWriterGamebookBranchButton) {
+      if (
+        button.constructor ===
+        customElements.get("webwriter-gamebook-branch-button")
+      ) {
         container.branchesOff = -1;
         const branchContainer = this.gamebookContainers.find(
           (container) => container.getAttribute("drawflowNodeId") == inputId
@@ -342,8 +345,8 @@ export class GamebookContainerManager extends LitElementWw {
     );
 
     if (
-      container instanceof WebWriterGamebookPage ||
-      container instanceof WebWriterGamebookPopup
+      container.constructor === customElements.get("webwriter-gamebook-page") ||
+      container.constructor === customElements.get("webwriter-gamebook-popup")
     ) {
       const connButton = container.buttons.find(
         (button) => button.identifier === identifier
@@ -366,8 +369,8 @@ export class GamebookContainerManager extends LitElementWw {
     );
 
     if (
-      container instanceof WebWriterGamebookPage ||
-      container instanceof WebWriterGamebookPopup
+      container.constructor === customElements.get("webwriter-gamebook-page") ||
+      container.constructor === customElements.get("webwriter-gamebook-popup")
     ) {
       const connButton = container.buttons.find(
         (button) => button.identifier === identifier

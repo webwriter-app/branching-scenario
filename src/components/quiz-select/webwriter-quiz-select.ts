@@ -103,12 +103,14 @@ export class WebWriterQuizSelect extends LitElement {
         .value=${this.value}
         @sl-input=${this._handleElementSelect}
       >
-        ${this.container instanceof WebWriterGamebookPage
+        ${this.container.constructor ===
+        customElements.get("webwriter-gamebook-page")
           ? html` <small class="icon-header" id="divider-page"
               ><sl-icon src="${file}"></sl-icon>${this.container
                 ?.pageTitle}</small
             >`
-          : this.container instanceof WebWriterGamebookPopup
+          : this.container.constructor ===
+            customElements.get("webwriter-gamebook-popup")
           ? html`<small class="icon-header" id="divider-page"
               ><sl-icon src="${squares}"></sl-icon>${this.container
                 ?.pageTitle}</small

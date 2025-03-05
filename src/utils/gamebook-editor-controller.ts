@@ -72,7 +72,8 @@ export class GamebookEditorController implements ReactiveController {
 
       if (
         node.class === "branch" &&
-        container instanceof WebWriterGamebookBranch
+        container.constructor ===
+          customElements.get("webwriter-gamebook-branch")
       ) {
         if (container.incomingContainerId !== -1) {
           const incomingContainer =
