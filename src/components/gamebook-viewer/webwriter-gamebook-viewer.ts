@@ -96,7 +96,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
 
   /*
 
-  TODO: after Thesis - Handle Reset of Quiz and Tasks
+    TODO: after Thesis - Handle Reset of Quiz and Tasks
    */
   private _handleSubmit(event: Event) {
     event.preventDefault(); // Prevent the default form submission
@@ -603,7 +603,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
     container.buttons.forEach((button) => {
       const targetId = parseInt(button.getAttribute("dataTargetId"), 10);
 
-      button.addEventListener("click", () => this._navigateTo(targetId));
+      button.button.addEventListener("click", () => this._navigateTo(targetId));
       button.classList.remove("highlighted");
 
       if (
