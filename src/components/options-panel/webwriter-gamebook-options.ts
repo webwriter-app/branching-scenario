@@ -270,10 +270,10 @@ export class WebWriterGamebookOptions extends LitElementWw {
                       ></sl-icon>
                       Requires
                       <a
-                        href="https://webwriter.app/widgets/"
-                        target="https://webwriter.app/widgets/"
+                        href="https://webwriter.app/packages/@webwriter/quiz/"
+                        target="https://webwriter.app/packages/@webwriter/quiz/"
                       >
-                        WebWriter Quiz Widget </a
+                        WebWriter Quiz Package </a
                       >.
                     </p>
                   `
