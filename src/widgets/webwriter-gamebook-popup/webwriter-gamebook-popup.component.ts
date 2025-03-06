@@ -11,6 +11,7 @@ import { DrawflowNode } from "drawflow";
 
 import { WebWriterGamebookButton } from "../webwriter-gamebook-button/webwriter-gamebook-button.component";
 import { WebWriterGamebookBranchButton } from "../webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component";
+import { WebWriterGamebookOptions } from "../../components/options-panel/webwriter-gamebook-options";
 
 //Shoelace
 import { SlButton, SlDialog } from "@shoelace-style/shoelace";
@@ -73,7 +74,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
     return {
       "sl-dialog": SlDialog,
       //"webwriter-gamebook-button": WebWriterGamebookButton,
-      //"webwriter-gamebook-options": WebWriterGamebookOptions,
+      "webwriter-gamebook-options": WebWriterGamebookOptions,
     };
   }
   //associated node id

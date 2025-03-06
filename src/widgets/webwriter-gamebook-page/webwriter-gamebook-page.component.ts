@@ -13,6 +13,7 @@ import { WebWriterGamebookButton } from "../webwriter-gamebook-button/webwriter-
 //Shoelace
 import { SlButton } from "@shoelace-style/shoelace";
 import { WebWriterGamebookBranchButton } from "../webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component";
+import { WebWriterGamebookOptions } from "../../components/options-panel/webwriter-gamebook-options";
 
 export class WebWriterGamebookPage extends LitElementWw {
   @property({ type: Number, attribute: true, reflect: true })
@@ -44,7 +45,7 @@ export class WebWriterGamebookPage extends LitElementWw {
     return {
       "sl-button": SlButton,
       //"webwriter-gamebook-button": WebWriterGamebookButton,
-      //"webwriter-gamebook-options": WebWriterGamebookOptions,
+      "webwriter-gamebook-options": WebWriterGamebookOptions,
     };
   }
   //associated node id
