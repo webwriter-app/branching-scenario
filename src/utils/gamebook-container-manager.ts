@@ -139,7 +139,7 @@ export class GamebookContainerManager extends LitElementWw {
     );
 
     if (!container) {
-      console.error(`No container found with drawflowNodeId: ${id}`);
+      console.error(`Error with finding element for node (ID: ${id})`);
     }
 
     return container;
@@ -173,7 +173,7 @@ export class GamebookContainerManager extends LitElementWw {
     });
 
     if (!isContainerShown) {
-      console.error(`No container found with drawflowNodeId: ${nodeId}`);
+      console.error(`Error with finding element for node (ID: ${nodeId})`);
     }
   }
 

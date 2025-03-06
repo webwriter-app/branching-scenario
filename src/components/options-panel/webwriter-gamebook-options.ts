@@ -43,15 +43,12 @@ import {
 export class WebWriterGamebookOptions extends LitElementWw {
   static get styles() {
     return css`
-      :host {
-        padding-left: 10px;
-      }
       .author-only {
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
         gap: 10px;
-        width: 180px;
+        width: 100%;
       }
 
       .author-only .header p {
@@ -72,19 +69,6 @@ export class WebWriterGamebookOptions extends LitElementWw {
         padding-bottom: 10px;
       }
 
-      .author-only .searchBar {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        justify-items: center;
-        width: 100%;
-        height: 65px;
-      }
-
-      .author-only .searchBar * {
-        width: 100%;
-      }
-
       .author-only sl-icon {
         color: #52525b;
       }
@@ -95,11 +79,6 @@ export class WebWriterGamebookOptions extends LitElementWw {
         align-items: center;
         gap: 5px;
         width: 100%;
-      }
-
-      sl-button.square {
-        width: 42px; /* Set this value to whatever size you want */
-        height: 42px; /* Same value as width to ensure it's a square */
       }
 
       p {
@@ -147,6 +126,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
         )
         .map(
           (key) => html`<sl-menu-item
+              style="width: 100%"
               value="${data[key].id}"
               @click=${() => this.moveTo(data[key])}
               ><p>${data[key].data.title}</p>
@@ -170,7 +150,6 @@ export class WebWriterGamebookOptions extends LitElementWw {
 
         <sl-dropdown>
           <sl-input
-            style="max-width: 180px"
             slot="trigger"
             id="searchInput"
             placeholder="Search..."
@@ -181,7 +160,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
           >
             <sl-icon src=${search} slot="prefix"></sl-icon>
           </sl-input>
-          <sl-menu hoist style="width: 180px;">
+          <sl-menu hoist>
             ${this.editorStore.searchResults
               ? html`
                   <sl-menu-label
@@ -195,10 +174,10 @@ export class WebWriterGamebookOptions extends LitElementWw {
           </sl-menu>
         </sl-dropdown>
 
-        <sl-button-group label="Alignment">
+        <sl-button-group>
           <sl-button
+            style="width: 100%"
             id="copyNodeBtn"
-            class="flex-item"
             @click=${() =>
               this.editorStore.setCopiedNode(this.editorStore.selectedNode)}
             ?disabled=${this.editorStore.selectedNode.id === -1}
@@ -207,7 +186,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
           </sl-button>
 
           <sl-button
-            class="flex-item"
+            style="width: 100%"
             @click=${() =>
               this.dispatchEvent(
                 new CustomEvent("pasteNode", {
@@ -221,16 +200,14 @@ export class WebWriterGamebookOptions extends LitElementWw {
           </sl-button>
 
           <sl-button
-            class="square"
             variant="default"
-            id="deleteNodeBtn"
             @click=${() => this.deleteSelectedNode()}
             ?disabled=${this.editorStore.selectedNode.id === -1 ||
             this.editorStore.selectedNode.class == "origin"
               ? true
               : false}
           >
-            <sl-icon src=${trash}></sl-icon>
+            <sl-icon slot="prefix" src=${trash}></sl-icon>
           </sl-button>
         </sl-button-group>
 
@@ -304,6 +281,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
               ${this.editorStore.selectedNode.class == "popup"
                 ? html`
                     <sl-switch
+                      style="padding-left: 5px;"
                       ?checked=${this.editorStore.selectedContainer
                         .preventClosing}
                       @sl-input=${(event) =>
@@ -312,6 +290,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
                       Prevent Closing
                     </sl-switch>
                     <sl-switch
+                      style="padding-left: 5px;"
                       ?checked=${this.editorStore.selectedContainer.noHeader
                         ? false
                         : true}

@@ -243,7 +243,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
 
     // If no container was found, react accordingly
     if (!containerFound) {
-      console.error(`No container found for targetId: ${targetId}`);
+      console.error(`Next element not found (Element ID: ${targetId})`);
     }
   }
 
