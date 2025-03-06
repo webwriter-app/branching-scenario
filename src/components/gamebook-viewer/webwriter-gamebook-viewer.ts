@@ -81,6 +81,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
     }
 
     this.addEventListener("submit", this._handleSubmit.bind(this));
+
     this.gamebookHasError = this._checkForErrors();
   }
 
@@ -663,7 +664,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
     for (const container of this.gamebookContainers) {
       if (
         container.constructor ===
-        customElements.get("webwriter-gamebook-branch-button")
+        customElements.get("webwriter-gamebook-branch")
       ) {
         if (
           container.elseRule !== undefined &&
