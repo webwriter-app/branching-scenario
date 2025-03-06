@@ -105,7 +105,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
   @property({ type: Boolean, attribute: true, reflect: true })
   accessor noHeader = false;
   @property({ type: Boolean, attribute: true, reflect: true })
-  accessor preventClosing;
+  accessor preventClosing = true;
   @property({ type: Number, attribute: true, reflect: true })
   accessor branchesOff = -1;
 

@@ -4,7 +4,7 @@ import { customElement, property, state } from "lit/decorators.js";
 
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import { SlInput, SlIcon, SlIconButton } from "@shoelace-style/shoelace";
+import { SlInput, SlIcon, SlButton } from "@shoelace-style/shoelace";
 
 import gripHorizontal from "@tabler/icons/outline/grip-horizontal.svg";
 import layoutNavBarCollapse from "@tabler/icons/outline/arrow-bar-to-up.svg";
@@ -39,7 +39,7 @@ export class SplitView extends LitElementWw {
     return {
       "sl-input": SlInput,
       "sl-icon": SlIcon,
-      "sl-icon-button": SlIconButton,
+      "sl-button": SlButton,
     };
   }
 
@@ -112,6 +112,10 @@ export class SplitView extends LitElementWw {
       }
       .dragging {
         color: #0084c7;
+      }
+
+      sl-button::part(base) {
+        color: #52525b;
       }
     `;
   }
@@ -270,14 +274,20 @@ export class SplitView extends LitElementWw {
             src=${gripHorizontal}
             class="${this.isDragging ? "dragging" : "icon"}"
           ></sl-icon>
-          <sl-icon-button
+          <sl-button
             class="collapse-button"
             @click=${this.toggleCollapse}
-            src=${this.editorStore.editorIsCollapsed
-              ? layoutBottomBarCollapse
-              : layoutNavBarCollapse}
+            size="small"
+            variant="text"
           >
-          </sl-icon-button>
+            ${this.editorStore.editorIsCollapsed ? "Expand" : "Collapse"}
+            <sl-icon
+              slot="suffix"
+              src=${this.editorStore.editorIsCollapsed
+                ? layoutBottomBarCollapse
+                : layoutNavBarCollapse}
+            ></sl-icon>
+          </sl-button>
         </div>
         <div class="itemEnd"><slot name="end"></slot></div>
       </div>
