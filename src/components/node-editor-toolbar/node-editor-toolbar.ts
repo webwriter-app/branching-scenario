@@ -99,7 +99,6 @@ export class NodeEditorToolbar extends LitElementWw {
               @click=${() => {
                 this.dispatchEvent(
                   new CustomEvent("addPageNode", {
-                    detail: { title: "Untitled Page", isOrigin: false },
                     bubbles: true,
                     composed: true,
                   })
@@ -113,7 +112,6 @@ export class NodeEditorToolbar extends LitElementWw {
               @click=${() => {
                 this.dispatchEvent(
                   new CustomEvent("addPopUpNode", {
-                    detail: { title: "Untitled Popup" },
                     bubbles: true,
                     composed: true,
                   })
@@ -127,7 +125,6 @@ export class NodeEditorToolbar extends LitElementWw {
               @click=${() => {
                 this.dispatchEvent(
                   new CustomEvent("addBranchNode", {
-                    detail: { title: "Untitled Branch" },
                     bubbles: true,
                     composed: true,
                   })

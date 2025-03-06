@@ -1,7 +1,13 @@
 import { html, css, PropertyValues } from "lit";
 import { consume } from "@lit/context";
 import { LitElementWw } from "@webwriter/lit";
-import { customElement, property, query, queryAll } from "lit/decorators.js";
+import {
+  customElement,
+  property,
+  query,
+  queryAll,
+  state,
+} from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 //Shoelace Imports
@@ -17,6 +23,7 @@ import {
   SlMenuLabel,
   SlDropdown,
   SlIcon,
+  SlInput,
 } from "@shoelace-style/shoelace";
 
 //@tabler icons
@@ -58,6 +65,7 @@ export class NodeEditor extends LitElementWw {
       "sl-divider": SlDivider,
       "sl-dialog": SlDialog,
       "sl-icon": SlIcon,
+      "sl-input": SlInput,
       "sl-icon-button": SlIconButton,
       "sl-menu": SlMenu,
       "sl-menu-item": SlMenuItem,
@@ -111,6 +119,11 @@ export class NodeEditor extends LitElementWw {
   @property({ type: Number }) accessor backgroundMaxScale = 2;
   @property({ type: Number }) accessor backgroundScaleFactor = 1.05;
   @property({ type: Boolean }) accessor nodePasted = false;
+
+  @state() accessor typeAdded = "";
+  @state() accessor pagesAdded = 1;
+  @state() accessor popupsAdded = 1;
+  @state() accessor branchesAdded = 1;
 
   @query("#drawflowEditorDiv") accessor drawflowEditorDiv;
   @queryAll('div[id*="node-"]') accessor nodeDivs;
@@ -248,13 +261,13 @@ export class NodeEditor extends LitElementWw {
       <div id="nodeEditor">
         <node-editor-toolbar
           @addPageNode=${(e: CustomEvent) => {
-            this.addPageNode(e.detail.title, e.detail.isOrigin);
+            this.preAddPageNode();
           }}
           @addPopUpNode=${(e: CustomEvent) => {
-            this.addPopUpNode(e.detail.title);
+            this.preAddPopupNode();
           }}
           @addBranchNode=${(e: CustomEvent) => {
-            this.addBranchNode(e.detail.title);
+            this.preAddBranchNode();
           }}
           @addTemplate=${(e: CustomEvent) =>
             this.addTemplate(e.detail.template)}
@@ -340,6 +353,63 @@ export class NodeEditor extends LitElementWw {
           outline
           @click=${() => this.deleteSelectedNode()}
           >Delete</sl-button
+        >
+      </sl-dialog>
+      <sl-dialog
+        label="Name your ${this.typeAdded}"
+        class="dialog"
+        id="add_node_dialog"
+      >
+        You are adding a ${this.typeAdded} node. Give it a title!
+        <br />
+        <br />
+        <sl-input
+          autofocus
+          id="title_input"
+          value=${this.typeAdded === "Page"
+            ? `Untitled Page ${this.pagesAdded}`
+            : this.typeAdded === "Popup"
+            ? `Untitled Popup ${this.popupsAdded}`
+            : this.typeAdded === "Branch"
+            ? `Untitled Branch ${this.branchesAdded}`
+            : ""}
+        ></sl-input>
+
+        <sl-button
+          slot="footer"
+          variant="text"
+          outline
+          @click=${() =>
+            (
+              this.shadowRoot.getElementById("add_node_dialog") as SlDialog
+            ).hide()}
+          >Cancel</sl-button
+        >
+        <sl-button
+          slot="footer"
+          variant="primary"
+          outline
+          @click=${this.typeAdded === "Page"
+            ? () =>
+                this.addPageNode(
+                  (this.shadowRoot.getElementById("title_input") as SlInput)
+                    .value,
+                  false
+                )
+            : this.typeAdded === "Popup"
+            ? () =>
+                this.addPopUpNode(
+                  (this.shadowRoot.getElementById("title_input") as SlInput)
+                    .value
+                )
+            : this.typeAdded === "Branch"
+            ? () =>
+                this.addBranchNode(
+                  (this.shadowRoot.getElementById("title_input") as SlInput)
+                    .value
+                )
+            : () => console.log()}
+          >Add</sl-button
         >
       </sl-dialog>
     `;
@@ -519,6 +589,10 @@ export class NodeEditor extends LitElementWw {
     );
 
     this.addPageNode("First Page", true);
+
+    this.pagesAdded = 1;
+    this.popupsAdded = 1;
+    this.branchesAdded = 1;
   }
 
   /*
@@ -939,6 +1013,15 @@ export class NodeEditor extends LitElementWw {
 
 
   */
+  public preAddPageNode() {
+    this.typeAdded = "Page";
+    (this.shadowRoot.getElementById("add_node_dialog") as SlDialog).show();
+  }
+
+  /*
+
+
+  */
   public addPageNode(title: string, isOrigin: boolean) {
     const nodeData = {
       title: title,
@@ -959,6 +1042,18 @@ export class NodeEditor extends LitElementWw {
       nodeHTML,
       false
     );
+
+    (this.shadowRoot.getElementById("add_node_dialog") as SlDialog).hide();
+    this.pagesAdded++;
+  }
+
+  /*
+
+
+  */
+  public preAddPopupNode() {
+    this.typeAdded = "Popup";
+    (this.shadowRoot.getElementById("add_node_dialog") as SlDialog).show();
   }
 
   /*
@@ -985,6 +1080,18 @@ export class NodeEditor extends LitElementWw {
       nodeHTML,
       false
     );
+
+    (this.shadowRoot.getElementById("add_node_dialog") as SlDialog).hide();
+    this.popupsAdded++;
+  }
+
+  /*
+
+
+  */
+  public preAddBranchNode() {
+    this.typeAdded = "Branch";
+    (this.shadowRoot.getElementById("add_node_dialog") as SlDialog).show();
   }
 
   /*
@@ -1011,6 +1118,9 @@ export class NodeEditor extends LitElementWw {
       nodeHTML,
       false
     );
+
+    (this.shadowRoot.getElementById("add_node_dialog") as SlDialog).hide();
+    this.branchesAdded++;
   }
 
   /*
