@@ -86,6 +86,7 @@ export class VerticalResizeView extends LitElementWw {
 
     this.addEventListener("mousemove", this.onMouseMove);
     this.addEventListener("mouseup", this.onMouseUp);
+    this.addEventListener("mouseleave", this.onMouseUp);
   }
 
   /*
@@ -93,9 +94,11 @@ export class VerticalResizeView extends LitElementWw {
 
   */
   private onMouseUp() {
+    console.log("test");
     this.isDragging = false;
     this.removeEventListener("mousemove", this.onMouseMove);
     this.removeEventListener("mouseup", this.onMouseUp);
+    this.removeEventListener("mouseleave", this.onMouseUp);
   }
 
   /*
