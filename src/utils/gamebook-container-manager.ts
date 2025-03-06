@@ -61,7 +61,11 @@ export class GamebookContainerManager extends LitElementWw {
       bubbles: true,
       composed: true,
     });
+
     this.dispatchEvent(event);
+
+    this._hideAllGamebookContainers();
+
     if (this.editorStore.selectedContainer !== undefined) {
       //Extraced the drawflowNodeId from the serialized container
       const value = this.editorStore.selectedContainer.attributes.find(
@@ -183,7 +187,7 @@ export class GamebookContainerManager extends LitElementWw {
   */
   public _hideAllGamebookContainers() {
     this.gamebookContainers.forEach((container) => {
-      container.hide();
+      container.style.display = "none";
     });
   }
 

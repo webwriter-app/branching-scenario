@@ -73,7 +73,6 @@ export class WebWriterBranchingScenario extends LitElementWw {
 
   /* 
   
-  
   */
   constructor() {
     super();
