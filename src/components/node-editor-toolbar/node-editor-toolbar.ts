@@ -21,6 +21,7 @@ import {
   SlInput,
   SlButtonGroup,
   SlBadge,
+  SlTooltip,
 } from "@shoelace-style/shoelace";
 
 //@tabler icons
@@ -62,6 +63,7 @@ export class NodeEditorToolbar extends LitElementWw {
       "sl-menu-label": SlMenuLabel,
       "sl-input": SlInput,
       "sl-badge": SlBadge,
+      "sl-tooltip": SlTooltip,
     };
   }
 
@@ -135,21 +137,35 @@ export class NodeEditorToolbar extends LitElementWw {
               Branch
             </sl-menu-item>
             <sl-divider></sl-divider>
-            <sl-menu-label>Multiple Nodes</sl-menu-label>
-            <sl-menu-item
-              @click=${() => {
-                this.dispatchEvent(
-                  new CustomEvent("addTemplate", {
-                    detail: { template: templatePopUpToPages },
-                    bubbles: true,
-                    composed: true,
-                  })
-                );
-              }}
-            >
-              <sl-icon slot="prefix" src=${fileArrowRight}></sl-icon>
-              Popup to Pages
-            </sl-menu-item>
+            <sl-tooltip hoist placement="left-start">
+              <div slot="content">
+                Inserts a predefined <strong>pattern</strong> of multiple
+                <strong>connected nodes</strong> into the node editor.
+                <br /><br />
+                This allows you to quickly add a structured set of nodes without
+                manual placement.
+              </div>
+              <sl-menu-label>Multiple Nodes</sl-menu-label>
+            </sl-tooltip>
+
+            <sl-tooltip hoist placement="left-start" content="test">
+              <span>
+                <sl-menu-item
+                  @click=${() => {
+                    this.dispatchEvent(
+                      new CustomEvent("addTemplate", {
+                        detail: { template: templatePopUpToPages },
+                        bubbles: true,
+                        composed: true,
+                      })
+                    );
+                  }}
+                >
+                  <sl-icon slot="prefix" src=${fileArrowRight}></sl-icon>
+                  Popup to Pages
+                </sl-menu-item>
+              </span>
+            </sl-tooltip>
 
             <sl-menu-item
               @click=${() => {
