@@ -83,6 +83,8 @@ export class ToggleTextInput extends LitElementWw {
                 style="margin-right: 8px;"
                 value=${this.text}
                 class=${this.hasError ? "error" : ""}
+                @keydown=${(event: KeyboardEvent) =>
+                  event.key === "Enter" && this.save()}
               />
               <sl-icon-button
                 id="cancelButton"

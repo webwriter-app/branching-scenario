@@ -27,12 +27,14 @@ import {
 } from "@shoelace-style/shoelace";
 
 //@tabler icons
-import file from "@tabler/icons/filled/file.svg";
+import fileFilled from "@tabler/icons/filled/file.svg";
+import fileOutline from "@tabler/icons/outline/file.svg";
 import circleArrowRight from "@tabler/icons/filled/circle-arrow-right.svg";
 import dotsVertical from "@tabler/icons/outline/dots-vertical.svg";
 import zoomIn from "@tabler/icons/outline/zoom-in.svg";
 import zoomOut from "@tabler/icons/outline/zoom-out.svg";
-import squares from "@tabler/icons/filled/squares.svg";
+import squaresFilled from "@tabler/icons/filled/squares.svg";
+import squaresOutline from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 
 import mapPin from "@tabler/icons/outline/map-pin.svg";
@@ -358,11 +360,35 @@ export class NodeEditor extends LitElementWw {
         >
       </sl-dialog>
       <sl-dialog
-        label="Name your ${this.typeAdded}"
+        label="Adding Node"
         class="dialog"
         id="add_node_dialog"
+        style="width: 100%"
+        @keydown=${(event: KeyboardEvent) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+
+            (this.shadowRoot?.querySelector("#addButton") as SlButton).click();
+          }
+        }}
       >
-        You are adding a ${this.typeAdded} node. Give it a title!
+        Give your new
+        <div
+          style="display: inline-flex; align-items: baseline; padding-left: 4px; padding-right: 4px; padding-top: 0px; padding-bottom: 0px; color: #262629;"
+        >
+          <sl-icon
+            src=${this.typeAdded === "Page"
+              ? fileOutline
+              : this.typeAdded === "Popup"
+              ? squaresOutline
+              : this.typeAdded === "Branch"
+              ? arrowsSplit2
+              : ""}
+            style="display: inline-block; vertical-align: baseline; height: 0.8em; width: auto; line-height: 1;"
+          ></sl-icon>
+          <span style="margin-left: 6px;">${this.typeAdded}</span>
+        </div>
+        a title!
         <br />
         <br />
         <sl-input
@@ -388,9 +414,9 @@ export class NodeEditor extends LitElementWw {
           >Cancel</sl-button
         >
         <sl-button
+          id="addButton"
           slot="footer"
           variant="primary"
-          outline
           @click=${this.typeAdded === "Page"
             ? () =>
                 this.addPageNode(
@@ -1157,7 +1183,7 @@ export class NodeEditor extends LitElementWw {
     const iconDiv = document.createElement("div");
     iconDiv.classList.add("iconDiv");
     const icon = document.createElement("sl-icon") as SlIcon;
-    icon.setAttribute("src", file);
+    icon.setAttribute("src", fileFilled);
     icon.classList.add("pageIcon");
     iconDiv.appendChild(icon);
     containerDiv.appendChild(iconDiv);
@@ -1214,7 +1240,7 @@ export class NodeEditor extends LitElementWw {
     const iconDiv = document.createElement("div");
     iconDiv.classList.add("iconDiv");
     const icon = document.createElement("sl-icon") as SlIcon;
-    icon.setAttribute("src", squares);
+    icon.setAttribute("src", squaresFilled);
     icon.classList.add("pageIcon");
 
     iconDiv.appendChild(icon);
