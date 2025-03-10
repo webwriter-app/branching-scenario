@@ -94,7 +94,7 @@ export class NodeEditorToolbar extends LitElementWw {
             <sl-icon src=${plus} slot="prefix"></sl-icon>
           </sl-button>
           <sl-menu style="width: 200px;" hoist>
-            <sl-menu-label>Nodes</sl-menu-label>
+            <sl-menu-label>Single Nodes</sl-menu-label>
             <sl-menu-item
               @click=${() => {
                 this.dispatchEvent(
@@ -135,7 +135,7 @@ export class NodeEditorToolbar extends LitElementWw {
               Branch
             </sl-menu-item>
             <sl-divider></sl-divider>
-            <sl-menu-label>Node Blocks</sl-menu-label>
+            <sl-menu-label>Multiple Nodes</sl-menu-label>
             <sl-menu-item
               @click=${() => {
                 this.dispatchEvent(

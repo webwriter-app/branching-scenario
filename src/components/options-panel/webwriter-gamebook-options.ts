@@ -12,7 +12,7 @@ import book from "@tabler/icons/outline/book.svg";
 import packages from "@tabler/icons/outline/packages.svg";
 import trash from "@tabler/icons/outline/trash.svg";
 import circleArrowRight from "@tabler/icons/filled/circle-arrow-right.svg";
-
+import infoSquareFilled from "@tabler/icons/outline/info-square.svg";
 import infoSquareRounded from "@tabler/icons/filled/info-square-rounded.svg";
 
 import {
@@ -38,6 +38,7 @@ import {
   SlMenu,
   SlMenuItem,
   SlMenuLabel,
+  SlTooltip,
 } from "@shoelace-style/shoelace";
 
 export class WebWriterGamebookOptions extends LitElementWw {
@@ -106,6 +107,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
       "sl-menu": SlMenu,
       "sl-menu-item": SlMenuItem,
       "sl-menu-label": SlMenuLabel,
+      "sl-tooltip": SlTooltip,
     };
   }
 
@@ -148,31 +150,42 @@ export class WebWriterGamebookOptions extends LitElementWw {
           <p>Gamebook</p>
         </div>
 
-        <sl-dropdown>
-          <sl-input
-            slot="trigger"
-            id="searchInput"
-            placeholder="Search..."
-            clearable
-            @sl-input=${this._handleNodeSearch}
-            @keydown=${this._handleInputKeydown}
-            .value=${this.editorStore.searchTerm}
-          >
-            <sl-icon src=${search} slot="prefix"></sl-icon>
-          </sl-input>
-          <sl-menu hoist>
-            ${this.editorStore.searchResults
-              ? html`
-                  <sl-menu-label
-                    >${this.editorStore.searchResults.length}
-                    nodes</sl-menu-label
-                  >
-                  <sl-divider></sl-divider>
-                `
-              : null}
-            ${options(this.editorStore.editorContent.drawflow.Home.data)}
-          </sl-menu>
-        </sl-dropdown>
+        <sl-tooltip hoist placement="right-end">
+          <div slot="content">
+            Use the <strong>search bar</strong> to find nodes by
+            <strong>title</strong>, <strong>type</strong>, and
+            <strong>content</strong>. <br /><br />
+            <em>Tip:</em> Clicking the search bar will display a
+            <strong>list of all nodes</strong>. Click on any node in the list to
+            <strong>select it in the node editor</strong>.
+          </div>
+          <sl-dropdown>
+            <sl-input
+              slot="trigger"
+              id="searchInput"
+              placeholder="Search Nodes..."
+              clearable
+              @sl-input=${this._handleNodeSearch}
+              @keydown=${this._handleInputKeydown}
+              .value=${this.editorStore.searchTerm}
+            >
+              <sl-icon src=${search} slot="prefix"></sl-icon>
+            </sl-input>
+
+            <sl-menu hoist>
+              ${this.editorStore.searchResults
+                ? html`
+                    <sl-menu-label
+                      >${this.editorStore.searchResults.length}
+                      nodes</sl-menu-label
+                    >
+                    <sl-divider></sl-divider>
+                  `
+                : null}
+              ${options(this.editorStore.editorContent.drawflow.Home.data)}
+            </sl-menu>
+          </sl-dropdown>
+        </sl-tooltip>
 
         <sl-button-group>
           <sl-button

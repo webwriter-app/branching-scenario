@@ -167,7 +167,7 @@ export class NodeOutputSelect extends LitElement {
       >
         <div style="padding: 10px">
           <sl-input
-            placeholder="Search..."
+            placeholder="Search Nodes..."
             @sl-input=${this.handleSearch}
             @click=${() => this.searchElement.focus()}
             @keydown=${this.handleKeydown}

@@ -140,6 +140,8 @@ export class NodeEditor extends LitElementWw {
 
     this.editor.reroute = false;
     this.editor.reroute_fix_curvature = false;
+
+    this.editor.zoom = 1;
     //max scale
     this.editor.zoom_max = 0.8;
     //min scale
@@ -419,6 +421,7 @@ export class NodeEditor extends LitElementWw {
 
   */
   private onMouseDown(event: MouseEvent) {
+    console.log(event);
     if (
       (event.target as HTMLElement).classList.contains("drawflow") ||
       (event.target as HTMLElement).id === "drawflowEditorDiv"
@@ -979,6 +982,8 @@ export class NodeEditor extends LitElementWw {
 
     //event listener for when the user zoomed into the editor
     this.editor.on("zoom", (zoom_level) => {
+      console.log("zoom");
+
       //NOTE: Usually this.editor.zoom_min should have been supplied here, however drawflow has an error in which the minimum gets undercut.
       //This results in faulty calculation for zooming into the background, so we hardcode it here.
       //Issue report drawflow: https://github.com/jerosoler/Drawflow/issues/883#issuecomment-2238986045
