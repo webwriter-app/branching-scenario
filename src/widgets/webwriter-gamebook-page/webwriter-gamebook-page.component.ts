@@ -103,6 +103,7 @@ export class WebWriterGamebookPage extends LitElementWw {
 
     if (assignedElements.length == 0) {
       const par = document.createElement("p");
+      par.textContent = "Write something here...";
       this.appendChild(par);
     }
   }
@@ -188,6 +189,14 @@ export class WebWriterGamebookPage extends LitElementWw {
             }
           }
         });
+
+        // Check if there is at least one paragraph <p> element in the container
+        const paragraphs = this.querySelectorAll("p");
+        if (paragraphs.length === 0) {
+          const par = document.createElement("p");
+          par.textContent = "Write something here...";
+          this.appendChild(par);
+        }
       }
     });
   };

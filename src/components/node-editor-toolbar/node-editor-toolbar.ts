@@ -148,24 +148,20 @@ export class NodeEditorToolbar extends LitElementWw {
               <sl-menu-label>Multiple Nodes</sl-menu-label>
             </sl-tooltip>
 
-            <sl-tooltip hoist placement="left-start" content="test">
-              <span>
-                <sl-menu-item
-                  @click=${() => {
-                    this.dispatchEvent(
-                      new CustomEvent("addTemplate", {
-                        detail: { template: templatePopUpToPages },
-                        bubbles: true,
-                        composed: true,
-                      })
-                    );
-                  }}
-                >
-                  <sl-icon slot="prefix" src=${fileArrowRight}></sl-icon>
-                  Popup to Pages
-                </sl-menu-item>
-              </span>
-            </sl-tooltip>
+            <sl-menu-item
+              @click=${() => {
+                this.dispatchEvent(
+                  new CustomEvent("addTemplate", {
+                    detail: { template: templatePopUpToPages },
+                    bubbles: true,
+                    composed: true,
+                  })
+                );
+              }}
+            >
+              <sl-icon slot="prefix" src=${fileArrowRight}></sl-icon>
+              Popup to Pages
+            </sl-menu-item>
 
             <sl-menu-item
               @click=${() => {
