@@ -1,6 +1,7 @@
 import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property } from "lit/decorators.js";
+import { msg, localized } from "@lit/localize";
 import { PageNodeDetailView } from "../page-node-detail-view/page-node-detail-view";
 import { provide, consume, createContext } from "@lit/context";
 import {
@@ -21,6 +22,7 @@ import { NodeConnectionList } from "../node-connection-list/node-connection-list
 //Tabler Icon Import
 import { BranchNodeDetailView } from "../branch-node-detail-view/branch-node-detail-view";
 
+@localized()
 export class NodeDetailsView extends LitElementWw {
   static get scopedElements() {
     return {
@@ -66,7 +68,7 @@ export class NodeDetailsView extends LitElementWw {
           </div>`
         : html`
             <div class="no-node-selected">
-              <p>Click on a node to view its content</p>
+              <p>${msg("Click on a node to view its content")}</p>
               <slot></slot>
             </div>
           `}

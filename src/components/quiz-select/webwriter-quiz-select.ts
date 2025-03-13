@@ -25,6 +25,9 @@ import packages from "@tabler/icons/outline/packages.svg";
 import { WebWriterGamebookPage } from "../../widgets/webwriter-gamebook-page/webwriter-gamebook-page.component";
 import { WebWriterGamebookPopup } from "../../widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.component";
 
+import { msg, localized } from "@lit/localize";
+
+@localized()
 export class WebWriterQuizSelect extends LitElement {
   @property({ type: Object }) accessor container;
   @property({ type: Object }) accessor options = [];
@@ -98,7 +101,7 @@ export class WebWriterQuizSelect extends LitElement {
         placement="bottom"
         hoist
         class="nodeSelect"
-        placeholder="Select element"
+        placeholder=${msg("Select element")}
         clearable
         .value=${this.value}
         @sl-input=${this._handleElementSelect}

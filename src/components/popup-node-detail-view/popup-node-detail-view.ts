@@ -7,6 +7,8 @@ import {
   state,
   queryAssignedElements,
 } from "lit/decorators.js";
+
+import { msg, localized } from "@lit/localize";
 import { provide, consume, createContext } from "@lit/context";
 import {
   editorState,
@@ -42,6 +44,7 @@ import X from "@tabler/icons/outline/x.svg";
 //CSS
 import styles from "./popup-node-detail-view.styles";
 
+@localized()
 export class PopupNodeDetailView extends LitElementWw {
   //registering custom elements used in the widget
   static get scopedElements() {
@@ -94,7 +97,7 @@ export class PopupNodeDetailView extends LitElementWw {
             .text=${this.editorStore.selectedNode.data.title}
             .saveChanges=${(string) => this.renameNode(string)}
           ></toggle-text-input>
-          <p class="subtitle">Popup</p>
+          <p class="subtitle">${msg("Popup")}</p>
         </div>
         <div class="inputOutputControls">
           <node-connection-list

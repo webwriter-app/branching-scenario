@@ -7,6 +7,8 @@ import { WebWriterGamebookBranch } from "../widgets/webwriter-gamebook-branch/we
 import { WebWriterGamebookPage } from "../widgets/webwriter-gamebook-page/webwriter-gamebook-page.component";
 import { WebWriterGamebookPopup } from "../widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.component";
 
+import { msg, str } from "@lit/localize";
+
 export class GamebookEditorController implements ReactiveController {
   private host: ReactiveControllerHost;
   nodeEditor: NodeEditor;
@@ -680,7 +682,7 @@ export class GamebookEditorController implements ReactiveController {
               const container = node as WebWriterGamebookPage;
               containerDeletedEvent(container);
               if (container.originPage === 1) {
-                this.nodeEditor.addPageNode("First Page", true);
+                this.nodeEditor.addPageNode(msg("First Page"), true);
               }
 
               if (container.branchesOff !== -1) {

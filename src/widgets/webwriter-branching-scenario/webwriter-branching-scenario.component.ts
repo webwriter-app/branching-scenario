@@ -1,7 +1,10 @@
 import { html, css, LitElement, PropertyValues } from "lit";
 import { provide, consume, createContext } from "@lit/context";
 
-import { LitElementWw } from "@webwriter/lit";
+import { msg, localized } from "@lit/localize";
+import { setLocale, getLocale } from "../../utils/localization";
+
+import * as lit from "@webwriter/lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 import { NodeDetailsView } from "../../components/node-detail-view/node-detail-view";
@@ -24,7 +27,8 @@ import {
 import { GamebookEditorController } from "../../utils/gamebook-editor-controller";
 import { WebWriterGamebookOptions } from "../../components/options-panel/webwriter-gamebook-options";
 
-export class WebWriterBranchingScenario extends LitElementWw {
+@localized()
+export class WebWriterBranchingScenario extends lit.LitElementWw {
   @query("gamebook-container-manager") accessor gamebookContainerManager;
   @query("node-editor") public accessor nodeEditor;
   @query("webwriter-gamebook-options") accessor gamebookOptions;
@@ -62,7 +66,9 @@ export class WebWriterBranchingScenario extends LitElementWw {
       toAttribute: (value: GamebookEditorState) => value.toString(), // Serialize
     },
   })
-  public accessor editorState = new GamebookEditorState("Untitled Gamebook");
+  public accessor editorState = new GamebookEditorState(
+    msg("Untitled Gamebook")
+  );
 
   // public static get shadowRootOptions(): ShadowRootInit {
   //   return {
@@ -95,9 +101,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       this.requestUpdate(); // Ensure Lit re-renders
     });
 
-    // this.addEventListener("click", function () {
-    //   this.focus();
-    // });
+    setLocale("en");
   }
 
   /*
@@ -166,6 +170,7 @@ export class WebWriterBranchingScenario extends LitElementWw {
       ${this.isContentEditable
         ? html`
             <split-view>
+              <!-- <p slot="start">${msg("Add")}</p> -->
               <node-editor
                 slot="start"
                 @editorInitialized=${() => this.controller._markUsedOutputs()}

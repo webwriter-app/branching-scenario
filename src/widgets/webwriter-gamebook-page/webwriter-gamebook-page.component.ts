@@ -8,6 +8,7 @@ import {
   queryAssignedElements,
 } from "lit/decorators.js";
 
+import { msg, localized } from "@lit/localize";
 import { WebWriterGamebookButton } from "../webwriter-gamebook-button/webwriter-gamebook-button.component";
 
 //Shoelace
@@ -15,6 +16,7 @@ import { SlButton } from "@shoelace-style/shoelace";
 import { WebWriterGamebookBranchButton } from "../webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component";
 import { WebWriterGamebookOptions } from "../../components/options-panel/webwriter-gamebook-options";
 
+@localized()
 export class WebWriterGamebookPage extends LitElementWw {
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
@@ -103,7 +105,7 @@ export class WebWriterGamebookPage extends LitElementWw {
 
     if (assignedElements.length == 0) {
       const par = document.createElement("p");
-      par.textContent = "Write something here...";
+      par.textContent = msg("Write something here...");
       this.appendChild(par);
     }
   }
@@ -194,7 +196,7 @@ export class WebWriterGamebookPage extends LitElementWw {
         const paragraphs = this.querySelectorAll("p");
         if (paragraphs.length === 0) {
           const par = document.createElement("p");
-          par.textContent = "Write something here...";
+          par.textContent = msg("Write something here...");
           this.appendChild(par);
         }
       }

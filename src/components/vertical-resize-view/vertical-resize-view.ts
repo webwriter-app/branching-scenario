@@ -94,7 +94,7 @@ export class VerticalResizeView extends LitElementWw {
 
   */
   private onMouseUp() {
-    console.log("test");
+    //console.log("test");
     this.isDragging = false;
     this.removeEventListener("mousemove", this.onMouseMove);
     this.removeEventListener("mouseup", this.onMouseUp);

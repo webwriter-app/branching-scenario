@@ -1,4 +1,5 @@
 import { html, css, LitElement } from "lit";
+import { msg, localized } from "@lit/localize";
 import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
@@ -16,6 +17,7 @@ import { SlIcon, SlIconButton } from "@shoelace-style/shoelace";
 //Import Styles
 import styles from "./node-editor-help-menu.styles";
 
+@localized()
 export class NodeEditorHelpMenu extends LitElementWw {
   //import CSS
   static styles = [styles];
@@ -102,11 +104,17 @@ export class NodeEditorHelpMenu extends LitElementWw {
         </div>
 
         <div class="column">
-            <div class="help-item"><p class="label">Select</p></div>
+            <div class="help-item"><p class="label">${msg("Select")}</p></div>
 
-            <div class="help-item"><p class="label">Drag Connection</p></div>
-            <div class="help-item"><p class="label">Delete</p></div>
-            <div class="help-item"><p class="label">Zoom In/Out</p></div>
+            <div class="help-item"><p class="label"> ${msg(
+              "Drag Connection"
+            )}</p></div>
+            <div class="help-item"><p class="label">${msg("Delete")}
+              
+            </p></div>
+            <div class="help-item"><p class="label">${msg(
+              "Zoom In/Out"
+            )}</p></div>
         </div>
       </div>
     </div>`

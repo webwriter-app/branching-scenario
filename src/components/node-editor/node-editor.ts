@@ -10,6 +10,8 @@ import {
 } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 
+import { msg, str, localized } from "@lit/localize";
+
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import {
@@ -30,7 +32,7 @@ import {
 import fileFilled from "@tabler/icons/filled/file.svg";
 import fileOutline from "@tabler/icons/outline/file.svg";
 import circleArrowRight from "@tabler/icons/filled/circle-arrow-right.svg";
-import dotsVertical from "@tabler/icons/outline/dots-vertical.svg";
+import dotsVertical from "@tabler/icons/outline/grip-vertical.svg";
 import zoomIn from "@tabler/icons/outline/zoom-in.svg";
 import zoomOut from "@tabler/icons/outline/zoom-out.svg";
 import squaresFilled from "@tabler/icons/filled/squares.svg";
@@ -58,6 +60,7 @@ import {
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
+@localized()
 export class NodeEditor extends LitElementWw {
   //registering custom elements used in the Web component
   static get scopedElements() {
@@ -179,7 +182,7 @@ export class NodeEditor extends LitElementWw {
     this._registerEditorEventHandlers();
 
     if (this.editorStore.editorContent == null) {
-      this.addPageNode("First Page", true);
+      this.addPageNode(msg("First Page"), true);
     } else {
       let editorContent = this.addHTMLToNodes(this.editorStore.editorContent);
       this.editor.import(editorContent);
@@ -320,27 +323,34 @@ export class NodeEditor extends LitElementWw {
         <node-editor-help-menu></node-editor-help-menu>
       </div>
       <!-- Dialog for clearing editor-->
-      <sl-dialog label="Clear graph" class="dialog" id="dialog">
-        Do you want to clear the graph? All your progress will be lost.
+      <sl-dialog label="${msg("Clear Graph")}" class="dialog" id="dialog">
+        ${msg(
+          "Do you want to clear the graph? All your progress will be lost."
+        )}
         <sl-button
           slot="footer"
           variant="primary"
           outline
           @click=${() =>
             (this.shadowRoot.getElementById("dialog") as SlDialog).hide()}
-          >Cancel</sl-button
+          >${msg("Cancel")}</sl-button
         >
         <sl-button
           slot="footer"
           variant="danger"
           outline
           @click=${() => this._clearEditor()}
-          >Clear</sl-button
+          >${msg("Clear")}</sl-button
         >
       </sl-dialog>
-      <sl-dialog label="Delete node" class="dialog" id="delete_node_dialog">
-        You are about to delete the node
-        "${this.editorStore.selectedNode.data.title}". Do you want to proceed?
+      <sl-dialog
+        label=${msg("Delete node")}
+        class="dialog"
+        id="delete_node_dialog"
+      >
+        ${msg(
+          str`You are about to delete the node ${this.editorStore.selectedNode.data.title}.  Do you want to proceed?`
+        )}
         <sl-button
           slot="footer"
           variant="primary"
@@ -349,7 +359,7 @@ export class NodeEditor extends LitElementWw {
             (
               this.shadowRoot.getElementById("delete_node_dialog") as SlDialog
             ).hide()}
-          >Abort</sl-button
+          >${msg("Abort")}</sl-button
         >
         <sl-button
           slot="footer"
@@ -360,7 +370,7 @@ export class NodeEditor extends LitElementWw {
         >
       </sl-dialog>
       <sl-dialog
-        label="Adding Node"
+        label=${msg("Adding Node")}
         class="dialog"
         id="add_node_dialog"
         style="width: 100%"
@@ -372,7 +382,7 @@ export class NodeEditor extends LitElementWw {
           }
         }}
       >
-        Give your new
+        ${msg("Give your new")}
         <div
           style="display: inline-flex; align-items: baseline; padding-left: 4px; padding-right: 4px; padding-top: 0px; padding-bottom: 0px; color: #262629;"
         >
@@ -386,20 +396,28 @@ export class NodeEditor extends LitElementWw {
               : ""}
             style="display: inline-block; vertical-align: baseline; height: 0.8em; width: auto; line-height: 1;"
           ></sl-icon>
-          <span style="margin-left: 6px;">${this.typeAdded}</span>
+          <span style="margin-left: 6px;">
+            ${this.typeAdded === "Page"
+              ? msg("Page node")
+              : this.typeAdded === "Popup"
+              ? msg("Popup node")
+              : this.typeAdded === "Branch"
+              ? msg("Branch node")
+              : ""}
+          </span>
         </div>
-        a title!
+        ${msg("a title!")}
         <br />
         <br />
         <sl-input
           autofocus
           id="title_input"
           value=${this.typeAdded === "Page"
-            ? `Untitled Page ${this.pagesAdded}`
+            ? msg(str`Untitled Page ${this.pagesAdded}`)
             : this.typeAdded === "Popup"
-            ? `Untitled Popup ${this.popupsAdded}`
+            ? msg(str`Untitled Popup ${this.popupsAdded}`)
             : this.typeAdded === "Branch"
-            ? `Untitled Branch ${this.branchesAdded}`
+            ? msg(str`Untitled Branch ${this.branchesAdded}`)
             : ""}
         ></sl-input>
 
@@ -411,7 +429,7 @@ export class NodeEditor extends LitElementWw {
             (
               this.shadowRoot.getElementById("add_node_dialog") as SlDialog
             ).hide()}
-          >Cancel</sl-button
+          >${msg("Cancel")}</sl-button
         >
         <sl-button
           id="addButton"
@@ -437,7 +455,7 @@ export class NodeEditor extends LitElementWw {
                     .value
                 )
             : () => console.log()}
-          >Add</sl-button
+          >${msg("Add")}</sl-button
         >
       </sl-dialog>
     `;
@@ -447,7 +465,7 @@ export class NodeEditor extends LitElementWw {
 
   */
   private onMouseDown(event: MouseEvent) {
-    console.log(event);
+    //console.log(event);
     if (
       (event.target as HTMLElement).classList.contains("drawflow") ||
       (event.target as HTMLElement).id === "drawflowEditorDiv"
@@ -617,7 +635,7 @@ export class NodeEditor extends LitElementWw {
       })
     );
 
-    this.addPageNode("First Page", true);
+    this.addPageNode(msg("First Page"), true);
 
     this.pagesAdded = 1;
     this.popupsAdded = 1;
@@ -1008,7 +1026,7 @@ export class NodeEditor extends LitElementWw {
 
     //event listener for when the user zoomed into the editor
     this.editor.on("zoom", (zoom_level) => {
-      console.log("zoom");
+      //console.log("zoom");
 
       //NOTE: Usually this.editor.zoom_min should have been supplied here, however drawflow has an error in which the minimum gets undercut.
       //This results in faulty calculation for zooming into the background, so we hardcode it here.
@@ -1206,12 +1224,12 @@ export class NodeEditor extends LitElementWw {
       arrowIcon.setAttribute("src", circleArrowRight);
       badge.appendChild(arrowIcon);
 
-      nameLabel.textContent = "Start Page";
+      nameLabel.textContent = msg("Start Page");
       badge.appendChild(nameLabel);
       contentDiv.appendChild(badge);
     } else {
       nameLabel.classList.add("input-label");
-      nameLabel.textContent = "Page"; // Set the text content of the label
+      nameLabel.textContent = msg("Page"); // Set the text content of the label
       contentDiv.appendChild(nameLabel);
     }
 
@@ -1258,7 +1276,7 @@ export class NodeEditor extends LitElementWw {
     //Add label to the input for the nodes name
     const nameLabel = document.createElement("p");
     nameLabel.classList.add("input-label");
-    nameLabel.textContent = "Popup"; // Set the text content of the label
+    nameLabel.textContent = msg("Popup"); // Set the text content of the label
     contentDiv.appendChild(nameLabel);
 
     containerDiv.appendChild(contentDiv);
@@ -1303,7 +1321,7 @@ export class NodeEditor extends LitElementWw {
     //Add label to the input for the nodes name
     const nameLabel = document.createElement("p");
     nameLabel.classList.add("input-label");
-    nameLabel.textContent = "Branch"; // Set the text content of the label
+    nameLabel.textContent = msg("Branch"); // Set the text content of the label
     contentDiv.appendChild(nameLabel);
 
     containerDiv.appendChild(contentDiv);
@@ -1714,7 +1732,7 @@ export class NodeEditor extends LitElementWw {
         const originNodeContentDiv = originNodeDiv.querySelector(".content");
         const nameLabel = document.createElement("p");
         nameLabel.classList.add("input-label");
-        nameLabel.textContent = "Page"; // Set the text content of the label
+        nameLabel.textContent = msg("Page"); // Set the text content of the label
         originNodeContentDiv.appendChild(nameLabel);
 
         originNodeDiv.classList.remove("origin");
@@ -1745,7 +1763,7 @@ export class NodeEditor extends LitElementWw {
             badge.appendChild(arrowIcon);
 
             const nameLabel = document.createElement("p");
-            nameLabel.textContent = "Start Page";
+            nameLabel.textContent = msg("Start Page");
             badge.appendChild(nameLabel);
 
             contentDiv.appendChild(badge);

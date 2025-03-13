@@ -2,7 +2,7 @@ import { html, css } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
-
+import { msg, str, localized } from "@lit/localize";
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import {
@@ -24,6 +24,7 @@ import {
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
+@localized()
 export class NodeConnectionList extends LitElementWw {
   @property({ type: Boolean, reflect: true }) accessor output = false;
   @property({ type: Boolean, reflect: true }) accessor input = false;
@@ -215,10 +216,11 @@ export class NodeConnectionList extends LitElementWw {
       <div class="container">
         <div class="titlebar">
           <p>
-            Outputs
-            (${Object.keys(
-              this.editorStore.selectedNode.outputs
-            ).length.toString()})
+            ${msg(
+              str`Outputs (${
+                Object.keys(this.editorStore.selectedNode.outputs).length
+              })`
+            )}
           </p>
           <sl-icon-button @click=${this._addOutput} src=${plus} class="add">
           </sl-icon-button>
@@ -272,9 +274,14 @@ export class NodeConnectionList extends LitElementWw {
         </div>
       </div>
 
-      <sl-dialog label="Delete output" class="dialog" id="delete_output_dialog">
-        You are about to delete ${this.deleteOutputClass} with has an outgoing
-        connection. Do you wish to proceed?
+      <sl-dialog
+        label=${msg("Delete Output")}
+        class="dialog"
+        id="delete_output_dialog"
+      >
+        ${msg(
+          str`You are about to delete ${this.deleteOutputClass} which has an outgoing connection. Do you wish to proceed?`
+        )}
         <sl-button
           slot="footer"
           variant="primary"
@@ -312,10 +319,12 @@ export class NodeConnectionList extends LitElementWw {
       <div class="container">
         <div class="titlebar">
           <p>
-            Incoming
-            (${this.editorStore.selectedNode?.inputs[
-              "input_1"
-            ]?.connections.length.toString()})
+            ${msg(
+              str`Incoming (${
+                this.editorStore.selectedNode?.inputs["input_1"]?.connections
+                  .length ?? 0
+              })`
+            )}
           </p>
         </div>
         <div class="verticalStack">
@@ -396,7 +405,7 @@ export class NodeConnectionList extends LitElementWw {
     return html`
       <div class="container">
         <div class="titlebar">
-          <p>Accessing</p>
+          <p>${msg("Accessing")}</p>
         </div>
         <div class="verticalStack">
           ${length > 0
@@ -465,7 +474,9 @@ export class NodeConnectionList extends LitElementWw {
               )}`
             : html` <div class="container">
                 <p class="no-node-message">
-                  Connect a node to create rules based on its content!
+                  ${msg(
+                    " Connect a node to create rules based on its content!"
+                  )}
                 </p>
               </div>`}
         </div>

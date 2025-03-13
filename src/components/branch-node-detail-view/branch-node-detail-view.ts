@@ -16,6 +16,8 @@ import {
   SlSelect,
 } from "@shoelace-style/shoelace";
 
+import { msg, localized } from "@lit/localize";
+
 //CSS
 import styles from "./branch-node-detail-view.styles";
 
@@ -42,6 +44,7 @@ import {
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
+@localized()
 export class BranchNodeDetailView extends LitElementWw {
   //registering custom elements used in the widget
   static get scopedElements() {
@@ -93,7 +96,7 @@ export class BranchNodeDetailView extends LitElementWw {
             .text=${this.editorStore.selectedNode.data.title}
             .saveChanges=${(string) => this.renameNode(string)}
           ></toggle-text-input>
-          <p class="subtitle">Branch</p>
+          <p class="subtitle">${msg("Branch")}</p>
         </div>
         <div class="inputOutputControls">
           <node-connection-list
@@ -109,7 +112,7 @@ export class BranchNodeDetailView extends LitElementWw {
                 class="title"
                 style=${isConnected ? "color: #505055" : "color: darkgrey"}
               >
-                Rules
+                ${msg("Rules")}
                 (${this.editorStore.selectedContainer.rules?.length.toString()})
               </p>
               <sl-icon-button
@@ -220,7 +223,7 @@ export class BranchNodeDetailView extends LitElementWw {
                              <!-- Condition -->
                              <sl-select
                                clearable
-                               placeholder="Condition"
+                               placeholder=${msg("Condition")}
                                value=${rule.condition}
                                @sl-change=${(e: Event) =>
                                  this.updateRuleCondition(
@@ -343,7 +346,7 @@ export class BranchNodeDetailView extends LitElementWw {
                         style="min-width: 25px; display: flex; flex-direction: row; align-items: center; justify-content: center;"
                       >
                         <p style="color: darkgrey; font-size: 15px;">
-                          If no rule is satisfied, go to
+                          ${msg("If no rule is satisfied, go to")}
                         </p>
                       </div>
 
@@ -359,7 +362,7 @@ export class BranchNodeDetailView extends LitElementWw {
                       ></node-output-select>
                     </div>
                   `
-                : html`<p class="no-node">No branching rules</p>`}
+                : html`<p class="no-node">${msg("No branching rules")}</p>`}
             </div>
             <slot></slot>
           </div>`

@@ -2,6 +2,8 @@ import { html, css, LitElement, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+import { msg, localized } from "@lit/localize";
+
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import { SlInput, SlIcon, SlButton } from "@shoelace-style/shoelace";
@@ -18,6 +20,7 @@ import {
 
 const DIVIDER_HEIGHT = 30;
 
+@localized()
 @customElement("split-view")
 export class SplitView extends LitElementWw {
   @property({ type: Number, attribute: true, reflect: true })
@@ -280,7 +283,9 @@ export class SplitView extends LitElementWw {
             size="small"
             variant="text"
           >
-            ${this.editorStore.editorIsCollapsed ? "Expand" : "Collapse"}
+            ${this.editorStore.editorIsCollapsed
+              ? msg("Expand")
+              : msg("Collapse")}
             <sl-icon
               slot="suffix"
               src=${this.editorStore.editorIsCollapsed

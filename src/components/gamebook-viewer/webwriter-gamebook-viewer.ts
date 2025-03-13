@@ -1,5 +1,4 @@
 import { html, css, LitElement, unsafeCSS } from "lit";
-import { unsafeHTML } from "lit-html/directives/unsafe-html.js";
 import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,

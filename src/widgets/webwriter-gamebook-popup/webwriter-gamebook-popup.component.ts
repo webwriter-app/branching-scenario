@@ -9,6 +9,7 @@ import {
 } from "lit/decorators.js";
 import { DrawflowNode } from "drawflow";
 
+import { msg, localized } from "@lit/localize";
 import { WebWriterGamebookButton } from "../webwriter-gamebook-button/webwriter-gamebook-button.component";
 import { WebWriterGamebookBranchButton } from "../webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component";
 import { WebWriterGamebookOptions } from "../../components/options-panel/webwriter-gamebook-options";
@@ -16,6 +17,7 @@ import { WebWriterGamebookOptions } from "../../components/options-panel/webwrit
 //Shoelace
 import { SlButton, SlDialog } from "@shoelace-style/shoelace";
 
+@localized()
 export class WebWriterGamebookPopup extends LitElementWw {
   //import CSS
   static get styles() {
@@ -135,7 +137,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
 
     if (assignedElements.length == 0) {
       const par = document.createElement("p");
-      par.textContent = "Write something here...";
+      par.textContent = msg("Write something here...");
       this.appendChild(par);
     }
 
@@ -271,7 +273,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
     const paragraphs = this.querySelectorAll("p");
     if (paragraphs.length === 0) {
       const par = document.createElement("p");
-      par.textContent = "Write something here...";
+      par.textContent = msg("Write something here...");
       this.appendChild(par);
     }
   };
