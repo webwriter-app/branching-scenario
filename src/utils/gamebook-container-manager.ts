@@ -186,8 +186,11 @@ export class GamebookContainerManager extends LitElementWw {
 
   */
   public _hideAllGamebookContainers() {
+    console.log("hideAll");
     this.gamebookContainers.forEach((container) => {
+      //console.log(container);
       container.style.display = "none";
+      //console.log(container);
     });
   }
 

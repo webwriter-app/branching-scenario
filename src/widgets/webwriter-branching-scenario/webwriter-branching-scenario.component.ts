@@ -101,6 +101,8 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
       this.requestUpdate(); // Ensure Lit re-renders
     });
 
+    console.log("firstUpdated", this.editorState.selectedNode);
+
     setLocale("en");
   }
 
@@ -123,6 +125,8 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
       this.editorState.searchTerm,
       this.editorState.searchResults
     );
+
+    console.log("reflectStoreChangesinDOM", this.editorState.selectedNode);
   }
 
   /*

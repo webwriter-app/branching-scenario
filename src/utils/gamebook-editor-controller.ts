@@ -64,6 +64,7 @@ export class GamebookEditorController implements ReactiveController {
       this.gamebookContainerManager._getContainerByDrawflowNodeId(Number(id));
 
     if (container) {
+      console.log("selectContainer", container);
       this.gamebookContainerManager._showGamebookContainerById(
         container.drawflowNodeId
       );
@@ -102,6 +103,7 @@ export class GamebookEditorController implements ReactiveController {
     this.nodeEditor.unhighlightAllOutputs();
 
     (this.host as any).focus(); // Update the host component after changes
+    (this.host as any).reflectStoreChangesinDOM();
     this.host.requestUpdate(); // Update the host component after changes
   };
 
@@ -109,6 +111,8 @@ export class GamebookEditorController implements ReactiveController {
 
   */
   _unselectContainer = () => {
+    console.log("unselectCOntainer");
+    console.log((this.host as any).editorState.selectedNode);
     (this.host as any).editorState.setSelectedNode();
     this.gamebookContainerManager._hideAllGamebookContainers();
 
@@ -117,7 +121,9 @@ export class GamebookEditorController implements ReactiveController {
 
     this.nodeEditor.unhighlightAllOutputs();
 
+    console.log((this.host as any).editorState.selectedNode);
     this.host.requestUpdate(); // Update the host component after changes
+    (this.host as any).reflectStoreChangesinDOM();
   };
 
   /*

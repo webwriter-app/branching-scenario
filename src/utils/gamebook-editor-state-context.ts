@@ -283,12 +283,14 @@ export class GamebookEditorState {
   */
   // Static method to deserialize from string to GamebookEditorState instance
   static fromString(serialized: string) {
+    console.log("fromString");
     const data = JSON.parse(serialized);
+    console.log(data.selectedNode);
 
     return new GamebookEditorState(
       data.title,
       data.observer,
-      NO_NODE_SELECTED,
+      data.selectedNode,
       data.editorZoom,
       data.editorPosition,
       data.dividerPosition,
