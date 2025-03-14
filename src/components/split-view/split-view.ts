@@ -2,9 +2,11 @@ import { html, css, LitElement, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+import { msg, localized } from "@lit/localize";
+
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import { SlInput, SlIcon, SlIconButton } from "@shoelace-style/shoelace";
+import { SlInput, SlIcon, SlButton } from "@shoelace-style/shoelace";
 
 import gripHorizontal from "@tabler/icons/outline/grip-horizontal.svg";
 import layoutNavBarCollapse from "@tabler/icons/outline/arrow-bar-to-up.svg";
@@ -18,6 +20,7 @@ import {
 
 const DIVIDER_HEIGHT = 30;
 
+@localized()
 @customElement("split-view")
 export class SplitView extends LitElementWw {
   @property({ type: Number, attribute: true, reflect: true })
@@ -39,7 +42,7 @@ export class SplitView extends LitElementWw {
     return {
       "sl-input": SlInput,
       "sl-icon": SlIcon,
-      "sl-icon-button": SlIconButton,
+      "sl-button": SlButton,
     };
   }
 
@@ -113,6 +116,10 @@ export class SplitView extends LitElementWw {
       .dragging {
         color: #0084c7;
       }
+
+      sl-button::part(base) {
+        color: #52525b;
+      }
     `;
   }
 
@@ -167,6 +174,9 @@ export class SplitView extends LitElementWw {
     this.addEventListener("mouseup", this.onMouseUp);
   }
 
+  /*
+  
+  */
   private onMouseUp(_event: MouseEvent) {
     this.isDragging = false;
 
@@ -267,14 +277,22 @@ export class SplitView extends LitElementWw {
             src=${gripHorizontal}
             class="${this.isDragging ? "dragging" : "icon"}"
           ></sl-icon>
-          <sl-icon-button
+          <sl-button
             class="collapse-button"
             @click=${this.toggleCollapse}
-            src=${this.editorStore.editorIsCollapsed
-              ? layoutBottomBarCollapse
-              : layoutNavBarCollapse}
+            size="small"
+            variant="text"
           >
-          </sl-icon-button>
+            ${this.editorStore.editorIsCollapsed
+              ? msg("Expand")
+              : msg("Collapse")}
+            <sl-icon
+              slot="suffix"
+              src=${this.editorStore.editorIsCollapsed
+                ? layoutBottomBarCollapse
+                : layoutNavBarCollapse}
+            ></sl-icon>
+          </sl-button>
         </div>
         <div class="itemEnd"><slot name="end"></slot></div>
       </div>

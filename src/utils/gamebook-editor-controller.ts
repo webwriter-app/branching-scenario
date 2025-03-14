@@ -7,6 +7,8 @@ import { WebWriterGamebookBranch } from "../widgets/webwriter-gamebook-branch/we
 import { WebWriterGamebookPage } from "../widgets/webwriter-gamebook-page/webwriter-gamebook-page.component";
 import { WebWriterGamebookPopup } from "../widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.component";
 
+import { msg, str } from "@lit/localize";
+
 export class GamebookEditorController implements ReactiveController {
   private host: ReactiveControllerHost;
   nodeEditor: NodeEditor;
@@ -62,6 +64,7 @@ export class GamebookEditorController implements ReactiveController {
       this.gamebookContainerManager._getContainerByDrawflowNodeId(Number(id));
 
     if (container) {
+      console.log("selectContainer", container);
       this.gamebookContainerManager._showGamebookContainerById(
         container.drawflowNodeId
       );
@@ -100,6 +103,7 @@ export class GamebookEditorController implements ReactiveController {
     this.nodeEditor.unhighlightAllOutputs();
 
     (this.host as any).focus(); // Update the host component after changes
+    (this.host as any).reflectStoreChangesinDOM();
     this.host.requestUpdate(); // Update the host component after changes
   };
 
@@ -107,6 +111,8 @@ export class GamebookEditorController implements ReactiveController {
 
   */
   _unselectContainer = () => {
+    console.log("unselectCOntainer");
+    console.log((this.host as any).editorState.selectedNode);
     (this.host as any).editorState.setSelectedNode();
     this.gamebookContainerManager._hideAllGamebookContainers();
 
@@ -115,7 +121,9 @@ export class GamebookEditorController implements ReactiveController {
 
     this.nodeEditor.unhighlightAllOutputs();
 
+    console.log((this.host as any).editorState.selectedNode);
     this.host.requestUpdate(); // Update the host component after changes
+    (this.host as any).reflectStoreChangesinDOM();
   };
 
   /*
@@ -680,7 +688,7 @@ export class GamebookEditorController implements ReactiveController {
               const container = node as WebWriterGamebookPage;
               containerDeletedEvent(container);
               if (container.originPage === 1) {
-                this.nodeEditor.addPageNode("First Page", true);
+                this.nodeEditor.addPageNode(msg("First Page"), true);
               }
 
               if (container.branchesOff !== -1) {

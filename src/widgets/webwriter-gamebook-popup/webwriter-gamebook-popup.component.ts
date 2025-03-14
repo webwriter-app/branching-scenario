@@ -9,12 +9,15 @@ import {
 } from "lit/decorators.js";
 import { DrawflowNode } from "drawflow";
 
+import { msg, localized } from "@lit/localize";
 import { WebWriterGamebookButton } from "../webwriter-gamebook-button/webwriter-gamebook-button.component";
 import { WebWriterGamebookBranchButton } from "../webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component";
+import { WebWriterGamebookOptions } from "../../components/options-panel/webwriter-gamebook-options";
 
 //Shoelace
 import { SlButton, SlDialog } from "@shoelace-style/shoelace";
 
+@localized()
 export class WebWriterGamebookPopup extends LitElementWw {
   //import CSS
   static get styles() {
@@ -73,7 +76,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
     return {
       "sl-dialog": SlDialog,
       //"webwriter-gamebook-button": WebWriterGamebookButton,
-      //"webwriter-gamebook-options": WebWriterGamebookOptions,
+      "webwriter-gamebook-options": WebWriterGamebookOptions,
     };
   }
   //associated node id
@@ -104,7 +107,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
   @property({ type: Boolean, attribute: true, reflect: true })
   accessor noHeader = false;
   @property({ type: Boolean, attribute: true, reflect: true })
-  accessor preventClosing;
+  accessor preventClosing = true;
   @property({ type: Number, attribute: true, reflect: true })
   accessor branchesOff = -1;
 
@@ -134,6 +137,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
 
     if (assignedElements.length == 0) {
       const par = document.createElement("p");
+      par.textContent = msg("Write something here...");
       this.appendChild(par);
     }
 
@@ -264,5 +268,13 @@ export class WebWriterGamebookPopup extends LitElementWw {
         });
       }
     });
+
+    // Check if there is at least one paragraph <p> element in the container
+    const paragraphs = this.querySelectorAll("p");
+    if (paragraphs.length === 0) {
+      const par = document.createElement("p");
+      par.textContent = msg("Write something here...");
+      this.appendChild(par);
+    }
   };
 }

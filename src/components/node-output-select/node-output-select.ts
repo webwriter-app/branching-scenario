@@ -8,12 +8,15 @@ import squares from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import search from "@tabler/icons/outline/search.svg";
 
+import { msg, str, localized } from "@lit/localize";
+
 import { provide, consume, createContext } from "@lit/context";
 import {
   editorState,
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
+@localized()
 export class NodeOutputSelect extends LitElement {
   @property({ type: Number }) accessor incomingNodeId;
   @property({ type: String }) accessor outputClass;
@@ -148,7 +151,7 @@ export class NodeOutputSelect extends LitElement {
           ? "no-value"
           : ""}"
         size=${this.inOutputList ? "small" : "medium"}
-        placeholder="Not connected"
+        placeholder=${msg("Not connected")}
         clearable
         .value=${this.editorStore.selectedNode.outputs?.[this.outputClass]
           ?.connections?.[0]?.node ?? ""}
@@ -167,7 +170,7 @@ export class NodeOutputSelect extends LitElement {
       >
         <div style="padding: 10px">
           <sl-input
-            placeholder="Search..."
+            placeholder=${msg("Search Nodes...")}
             @sl-input=${this.handleSearch}
             @click=${() => this.searchElement.focus()}
             @keydown=${this.handleKeydown}
@@ -180,12 +183,12 @@ export class NodeOutputSelect extends LitElement {
         <sl-divider></sl-divider>
 
         ${dataFiltered.length === 0
-          ? html`<small>No nodes found</small>`
+          ? html`<small>${msg("No nodes found")}</small>`
           : html`
               ${hasNodesOfClass("page") || hasNodesOfClass("origin")
                 ? html`
                     <small class="icon-header" id="divider-page"
-                      ><sl-icon src="${file}"></sl-icon> Pages</small
+                      ><sl-icon src="${file}"></sl-icon> ${msg("Pages")}</small
                     >
                     ${options("page")} ${options("origin")}
                     ${hasNodesOfClass("popup") || hasNodesOfClass("branch")
@@ -196,7 +199,9 @@ export class NodeOutputSelect extends LitElement {
               ${hasNodesOfClass("popup")
                 ? html`
                     <small class="icon-header" id="divider-popup"
-                      ><sl-icon src="${squares}"></sl-icon> Popup</small
+                      ><sl-icon src="${squares}"></sl-icon> ${msg(
+                        "Popup"
+                      )}</small
                     >
                     ${options("popup")}
                     ${hasNodesOfClass("branch")
@@ -207,7 +212,9 @@ export class NodeOutputSelect extends LitElement {
               ${hasNodesOfClass("branch")
                 ? html`
                     <small class="icon-header" id="divider-branch"
-                      ><sl-icon src="${arrowsSplit2}"></sl-icon> Branch</small
+                      ><sl-icon src="${arrowsSplit2}"></sl-icon> ${msg(
+                        "Branch"
+                      )}</small
                     >
                     ${options("branch")}
                   `

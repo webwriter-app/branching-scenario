@@ -8,13 +8,26 @@ import {
   queryAssignedElements,
 } from "lit/decorators.js";
 
+import { msg, localized } from "@lit/localize";
 import { WebWriterGamebookButton } from "../webwriter-gamebook-button/webwriter-gamebook-button.component";
 
 //Shoelace
 import { SlButton } from "@shoelace-style/shoelace";
 import { WebWriterGamebookBranchButton } from "../webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component";
+import { WebWriterGamebookOptions } from "../../components/options-panel/webwriter-gamebook-options";
 
+import { provide, consume, createContext } from "@lit/context";
+import {
+  editorState,
+  GamebookEditorState,
+} from "../../utils/gamebook-editor-state-context";
+
+@localized()
 export class WebWriterGamebookPage extends LitElementWw {
+  @consume({ context: editorState, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor editorStore = new GamebookEditorState("Default");
+
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
 
@@ -44,7 +57,7 @@ export class WebWriterGamebookPage extends LitElementWw {
     return {
       "sl-button": SlButton,
       //"webwriter-gamebook-button": WebWriterGamebookButton,
-      //"webwriter-gamebook-options": WebWriterGamebookOptions,
+      "webwriter-gamebook-options": WebWriterGamebookOptions,
     };
   }
   //associated node id
@@ -102,6 +115,7 @@ export class WebWriterGamebookPage extends LitElementWw {
 
     if (assignedElements.length == 0) {
       const par = document.createElement("p");
+      par.textContent = msg("Write something here...");
       this.appendChild(par);
     }
   }
@@ -141,53 +155,64 @@ export class WebWriterGamebookPage extends LitElementWw {
 
   */
   private mutationCallback = (mutationList: MutationRecord[]) => {
-    mutationList.forEach(({ type, removedNodes }) => {
-      if (type === "childList") {
-        removedNodes.forEach((node) => {
-          const element = node as HTMLElement;
-          const nodeName = element.nodeName.toLowerCase();
+    mutationList.forEach(
+      ({ type, removedNodes, addedNodes, attributeName, target }) => {
+        //
+        if (type === "childList") {
+          removedNodes.forEach((node) => {
+            const element = node as HTMLElement;
+            const nodeName = element.nodeName.toLowerCase();
 
-          const isSelectedNode = element.classList?.contains(
-            "ProseMirror-selectednode"
-          );
+            const isSelectedNode = element.classList?.contains(
+              "ProseMirror-selectednode"
+            );
 
-          const dispatchEventIfNeeded = (eventName: string, detail: any) => {
-            const event = new CustomEvent(eventName, {
-              detail,
-              bubbles: true,
-              composed: true,
-            });
-            this.dispatchEvent(event);
-          };
+            const dispatchEventIfNeeded = (eventName: string, detail: any) => {
+              const event = new CustomEvent(eventName, {
+                detail,
+                bubbles: true,
+                composed: true,
+              });
+              this.dispatchEvent(event);
+            };
 
-          if (element.classList?.contains("ww-widget")) {
-            if (
-              nodeName === "webwriter-gamebook-button" ||
-              nodeName === "webwriter-gamebook-branch-button"
-            ) {
-              const connButton = node as
-                | WebWriterGamebookButton
-                | WebWriterGamebookBranchButton;
-              if (connButton.identifier !== "x") {
-                dispatchEventIfNeeded("buttonDeleted", {
-                  identifier: connButton.identifier,
-                });
-              }
-            } else if (
-              nodeName === "webwriter-quiz" ||
-              nodeName === "webwriter-task"
-            ) {
-              if (this.branchesOff !== -1) {
-                dispatchEventIfNeeded("quizElementDeleted", {
-                  containerId: this.branchesOff,
-                  id: element.id,
-                  isQuiz: nodeName === "webwriter-quiz",
-                });
+            if (element.classList?.contains("ww-widget")) {
+              if (
+                nodeName === "webwriter-gamebook-button" ||
+                nodeName === "webwriter-gamebook-branch-button"
+              ) {
+                const connButton = node as
+                  | WebWriterGamebookButton
+                  | WebWriterGamebookBranchButton;
+                if (connButton.identifier !== "x") {
+                  dispatchEventIfNeeded("buttonDeleted", {
+                    identifier: connButton.identifier,
+                  });
+                }
+              } else if (
+                nodeName === "webwriter-quiz" ||
+                nodeName === "webwriter-task"
+              ) {
+                if (this.branchesOff !== -1) {
+                  dispatchEventIfNeeded("quizElementDeleted", {
+                    containerId: this.branchesOff,
+                    id: element.id,
+                    isQuiz: nodeName === "webwriter-quiz",
+                  });
+                }
               }
             }
+          });
+
+          // Check if there is at least one paragraph <p> element in the container
+          const paragraphs = this.querySelectorAll("p");
+          if (paragraphs.length === 0) {
+            const par = document.createElement("p");
+            par.textContent = msg("Write something here...");
+            this.appendChild(par);
           }
-        });
+        }
       }
-    });
+    );
   };
 }

@@ -1,5 +1,4 @@
 import { html, css, LitElement, unsafeCSS } from "lit";
-import { unsafeHTML } from "lit-html/directives/unsafe-html.js";
 import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
@@ -81,6 +80,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
     }
 
     this.addEventListener("submit", this._handleSubmit.bind(this));
+
     this.gamebookHasError = this._checkForErrors();
   }
 
@@ -95,7 +95,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
 
   /*
 
-  TODO: after Thesis - Handle Reset of Quiz and Tasks
+    TODO: after Thesis - Handle Reset of Quiz and Tasks
    */
   private _handleSubmit(event: Event) {
     event.preventDefault(); // Prevent the default form submission
@@ -242,7 +242,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
 
     // If no container was found, react accordingly
     if (!containerFound) {
-      console.error(`No container found for targetId: ${targetId}`);
+      console.error(`Next element not found (Element ID: ${targetId})`);
     }
   }
 
@@ -602,7 +602,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
     container.buttons.forEach((button) => {
       const targetId = parseInt(button.getAttribute("dataTargetId"), 10);
 
-      button.addEventListener("click", () => this._navigateTo(targetId));
+      button.button.addEventListener("click", () => this._navigateTo(targetId));
       button.classList.remove("highlighted");
 
       if (
@@ -663,7 +663,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
     for (const container of this.gamebookContainers) {
       if (
         container.constructor ===
-        customElements.get("webwriter-gamebook-branch-button")
+        customElements.get("webwriter-gamebook-branch")
       ) {
         if (
           container.elseRule !== undefined &&

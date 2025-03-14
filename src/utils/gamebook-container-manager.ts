@@ -61,7 +61,11 @@ export class GamebookContainerManager extends LitElementWw {
       bubbles: true,
       composed: true,
     });
+
     this.dispatchEvent(event);
+
+    this._hideAllGamebookContainers();
+
     if (this.editorStore.selectedContainer !== undefined) {
       //Extraced the drawflowNodeId from the serialized container
       const value = this.editorStore.selectedContainer.attributes.find(
@@ -139,7 +143,7 @@ export class GamebookContainerManager extends LitElementWw {
     );
 
     if (!container) {
-      console.error(`No container found with drawflowNodeId: ${id}`);
+      console.error(`Error with finding element for node (ID: ${id})`);
     }
 
     return container;
@@ -173,7 +177,7 @@ export class GamebookContainerManager extends LitElementWw {
     });
 
     if (!isContainerShown) {
-      console.error(`No container found with drawflowNodeId: ${nodeId}`);
+      console.error(`Error with finding element for node (ID: ${nodeId})`);
     }
   }
 
@@ -182,8 +186,11 @@ export class GamebookContainerManager extends LitElementWw {
 
   */
   public _hideAllGamebookContainers() {
+    console.log("hideAll");
     this.gamebookContainers.forEach((container) => {
-      container.hide();
+      //console.log(container);
+      container.style.display = "none";
+      //console.log(container);
     });
   }
 

@@ -7,6 +7,8 @@ import {
   state,
   queryAssignedElements,
 } from "lit/decorators.js";
+
+import { msg, localized } from "@lit/localize";
 import { provide, consume, createContext } from "@lit/context";
 import {
   editorState,
@@ -42,6 +44,7 @@ import X from "@tabler/icons/outline/x.svg";
 //CSS
 import styles from "./popup-node-detail-view.styles";
 
+@localized()
 export class PopupNodeDetailView extends LitElementWw {
   //registering custom elements used in the widget
   static get scopedElements() {
@@ -94,7 +97,7 @@ export class PopupNodeDetailView extends LitElementWw {
             .text=${this.editorStore.selectedNode.data.title}
             .saveChanges=${(string) => this.renameNode(string)}
           ></toggle-text-input>
-          <p class="subtitle">Popup</p>
+          <p class="subtitle">${msg("Popup")}</p>
         </div>
         <div class="inputOutputControls">
           <node-connection-list
@@ -113,28 +116,26 @@ export class PopupNodeDetailView extends LitElementWw {
 
       <div class="popup-node-detail-view">
         <div class="preview">
-          <div class="page">
-            <div class="overlay">
-              <div class="dialog">
-                <div
-                  class="header"
-                  style=${this.editorStore.selectedContainer?.noHeader
-                    ? "display: none"
-                    : "display: flex"}
-                >
-                  <sl-input
-                    value=${this.editorStore.selectedContainer?.titleLabel}
-                    @sl-input=${(event) => this.handleDialogTitleChange(event)}
-                  ></sl-input>
-                  <sl-icon-button
-                    src=${X}
-                    style=${this.editorStore.selectedContainer?.preventClosing
-                      ? "display: none"
-                      : "display: flex"}
-                  ></sl-icon-button>
-                </div>
-                <slot></slot>
-              </div>
+          <div class="dialog">
+            <div
+              class="header"
+              style=${this.editorStore.selectedContainer?.noHeader
+                ? "display: none"
+                : "display: flex"}
+            >
+              <sl-input
+                value=${this.editorStore.selectedContainer?.titleLabel}
+                @sl-input=${(event) => this.handleDialogTitleChange(event)}
+              ></sl-input>
+              <sl-icon-button
+                src=${X}
+                style=${this.editorStore.selectedContainer?.preventClosing
+                  ? "display: none"
+                  : "display: flex"}
+              ></sl-icon-button>
+            </div>
+            <div class="page">
+              <slot></slot>
             </div>
           </div>
         </div>

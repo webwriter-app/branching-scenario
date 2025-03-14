@@ -21,7 +21,8 @@ export default css`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 150px;
+    min-height: 150px;
+    height: 100%;
     background-color: #fbfbfb;
     color: darkgray;
   }

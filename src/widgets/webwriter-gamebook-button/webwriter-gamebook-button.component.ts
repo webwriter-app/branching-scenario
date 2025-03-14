@@ -285,19 +285,19 @@ export class WebWriterGamebookButton extends LitElementWw {
                 class=${this.alignment === "flex-start" ? "active" : ""}
                 @click=${() => this.handleAlignmentChange("flex-start")}
               >
-                <sl-icon src=${alignLeft}></sl-icon>
+                <sl-icon slot="prefix" src=${alignLeft}></sl-icon>
               </sl-button>
               <sl-button
                 class=${this.alignment === "center" ? "active" : ""}
                 @click=${() => this.handleAlignmentChange("center")}
               >
-                <sl-icon src=${alignCenter}></sl-icon>
+                <sl-icon slot="prefix" src=${alignCenter}></sl-icon>
               </sl-button>
               <sl-button
                 class=${this.alignment === "flex-end" ? "active" : ""}
                 @click=${() => this.handleAlignmentChange("flex-end")}
               >
-                <sl-icon src=${alignRight}></sl-icon>
+                <sl-icon slot="prefix" src=${alignRight}></sl-icon>
               </sl-button>
             </sl-button-group>
           </div>

@@ -472,11 +472,14 @@ export default css`
   /* OTHERS */
   /* ---- */
 
-  /* .drawflow-delete {
-  border: 2px solid #b94543;
-  background: #ffe9e8;
-  color: #b94543;
-} 
+  .drawflow-delete {
+    border: 2px solid #b94543;
+    background: #b94543;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   /* ------- */
   /* MODAL */

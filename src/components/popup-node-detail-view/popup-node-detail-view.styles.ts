@@ -2,72 +2,48 @@ import { css } from "lit";
 
 export default css`
   .popup-node-detail-view {
-    width: auto;
-    height: auto;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-
-    border-radius: 0px 0px 8px 8px;
-
-    background-color: white;
-    box-sizing: border-box;
-  }
-
-  .preview {
     width: 100%;
-    height: auto;
+    min-height: min-content;
+    height: 100%;
 
     box-sizing: border-box;
 
-    background-color: white;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-
-  .page {
-    box-sizing: border-box;
-    width: 100%;
-    height: auto;
-
-    color: black;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .overlay {
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: auto;
-    color: white;
-    z-index: 1; /* Ensure the overlay is above other content */
+    background-color: rgba(0, 0, 0, 0.25);
     padding: 10px;
 
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
 
-    background-color: rgba(0, 0, 0, 0.25);
+    align-items: center;
+  }
+
+  .preview {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    width: 100%;
+    height: auto;
+
+    box-sizing: border-box;
   }
 
   .dialog {
-    height: auto;
-    border-radius: 3px;
     background-color: white;
+    box-sizing: border-box;
+    border: 1px solid #d4d4d8;
     width: 100%;
+    height: auto;
+    min-height: min-content;
     color: black;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
   }
 
   .header {
@@ -80,6 +56,18 @@ export default css`
     padding-right: 20px;
     padding-top: 10px;
     padding-bottom: 10px;
+    width: 100%;
+  }
+
+  .page {
+    box-sizing: border-box;
+
+    width: 100%;
+    height: auto;
+    min-height: min-content;
+    color: black;
+
+    /* box-shadow: 0 2px 20px 2px #d0d0d0; */
   }
 
   sl-input {

@@ -12,7 +12,7 @@ import book from "@tabler/icons/outline/book.svg";
 import packages from "@tabler/icons/outline/packages.svg";
 import trash from "@tabler/icons/outline/trash.svg";
 import circleArrowRight from "@tabler/icons/filled/circle-arrow-right.svg";
-
+import infoSquareFilled from "@tabler/icons/outline/info-square.svg";
 import infoSquareRounded from "@tabler/icons/filled/info-square-rounded.svg";
 
 import {
@@ -22,6 +22,8 @@ import {
 
 //Drawflow Imports
 import Drawflow, { DrawflowNode } from "drawflow";
+
+import { msg, localized } from "@lit/localize";
 
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -38,20 +40,19 @@ import {
   SlMenu,
   SlMenuItem,
   SlMenuLabel,
+  SlTooltip,
 } from "@shoelace-style/shoelace";
 
+@localized()
 export class WebWriterGamebookOptions extends LitElementWw {
   static get styles() {
     return css`
-      :host {
-        padding-left: 10px;
-      }
       .author-only {
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
         gap: 10px;
-        width: 180px;
+        width: 100%;
       }
 
       .author-only .header p {
@@ -72,19 +73,6 @@ export class WebWriterGamebookOptions extends LitElementWw {
         padding-bottom: 10px;
       }
 
-      .author-only .searchBar {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        justify-items: center;
-        width: 100%;
-        height: 65px;
-      }
-
-      .author-only .searchBar * {
-        width: 100%;
-      }
-
       .author-only sl-icon {
         color: #52525b;
       }
@@ -95,11 +83,6 @@ export class WebWriterGamebookOptions extends LitElementWw {
         align-items: center;
         gap: 5px;
         width: 100%;
-      }
-
-      sl-button.square {
-        width: 42px; /* Set this value to whatever size you want */
-        height: 42px; /* Same value as width to ensure it's a square */
       }
 
       p {
@@ -127,6 +110,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
       "sl-menu": SlMenu,
       "sl-menu-item": SlMenuItem,
       "sl-menu-label": SlMenuLabel,
+      "sl-tooltip": SlTooltip,
     };
   }
 
@@ -147,6 +131,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
         )
         .map(
           (key) => html`<sl-menu-item
+              style="width: 100%"
               value="${data[key].id}"
               @click=${() => this.moveTo(data[key])}
               ><p>${data[key].data.title}</p>
@@ -168,46 +153,58 @@ export class WebWriterGamebookOptions extends LitElementWw {
           <p>Gamebook</p>
         </div>
 
-        <sl-dropdown>
-          <sl-input
-            style="max-width: 180px"
-            slot="trigger"
-            id="searchInput"
-            placeholder="Search..."
-            clearable
-            @sl-input=${this._handleNodeSearch}
-            @keydown=${this._handleInputKeydown}
-            .value=${this.editorStore.searchTerm}
-          >
-            <sl-icon src=${search} slot="prefix"></sl-icon>
-          </sl-input>
-          <sl-menu hoist style="width: 180px;">
-            ${this.editorStore.searchResults
-              ? html`
-                  <sl-menu-label
-                    >${this.editorStore.searchResults.length}
-                    nodes</sl-menu-label
-                  >
-                  <sl-divider></sl-divider>
-                `
-              : null}
-            ${options(this.editorStore.editorContent.drawflow.Home.data)}
-          </sl-menu>
-        </sl-dropdown>
+        <sl-tooltip hoist placement="right-end">
+          <div slot="content">
+            ${msg(html`
+              Use the <strong>search bar</strong> to find nodes by
+              <strong>title</strong>, <strong>type</strong>, and
+              <strong>content</strong>. <br /><br />
+              <em>Tip:</em> Clicking the search bar will display a
+              <strong>list of all nodes</strong>. Click on any node in the list
+              to <strong>select it in the node editor</strong>.
+            `)}
+          </div>
+          <sl-dropdown>
+            <sl-input
+              slot="trigger"
+              id="searchInput"
+              placeholder=${msg("Search Nodes...")}
+              clearable
+              @sl-input=${this._handleNodeSearch}
+              @keydown=${this._handleInputKeydown}
+              .value=${this.editorStore.searchTerm}
+            >
+              <sl-icon src=${search} slot="prefix"></sl-icon>
+            </sl-input>
 
-        <sl-button-group label="Alignment">
+            <sl-menu hoist>
+              ${this.editorStore.searchResults
+                ? html`
+                    <sl-menu-label
+                      >${this.editorStore.searchResults.length}
+                      nodes</sl-menu-label
+                    >
+                    <sl-divider></sl-divider>
+                  `
+                : null}
+              ${options(this.editorStore.editorContent.drawflow.Home.data)}
+            </sl-menu>
+          </sl-dropdown>
+        </sl-tooltip>
+
+        <sl-button-group>
           <sl-button
+            style="width: 100%"
             id="copyNodeBtn"
-            class="flex-item"
             @click=${() =>
               this.editorStore.setCopiedNode(this.editorStore.selectedNode)}
             ?disabled=${this.editorStore.selectedNode.id === -1}
           >
-            Copy
+            ${msg("Copy")}
           </sl-button>
 
           <sl-button
-            class="flex-item"
+            style="width: 100%"
             @click=${() =>
               this.dispatchEvent(
                 new CustomEvent("pasteNode", {
@@ -217,20 +214,18 @@ export class WebWriterGamebookOptions extends LitElementWw {
               )}
             ?disabled=${this.editorStore.copiedNode.id === -1}
           >
-            Paste
+            ${msg("Paste")}
           </sl-button>
 
           <sl-button
-            class="square"
             variant="default"
-            id="deleteNodeBtn"
             @click=${() => this.deleteSelectedNode()}
             ?disabled=${this.editorStore.selectedNode.id === -1 ||
             this.editorStore.selectedNode.class == "origin"
               ? true
               : false}
           >
-            <sl-icon src=${trash}></sl-icon>
+            <sl-icon slot="prefix" src=${trash}></sl-icon>
           </sl-button>
         </sl-button-group>
 
@@ -240,22 +235,22 @@ export class WebWriterGamebookOptions extends LitElementWw {
                 ${this.editorStore.selectedNode.class == "page"
                   ? html`
                       <sl-icon src=${file}></sl-icon>
-                      <p>Page</p>
+                      <p>${msg("Page")}</p>
                     `
                   : this.editorStore.selectedNode.class == "origin"
                   ? html`
                       <sl-icon src=${file}></sl-icon>
-                      <p>Start Page</p>
+                      <p>${msg("Start Page")}</p>
                     `
                   : this.editorStore.selectedNode.class == "popup"
                   ? html`
                       <sl-icon src=${squares}></sl-icon>
-                      <p>Popup</p>
+                      <p>${msg("Popup")}</p>
                     `
                   : this.editorStore.selectedNode.class == "branch"
                   ? html`
                       <sl-icon src=${arrowsSplit2}></sl-icon>
-                      <p>Branch</p>
+                      <p>${msg("Branch")}</p>
                     `
                   : null}
               </div>
@@ -272,7 +267,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
                         : false}
                     >
                       <sl-icon src=${circleArrowRight} slot="prefix"></sl-icon>
-                      Set as Start Page
+                      ${msg("Set as Start Page")}
                     </sl-button>
                   `
                 : null}
@@ -283,20 +278,21 @@ export class WebWriterGamebookOptions extends LitElementWw {
                         src="${infoSquareRounded}"
                         style="vertical-align: middle; margin: 1px;"
                       ></sl-icon>
-                      Create rules to guide how your gamebook progresses. The
-                      first rule that applies will be used.
+                      ${msg(
+                        "Create rules to guide how your gamebook progresses. The first rule that applies will be used."
+                      )}
                     </p>
                     <p>
                       <sl-icon
                         src="${packages}"
                         style="vertical-align: middle; margin: 1px;"
                       ></sl-icon>
-                      Requires
+                      ${msg("Requires")}
                       <a
-                        href="https://webwriter.app/widgets/"
-                        target="https://webwriter.app/widgets/"
+                        href="https://webwriter.app/packages/@webwriter/quiz/"
+                        target="https://webwriter.app/packages/@webwriter/quiz/"
                       >
-                        WebWriter Quiz Widget </a
+                        WebWriter Quiz Package </a
                       >.
                     </p>
                   `
@@ -304,20 +300,22 @@ export class WebWriterGamebookOptions extends LitElementWw {
               ${this.editorStore.selectedNode.class == "popup"
                 ? html`
                     <sl-switch
+                      style="padding-left: 5px;"
                       ?checked=${this.editorStore.selectedContainer
                         .preventClosing}
                       @sl-input=${(event) =>
                         this.handleSwitchPreventClosing(event)}
                     >
-                      Prevent Closing
+                      ${msg("Prevent Closing")}
                     </sl-switch>
                     <sl-switch
+                      style="padding-left: 5px;"
                       ?checked=${this.editorStore.selectedContainer.noHeader
                         ? false
                         : true}
                       @sl-input=${(event) => this.handleSwitchNoHeader(event)}
                     >
-                      Header
+                      ${msg("Header")}
                     </sl-switch>
                   `
                 : null}
