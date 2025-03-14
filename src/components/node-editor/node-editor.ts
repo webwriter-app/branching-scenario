@@ -1,8 +1,16 @@
 import { html, css, PropertyValues } from "lit";
 import { consume } from "@lit/context";
 import { LitElementWw } from "@webwriter/lit";
-import { customElement, property, query, queryAll } from "lit/decorators.js";
+import {
+  customElement,
+  property,
+  query,
+  queryAll,
+  state,
+} from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
+
+import { msg, str, localized } from "@lit/localize";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -17,15 +25,18 @@ import {
   SlMenuLabel,
   SlDropdown,
   SlIcon,
+  SlInput,
 } from "@shoelace-style/shoelace";
 
 //@tabler icons
-import file from "@tabler/icons/filled/file.svg";
+import fileFilled from "@tabler/icons/filled/file.svg";
+import fileOutline from "@tabler/icons/outline/file.svg";
 import circleArrowRight from "@tabler/icons/filled/circle-arrow-right.svg";
-import dotsVertical from "@tabler/icons/outline/dots-vertical.svg";
+import dotsVertical from "@tabler/icons/outline/grip-vertical.svg";
 import zoomIn from "@tabler/icons/outline/zoom-in.svg";
 import zoomOut from "@tabler/icons/outline/zoom-out.svg";
-import squares from "@tabler/icons/filled/squares.svg";
+import squaresFilled from "@tabler/icons/filled/squares.svg";
+import squaresOutline from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 
 import mapPin from "@tabler/icons/outline/map-pin.svg";
@@ -37,8 +48,8 @@ import { style } from "drawflow/dist/drawflow.style.js";
 import customDrawflowStyles from "./drawflow.styles";
 import styles from "./node-editor.styles";
 
-import { NodeEditorToolbar } from "./toolbar/node-editor-toolbar";
-import { NodeEditorHelpMenu } from "./help-menu/node-editor-help-menu";
+import { NodeEditorToolbar } from "../node-editor-toolbar/node-editor-toolbar";
+import { NodeEditorHelpMenu } from "../help-menu/node-editor-help-menu";
 
 const NO_CONNECTION_SELECTED = "output_id-input_id-output_class-input_class";
 
@@ -49,7 +60,7 @@ import {
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
-@customElement("node-editor")
+@localized()
 export class NodeEditor extends LitElementWw {
   //registering custom elements used in the Web component
   static get scopedElements() {
@@ -59,6 +70,7 @@ export class NodeEditor extends LitElementWw {
       "sl-divider": SlDivider,
       "sl-dialog": SlDialog,
       "sl-icon": SlIcon,
+      "sl-input": SlInput,
       "sl-icon-button": SlIconButton,
       "sl-menu": SlMenu,
       "sl-menu-item": SlMenuItem,
@@ -113,6 +125,11 @@ export class NodeEditor extends LitElementWw {
   @property({ type: Number }) accessor backgroundScaleFactor = 1.05;
   @property({ type: Boolean }) accessor nodePasted = false;
 
+  @state() accessor typeAdded = "";
+  @state() accessor pagesAdded = 1;
+  @state() accessor popupsAdded = 1;
+  @state() accessor branchesAdded = 1;
+
   @query("#drawflowEditorDiv") accessor drawflowEditorDiv;
   @queryAll('div[id*="node-"]') accessor nodeDivs;
 
@@ -128,6 +145,8 @@ export class NodeEditor extends LitElementWw {
 
     this.editor.reroute = false;
     this.editor.reroute_fix_curvature = false;
+
+    this.editor.zoom = 1;
     //max scale
     this.editor.zoom_max = 0.8;
     //min scale
@@ -163,7 +182,7 @@ export class NodeEditor extends LitElementWw {
     this._registerEditorEventHandlers();
 
     if (this.editorStore.editorContent == null) {
-      this.addPageNode("First Page", true);
+      this.addPageNode(msg("First Page"), true);
     } else {
       let editorContent = this.addHTMLToNodes(this.editorStore.editorContent);
       this.editor.import(editorContent);
@@ -249,13 +268,13 @@ export class NodeEditor extends LitElementWw {
       <div id="nodeEditor">
         <node-editor-toolbar
           @addPageNode=${(e: CustomEvent) => {
-            this.addPageNode(e.detail.title, e.detail.isOrigin);
+            this.preAddPageNode();
           }}
           @addPopUpNode=${(e: CustomEvent) => {
-            this.addPopUpNode(e.detail.title);
+            this.preAddPopupNode();
           }}
           @addBranchNode=${(e: CustomEvent) => {
-            this.addBranchNode(e.detail.title);
+            this.preAddBranchNode();
           }}
           @addTemplate=${(e: CustomEvent) =>
             this.addTemplate(e.detail.template)}
@@ -304,27 +323,34 @@ export class NodeEditor extends LitElementWw {
         <node-editor-help-menu></node-editor-help-menu>
       </div>
       <!-- Dialog for clearing editor-->
-      <sl-dialog label="Clear graph" class="dialog" id="dialog">
-        Do you want to clear the graph? All your progress will be lost.
+      <sl-dialog label="${msg("Clear Graph")}" class="dialog" id="dialog">
+        ${msg(
+          "Do you want to clear the graph? All your progress will be lost."
+        )}
         <sl-button
           slot="footer"
           variant="primary"
           outline
           @click=${() =>
             (this.shadowRoot.getElementById("dialog") as SlDialog).hide()}
-          >Cancel</sl-button
+          >${msg("Cancel")}</sl-button
         >
         <sl-button
           slot="footer"
           variant="danger"
           outline
           @click=${() => this._clearEditor()}
-          >Clear</sl-button
+          >${msg("Clear")}</sl-button
         >
       </sl-dialog>
-      <sl-dialog label="Delete node" class="dialog" id="delete_node_dialog">
-        You are about to delete the node
-        "${this.editorStore.selectedNode.data.title}". Do you want to proceed?
+      <sl-dialog
+        label=${msg("Delete node")}
+        class="dialog"
+        id="delete_node_dialog"
+      >
+        ${msg(
+          str`You are about to delete the node ${this.editorStore.selectedNode.data.title}.  Do you want to proceed?`
+        )}
         <sl-button
           slot="footer"
           variant="primary"
@@ -333,7 +359,7 @@ export class NodeEditor extends LitElementWw {
             (
               this.shadowRoot.getElementById("delete_node_dialog") as SlDialog
             ).hide()}
-          >Abort</sl-button
+          >${msg("Abort")}</sl-button
         >
         <sl-button
           slot="footer"
@@ -343,6 +369,95 @@ export class NodeEditor extends LitElementWw {
           >Delete</sl-button
         >
       </sl-dialog>
+      <sl-dialog
+        label=${msg("Adding Node")}
+        class="dialog"
+        id="add_node_dialog"
+        style="width: 100%"
+        @keydown=${(event: KeyboardEvent) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+
+            (this.shadowRoot?.querySelector("#addButton") as SlButton).click();
+          }
+        }}
+      >
+        ${msg("Give your new")}
+        <div
+          style="display: inline-flex; align-items: baseline; padding-left: 4px; padding-right: 4px; padding-top: 0px; padding-bottom: 0px; color: #262629;"
+        >
+          <sl-icon
+            src=${this.typeAdded === "Page"
+              ? fileOutline
+              : this.typeAdded === "Popup"
+              ? squaresOutline
+              : this.typeAdded === "Branch"
+              ? arrowsSplit2
+              : ""}
+            style="display: inline-block; vertical-align: baseline; height: 0.8em; width: auto; line-height: 1;"
+          ></sl-icon>
+          <span style="margin-left: 6px;">
+            ${this.typeAdded === "Page"
+              ? msg("Page node")
+              : this.typeAdded === "Popup"
+              ? msg("Popup node")
+              : this.typeAdded === "Branch"
+              ? msg("Branch node")
+              : ""}
+          </span>
+        </div>
+        ${msg("a title!")}
+        <br />
+        <br />
+        <sl-input
+          autofocus
+          id="title_input"
+          value=${this.typeAdded === "Page"
+            ? msg(str`Untitled Page ${this.pagesAdded}`)
+            : this.typeAdded === "Popup"
+            ? msg(str`Untitled Popup ${this.popupsAdded}`)
+            : this.typeAdded === "Branch"
+            ? msg(str`Untitled Branch ${this.branchesAdded}`)
+            : ""}
+        ></sl-input>
+
+        <sl-button
+          slot="footer"
+          variant="text"
+          outline
+          @click=${() =>
+            (
+              this.shadowRoot.getElementById("add_node_dialog") as SlDialog
+            ).hide()}
+          >${msg("Cancel")}</sl-button
+        >
+        <sl-button
+          id="addButton"
+          slot="footer"
+          variant="primary"
+          @click=${this.typeAdded === "Page"
+            ? () =>
+                this.addPageNode(
+                  (this.shadowRoot.getElementById("title_input") as SlInput)
+                    .value,
+                  false
+                )
+            : this.typeAdded === "Popup"
+            ? () =>
+                this.addPopUpNode(
+                  (this.shadowRoot.getElementById("title_input") as SlInput)
+                    .value
+                )
+            : this.typeAdded === "Branch"
+            ? () =>
+                this.addBranchNode(
+                  (this.shadowRoot.getElementById("title_input") as SlInput)
+                    .value
+                )
+            : () => console.log()}
+          >${msg("Add")}</sl-button
+        >
+      </sl-dialog>
     `;
   }
 
@@ -350,6 +465,7 @@ export class NodeEditor extends LitElementWw {
 
   */
   private onMouseDown(event: MouseEvent) {
+    //console.log(event);
     if (
       (event.target as HTMLElement).classList.contains("drawflow") ||
       (event.target as HTMLElement).id === "drawflowEditorDiv"
@@ -519,7 +635,11 @@ export class NodeEditor extends LitElementWw {
       })
     );
 
-    this.addPageNode("First Page", true);
+    this.addPageNode(msg("First Page"), true);
+
+    this.pagesAdded = 1;
+    this.popupsAdded = 1;
+    this.branchesAdded = 1;
   }
 
   /*
@@ -906,6 +1026,8 @@ export class NodeEditor extends LitElementWw {
 
     //event listener for when the user zoomed into the editor
     this.editor.on("zoom", (zoom_level) => {
+      //console.log("zoom");
+
       //NOTE: Usually this.editor.zoom_min should have been supplied here, however drawflow has an error in which the minimum gets undercut.
       //This results in faulty calculation for zooming into the background, so we hardcode it here.
       //Issue report drawflow: https://github.com/jerosoler/Drawflow/issues/883#issuecomment-2238986045
@@ -940,6 +1062,15 @@ export class NodeEditor extends LitElementWw {
 
 
   */
+  public preAddPageNode() {
+    this.typeAdded = "Page";
+    (this.shadowRoot.getElementById("add_node_dialog") as SlDialog).show();
+  }
+
+  /*
+
+
+  */
   public addPageNode(title: string, isOrigin: boolean) {
     const nodeData = {
       title: title,
@@ -960,6 +1091,18 @@ export class NodeEditor extends LitElementWw {
       nodeHTML,
       false
     );
+
+    (this.shadowRoot.getElementById("add_node_dialog") as SlDialog).hide();
+    this.pagesAdded++;
+  }
+
+  /*
+
+
+  */
+  public preAddPopupNode() {
+    this.typeAdded = "Popup";
+    (this.shadowRoot.getElementById("add_node_dialog") as SlDialog).show();
   }
 
   /*
@@ -986,6 +1129,18 @@ export class NodeEditor extends LitElementWw {
       nodeHTML,
       false
     );
+
+    (this.shadowRoot.getElementById("add_node_dialog") as SlDialog).hide();
+    this.popupsAdded++;
+  }
+
+  /*
+
+
+  */
+  public preAddBranchNode() {
+    this.typeAdded = "Branch";
+    (this.shadowRoot.getElementById("add_node_dialog") as SlDialog).show();
   }
 
   /*
@@ -1012,6 +1167,9 @@ export class NodeEditor extends LitElementWw {
       nodeHTML,
       false
     );
+
+    (this.shadowRoot.getElementById("add_node_dialog") as SlDialog).hide();
+    this.branchesAdded++;
   }
 
   /*
@@ -1043,7 +1201,7 @@ export class NodeEditor extends LitElementWw {
     const iconDiv = document.createElement("div");
     iconDiv.classList.add("iconDiv");
     const icon = document.createElement("sl-icon") as SlIcon;
-    icon.setAttribute("src", file);
+    icon.setAttribute("src", fileFilled);
     icon.classList.add("pageIcon");
     iconDiv.appendChild(icon);
     containerDiv.appendChild(iconDiv);
@@ -1066,12 +1224,12 @@ export class NodeEditor extends LitElementWw {
       arrowIcon.setAttribute("src", circleArrowRight);
       badge.appendChild(arrowIcon);
 
-      nameLabel.textContent = "Start Page";
+      nameLabel.textContent = msg("Start Page");
       badge.appendChild(nameLabel);
       contentDiv.appendChild(badge);
     } else {
       nameLabel.classList.add("input-label");
-      nameLabel.textContent = "Page"; // Set the text content of the label
+      nameLabel.textContent = msg("Page"); // Set the text content of the label
       contentDiv.appendChild(nameLabel);
     }
 
@@ -1100,7 +1258,7 @@ export class NodeEditor extends LitElementWw {
     const iconDiv = document.createElement("div");
     iconDiv.classList.add("iconDiv");
     const icon = document.createElement("sl-icon") as SlIcon;
-    icon.setAttribute("src", squares);
+    icon.setAttribute("src", squaresFilled);
     icon.classList.add("pageIcon");
 
     iconDiv.appendChild(icon);
@@ -1118,7 +1276,7 @@ export class NodeEditor extends LitElementWw {
     //Add label to the input for the nodes name
     const nameLabel = document.createElement("p");
     nameLabel.classList.add("input-label");
-    nameLabel.textContent = "Popup"; // Set the text content of the label
+    nameLabel.textContent = msg("Popup"); // Set the text content of the label
     contentDiv.appendChild(nameLabel);
 
     containerDiv.appendChild(contentDiv);
@@ -1163,7 +1321,7 @@ export class NodeEditor extends LitElementWw {
     //Add label to the input for the nodes name
     const nameLabel = document.createElement("p");
     nameLabel.classList.add("input-label");
-    nameLabel.textContent = "Branch"; // Set the text content of the label
+    nameLabel.textContent = msg("Branch"); // Set the text content of the label
     contentDiv.appendChild(nameLabel);
 
     containerDiv.appendChild(contentDiv);
@@ -1574,7 +1732,7 @@ export class NodeEditor extends LitElementWw {
         const originNodeContentDiv = originNodeDiv.querySelector(".content");
         const nameLabel = document.createElement("p");
         nameLabel.classList.add("input-label");
-        nameLabel.textContent = "Page"; // Set the text content of the label
+        nameLabel.textContent = msg("Page"); // Set the text content of the label
         originNodeContentDiv.appendChild(nameLabel);
 
         originNodeDiv.classList.remove("origin");
@@ -1605,7 +1763,7 @@ export class NodeEditor extends LitElementWw {
             badge.appendChild(arrowIcon);
 
             const nameLabel = document.createElement("p");
-            nameLabel.textContent = "Start Page";
+            nameLabel.textContent = msg("Start Page");
             badge.appendChild(nameLabel);
 
             contentDiv.appendChild(badge);

@@ -9,17 +9,17 @@ import {
 
 //Drawflow Imports
 import { DrawflowNode } from "drawflow";
-import { WebWriterGamebookButton } from "../components/gamebook/gamebook-components/gamebook-button/webwriter-gamebook-button";
-import { WebWriterGamebookPage } from "../components/gamebook/gamebook-components/gamebook-containers/gamebook-page/webwriter-gamebook-page";
-import { WebWriterGamebookPopup } from "../components/gamebook/gamebook-components/gamebook-containers/gamebook-popup/webwriter-gamebook-popup";
-import { WebWriterGamebookBranch } from "../components/gamebook/gamebook-components/gamebook-containers/gamebook-branch/webwriter-gamebook-branch";
-import { WebWriterGamebookBranchButton } from "../components/gamebook/gamebook-components/gamebook-branch-button/webwriter-gamebook-branch-button";
 
 import { provide, consume, createContext } from "@lit/context";
 import {
   editorState,
   GamebookEditorState,
 } from "./gamebook-editor-state-context";
+import { WebWriterGamebookPage } from "../widgets/webwriter-gamebook-page/webwriter-gamebook-page.component";
+import { WebWriterGamebookButton } from "../widgets/webwriter-gamebook-button/webwriter-gamebook-button.component";
+import { WebWriterGamebookBranchButton } from "../widgets/webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component";
+import { WebWriterGamebookPopup } from "../widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.component";
+import { WebWriterGamebookBranch } from "../widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.component";
 
 @customElement("gamebook-container-manager")
 export class GamebookContainerManager extends LitElementWw {
@@ -61,7 +61,11 @@ export class GamebookContainerManager extends LitElementWw {
       bubbles: true,
       composed: true,
     });
+
     this.dispatchEvent(event);
+
+    this._hideAllGamebookContainers();
+
     if (this.editorStore.selectedContainer !== undefined) {
       //Extraced the drawflowNodeId from the serialized container
       const value = this.editorStore.selectedContainer.attributes.find(
@@ -139,7 +143,7 @@ export class GamebookContainerManager extends LitElementWw {
     );
 
     if (!container) {
-      console.error(`No container found with drawflowNodeId: ${id}`);
+      console.error(`Error with finding element for node (ID: ${id})`);
     }
 
     return container;
@@ -173,7 +177,7 @@ export class GamebookContainerManager extends LitElementWw {
     });
 
     if (!isContainerShown) {
-      console.error(`No container found with drawflowNodeId: ${nodeId}`);
+      console.error(`Error with finding element for node (ID: ${nodeId})`);
     }
   }
 
@@ -182,8 +186,11 @@ export class GamebookContainerManager extends LitElementWw {
 
   */
   public _hideAllGamebookContainers() {
+    console.log("hideAll");
     this.gamebookContainers.forEach((container) => {
-      container.hide();
+      //console.log(container);
+      container.style.display = "none";
+      //console.log(container);
     });
   }
 
@@ -280,7 +287,10 @@ export class GamebookContainerManager extends LitElementWw {
       button.setAttribute("identifier", "x");
       button.remove();
 
-      if (button instanceof WebWriterGamebookBranchButton) {
+      if (
+        button.constructor ===
+        customElements.get("webwriter-gamebook-branch-button")
+      ) {
         container.branchesOff = -1;
         const branchContainer = this.gamebookContainers.find(
           (container) => container.getAttribute("drawflowNodeId") == inputId
@@ -342,8 +352,8 @@ export class GamebookContainerManager extends LitElementWw {
     );
 
     if (
-      container instanceof WebWriterGamebookPage ||
-      container instanceof WebWriterGamebookPopup
+      container.constructor === customElements.get("webwriter-gamebook-page") ||
+      container.constructor === customElements.get("webwriter-gamebook-popup")
     ) {
       const connButton = container.buttons.find(
         (button) => button.identifier === identifier
@@ -366,8 +376,8 @@ export class GamebookContainerManager extends LitElementWw {
     );
 
     if (
-      container instanceof WebWriterGamebookPage ||
-      container instanceof WebWriterGamebookPopup
+      container.constructor === customElements.get("webwriter-gamebook-page") ||
+      container.constructor === customElements.get("webwriter-gamebook-popup")
     ) {
       const connButton = container.buttons.find(
         (button) => button.identifier === identifier

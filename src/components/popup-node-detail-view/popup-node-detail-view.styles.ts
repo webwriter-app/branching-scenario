@@ -1,30 +1,105 @@
 import { css } from "lit";
 
 export default css`
-  :host {
-    box-sizing: border-box;
-    height: fit-content;
-
-    background-color: #fbfbfb;
+  .popup-node-detail-view {
     width: 100%;
+    min-height: min-content;
+    height: 100%;
+
+    box-sizing: border-box;
+
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 10px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
   }
 
-  :host * {
+  .preview {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    width: 100%;
+    height: auto;
+
     box-sizing: border-box;
   }
 
-  /* .selected-node {
-  } */
+  .dialog {
+    background-color: white;
+    box-sizing: border-box;
+    border: 1px solid #d4d4d8;
+    width: 100%;
+    height: auto;
+    min-height: min-content;
+    color: black;
 
-  .no-node-selected {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 150px;
-    height: 100%;
-    background-color: #fbfbfb;
-    color: darkgray;
+
+    border-radius: 8px;
+  }
+
+  .header {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
+    padding-left: 4px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+  }
+
+  .page {
+    box-sizing: border-box;
+
+    width: 100%;
+    height: auto;
+    min-height: min-content;
+    color: black;
+
+    /* box-shadow: 0 2px 20px 2px #d0d0d0; */
+  }
+
+  sl-input {
+    flex-grow: 1;
+  }
+
+  sl-input::part(base) {
+    --sl-input-border-width: 0px;
+    --sl-input-padding: 0px;
+    /* Resembling the style in the picture */
+    box-sizing: border-box;
+
+    font-family: -apple-system, BlinkMacSystemFont, "Avenir Next", Avenir,
+      "Nimbus Sans L", Roboto, "Noto Sans", "Segoe UI", Arial, Helvetica,
+      "Helvetica Neue", sans-serif;
+    font-feature-settings: normal;
+    font-kerning: auto;
+    font-optical-sizing: auto;
+    font-size: 20px;
+    font-size-adjust: none;
+    font-stretch: 100%;
+    font-style: normal;
+    font-variant-alternates: normal;
+    font-variant-caps: normal;
+    font-variant-east-asian: normal;
+    font-variant-ligatures: normal;
+    font-variant-numeric: normal;
+    font-variant-position: normal;
+    font-variation-settings: normal;
+    font-weight: 400;
+    line-height: 28px;
+    color: black;
   }
 
   .title-bar {

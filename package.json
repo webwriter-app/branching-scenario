@@ -1,94 +1,98 @@
 {
-  "name": "@andreasdymek/branching-scenario",
-  "version": "1.9.0",
-  "keywords": [
-    "webwriter-widget"
-  ],
-  "description": "Create adaptive learning experiences by authoring a gamebook, where you present the student with choices on how to continue. The content in the gamebook can be based on a all other WebWriter content types.",
-  "license": "MIT",
-  "author": "Andreas Dymek",
-  "dependencies": {
-    "@lit/context": "^1.1.2",
-    "@shoelace-style/shoelace": "2.15.0",
-    "@tabler/icons": "^3.7.0",
-    "@webwriter/lit": "^2.0.0",
-    "bootstrap-icons": "^1.11.3",
-    "drawflow": "^0.0.59",
-    "lit": "^3.1.3",
-    "react-icons": "^5.2.1",
-    "styled-components": "^6.1.11"
-  },
-  "scripts": {
-    "prepublishOnly": "npx @webwriter/build"
-  },
-  "exports": {
-    "./widgets/webwriter-branching-scenario.*": {
-      "source": "./src/widgets/webwriter-branching-scenario.ts",
-      "default": "./dist/widgets/webwriter-branching-scenario.*"
+    "name": "@andreasdymek/branching-scenario",
+    "version": "1.9.0",
+    "description": "Create adaptable learning experiences by authoring a gamebook, where you present the student with choices on how to continue.",
+    "keywords": [
+        "webwriter-widget"
+    ],
+    "license": "MIT",
+    "author": "Andreas Dymek",
+    "scripts": {
+        "prepublishOnly": "npx @webwriter/build",
+        "dev": "npx @webwriter/build dev",
+        "localize": "lit-localize extract && npx @webwriter/build localize && lit-localize build"
     },
-    "./snippets/art-of-europe.html": "./src/snippets/art-of-europe.html",
-    "./widgets/webwriter-gamebook-page.*": {
-      "source": "./src/components/gamebook/gamebook-components/gamebook-containers/gamebook-page/webwriter-gamebook-page.ts",
-      "default": "./dist/components/gamebook/gamebook-components/gamebook-containers/gamebook-page/webwriter-gamebook-page.*"
+    "dependencies": {
+        "@lit/context": "^1.1.4",
+        "@lit/localize": "^0.12.2",
+        "@shoelace-style/shoelace": "2.15.0",
+        "@tabler/icons": "^3.7.0",
+        "@webwriter/lit": "^2.1.6",
+        "bootstrap-icons": "^1.11.3",
+        "drawflow": "^0.0.59",
+        "lit": "^3.1.3",
+        "react-icons": "^5.2.1",
+        "styled-components": "^6.1.11"
     },
-    "./widgets/webwriter-gamebook-popup.*": {
-      "source": "./src/components/gamebook/gamebook-components/gamebook-containers/gamebook-popup/webwriter-gamebook-popup.ts",
-      "default": "./dist/components/gamebook/gamebook-components/gamebook-containers/gamebook-popup/webwriter-gamebook-popup.*"
+    "devDependencies": {
+        "@lit/localize-tools": "^0.8.0",
+        "@types/drawflow": "^0.0.11",
+        "typescript": "^5.4.5"
     },
-    "./widgets/webwriter-gamebook-branch.*": {
-      "source": "./src/components/gamebook/gamebook-components/gamebook-containers/gamebook-branch/webwriter-gamebook-branch.ts",
-      "default": "./dist/components/gamebook/gamebook-components/gamebook-containers/gamebook-branch/webwriter-gamebook-branch.*"
+    "exports": {
+        "./widgets/webwriter-branching-scenario.*": {
+            "source": "./src/widgets/webwriter-branching-scenario/webwriter-branching-scenario.ts",
+            "default": "./dist/widgets/webwriter-branching-scenario.*"
+        },
+        "./snippets/art-of-europe.html": "./src/snippets/art-of-europe.html",
+        "./widgets/webwriter-gamebook-branch.*": {
+            "source": "./src/widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.ts",
+            "default": "./dist/widgets/webwriter-gamebook-branch.*"
+        },
+        "./widgets/webwriter-gamebook-branch-button.*": {
+            "source": "./src/widgets/webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.ts",
+            "default": "./dist/widgets/webwriter-gamebook-branch-button.*"
+        },
+        "./widgets/webwriter-gamebook-button.*": {
+            "source": "./src/widgets/webwriter-gamebook-button/webwriter-gamebook-button.ts",
+            "default": "./dist/widgets/webwriter-gamebook-button.*"
+        },
+        "./widgets/webwriter-gamebook-page.*": {
+            "source": "./src/widgets/webwriter-gamebook-page/webwriter-gamebook-page.ts",
+            "default": "./dist/widgets/webwriter-gamebook-page.*"
+        },
+        "./widgets/webwriter-gamebook-popup.*": {
+            "source": "./src/widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.ts",
+            "default": "./dist/widgets/webwriter-gamebook-popup.*"
+        },
+        "./package.json": "./package.json"
     },
-    "./widgets/webwriter-gamebook-button.*": {
-      "source": "./src/components/gamebook/gamebook-components/gamebook-button/webwriter-gamebook-button.ts",
-      "default": "./dist/components/gamebook/gamebook-components/gamebook-button/webwriter-gamebook-button.*"
-    },
-    "./widgets/webwriter-gamebook-branch-button.*": {
-      "source": "./src/components/gamebook/gamebook-components/gamebook-branch-button/webwriter-gamebook-branch-button.ts",
-      "default": "./dist/components/gamebook/gamebook-components/gamebook-branch-button/webwriter-gamebook-branch-button.*"
-    },
-    "./package.json": "./package.json"
-  },
-  "devDependencies": {
-    "@types/drawflow": "^0.0.11",
-    "typescript": "^5.4.5"
-  },
-  "editingConfig": {
-    "./widgets/webwriter-branching-scenario": {
-      "content": "(webwriter-gamebook-page | webwriter-gamebook-popup | webwriter-gamebook-branch)*",
-      "definingAsContext": true,
-      "label": {
-        "en": "Branching Scenario",
-        "de": "Verzweigungszenarien"
-      }
-    },
-    "./widgets/webwriter-gamebook-page": {
-      "content": "(flow)*",
-      "definingForContent": true,
-      "uninsertable": true,
-      "draggable": false
-    },
-    "./widgets/webwriter-gamebook-popup": {
-      "content": "(flow)*",
-      "definingForContent": true,
-      "uninsertable": true,
-      "draggable": false
-    },
-    "./widgets/webwriter-gamebook-branch": {
-      "content": "",
-      "uninsertable": true,
-      "draggable": false
-    },
-    "./widgets/webwriter-gamebook-branch-button": {
-      "content": "",
-      "uninsertable": true
-    },
-    "./widgets/webwriter-gamebook-button": {
-      "content": "",
-      "uninsertable": true
-    },
-    "./widgets/node-detail-view": {
-      "selectable": false
+    "editingConfig": {
+        "./widgets/webwriter-branching-scenario": {
+            "definingAsContext": true,
+            "content": "(webwriter-gamebook-page | webwriter-gamebook-popup | webwriter-gamebook-branch)*",
+            "label": {
+                "en": "Branching Scenario",
+                "de": "Verzweigungszenarien"
+            }
+        },
+        "./widgets/webwriter-gamebook-page": {
+            "draggable": false,
+            "definingForContent": true,
+            "content": "(flow)*",
+            "uninsertable": true
+        },
+        "./widgets/webwriter-gamebook-popup": {
+            "draggable": false,
+            "definingForContent": true,
+            "content": "(flow)*",
+            "uninsertable": true
+        },
+        "./widgets/webwriter-gamebook-branch": {
+            "draggable": false,
+            "content": "",
+            "uninsertable": true
+        },
+        "./widgets/webwriter-gamebook-branch-button": {
+            "content": "",
+            "uninsertable": true
+        },
+        "./widgets/webwriter-gamebook-button": {
+            "content": "",
+            "uninsertable": true
+        },
+        "./widgets/node-detail-view": {
+            "selectable": false
+        }
     }
-  }
 }

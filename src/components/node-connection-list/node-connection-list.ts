@@ -2,10 +2,15 @@ import { html, css } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
-
+import { msg, str, localized } from "@lit/localize";
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import { SlButton, SlIcon, SlIconButton } from "@shoelace-style/shoelace";
+import {
+  SlButton,
+  SlIcon,
+  SlIconButton,
+  SlDialog,
+} from "@shoelace-style/shoelace";
 
 import { NodeOutputSelect } from "../node-output-select/node-output-select";
 
@@ -19,7 +24,7 @@ import {
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
-@customElement("node-connection-list")
+@localized()
 export class NodeConnectionList extends LitElementWw {
   @property({ type: Boolean, reflect: true }) accessor output = false;
   @property({ type: Boolean, reflect: true }) accessor input = false;
@@ -28,6 +33,8 @@ export class NodeConnectionList extends LitElementWw {
   @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
   public accessor editorStore = new GamebookEditorState("Default");
+
+  @state() accessor deleteOutputClass: string = "";
 
   /*
 
@@ -40,6 +47,7 @@ export class NodeConnectionList extends LitElementWw {
       "sl-icon-button": SlIconButton,
       "sl-icon": SlIcon,
       "node-output-select": NodeOutputSelect,
+      "sl-dialog": SlDialog,
     };
   }
 
@@ -153,7 +161,7 @@ export class NodeConnectionList extends LitElementWw {
 
       .no-node-message {
         font-size: 12px;
-        color: darkgray;
+        color: red;
         margin: 0px;
         padding-top: 10px;
       }
@@ -188,6 +196,14 @@ export class NodeConnectionList extends LitElementWw {
         height: 100%;
         text-align: center;
       }
+
+      sl-dialog::part(base) {
+        position: absolute;
+      }
+
+      sl-dialog::part(overlay) {
+        position: absolute;
+      }
     `;
   }
 
@@ -200,10 +216,11 @@ export class NodeConnectionList extends LitElementWw {
       <div class="container">
         <div class="titlebar">
           <p>
-            Outputs
-            (${Object.keys(
-              this.editorStore.selectedNode.outputs
-            ).length.toString()})
+            ${msg(
+              str`Outputs (${
+                Object.keys(this.editorStore.selectedNode.outputs).length
+              })`
+            )}
           </p>
           <sl-icon-button @click=${this._addOutput} src=${plus} class="add">
           </sl-icon-button>
@@ -249,13 +266,47 @@ export class NodeConnectionList extends LitElementWw {
                   class="minus"
                   src=${minus}
                   style="font-size: 15px;"
-                  @click=${() => this._deleteOutput(output_class)}
+                  @click=${() => this._preDeleteOutput(output_class)}
                 ></sl-icon-button>
               </div>
             `
           )}
         </div>
       </div>
+
+      <sl-dialog
+        label=${msg("Delete Output")}
+        class="dialog"
+        id="delete_output_dialog"
+      >
+        ${msg(
+          str`You are about to delete ${this.deleteOutputClass} which has an outgoing connection. Do you wish to proceed?`
+        )}
+        <sl-button
+          slot="footer"
+          variant="primary"
+          outline
+          @click=${() =>
+            (
+              this.shadowRoot.getElementById("delete_output_dialog") as SlDialog
+            ).hide()}
+          >Abort</sl-button
+        >
+        <sl-button
+          slot="footer"
+          variant="danger"
+          outline
+          @click=${() => {
+            const dialog = this.shadowRoot?.getElementById(
+              "delete_output_dialog"
+            ) as SlDialog;
+            this._deleteOutput(this.deleteOutputClass);
+            dialog?.hide();
+          }}
+        >
+          Delete
+        </sl-button>
+      </sl-dialog>
     `;
   }
 
@@ -268,10 +319,12 @@ export class NodeConnectionList extends LitElementWw {
       <div class="container">
         <div class="titlebar">
           <p>
-            Incoming
-            (${this.editorStore.selectedNode?.inputs[
-              "input_1"
-            ]?.connections.length.toString()})
+            ${msg(
+              str`Incoming (${
+                this.editorStore.selectedNode?.inputs["input_1"]?.connections
+                  .length ?? 0
+              })`
+            )}
           </p>
         </div>
         <div class="verticalStack">
@@ -352,7 +405,7 @@ export class NodeConnectionList extends LitElementWw {
     return html`
       <div class="container">
         <div class="titlebar">
-          <p>Accessing</p>
+          <p>${msg("Accessing")}</p>
         </div>
         <div class="verticalStack">
           ${length > 0
@@ -421,7 +474,9 @@ export class NodeConnectionList extends LitElementWw {
               )}`
             : html` <div class="container">
                 <p class="no-node-message">
-                  Connect a node to create rules based on its content!
+                  ${msg(
+                    " Connect a node to create rules based on its content!"
+                  )}
                 </p>
               </div>`}
         </div>
@@ -442,6 +497,24 @@ export class NodeConnectionList extends LitElementWw {
       return this.renderInputsBranch();
     } else {
       return html`<p>Please specify either 'input' or 'output' attribute.</p>`;
+    }
+  }
+
+  /*
+
+
+  */
+  private _preDeleteOutput(output_class: string) {
+    if (
+      this.editorStore.selectedNode.outputs[output_class].connections.length >=
+      1
+    ) {
+      this.deleteOutputClass = output_class;
+      (
+        this.shadowRoot.getElementById("delete_output_dialog") as SlDialog
+      ).show();
+    } else {
+      this._deleteOutput(output_class);
     }
   }
 

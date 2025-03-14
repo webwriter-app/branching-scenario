@@ -66,11 +66,17 @@ export class GamebookEditorState {
     this.searchResults = searchResults;
   }
 
+  /*
+
+  */
   setTitle(newTitle = Math.random().toString()) {
     this.title = newTitle;
     this.notifyObservers(); // Notify all observers when updated
   }
 
+  /*
+
+  */
   setSelectedNode(node = NO_NODE_SELECTED) {
     delete node.name;
     delete node.pos_x;
@@ -81,6 +87,9 @@ export class GamebookEditorState {
     this.notifyObservers(); // Notify all observers when updated
   }
 
+  /*
+
+  */
   setSelectedContainer(selectedContainer = undefined) {
     //console.log(JSON.stringify(selectedContainer, this.containerReplacer));
 
@@ -88,31 +97,49 @@ export class GamebookEditorState {
     this.notifyObservers(); // Notify all observers when updated
   }
 
+  /*
+
+  */
   setBranchIncomingContainer(incomingContainer = undefined) {
     this.branchIncomingContainer = incomingContainer;
     this.notifyObservers(); // Notify all observers when updated
   }
 
+  /*
+
+  */
   setEditorZoom(zoom = -1) {
     this.editorZoom = zoom;
     this.notifyObservers(); // Notify all observers when updated
   }
 
+  /*
+
+  */
   setEditorPosition(x = -1, y = -1) {
     this.editorPosition = { x: x, y: y };
     this.notifyObservers(); // Notify all observers when updated
   }
 
+  /*
+
+  */
   setDividerPosition(pos = 350) {
     this.dividerPosition = pos;
     this.notifyObservers();
   }
 
+  /*
+
+  */
   setEditorIsCollapsed(isCollapsed = false) {
     this.editorIsCollapsed = isCollapsed;
     this.notifyObservers();
   }
 
+  /*
+
+  */
   setEditorContent(editorContent = null) {
     let copy = editorContent;
     Object.values(copy.drawflow.Home.data).forEach((node) => {
@@ -124,6 +151,9 @@ export class GamebookEditorState {
     this.notifyObservers();
   }
 
+  /*
+
+  */
   setCopiedNode(node = NO_COPY) {
     delete node.name;
     //delete node.inputs;
@@ -139,21 +169,33 @@ export class GamebookEditorState {
     this.notifyObservers();
   }
 
+  /*
+
+  */
   setSearchTerm(term = "") {
     this.searchTerm = term;
     this.notifyObservers();
   }
 
+  /*
+
+  */
   setSearchResults(results = undefined) {
     this.searchResults = results;
     this.notifyObservers();
   }
 
+  /*
+
+  */
   // Method to register an observer
   addObserver(observer: Observer) {
     this.observer = observer;
   }
 
+  /*
+
+  */
   // Method to notify all observers
   private notifyObservers() {
     if (this.observer !== null) {
@@ -161,6 +203,9 @@ export class GamebookEditorState {
     }
   }
 
+  /*
+
+  */
   toString() {
     const stringify = JSON.stringify(
       {
@@ -184,6 +229,9 @@ export class GamebookEditorState {
     return stringify;
   }
 
+  /*
+
+  */
   replacer(key, value) {
     // Call the domElementReplacer for selectedContainer (HTMLElement)
     if (key === "selectedContainer" || key === "branchIncomingContainer") {
@@ -201,6 +249,9 @@ export class GamebookEditorState {
     return value;
   }
 
+  /*
+
+  */
   private domElementReplacer(key, value) {
     if (value instanceof HTMLElement) {
       return {
@@ -227,9 +278,14 @@ export class GamebookEditorState {
     return value;
   }
 
+  /*
+
+  */
   // Static method to deserialize from string to GamebookEditorState instance
   static fromString(serialized: string) {
+    console.log("fromString");
     const data = JSON.parse(serialized);
+    console.log(data.selectedNode);
 
     return new GamebookEditorState(
       data.title,
@@ -241,7 +297,7 @@ export class GamebookEditorState {
       data.editorIsCollapsed,
       data.editorContent,
       data.copiedNode,
-      data.selectedContainer,
+      undefined,
       data.branchIncomingContainer,
       data.searchTerm,
       data.searchResults

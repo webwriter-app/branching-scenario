@@ -3,7 +3,8 @@
     "experimentalDecorators": false, // default for TypeScript 5.0 and up
     "useDefineForClassFields": true, // default when "target" is "ES2022" or higher
     "target": "ES2022",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "outDir": "./dist",
+    "module": "esnext"
   }
 }
