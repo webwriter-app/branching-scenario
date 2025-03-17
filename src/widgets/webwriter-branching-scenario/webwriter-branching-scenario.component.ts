@@ -103,7 +103,7 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
 
     console.log("firstUpdated", this.editorState.selectedNode);
 
-    setLocale("en");
+    setLocale(this.lang);
   }
 
   /*
