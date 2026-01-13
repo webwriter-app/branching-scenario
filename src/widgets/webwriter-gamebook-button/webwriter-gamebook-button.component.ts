@@ -1,5 +1,5 @@
-import { html, css, LitElement } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { html, css } from "lit";
+import { property, query } from "lit/decorators.js";
 import { LitElementWw } from "@webwriter/lit";
 
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -21,28 +21,45 @@ import alignLeft from "@tabler/icons/outline/align-left.svg";
 import alignRight from "@tabler/icons/outline/align-right.svg";
 import alignCenter from "@tabler/icons/outline/align-center.svg";
 
+/**
+ * Represents a button that branches to another part of the gamebook.
+ */
 export class WebWriterGamebookButton extends LitElementWw {
+  /** The identifier of the target node */
   @property({ type: Number, reflect: true }) accessor dataTargetId: number;
+  /** The identifier of the connection */
   @property({ type: String, attribute: true, reflect: true })
   accessor identifier: string;
 
+  /** @internal */
   @property({ attribute: true }) accessor getNodeEditor = () => {};
 
-  //visual properties
+  // visual properties
+
+  /** Button text */
   @property({ type: String, reflect: true }) accessor name: string = "Button";
+  /** Button size: small, medium, large */
   @property({ type: String, reflect: true }) accessor size: string = "small";
+  /** Button pill style */
   @property({ type: Boolean, reflect: true }) accessor pill: boolean = false;
+  /** Button outline style */
   @property({ type: Boolean, reflect: true }) accessor outline: boolean = false;
+  /** Button width percentage */
   @property({ type: Number, reflect: true }) accessor width: number = 50;
+  /** Button alignment: flex-start, center, flex-end */
   @property({ type: String, reflect: true }) accessor alignment: string =
     "center";
+  /** Button variant: default, text, primary, success, neutral, warning, danger */
   @property({ type: String, reflect: true }) accessor variant: string =
     "default";
+  /** @internal */
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
 
+  /** @internal */
   @query("sl-button") accessor button;
 
+  /** @internal */
   static get scopedElements() {
     return {
       "sl-button": SlButton,
@@ -59,6 +76,7 @@ export class WebWriterGamebookButton extends LitElementWw {
     };
   }
 
+  /** @internal */
   static get styles() {
     return css`
       :host(.highlighted) {
@@ -164,27 +182,27 @@ export class WebWriterGamebookButton extends LitElementWw {
     });
   }
 
-  handleSizeChange(e) {
+  private handleSizeChange(e) {
     this.size = e.target.value;
   }
 
-  handlePillChange(e) {
+  private handlePillChange(e) {
     this.pill = e.target.checked;
   }
 
-  handleOutlineChange(e) {
+  private handleOutlineChange(e) {
     this.outline = e.target.checked;
   }
 
-  handleWidthChange(e) {
+  private handleWidthChange(e) {
     this.width = e.target.value;
   }
 
-  handleVariantChange(e) {
+  private handleVariantChange(e) {
     this.variant = e.target.value;
   }
 
-  handleAlignmentChange(alignment) {
+  private handleAlignmentChange(alignment) {
     this.alignment = alignment;
   }
 

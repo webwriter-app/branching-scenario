@@ -1,41 +1,46 @@
-import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
+import { html, css } from "lit";
 import { LitElementWw } from "@webwriter/lit";
-import {
-  customElement,
-  property,
-  query,
-  state,
-  queryAssignedElements,
-} from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 //Shoelace
 import { SlButton } from "@shoelace-style/shoelace";
 
+/**
+ * Represents the logic of a branch of a gamebook.
+ */
 export class WebWriterGamebookBranch extends LitElementWw {
-  //associated node id
+  /** Associated node id */
   @property({ type: Number, attribute: true, reflect: true })
   accessor drawflowNodeId;
 
+  /** Associated incoming container id */
   @property({ type: Number, attribute: true, reflect: true })
   accessor incomingContainerId = -1;
 
-  // Array of custom objects (rules)
+  /** Array of custom objects (rules) */
   @property({ type: Array, attribute: true, reflect: true })
   accessor rules: Rule[] = [];
 
-  // Array of custom objects (rules)
+  /** The else rule (custom object) */
   @property({ type: Object, attribute: true, reflect: true })
   accessor elseRule: Rule;
 
+  /** The title of the page */
   @property({ type: String, attribute: true, reflect: true })
   accessor pageTitle;
 
-  //import CSS
+  /**
+   * import CSS
+   * @internal
+   */
   static get styles() {
     return css``;
   }
 
-  //registering custom elements used in the widget
+  /**
+   * registering custom elements used in the widget
+   * @internal
+   */
   static get scopedElements() {
     return {
       "sl-button": SlButton
@@ -44,14 +49,12 @@ export class WebWriterGamebookBranch extends LitElementWw {
 
   /* 
   
-  
   */
   constructor() {
     super();
   }
 
   /*
-
 
   */
   render() {
@@ -60,7 +63,6 @@ export class WebWriterGamebookBranch extends LitElementWw {
 
   /*
 
-
   */
   public hide() {
     this.style.display = "none";
@@ -68,16 +70,14 @@ export class WebWriterGamebookBranch extends LitElementWw {
 
   /*
 
-
   */
   public show() {
     this.style.display = "block";
   }
 
-  /*
-
-  Clears all rules from the rules array
-  */
+  /**
+   * Clears all rules from the rules array
+   */
   public clearRules() {
     this.rules.forEach((rule) => {
       this.deleteRule((rule as Rule).output_id);
@@ -86,19 +86,21 @@ export class WebWriterGamebookBranch extends LitElementWw {
     this.rules = [];
   }
 
-  /*
-
-  Adds a new rule to the rules array
-  */
+  /** 
+   * Adds a new rule to the rules array
+   * 
+   * @param newRule The rule object to be added
+   */
   private addRule(newRule: Rule) {
     // Add the new rule to the rules array
     this.rules = [...this.rules, newRule];
   }
 
-  /*
-
-
-  */
+  /**
+   * Adds an empty rule to the rules array
+   * 
+   * @param node The node to which the rule will be associated
+   */
   public addEmptyRule(node) {
     // Step 3: Get the last created output's output_class
 
@@ -127,10 +129,11 @@ export class WebWriterGamebookBranch extends LitElementWw {
     );
   }
 
-  /*
-
-  Deletes a rule from the rules array by its ID
-  */
+  /**
+   * Deletes a rule from the rules array by its ID
+   * 
+   * @param output_id The ID of the rule to be deleted
+   */
   public deleteRule(output_id: string) {
     this.dispatchEvent(
       new CustomEvent("deleteOutput", {
@@ -163,10 +166,11 @@ export class WebWriterGamebookBranch extends LitElementWw {
     );
   }
 
-  /*
-
-
-  */
+  /**
+   * Update all rules output IDs after deletion of an output
+   * 
+   * @param deleted_output_id The ID of the deleted output
+   */
   public updateAllRulesOutputIds(deleted_output_id: string) {
     // Extract the number from the output_class parameter
     const removedOutputClassNumber = parseInt(
@@ -198,27 +202,31 @@ export class WebWriterGamebookBranch extends LitElementWw {
     }
   }
 
-  /*
-
-  
-  */
+  /**
+   * Updates a rule's output ID by its index
+   * 
+   * @param index The index of the rule to be updated
+   * @param new_output_id The new output ID to be set
+   */
   public updateRuleOutputId(index, new_output_id) {
     this.rules[index] = { ...this.rules[index], output_id: new_output_id }; // Update target to input_id
     this.rules = [...this.rules];
   }
 
-  /*
-
-  
-  */
-
+  /**
+   * Updates the entire rules array (deep clone)
+   * 
+   * @param rules The new array of rules to be set
+   */
   public updateRules(rules) {
     this.rules = [...rules];
   }
-  /*
 
-  
-  */
+  /**
+   * Adds an empty else rule to the rules array
+   * 
+   * @param node The node to which the rule will be associated
+   */
   public addEmptyElseRule(node) {
     // Step 4: Extract the last created output's output_class
     const outputKeys = Object.keys(node.outputs);
@@ -246,10 +254,9 @@ export class WebWriterGamebookBranch extends LitElementWw {
     );
   }
 
-  /*
-
-  
-  */
+  /**
+   * Removes the else rule
+   */
   public removeElseRule() {
     this.dispatchEvent(
       new CustomEvent("deleteOutput", {
@@ -265,10 +272,11 @@ export class WebWriterGamebookBranch extends LitElementWw {
     this.elseRule = undefined;
   }
 
-  /*
-
-
-  */
+  /**
+   * Moves the else rule to be the last output
+   * 
+   * @param node The node to which the rule will be associated
+   */
   public _moveElseRuleToLastOutput(node) {
     const { outputs } = node;
 
@@ -336,10 +344,13 @@ export class WebWriterGamebookBranch extends LitElementWw {
     );
   }
 
-  /*
-
-
-  */
+  /**
+   * Updates a rule's element ID by its index
+   * 
+   * @param index The index of the rule to be updated
+   * @param value The new element ID to be set
+   * @param container The container HTMLElement
+   */
   public _updateRuleElement(
     index: number,
     value: string,
@@ -370,10 +381,13 @@ export class WebWriterGamebookBranch extends LitElementWw {
     this.rules = [...this.rules];
   }
 
-  /*
-
-
-  */
+  /**
+   * Removes references to a deleted element from all rules
+   * 
+   * @param element_id The ID of the deleted element
+   * @param isQuiz Whether the deleted element is a quiz
+   * @returns An array of connections to be removed
+   */
   public removeElementOfRules(element_id: string, isQuiz: boolean): string[][] {
     const resetRule = (rule) => ({
       ...rule,
@@ -445,11 +459,14 @@ export class WebWriterGamebookBranch extends LitElementWw {
     return removeConnectionsFromOutputs;
   }
 
-  /*
-
-
-  */
-  public _updateRuleTasks(index: number, value: string, container) {
+  /**
+   * Updates the quiz tasks for a rule
+   * 
+   * @param index The index of the rule to be updated
+   * @param value The new quiz tasks value (comma-separated string)
+   * @param container The container HTMLElement
+   */
+  public _updateRuleTasks(index: number, value: string, container: HTMLElement) {
     this.rules[index].isConditionEnabled = value !== "";
 
     if (value === "") {
@@ -461,10 +478,12 @@ export class WebWriterGamebookBranch extends LitElementWw {
     this.rules = [...this.rules];
   }
 
-  /*
-
-
-  */
+  /**
+   * Updates the target of a rule by output class
+   * 
+   * @param output_class The output ID to match against rules
+   * @param input_id The new target input ID
+   */
   public _updateRuleTarget(output_class, input_id) {
     // Helper function to find and update the rule in an array of rules
     this.rules.forEach((rule, index) => {
@@ -512,10 +531,13 @@ export class WebWriterGamebookBranch extends LitElementWw {
     }
   }
 
-  /*
-
-
-  */
+  /**
+   * Updates the condition for a rule
+   * 
+   * @param index The index of the rule to be updated
+   * @param value The new condition value
+   * @param container The container HTMLElement
+   */
   public _updateRuleCondition(
     index: number,
     value: string,
@@ -551,10 +573,12 @@ export class WebWriterGamebookBranch extends LitElementWw {
     this.rules = [...this.rules];
   }
 
-  /*
-
-
-  */
+  /**
+   * Updates the match value for a rule
+   * 
+   * @param index The index of the rule to be updated
+   * @param value The new match value
+   */
   public _updateRuleMatch(index: number, value: string) {
     this.rules[index].match = value;
     this.rules[index].isTargetEnabled = value !== "";

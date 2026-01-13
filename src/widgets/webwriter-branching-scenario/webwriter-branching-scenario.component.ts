@@ -1,11 +1,11 @@
-import { html, css, LitElement, PropertyValues } from "lit";
-import { provide, consume, createContext } from "@lit/context";
+import { html } from "lit";
+import { provide } from "@lit/context";
 
 import { msg, localized } from "@lit/localize";
-import { setLocale, getLocale } from "../../utils/localization";
+import { setLocale } from "../../utils/localization";
 
 import * as lit from "@webwriter/lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 
 import { NodeDetailsView } from "../../components/node-detail-view/node-detail-view";
 import { WebWriterGamebookViewer } from "../../components/gamebook-viewer/webwriter-gamebook-viewer";
@@ -27,17 +27,26 @@ import {
 import { GamebookEditorController } from "../../utils/gamebook-editor-controller";
 import { WebWriterGamebookOptions } from "../../components/options-panel/webwriter-gamebook-options";
 
+/**
+ * This widget allows for the creation and editing of branching gamebooks. These are adaptable learning experiences, where you present the student with choices on how to continue.
+ */
 @localized()
 export class WebWriterBranchingScenario extends lit.LitElementWw {
+  /** @internal */
   @query("gamebook-container-manager") accessor gamebookContainerManager;
+  /** The node editor component */
   @query("node-editor") public accessor nodeEditor;
+  /** @internal */
   @query("webwriter-gamebook-options") accessor gamebookOptions;
-  @query("sl-split-panel") accessor splitPanel;
 
+  /** @internal */
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
 
-  //registering custom elements used in the widget
+  /** 
+   * registering custom elements used in the widget
+   * @internal
+   */
   static get scopedElements() {
     return {
       "webwriter-gamebook-viewer": WebWriterGamebookViewer,
@@ -51,11 +60,17 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
     };
   }
 
-  //import CSS
+  /** 
+   * import CSS
+   * @internal
+   */
   static styles = [styles];
 
   private controller = new GamebookEditorController(this);
 
+  /**
+   * The state of the editor in a stringified JSON format
+   */
   @provide({ context: editorState })
   @property({
     type: Object,
@@ -106,9 +121,9 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
     setLocale(this.lang);
   }
 
-  /*
-  
-  */
+  /**
+   * Saves the current state to the editor state attribute so that it is reflected in the DOM
+   */
   reflectStoreChangesinDOM() {
     this.editorState = new GamebookEditorState(
       this.editorState.title,

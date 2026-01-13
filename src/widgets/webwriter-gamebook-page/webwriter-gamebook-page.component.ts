@@ -16,22 +16,30 @@ import { SlButton } from "@shoelace-style/shoelace";
 import { WebWriterGamebookBranchButton } from "../webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component";
 import { WebWriterGamebookOptions } from "../../components/options-panel/webwriter-gamebook-options";
 
-import { provide, consume, createContext } from "@lit/context";
+import { consume } from "@lit/context";
 import {
   editorState,
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
+/**
+ * Represents a page of the gamebook
+ */
 @localized()
 export class WebWriterGamebookPage extends LitElementWw {
+  /** The state of the editor in a stringified JSON format */
   @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
   public accessor editorStore = new GamebookEditorState("Default");
 
+  /** @internal */
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
 
-  //import CSS
+  /**
+   * import CSS
+   * @internal
+   */
   static get styles() {
     return css`
       .page {
@@ -52,7 +60,10 @@ export class WebWriterGamebookPage extends LitElementWw {
     `;
   }
 
-  //registering custom elements used in the widget
+  /**
+   * registering custom elements used in the widget
+   * @internal
+   */
   static get scopedElements() {
     return {
       "sl-button": SlButton,
@@ -60,24 +71,31 @@ export class WebWriterGamebookPage extends LitElementWw {
       "webwriter-gamebook-options": WebWriterGamebookOptions,
     };
   }
-  //associated node id
+
+  /** Associated node id */
   @property({ type: Number, attribute: true, reflect: true })
   accessor drawflowNodeId;
+  /** The title of the page */
   @property({ type: String, attribute: true, reflect: true })
   accessor pageTitle;
+  /** The origin page number */
   @property({ type: Number, attribute: true, reflect: true })
   accessor originPage;
+  /** The id of the branch connected to the page */
   @property({ type: Number, attribute: true, reflect: true })
   accessor branchesOff = -1;
 
+  /** @internal */
   @query("slot") accessor slotElement;
 
+  /** The gamebook buttons on the page */
   @queryAssignedElements({
     flatten: true,
     selector: "webwriter-gamebook-button, webwriter-gamebook-branch-button",
   })
   accessor buttons;
 
+  /** The content inside the page */
   @queryAssignedElements({
     flatten: true,
   })
@@ -132,10 +150,9 @@ export class WebWriterGamebookPage extends LitElementWw {
       ></webwriter-gamebook-options> `;
   }
 
-  /*
-
-
-  */
+  /**
+   * Hides the page
+   */
   public hide() {
     this.style.display = "none";
     //TODO after Thesis: move it to the right in viewer
@@ -143,10 +160,9 @@ export class WebWriterGamebookPage extends LitElementWw {
     //this.stopAllMedia();
   }
 
-  /*
-
-
-  */
+  /**
+   * Shows the page
+   */
   public show() {
     this.style.display = "block";
   }
