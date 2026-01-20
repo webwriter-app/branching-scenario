@@ -129,8 +129,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
 
-  /* 
-  
+  /*
   
   */
   constructor() {
@@ -140,6 +139,37 @@ export class WebWriterGamebookPopup extends LitElementWw {
 
   /* 
   
+  */
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener("keydown", this._handleKeydown, true);
+  }
+
+  /*
+
+  */
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener("keydown", this._handleKeydown);
+  }
+
+  /*
+   * Handles CTRL+A to select all content within the page instead of the whole widget
+   */
+  private _handleKeydown = (event: KeyboardEvent) => {
+    if ((event.metaKey || event.ctrlKey) && event.key === "a") {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(this);
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    }
+  };
+
+  /* 
   
   */
   protected firstUpdated(_changedProperties: any): void {
