@@ -12,7 +12,7 @@ import {
 import arrowsMove from "@tabler/icons/outline/arrows-move.svg";
 import questionMark from "@tabler/icons/outline/question-mark.svg";
 
-import { SlIcon, SlIconButton } from "@shoelace-style/shoelace";
+import { SlIcon, SlIconButton, SlTooltip } from "@shoelace-style/shoelace";
 
 //Import Styles
 import styles from "./node-editor-help-menu.styles";
@@ -27,6 +27,7 @@ export class NodeEditorHelpMenu extends LitElementWw {
     return {
       "sl-icon": SlIcon,
       "sl-icon-button": SlIconButton,
+      "sl-tooltip": SlTooltip,
     };
   }
 
@@ -84,7 +85,7 @@ export class NodeEditorHelpMenu extends LitElementWw {
           </svg>
         </div>
 
-        <div class="help-item">
+        <!-- <div class="help-item">
           <div class="icon-plus">
             <p class="key-icon">CTRL</p>
             <p>+</p>
@@ -100,7 +101,7 @@ export class NodeEditorHelpMenu extends LitElementWw {
               />
             </svg>
           </div>
-        </div>
+        </div> -->
         </div>
 
         <div class="column">
@@ -112,18 +113,20 @@ export class NodeEditorHelpMenu extends LitElementWw {
             <div class="help-item"><p class="label">${msg("Delete")}
               
             </p></div>
-            <div class="help-item"><p class="label">${msg(
+            <!-- <div class="help-item"><p class="label">${msg(
               "Zoom In/Out"
-            )}</p></div>
+            )}</p></div> -->
         </div>
       </div>
     </div>`
       : html` <div class="helpIconButton">
-          <sl-icon-button
-            class="helpIcon"
-            src=${questionMark}
-            @click="${this.toggleWindow}"
-          ></sl-icon-button>
+          <sl-tooltip content=${msg("Shortcuts")} placement="top" skidding="16">
+            <sl-icon-button
+              class="helpIcon"
+              src=${questionMark}
+              @click="${this.toggleWindow}"
+            ></sl-icon-button>
+          </sl-tooltip>
         </div>`}`;
   }
 

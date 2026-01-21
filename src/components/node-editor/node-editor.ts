@@ -26,6 +26,7 @@ import {
   SlDropdown,
   SlIcon,
   SlInput,
+  SlTooltip,
 } from "@shoelace-style/shoelace";
 
 //@tabler icons
@@ -76,6 +77,7 @@ export class NodeEditor extends LitElementWw {
       "sl-menu-item": SlMenuItem,
       "sl-dropdown": SlDropdown,
       "sl-menu-label": SlMenuLabel,
+      "sl-tooltip": SlTooltip,
       "node-editor-toolbar": NodeEditorToolbar,
       "node-editor-help-menu": NodeEditorHelpMenu,
     };
@@ -286,19 +288,21 @@ export class NodeEditor extends LitElementWw {
         <div id="drawflowEditorDiv" style=${styleMap(gridStyles)}></div>
 
         <div class="zoomControls">
-          <sl-icon-button
-            id="jumpToOriginBtn"
-            src=${mapPin}
-            style="font-size: 18px;"
-            @click=${() => {
-              const nodes = this.editorStore.editorContent.drawflow.Home.data;
-              const originNode = Object.values(nodes).find(
-                (node: any) => node.class === "origin"
-              );
-              this.moveToNode(originNode as DrawflowNode, true);
-            }}
-          >
-          </sl-icon-button>
+          <sl-tooltip content=${msg("Jump to origin node")}>
+            <sl-icon-button
+              id="jumpToOriginBtn"
+              src=${mapPin}
+              style="font-size: 18px;"
+              @click=${() => {
+                const nodes = this.editorStore.editorContent.drawflow.Home.data;
+                const originNode = Object.values(nodes).find(
+                  (node: any) => node.class === "origin"
+                );
+                this.moveToNode(originNode as DrawflowNode, true);
+              }}
+            >
+            </sl-icon-button>
+          </sl-tooltip>
           <sl-divider vertical style="height: 20px; margin: 2px;"></sl-divider>
           <sl-icon-button
             id="zoomInBtn"
