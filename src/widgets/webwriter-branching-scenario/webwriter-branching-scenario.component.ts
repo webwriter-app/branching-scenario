@@ -134,6 +134,7 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
       this.editorState.dividerPosition,
       this.editorState.editorIsCollapsed,
       this.editorState.editorContent,
+      this.editorState.detailViewHeight,
       this.editorState.copiedNode,
       this.editorState.selectedContainer,
       this.editorState.branchIncomingContainer,

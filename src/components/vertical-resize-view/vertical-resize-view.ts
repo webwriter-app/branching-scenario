@@ -4,6 +4,8 @@ import { customElement, property, state } from "lit/decorators.js";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import { SlIcon } from "@shoelace-style/shoelace";
 import gripHorizontal from "@tabler/icons/outline/grip-horizontal.svg";
+import { consume } from "@lit/context";
+import { editorState, GamebookEditorState } from "../../utils/gamebook-editor-state-context";
 
 const DIVIDER_HEIGHT = 30;
 
@@ -17,6 +19,10 @@ export class VerticalResizeView extends LitElementWw {
   @state() accessor isDragging = false;
   @state() accessor initialY = 0;
   @state() accessor startHeight = 400;
+
+  @consume({ context: editorState, subscribe: true })
+  @property({ type: Object, attribute: true, reflect: false })
+  public accessor editorStore = new GamebookEditorState("Default");
 
   // Registering custom elements used in the widget
   static get scopedElements() {
@@ -70,6 +76,7 @@ export class VerticalResizeView extends LitElementWw {
 
   */
   protected firstUpdated(_changedProperties: PropertyValues) {
+    this.startHeight = this.editorStore.detailViewHeight;
     this.style.setProperty("--content-height", `${this.startHeight}px`);
   }
 
@@ -82,7 +89,9 @@ export class VerticalResizeView extends LitElementWw {
 
     this.isDragging = true;
     this.initialY = event.clientY;
-    this.startHeight = this.clientHeight;
+    this.startHeight = this.style.getPropertyValue("--content-height")
+      ? parseInt(this.style.getPropertyValue("--content-height"))
+      : this.clientHeight;
 
     this.addEventListener("mousemove", this.onMouseMove);
     this.addEventListener("mouseup", this.onMouseUp);
@@ -94,11 +103,17 @@ export class VerticalResizeView extends LitElementWw {
 
   */
   private onMouseUp() {
-    //console.log("test");
+    if (!this.isDragging) return;
+
     this.isDragging = false;
     this.removeEventListener("mousemove", this.onMouseMove);
     this.removeEventListener("mouseup", this.onMouseUp);
     this.removeEventListener("mouseleave", this.onMouseUp);
+
+    const currentHeight = parseInt(
+      this.style.getPropertyValue("--content-height") || "400"
+    );
+    this.editorStore.setDetailViewHeight(currentHeight);
   }
 
   /*
