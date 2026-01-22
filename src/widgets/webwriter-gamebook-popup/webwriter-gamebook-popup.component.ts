@@ -108,7 +108,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
   @queryAssignedElements({
     flatten: true,
   })
-  accessor slotContent;
+  accessor slotContent: Array<HTMLElement>;
 
   /** The Shoelace dialog element */
   @query("#dialog") accessor dialog: SlDialog;
@@ -232,6 +232,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
   */
   public hide() {
     this.style.display = "none";
+    this.stopAllMedia();
   }
 
   /**
@@ -239,6 +240,20 @@ export class WebWriterGamebookPopup extends LitElementWw {
    */
   public show() {
     this.style.display = "block";
+  }  
+  
+  /**
+   * Stops all HTML media elements in the popup
+   */
+  private stopAllMedia() {
+    const mediaElements = this.slotContent.filter((el) =>
+      el.matches("audio, video")
+    ) as (HTMLAudioElement | HTMLVideoElement)[];
+
+    mediaElements.forEach((media) => {
+      media.pause();
+      media.currentTime = 0;
+    });
   }
 
   /**

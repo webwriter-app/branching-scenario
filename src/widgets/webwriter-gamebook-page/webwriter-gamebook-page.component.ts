@@ -99,7 +99,7 @@ export class WebWriterGamebookPage extends LitElementWw {
   @queryAssignedElements({
     flatten: true,
   })
-  accessor slotContent;
+  accessor slotContent: Array<HTMLElement>;
 
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
@@ -188,8 +188,7 @@ export class WebWriterGamebookPage extends LitElementWw {
   public hide() {
     this.style.display = "none";
     //TODO after Thesis: move it to the right in viewer
-    //TODO after Thesis: stop interactive content from playing
-    //this.stopAllMedia();
+    this.stopAllMedia();
   }
 
   /**
@@ -197,6 +196,20 @@ export class WebWriterGamebookPage extends LitElementWw {
    */
   public show() {
     this.style.display = "block";
+  }
+
+  /**
+   * Stops all HTML media elements on the page
+   */
+  private stopAllMedia() {
+    const mediaElements = this.slotContent.filter((el) =>
+      el.matches("audio, video")
+    ) as (HTMLAudioElement | HTMLVideoElement)[];
+
+    mediaElements.forEach((media) => {
+      media.pause();
+      media.currentTime = 0;
+    });
   }
 
   /*
