@@ -301,6 +301,10 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
               @nodeSearch=${() => this.controller.nodeSearch()}
               @moveTo=${(e: CustomEvent) =>
                 this.controller.moveTo(e.detail.node)}
+              @highlightNode=${(e: CustomEvent) =>
+                this.controller._highlightNode(e)}
+              @unhighlightNode=${(e: CustomEvent) =>
+                this.controller._unhighlightNode(e)}
             ></webwriter-gamebook-options>
           `
         : html` <webwriter-gamebook-viewer
