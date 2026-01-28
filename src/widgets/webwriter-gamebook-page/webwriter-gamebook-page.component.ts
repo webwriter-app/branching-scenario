@@ -272,6 +272,15 @@ export class WebWriterGamebookPage extends LitElementWw {
             par.textContent = msg("Write something here...");
             this.appendChild(par);
           }
+        } else if (type === "attributes" && attributeName === "class") {
+          if (this.classList.contains("ProseMirror-selectednode")) {
+            const event = new CustomEvent("nodeWwSelected", {
+              detail: { nodeId: this.drawflowNodeId },
+              bubbles: true,
+              composed: true,
+            });
+            this.dispatchEvent(event);
+          }
         }
       }
     );

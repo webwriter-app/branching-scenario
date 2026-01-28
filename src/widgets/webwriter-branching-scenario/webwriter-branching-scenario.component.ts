@@ -284,6 +284,8 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
                       this.controller._highlightConnection(e)}
                     @leaveButton=${(e: CustomEvent) =>
                       this.controller._unhighlightConnection(e)}
+                    @nodeWwSelected=${(e: CustomEvent) =>
+                      this.controller._selectWwSelectedNode(e.detail.nodeId)}
                   >
                     <slot></slot>
                   </gamebook-container-manager>

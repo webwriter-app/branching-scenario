@@ -277,7 +277,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
 
   */
   private mutationCallback = (mutationList: MutationRecord[]) => {
-    mutationList.forEach(({ type, removedNodes }) => {
+    mutationList.forEach(({ type, removedNodes, attributeName }) => {
       if (type === "childList") {
         removedNodes.forEach((node) => {
           const element = node as HTMLElement;
@@ -323,6 +323,15 @@ export class WebWriterGamebookPopup extends LitElementWw {
             }
           }
         });
+      } else if (type === "attributes" && attributeName === "class") {
+        if (this.classList.contains("ProseMirror-selectednode")) {
+          const event = new CustomEvent("nodeWwSelected", {
+            detail: { nodeId: this.drawflowNodeId },
+            bubbles: true,
+            composed: true,
+          });
+          this.dispatchEvent(event);
+        }
       }
     });
 

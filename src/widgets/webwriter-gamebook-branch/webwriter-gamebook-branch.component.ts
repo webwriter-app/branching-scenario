@@ -1,4 +1,4 @@
-import { html, css } from "lit";
+import { html, css, PropertyValues } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import { property } from "lit/decorators.js";
 
@@ -47,11 +47,25 @@ export class WebWriterGamebookBranch extends LitElementWw {
     };
   }
 
+  // Create an observer instance linked to the callback function
+  private mutationObserver: MutationObserver;
+
   /* 
   
   */
   constructor() {
     super();
+    this.mutationObserver = new MutationObserver(this.mutationCallback);
+  }
+
+  protected firstUpdated(_changedProperties: PropertyValues): void {
+    // Options for the observer (which mutations to observe)
+    const config: MutationObserverInit = {
+      attributes: true,
+      attributeFilter: ["class"],
+    };
+    // Start observing the target node for configured mutations
+    this.mutationObserver.observe(this, config);
   }
 
   /*
@@ -596,4 +610,21 @@ export class WebWriterGamebookBranch extends LitElementWw {
       })
     );
   }
+
+  private mutationCallback = (mutationList: MutationRecord[]) => {
+    mutationList.forEach(
+      ({ type, attributeName }) => {
+        if (type === "attributes" && attributeName === "class") {
+          if (this.classList.contains("ProseMirror-selectednode")) {
+            const event = new CustomEvent("nodeWwSelected", {
+              detail: { nodeId: this.drawflowNodeId },
+              bubbles: true,
+              composed: true,
+            });
+            this.dispatchEvent(event);
+          }
+        }
+      }
+    );
+  };
 }

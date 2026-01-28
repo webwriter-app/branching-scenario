@@ -57,7 +57,7 @@ export class GamebookEditorController implements ReactiveController {
   /*
 
   */
-  _selectContainer = (id: number) => {
+  _selectContainer = (id: number, setFocus: boolean = true) => {
     const node = this.nodeEditor.editor.getNodeFromId(id);
 
     const container =
@@ -102,7 +102,9 @@ export class GamebookEditorController implements ReactiveController {
 
     this.nodeEditor.unhighlightAllOutputs();
 
-    (this.host as any).focus(); // Update the host component after changes
+    if (setFocus) {
+      (this.host as any).focus();
+    }
     (this.host as any).reflectStoreChangesinDOM();
     this.host.requestUpdate(); // Update the host component after changes
   };
@@ -867,6 +869,17 @@ export class GamebookEditorController implements ReactiveController {
   public moveTo(node: DrawflowNode) {
     this.nodeEditor.moveToNode(node, true);
     this._selectContainer(node.id);
+    this.nodeEditor.programaticallySelectNode(node.id);
+  }
+
+  /*
+
+  */
+  public _selectWwSelectedNode(id: number) {
+    const node = this.nodeEditor.editor.getNodeFromId(id);
+    this.nodeEditor.moveToNode(node, true);
+    // Do not set focus to the host to avoid changing the ProseMirror selection
+    this._selectContainer(node.id, false);
     this.nodeEditor.programaticallySelectNode(node.id);
   }
 }
