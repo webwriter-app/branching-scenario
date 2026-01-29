@@ -143,6 +143,22 @@ export class WebWriterGamebookPopup extends LitElementWw {
   connectedCallback() {
     super.connectedCallback();
     this.addEventListener("keydown", this._handleKeydown, true);
+
+    const fixLayoutShiftSheet = new CSSStyleSheet();
+    fixLayoutShiftSheet.replaceSync("html.sl-scroll-lock { scrollbar-gutter: auto !important }");
+
+    this.addEventListener("sl-show", () => {
+      if (this.ownerDocument.defaultView.innerWidth <= this.ownerDocument.documentElement.clientWidth) {
+        this.ownerDocument.adoptedStyleSheets.push(fixLayoutShiftSheet);
+      }
+    });
+    this.addEventListener("sl-hide", () => {
+      setTimeout(() => {
+        this.ownerDocument.adoptedStyleSheets = this.ownerDocument.adoptedStyleSheets.filter(
+          (sheet) => sheet !== fixLayoutShiftSheet
+        );
+      }, 300);
+    });
   }
 
   /*
