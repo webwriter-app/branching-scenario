@@ -249,6 +249,8 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
                   @unhighlightNode=${(e: CustomEvent) =>
                     this.controller._unhighlightNode(e)}
                   @markOutputs=${() => this.controller._markUsedOutputs()}
+                  @recreateContainer=${() =>
+                    this.controller._recreateContainerForSelectedNode()}
                 >
                   <gamebook-container-manager
                     @managerInitialized=${() =>
