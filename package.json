@@ -81,21 +81,14 @@
       "default": "./dist/widgets/webwriter-gamebook-popup.*"
     },
     "./package.json": "./package.json",
-    "./icon": "./icon.svg"
+    "./icon": "./icon.svg",
+    "./editing-config.json": "./editing-config.json"
   },
   "editingConfig": {
-    ".": {
-      "description": {
-        "de": "Erstellen Sie nicht-lineare Lernerfahrungen, indem Sie ein Gamebook verfassen, in dem Schüler die Wahl haben, wie sie weitermachen wollen."
-      }
-    },
+    ".": {},
     "./widgets/webwriter-branching-scenario": {
       "definingAsContext": true,
-      "content": "(webwriter-gamebook-page | webwriter-gamebook-popup | webwriter-gamebook-branch)*",
-      "label": {
-        "en": "Branching Scenario",
-        "de": "Verzweigungszenarien"
-      }
+      "content": "(webwriter-gamebook-page | webwriter-gamebook-popup | webwriter-gamebook-branch)*"
     },
     "./widgets/webwriter-gamebook-page": {
       "draggable": false,

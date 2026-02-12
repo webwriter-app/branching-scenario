@@ -1,0 +1,12 @@
+{
+  ".": {
+    "description": {
+      "de": "Schaffen Sie anpassungsfähige Lernerfahrungen, indem Sie ein Spielbuch erstellen, in dem Sie den Schülern verschiedene Optionen für den weiteren Verlauf anbieten."
+    }
+  },
+  "./widgets/webwriter-branching-scenario": {
+    "label": {
+      "de": "Verzweigungszenarien"
+    }
+  }
+}
