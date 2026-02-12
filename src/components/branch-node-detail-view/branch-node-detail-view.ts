@@ -452,26 +452,14 @@ export class BranchNodeDetailView extends LitElementWw {
 
       const outputs = selectedNode.outputs;
 
-      outputs[draggedRuleOutput].connections.forEach((connection) => {
-        const connectionDetail = {
-          outputNodeId: selectedNode.id,
-          inputNodeId: connection.node,
-          inputClass: "input_1",
-        };
+      // Rule targets get lost if not restored
+      const savedTargets = staticCopyRules.map((rule) => rule.target);
 
-        this.dispatchEvent(
-          new CustomEvent("createConnection", {
-            detail: { ...connectionDetail, outputClass: hoveredRuleOutput },
-            bubbles: true,
-            composed: true,
-          })
-        );
-        this.dispatchEvent(
-          new CustomEvent("deleteConnection", {
-            detail: { ...connectionDetail, outputClass: draggedRuleOutput },
-            bubbles: true,
-            composed: true,
-          })
+      // Create copy of connections to avoid modifying during iteration
+      const connectionSnapshot: Record<string, { node: string; output: string }[]> = {};
+      Object.keys(outputs).forEach((outputClass) => {
+        connectionSnapshot[outputClass] = outputs[outputClass].connections.map(
+          (c) => ({ ...c })
         );
       });
 
@@ -486,8 +474,10 @@ export class BranchNodeDetailView extends LitElementWw {
       ];
       const adjustment = hoveredOutputNumber < draggedOutputNumber ? 1 : -1;
 
-      // Iterate through outputs and adjust connections
-      Object.keys(outputs).forEach((outputClass, index) => {
+      const outputMapping: Record<string, string> = {};
+      outputMapping[draggedRuleOutput] = hoveredRuleOutput;
+      // Iterate through outputs
+      Object.keys(outputs).forEach((outputClass) => {
         const outputIdNumber = parseInt(outputClass.split("_")[1], 10);
 
         // Check if the output is between the hovered and dragged, excluding the dragged one
@@ -496,36 +486,59 @@ export class BranchNodeDetailView extends LitElementWw {
           outputIdNumber <= maxOutputNumber &&
           outputIdNumber !== draggedOutputNumber
         ) {
-          const newOutputClass = `output_${outputIdNumber + adjustment}`;
+          outputMapping[outputClass] = `output_${outputIdNumber + adjustment}`;
+        }
+      });
 
-          outputs[outputClass].connections?.forEach((connection) => {
-            const connectionDetail = {
-              outputNodeId: selectedNode.id,
-              inputNodeId: connection.node,
-              inputClass: "input_1",
-            };
+      // Delete old connections
+      Object.keys(outputMapping).forEach((oldOutputClass) => {
+        connectionSnapshot[oldOutputClass]?.forEach((connection) => {
+          this.dispatchEvent(
+            new CustomEvent("deleteConnection", {
+              detail: {
+                outputNodeId: selectedNode.id,
+                inputNodeId: connection.node,
+                outputClass: oldOutputClass,
+                inputClass: "input_1",
+              },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        });
+      });
 
-            this.dispatchEvent(
-              new CustomEvent("createConnection", {
-                detail: { ...connectionDetail, outputClass: newOutputClass },
-                bubbles: true,
-                composed: true,
-              })
-            );
-            this.dispatchEvent(
-              new CustomEvent("deleteConnection", {
-                detail: { ...connectionDetail, outputClass: outputClass },
-                bubbles: true,
-                composed: true,
-              })
-            );
-          });
+      // Create connections at new positions
+      Object.entries(outputMapping).forEach(([oldOutputClass, newOutputClass]) => {
+        connectionSnapshot[oldOutputClass]?.forEach((connection) => {
+          this.dispatchEvent(
+            new CustomEvent("createConnection", {
+              detail: {
+                outputNodeId: selectedNode.id,
+                inputNodeId: connection.node,
+                outputClass: newOutputClass,
+                inputClass: "input_1",
+              },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        });
+      });
 
-          staticCopyRules[index].output_id = newOutputClass;
+      // Update output_ids
+      Object.keys(outputs).forEach((outputClass, index) => {
+        if (outputMapping[outputClass] && outputClass !== draggedRuleOutput) {
+          staticCopyRules[index].output_id = outputMapping[outputClass];
         }
       });
 
       staticCopyRules[this.draggedIndex].output_id = hoveredRuleOutput;
+
+      // Restore saved targets
+      staticCopyRules.forEach((rule, index) => {
+        rule.target = savedTargets[index];
+      });
 
       //Update the rules index in the rules array according to drag by removing the rule and adding it at the drop position
       let [draggedRule] = staticCopyRules.splice(this.draggedIndex, 1);
