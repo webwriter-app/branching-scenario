@@ -27,29 +27,6 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "*",
-          "declaration": {
-            "name": "*",
-            "module": "src/widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.component"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "webwriter-gamebook-branch",
-          "declaration": {
-            "name": "WebWriterGamebookBranch",
-            "module": "/src/widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.component"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/widgets/webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.ts",
       "declarations": [],
       "exports": [
@@ -96,7 +73,7 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/widgets/webwriter-gamebook-page/webwriter-gamebook-page.ts",
+      "path": "src/widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.ts",
       "declarations": [],
       "exports": [
         {
@@ -104,15 +81,15 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "module": "src/widgets/webwriter-gamebook-page/webwriter-gamebook-page.component"
+            "module": "src/widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.component"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "webwriter-gamebook-page",
+          "name": "webwriter-gamebook-branch",
           "declaration": {
-            "name": "WebWriterGamebookPage",
-            "module": "/src/widgets/webwriter-gamebook-page/webwriter-gamebook-page.component"
+            "name": "WebWriterGamebookBranch",
+            "module": "/src/widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.component"
           }
         }
       ]
@@ -136,6 +113,29 @@
           "declaration": {
             "name": "WebWriterGamebookPopup",
             "module": "/src/widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.component"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-gamebook-page/webwriter-gamebook-page.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/widgets/webwriter-gamebook-page/webwriter-gamebook-page.component"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-gamebook-page",
+          "declaration": {
+            "name": "WebWriterGamebookPage",
+            "module": "/src/widgets/webwriter-gamebook-page/webwriter-gamebook-page.component"
           }
         }
       ]

@@ -1,6 +1,6 @@
 {
   "name": "@webwriter/branching-scenario",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "publishConfig": {
     "access": "public"
   },
@@ -82,7 +82,8 @@
     },
     "./package.json": "./package.json",
     "./icon": "./icon.svg",
-    "./editing-config.json": "./editing-config.json"
+    "./editing-config.json": "./editing-config.json",
+    "./custom-elements.json": "./custom-elements.json"
   },
   "editingConfig": {
     ".": {},
@@ -118,5 +119,6 @@
     "./widgets/node-detail-view": {
       "selectable": false
     }
-  }
+  },
+  "customElements": "custom-elements.json"
 }

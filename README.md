@@ -1,5 +1,5 @@
-# Branching Scenario (`@webwriter/branching-scenario@1.2.0`)
-[License: MIT](LICENSE) | Version: 1.2.0
+# Branching Scenario (`@webwriter/branching-scenario@1.2.1`)
+[License: MIT](LICENSE) | Version: 1.2.1
 
 Create adaptable learning experiences by authoring a gamebook, where you present the student with choices on how to continue.
 
