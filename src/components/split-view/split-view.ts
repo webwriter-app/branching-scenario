@@ -172,6 +172,7 @@ export class SplitView extends LitElementWw {
     // Add global listeners
     this.addEventListener("mousemove", this.onMouseMove);
     this.addEventListener("mouseup", this.onMouseUp);
+    this.addEventListener("mouseleave", this.onMouseUp);
   }
 
   /*
@@ -183,6 +184,14 @@ export class SplitView extends LitElementWw {
     // Remove global listeners
     this.removeEventListener("mousemove", this.onMouseMove);
     this.removeEventListener("mouseup", this.onMouseUp);
+
+    // Update the dividerPosition property to reflect the new height
+    const itemStart = this.shadowRoot.querySelector(
+      ".itemStart"
+    ) as HTMLElement;
+    this.editorStore.setDividerPosition(itemStart.style.height
+      ? parseInt(itemStart.style.height)
+      : this.startHeight);
   }
 
   /*
@@ -209,9 +218,6 @@ export class SplitView extends LitElementWw {
     // Adjust the height of the entire splitPanel accordingly
     const totalHeight = newHeight + this.itemEndHeight() + DIVIDER_HEIGHT;
     splitPanel.style.height = `${totalHeight}px`;
-
-    // Update the dividerPosition property to reflect the new height
-    this.editorStore.setDividerPosition(newHeight);
   }
 
   /*

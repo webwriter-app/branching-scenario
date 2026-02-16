@@ -27,6 +27,29 @@ export default css`
     color: darkgray;
   }
 
+  .node-not-found {
+    background-color: var(--sl-color-danger-50);
+    color: var(--sl-color-danger-800);
+    text-align: center;
+  }
+
+  .node-not-found sl-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .node-not-found sl-button::part(base):hover {
+    background-color: var(--sl-color-danger-100);
+    border-color: var(--sl-color-danger-300);
+    color: var(--sl-color-danger-800);
+  }
+
+  .node-not-found sl-button::part(base):active {
+    background-color: var(--sl-color-danger-200);
+    border-color: var(--sl-color-danger-400);
+    color: var(--sl-color-danger-700);
+  }
+
   .title-bar {
     display: flex;
     flex-direction: row;

@@ -26,6 +26,7 @@ import {
   SlDropdown,
   SlIcon,
   SlInput,
+  SlTooltip,
 } from "@shoelace-style/shoelace";
 
 //@tabler icons
@@ -76,6 +77,7 @@ export class NodeEditor extends LitElementWw {
       "sl-menu-item": SlMenuItem,
       "sl-dropdown": SlDropdown,
       "sl-menu-label": SlMenuLabel,
+      "sl-tooltip": SlTooltip,
       "node-editor-toolbar": NodeEditorToolbar,
       "node-editor-help-menu": NodeEditorHelpMenu,
     };
@@ -129,6 +131,11 @@ export class NodeEditor extends LitElementWw {
   @state() accessor pagesAdded = 1;
   @state() accessor popupsAdded = 1;
   @state() accessor branchesAdded = 1;
+
+  private hoverPreviousCanvasX: number | null = null;
+  private hoverPreviousCanvasY: number | null = null;
+  private hoverPreviousBackgroundTranslateX: number | null = null;
+  private hoverPreviousBackgroundTranslateY: number | null = null;
 
   @query("#drawflowEditorDiv") accessor drawflowEditorDiv;
   @queryAll('div[id*="node-"]') accessor nodeDivs;
@@ -286,19 +293,21 @@ export class NodeEditor extends LitElementWw {
         <div id="drawflowEditorDiv" style=${styleMap(gridStyles)}></div>
 
         <div class="zoomControls">
-          <sl-icon-button
-            id="jumpToOriginBtn"
-            src=${mapPin}
-            style="font-size: 18px;"
-            @click=${() => {
-              const nodes = this.editorStore.editorContent.drawflow.Home.data;
-              const originNode = Object.values(nodes).find(
-                (node: any) => node.class === "origin"
-              );
-              this.moveToNode(originNode as DrawflowNode, true);
-            }}
-          >
-          </sl-icon-button>
+          <sl-tooltip content=${msg("Jump to origin node")}>
+            <sl-icon-button
+              id="jumpToOriginBtn"
+              src=${mapPin}
+              style="font-size: 18px;"
+              @click=${() => {
+                const nodes = this.editorStore.editorContent.drawflow.Home.data;
+                const originNode = Object.values(nodes).find(
+                  (node: any) => node.class === "origin"
+                );
+                this.moveToNode(originNode as DrawflowNode, true);
+              }}
+            >
+            </sl-icon-button>
+          </sl-tooltip>
           <sl-divider vertical style="height: 20px; margin: 2px;"></sl-divider>
           <sl-icon-button
             id="zoomInBtn"
@@ -643,6 +652,44 @@ export class NodeEditor extends LitElementWw {
   }
 
   /*
+
+  */
+  private moveToCoords(
+    canvasX: number,
+    canvasY: number,
+    bgTranslateX: number,
+    bgTranslateY: number,
+    withAnimation: boolean
+  ) {
+    const drawflowContainer = this.drawflowEditorDiv.querySelector(".drawflow");
+    const zoom = this.editor.zoom;
+
+    if (drawflowContainer) {
+      // Add the transition class for smooth animation
+      if (withAnimation) {
+        drawflowContainer.classList.add("smooth-transition");
+        this.drawflowEditorDiv.classList.add("smooth-background-transition");
+      }
+
+      this.editor.canvas_x = canvasX;
+      this.editor.canvas_y = canvasY;
+      this.backgroundTranslateX = bgTranslateX;
+      this.backgroundTranslateY = bgTranslateY;
+
+      drawflowContainer.style.transform = `translate(${this.editor.canvas_x}px, ${this.editor.canvas_y}px) scale(${zoom})`;
+      this.requestUpdate();
+
+      if (withAnimation) {
+        // Optionally, remove the transition class after the animation is done
+        setTimeout(() => {
+          drawflowContainer.classList.remove("smooth-transition");
+          this.drawflowEditorDiv.classList.remove("smooth-background-transition");
+        }, 350);
+      }
+    }
+  }
+
+  /*
   
   */
   public moveToNode(node: DrawflowNode, withAnimation: Boolean) {
@@ -656,51 +703,29 @@ export class NodeEditor extends LitElementWw {
     const nodeWidth = nodeDiv.offsetWidth;
     const nodeHeight = nodeDiv.offsetHeight;
 
-    const drawflowContainer = this.drawflowEditorDiv.querySelector(".drawflow");
     const rect = this.drawflowEditorDiv.getBoundingClientRect();
 
-    if (drawflowContainer) {
-      // Add the transition class for smooth animation
-      if (withAnimation) {
-        drawflowContainer.classList.add("smooth-transition");
-        this.drawflowEditorDiv.classList.add("smooth-background-transition");
-      }
-      // Calculate the center of the origin node
-      const nodeCenterX = pos_x + nodeWidth / 2;
-      const nodeCenterY = pos_y + nodeHeight / 2;
+    // Calculate the center of the origin node
+    const nodeCenterX = pos_x + nodeWidth / 2;
+    const nodeCenterY = pos_y + nodeHeight / 2;
 
-      // Calculate the position of the editor and the node
-      const nodePosX =
-        nodeCenterX * zoom + canvas_x + (rect.width - rect.width * zoom) / 2;
-      const nodePosY =
-        nodeCenterY * zoom + canvas_y + (rect.height - rect.height * zoom) / 2;
+    // Calculate the position of the editor and the node
+    const nodePosX =
+      nodeCenterX * zoom + canvas_x + (rect.width - rect.width * zoom) / 2;
+    const nodePosY =
+      nodeCenterY * zoom + canvas_y + (rect.height - rect.height * zoom) / 2;
 
-      // Calculate the translation required to center the node
-      this.editor.canvas_x -= nodePosX - rect.width / 2;
-      this.editor.canvas_y -= nodePosY - rect.height / 2;
+    // Calculate the translation required to center the node
+    const newCanvasX = canvas_x - (nodePosX - rect.width / 2);
+    const newCanvasY = canvas_y - (nodePosY - rect.height / 2);
 
-      drawflowContainer.style.transform = `translate(${this.editor.canvas_x}px, ${this.editor.canvas_y}px) scale(${zoom})`;
+    this.backgroundLastX = this.backgroundTranslateX;
+    this.backgroundLastY = this.backgroundTranslateY;
 
-      this.backgroundLastX = this.backgroundTranslateX;
-      this.backgroundLastY = this.backgroundTranslateY;
-      this.backgroundTranslateX -= nodePosX - rect.width / 2;
-      this.backgroundTranslateY -= nodePosY - rect.height / 2;
-      this.requestUpdate();
+    const newBgTranslateX = this.backgroundTranslateX - (nodePosX - rect.width / 2);
+    const newBgTranslateY = this.backgroundTranslateY - (nodePosY - rect.height / 2);
 
-      if (withAnimation) {
-        // // // Optionally, remove the transition class after the animation is done
-        setTimeout(() => {
-          drawflowContainer.classList.remove("smooth-transition");
-          this.drawflowEditorDiv.classList.remove(
-            "smooth-background-transition"
-          );
-        }, 350); // Adjust the timeout duration to match your animation duration
-      }
-      // this.editorStore.setEditorPosition(
-      //   this.editor.canvas_x,
-      //   this.editor.canvas_y
-      // );
-    }
+    this.moveToCoords(newCanvasX, newCanvasY, newBgTranslateX, newBgTranslateY, !!withAnimation);
   }
 
   /*
@@ -1406,6 +1431,18 @@ export class NodeEditor extends LitElementWw {
     this.shadowRoot
       .querySelector(selector)
       ?.setAttribute("highlighted", "true");
+
+    // Save current position
+    this.hoverPreviousCanvasX = this.editor.canvas_x;
+    this.hoverPreviousCanvasY = this.editor.canvas_y;
+    this.hoverPreviousBackgroundTranslateX = this.backgroundTranslateX;
+    this.hoverPreviousBackgroundTranslateY = this.backgroundTranslateY;
+
+    // Center on the hovered node
+    const node = this.editor.getNodeFromId(nodeId);
+    if (node) {
+      this.moveToNode(node, true);
+    }
   }
 
   /*
@@ -1414,6 +1451,23 @@ export class NodeEditor extends LitElementWw {
   public _unhighlightNode(nodeId) {
     const selector = `div#node-${nodeId}.drawflow-node`;
     this.shadowRoot.querySelector(selector)?.removeAttribute("highlighted");
+
+    // Restore previous position
+    if (this.hoverPreviousCanvasX !== null && this.hoverPreviousCanvasY !== null) {
+      this.moveToCoords(
+        this.hoverPreviousCanvasX,
+        this.hoverPreviousCanvasY,
+        this.hoverPreviousBackgroundTranslateX!,
+        this.hoverPreviousBackgroundTranslateY!,
+        true
+      );
+
+      // Clear saved position
+      this.hoverPreviousCanvasX = null;
+      this.hoverPreviousCanvasY = null;
+      this.hoverPreviousBackgroundTranslateX = null;
+      this.hoverPreviousBackgroundTranslateY = null;
+    }
   }
 
   /*

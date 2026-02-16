@@ -57,18 +57,18 @@ export class GamebookEditorController implements ReactiveController {
   /*
 
   */
-  _selectContainer = (id: number) => {
+  _selectContainer = (id: number, setFocus: boolean = true) => {
     const node = this.nodeEditor.editor.getNodeFromId(id);
 
-    const container =
-      this.gamebookContainerManager._getContainerByDrawflowNodeId(Number(id));
+    const foundContainer = this.gamebookContainerManager._showGamebookContainerById(
+      Number(id)
+    );
 
-    if (container) {
+    if (foundContainer) {
+      const container =
+        this.gamebookContainerManager._getContainerByDrawflowNodeId(Number(id));
+      
       console.log("selectContainer", container);
-      this.gamebookContainerManager._showGamebookContainerById(
-        container.drawflowNodeId
-      );
-
       //container.focus();
 
       (this.host as any).editorState.setSelectedContainer(container);
@@ -98,11 +98,16 @@ export class GamebookEditorController implements ReactiveController {
       }
     } else {
       this._unselectContainer();
+			(this.host as any).editorState.setSelectedNode(node);
+			(this.host as any).editorState.setSelectedContainer();
+			this.gamebookContainerManager._hideAllGamebookContainers();
     }
 
     this.nodeEditor.unhighlightAllOutputs();
 
-    (this.host as any).focus(); // Update the host component after changes
+    if (setFocus) {
+      (this.host as any).focus();
+    }
     (this.host as any).reflectStoreChangesinDOM();
     this.host.requestUpdate(); // Update the host component after changes
   };
@@ -124,6 +129,65 @@ export class GamebookEditorController implements ReactiveController {
     console.log((this.host as any).editorState.selectedNode);
     this.host.requestUpdate(); // Update the host component after changes
     (this.host as any).reflectStoreChangesinDOM();
+  };
+
+  /*
+
+  */
+  _recreateContainerForSelectedNode = () => {
+    const selectedNode = (this.host as any).editorState.selectedNode;
+    if (selectedNode && selectedNode.id !== -1) {
+      const container = this._createContainerForNode(selectedNode);
+
+      if (selectedNode.class === "branch") {
+        const branchContainer = container as WebWriterGamebookBranch;
+
+        if (selectedNode.inputs["input_1"].connections.length > 0) {
+          const incomingNodeId =
+            selectedNode.inputs["input_1"].connections[0].node;
+          branchContainer.setAttribute("incomingContainerId", incomingNodeId);
+        }
+
+        // Remove all outputs and their connections since we cannot determine which rule corresponded to which output
+        // Always remove "output_1" because drawflow renumbers outputs after each removal
+        const outputCount = Object.keys(selectedNode.outputs).length;
+        for (let i = 0; i < outputCount; i++) {
+          this.nodeEditor.editor.removeNodeOutput(selectedNode.id, "output_1");
+        }
+
+        (this.host as any).editorState.setEditorContent(
+          this.nodeEditor.editor.drawflow
+        );
+        (this.host as any).editorState.setSelectedNode(
+          this.nodeEditor.editor.getNodeFromId(selectedNode.id)
+        );
+      } else {
+        // Recreate connection buttons
+        for (const [outputClass, output] of Object.entries(selectedNode.outputs)) {
+          for (const connection of (output as any).connections) {
+            const targetNode = this.nodeEditor.editor.getNodeFromId(connection.node);
+
+            if (targetNode.class === "branch") {
+              this.gamebookContainerManager.addSmartBranchButtonToContainer(
+                selectedNode,
+                targetNode,
+                outputClass,
+                connection.output
+              );
+            } else {
+              this.gamebookContainerManager.addConnectionButtonToContainer(
+                selectedNode,
+                targetNode,
+                outputClass,
+                connection.output
+              );
+            }
+          }
+        }
+      }
+      
+      this._selectContainer(selectedNode.id);
+    }
   };
 
   /*
@@ -211,6 +275,7 @@ export class GamebookEditorController implements ReactiveController {
     this._markUsedOutputs();
     this.host.requestUpdate(); // Update the host component after changes
     (this.host as any).focus(); // Update the host component after changes
+    return container;
   };
 
   /* 
@@ -867,6 +932,17 @@ export class GamebookEditorController implements ReactiveController {
   public moveTo(node: DrawflowNode) {
     this.nodeEditor.moveToNode(node, true);
     this._selectContainer(node.id);
+    this.nodeEditor.programaticallySelectNode(node.id);
+  }
+
+  /*
+
+  */
+  public _selectWwSelectedNode(id: number) {
+    const node = this.nodeEditor.editor.getNodeFromId(id);
+    this.nodeEditor.moveToNode(node, true);
+    // Do not set focus to the host to avoid changing the ProseMirror selection
+    this._selectContainer(node.id, false);
     this.nodeEditor.programaticallySelectNode(node.id);
   }
 }

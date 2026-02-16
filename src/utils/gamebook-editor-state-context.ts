@@ -28,6 +28,7 @@ export class GamebookEditorState {
   dividerPosition: number;
   editorIsCollapsed: boolean;
   editorContent: any;
+  detailViewHeight: number;
   selectedContainer?: any;
   branchIncomingContainer?: any;
   searchTerm: string;
@@ -45,6 +46,7 @@ export class GamebookEditorState {
     dividerPosition = 350,
     editorIsCollapsed = false,
     editorContent = null,
+    detailViewHeight = 400,
     copiedNode = NO_NODE_SELECTED,
     selectedContainer = undefined,
     branchIncomingContainer = undefined,
@@ -59,6 +61,7 @@ export class GamebookEditorState {
     this.dividerPosition = dividerPosition;
     this.editorIsCollapsed = editorIsCollapsed;
     this.editorContent = editorContent;
+    this.detailViewHeight = detailViewHeight;
     this.copiedNode = copiedNode;
     this.selectedContainer = selectedContainer;
     this.branchIncomingContainer = branchIncomingContainer;
@@ -154,6 +157,14 @@ export class GamebookEditorState {
   /*
 
   */
+  setDetailViewHeight(height = 400) {
+    this.detailViewHeight = height;
+    this.notifyObservers();
+  }
+
+  /*
+
+  */
   setCopiedNode(node = NO_COPY) {
     delete node.name;
     //delete node.inputs;
@@ -217,6 +228,7 @@ export class GamebookEditorState {
         dividerPosition: this.dividerPosition,
         editorIsCollapsed: this.editorIsCollapsed,
         editorContent: this.editorContent,
+        detailViewHeight: this.detailViewHeight,
         copiedNode: this.copiedNode,
         selectedContainer: this.selectedContainer, // Include selectedContainer here
         branchIncomingContainer: this.branchIncomingContainer,
@@ -296,6 +308,7 @@ export class GamebookEditorState {
       data.dividerPosition,
       data.editorIsCollapsed,
       data.editorContent,
+      data.detailViewHeight,
       data.copiedNode,
       undefined,
       data.branchIncomingContainer,

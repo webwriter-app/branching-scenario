@@ -264,6 +264,26 @@
   <source>Outputs (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}"/>)</source>
   <target>Ausgänge (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}"/>)</target>
 </trans-unit>
+<trans-unit id="s0bdca49248ba4820">
+  <source>Shortcuts</source>
+  <target>Shortcuts</target>
+</trans-unit>
+<trans-unit id="scda086c697995b38">
+  <source>The content of this node cannot be found.</source>
+  <target>Der Inhalt dieses Knotens kann nicht gefunden werden.</target>
+</trans-unit>
+<trans-unit id="s748c82bdc348610f">
+  <source>If reloading does not solve this issue, try recreating the node.</source>
+  <target>Wenn Neuladen dieses Problem nicht löst, versuchen Sie den Knoten neu zu erstellen.</target>
+</trans-unit>
+<trans-unit id="sad79fd47752866d8">
+  <source>Recreate node</source>
+  <target>Knoten neu erstellen</target>
+</trans-unit>
+<trans-unit id="sd1c592ccade3cd3c">
+  <source>Jump to origin node</source>
+  <target>Zum Ursprungsknoten</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

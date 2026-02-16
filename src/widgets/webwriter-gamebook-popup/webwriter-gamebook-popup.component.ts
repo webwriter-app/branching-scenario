@@ -1,13 +1,10 @@
-import { html, css, LitElement, unsafeCSS } from "lit";
+import { html, css } from "lit";
 import { LitElementWw } from "@webwriter/lit";
 import {
-  customElement,
   property,
   query,
-  state,
   queryAssignedElements,
 } from "lit/decorators.js";
-import { DrawflowNode } from "drawflow";
 
 import { msg, localized } from "@lit/localize";
 import { WebWriterGamebookButton } from "../webwriter-gamebook-button/webwriter-gamebook-button.component";
@@ -15,11 +12,17 @@ import { WebWriterGamebookBranchButton } from "../webwriter-gamebook-branch-butt
 import { WebWriterGamebookOptions } from "../../components/options-panel/webwriter-gamebook-options";
 
 //Shoelace
-import { SlButton, SlDialog } from "@shoelace-style/shoelace";
+import { SlDialog } from "@shoelace-style/shoelace";
 
+/**
+ * Represents a popup dialog in the gamebook
+ */
 @localized()
 export class WebWriterGamebookPopup extends LitElementWw {
-  //import CSS
+  /**
+   * import CSS
+   * @internal
+   */
   static get styles() {
     return css`
       :host(:not([contenteditable="true"]):not([contenteditable=""])) .page {
@@ -71,7 +74,10 @@ export class WebWriterGamebookPopup extends LitElementWw {
     `;
   }
 
-  //registering custom elements used in the widget
+  /**
+   * registering custom elements used in the widget
+   * @internal
+   */
   static get scopedElements() {
     return {
       "sl-dialog": SlDialog,
@@ -79,43 +85,51 @@ export class WebWriterGamebookPopup extends LitElementWw {
       "webwriter-gamebook-options": WebWriterGamebookOptions,
     };
   }
-  //associated node id
+  /** associated node id */
   @property({ type: Number, attribute: true, reflect: true })
   accessor drawflowNodeId;
 
+  /** @internal */
   @property({ type: Number, attribute: true, reflect: true })
   accessor tabIndex = -1;
 
+  /** The buttons in the popup */
   @queryAssignedElements({
     flatten: true,
     selector: "webwriter-gamebook-button, webwriter-gamebook-branch-button",
   })
   accessor buttons;
 
+  /** The title of the popup */
   @property({ type: String, attribute: true, reflect: true })
   accessor pageTitle;
 
+  /** The content of the popup */
   @queryAssignedElements({
     flatten: true,
   })
-  accessor slotContent;
+  accessor slotContent: Array<HTMLElement>;
 
+  /** The Shoelace dialog element */
   @query("#dialog") accessor dialog: SlDialog;
 
+  /** The title label of the dialog */
   @property({ type: String, attribute: true, reflect: true })
   accessor titleLabel = "Dialog";
+  /** Whether the header should be disabled */
   @property({ type: Boolean, attribute: true, reflect: true })
   accessor noHeader = false;
+  /** Whether closing the dialog should be prevented */
   @property({ type: Boolean, attribute: true, reflect: true })
   accessor preventClosing = true;
+  /** The id of the branch connected to the page */
   @property({ type: Number, attribute: true, reflect: true })
   accessor branchesOff = -1;
 
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
 
-  /* 
-  
+  /*
   
   */
   constructor() {
@@ -125,6 +139,53 @@ export class WebWriterGamebookPopup extends LitElementWw {
 
   /* 
   
+  */
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener("keydown", this._handleKeydown, true);
+
+    const fixLayoutShiftSheet = new CSSStyleSheet();
+    fixLayoutShiftSheet.replaceSync("html.sl-scroll-lock { scrollbar-gutter: auto !important }");
+
+    this.addEventListener("sl-show", () => {
+      if (this.ownerDocument.defaultView.innerWidth <= this.ownerDocument.documentElement.clientWidth) {
+        this.ownerDocument.adoptedStyleSheets.push(fixLayoutShiftSheet);
+      }
+    });
+    this.addEventListener("sl-hide", () => {
+      setTimeout(() => {
+        this.ownerDocument.adoptedStyleSheets = this.ownerDocument.adoptedStyleSheets.filter(
+          (sheet) => sheet !== fixLayoutShiftSheet
+        );
+      }, 300);
+    });
+  }
+
+  /*
+
+  */
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener("keydown", this._handleKeydown);
+  }
+
+  /*
+   * Handles CTRL+A to select all content within the page instead of the whole widget
+   */
+  private _handleKeydown = (event: KeyboardEvent) => {
+    if ((event.metaKey || event.ctrlKey) && event.key === "a") {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(this);
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    }
+  };
+
+  /* 
   
   */
   protected firstUpdated(_changedProperties: any): void {
@@ -187,29 +248,41 @@ export class WebWriterGamebookPopup extends LitElementWw {
   */
   public hide() {
     this.style.display = "none";
+    this.stopAllMedia();
   }
 
-  /*
-
-
-  */
+  /**
+   * Enables the popup
+   */
   public show() {
     this.style.display = "block";
+  }  
+  
+  /**
+   * Stops all HTML media elements in the popup
+   */
+  private stopAllMedia() {
+    const mediaElements = this.slotContent.filter((el) =>
+      el.matches("audio, video")
+    ) as (HTMLAudioElement | HTMLVideoElement)[];
+
+    mediaElements.forEach((media) => {
+      media.pause();
+      media.currentTime = 0;
+    });
   }
 
-  /*
-
-
-  */
+  /**
+   * Hides the popup
+   */
   public hideDialog() {
     this.dialog.hide();
     this.style.display = "none";
   }
 
-  /*
-
-
-*/
+  /**
+   * Shows the popup
+   */
   public showDialog() {
     this.style.display = "block";
     this.dialog.show();
@@ -220,7 +293,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
 
   */
   private mutationCallback = (mutationList: MutationRecord[]) => {
-    mutationList.forEach(({ type, removedNodes }) => {
+    mutationList.forEach(({ type, removedNodes, attributeName }) => {
       if (type === "childList") {
         removedNodes.forEach((node) => {
           const element = node as HTMLElement;
@@ -266,6 +339,15 @@ export class WebWriterGamebookPopup extends LitElementWw {
             }
           }
         });
+      } else if (type === "attributes" && attributeName === "class") {
+        if (this.classList.contains("ProseMirror-selectednode")) {
+          const event = new CustomEvent("nodeWwSelected", {
+            detail: { nodeId: this.drawflowNodeId },
+            bubbles: true,
+            composed: true,
+          });
+          this.dispatchEvent(event);
+        }
       }
     });
 

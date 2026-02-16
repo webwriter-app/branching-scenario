@@ -1,0 +1,144 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-branching-scenario/webwriter-branching-scenario.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/widgets/webwriter-branching-scenario/webwriter-branching-scenario.component"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-branching-scenario",
+          "declaration": {
+            "name": "WebWriterBranchingScenario",
+            "module": "/src/widgets/webwriter-branching-scenario/webwriter-branching-scenario.component"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/widgets/webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-gamebook-branch-button",
+          "declaration": {
+            "name": "WebWriterGamebookBranchButton",
+            "module": "/src/widgets/webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-gamebook-button/webwriter-gamebook-button.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/widgets/webwriter-gamebook-button/webwriter-gamebook-button.component"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-gamebook-button",
+          "declaration": {
+            "name": "WebWriterGamebookButton",
+            "module": "/src/widgets/webwriter-gamebook-button/webwriter-gamebook-button.component"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.component"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-gamebook-branch",
+          "declaration": {
+            "name": "WebWriterGamebookBranch",
+            "module": "/src/widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.component"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.component"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-gamebook-popup",
+          "declaration": {
+            "name": "WebWriterGamebookPopup",
+            "module": "/src/widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.component"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-gamebook-page/webwriter-gamebook-page.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/widgets/webwriter-gamebook-page/webwriter-gamebook-page.component"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-gamebook-page",
+          "declaration": {
+            "name": "WebWriterGamebookPage",
+            "module": "/src/widgets/webwriter-gamebook-page/webwriter-gamebook-page.component"
+          }
+        }
+      ]
+    }
+  ]
+}

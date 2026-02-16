@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en" trgLang="de">
+<file id="." original=".">
+<unit id="description"><segment><source>Create adaptable learning experiences by authoring a gamebook, where you present the student with choices on how to continue.</source><target>Schaffen Sie anpassungsfähige Lernerfahrungen, indem Sie ein Spielbuch erstellen, in dem Sie den Schülern verschiedene Optionen für den weiteren Verlauf anbieten.</target></segment></unit>
+</file>
+<file id="./widgets/webwriter-branching-scenario" original="./widgets/webwriter-branching-scenario">
+<unit id="label"><segment><source></source><target></target></segment></unit>
+</file>
+</xliff>

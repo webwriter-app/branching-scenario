@@ -164,7 +164,7 @@ export class GamebookContainerManager extends LitElementWw {
 
 
   */
-  public _showGamebookContainerById(nodeId: number) {
+  public _showGamebookContainerById(nodeId: number): boolean {
     let isContainerShown = false; // Flag to track if any container is shown
 
     this.gamebookContainers.forEach((container) => {
@@ -178,7 +178,22 @@ export class GamebookContainerManager extends LitElementWw {
 
     if (!isContainerShown) {
       console.error(`Error with finding element for node (ID: ${nodeId})`);
+      this.dispatchEvent(
+        new CustomEvent("containerNotFound", {
+          bubbles: true,
+          composed: true,
+        })
+      );
+    } else {
+      this.dispatchEvent(
+        new CustomEvent("containerFound", {
+          bubbles: true,
+          composed: true,
+        })
+      );
     }
+
+    return isContainerShown;
   }
 
   /*
@@ -189,7 +204,11 @@ export class GamebookContainerManager extends LitElementWw {
     console.log("hideAll");
     this.gamebookContainers.forEach((container) => {
       //console.log(container);
-      container.style.display = "none";
+      if (typeof container.hide === "function") {
+        container.hide();
+      } else {
+        container.style.display = "none";
+      }
       //console.log(container);
     });
   }

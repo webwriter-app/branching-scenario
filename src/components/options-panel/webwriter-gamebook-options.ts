@@ -133,7 +133,12 @@ export class WebWriterGamebookOptions extends LitElementWw {
           (key) => html`<sl-menu-item
               style="width: 100%"
               value="${data[key].id}"
-              @click=${() => this.moveTo(data[key])}
+              @click=${() => {
+                this.unhighlightNode(data[key].id);
+                this.moveTo(data[key]);
+              }}
+              @mouseenter=${() => this.highlightNode(data[key].id)}
+              @mouseleave=${() => this.unhighlightNode(data[key].id)}
               ><p>${data[key].data.title}</p>
               ${data[key].class === "page" || data[key].class === "origin"
                 ? html` <sl-icon slot="prefix" src=${file}></sl-icon> `
@@ -398,6 +403,36 @@ export class WebWriterGamebookOptions extends LitElementWw {
     this.dispatchEvent(
       new CustomEvent("moveTo", {
         detail: { node: node },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  /*
+
+  */
+  private highlightNode(nodeId) {
+    this.dispatchEvent(
+      new CustomEvent("highlightNode", {
+        detail: {
+          nodeId: nodeId,
+        },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  /*
+
+  */
+  private unhighlightNode(nodeId) {
+    this.dispatchEvent(
+      new CustomEvent("unhighlightNode", {
+        detail: {
+          nodeId: nodeId,
+        },
         bubbles: true,
         composed: true,
       })

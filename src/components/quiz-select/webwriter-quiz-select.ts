@@ -132,95 +132,86 @@ export class WebWriterQuizSelect extends LitElement {
           : html`${repeat(
               this.options,
               (element) => (element as HTMLElement).id, // or use another unique identifier
-              (element) => html`
-                <sl-option value=${`${(element as HTMLElement).id}`}>
-                  ${(element as HTMLElement).tagName
-                    .toLowerCase()
-                    .includes("webwriter-task")
-                    ? html`${(element as HTMLElement).children[1].tagName
-                        .replace("WEBWRITER-", "")
-                        .toLowerCase()
-                        .replace(/^./, (str) => str.toUpperCase())}
-                      ${(element as HTMLElement).children[1]?.tagName
-                        .toLowerCase()
-                        .includes("order")
-                        ? html`
-                            <sl-icon slot="prefix" src=${number123}></sl-icon>
-                            <p
-                              slot="suffix"
-                              style="color: lightgray; margin: 0px; padding: 4px;"
-                            >
-                              (${element.children[0].textContent + "..."})
-                            </p>
-                          `
-                        : (element as HTMLElement).children[1].tagName
-                            .toLowerCase()
-                            .includes("choice")
-                        ? html`<sl-icon slot="prefix" src=${checkbox}></sl-icon>
-                            <p
-                              slot="suffix"
-                              style="color: lightgray; margin: 0px; padding: 4px;"
-                            >
-                              (${element.children[0].textContent + "..."})
-                            </p> `
-                        : (element as HTMLElement).children[1].tagName
-                            .toLowerCase()
-                            .includes("text")
-                        ? html`<sl-icon
-                              slot="prefix"
-                              src=${blockquote}
-                            ></sl-icon>
-                            <p
-                              slot="suffix"
-                              style="color: lightgray; margin: 0px; padding: 4px;"
-                            >
-                              (${element.children[0].textContent + "..."})
-                            </p> `
-                        : (element as HTMLElement).children[1].tagName
-                            .toLowerCase()
-                            .includes("mark")
-                        ? html`<sl-icon
-                              slot="prefix"
-                              src=${highlight}
-                            ></sl-icon>
-                            <p
-                              slot="suffix"
-                              style="color: lightgray; margin: 0px; padding: 4px;"
-                            >
-                              (${element.children[0].textContent + "..."})
-                            </p> `
-                        : (element as HTMLElement).children[1].tagName
-                            .toLowerCase()
-                            .includes("speech")
-                        ? html`<sl-icon
-                              slot="prefix"
-                              src=${microphone}
-                            ></sl-icon>
-                            <p
-                              slot="suffix"
-                              style="color: lightgray; margin: 0px; padding: 4px;"
-                            >
-                              (${element.children[0].textContent + "..."})
-                            </p> `
-                        : null} `
-                    : (element as HTMLElement).tagName
-                        .toLowerCase()
-                        .includes("webwriter-quiz")
-                    ? html`
-                        ${(element as HTMLElement).tagName
-                          .replace("WEBWRITER-", "")
-                          .toLowerCase()
-                          .replace(/^./, (str) => str.toUpperCase())}
-                        ${element.tagName.toLowerCase().includes("quiz")
+              (element) => {
+                const quizType = this._getQuizType(element as HTMLElement);
+
+                return html`
+                  <sl-option value=${`${(element as HTMLElement).id}`}>
+                    ${(element as HTMLElement).tagName
+                      .toLowerCase()
+                      .includes("webwriter-task")
+                      ? html`${this._getQuizTypeName(element as HTMLElement)}
+                        ${quizType === QuizType.ORDER
+                          ? html`
+                              <sl-icon slot="prefix" src=${number123}></sl-icon>
+                              <p
+                                slot="suffix"
+                                style="color: lightgray; margin: 0px; padding: 4px;"
+                              >
+                                (${element.children[0].textContent + "..."})
+                              </p>
+                            `
+                          : quizType === QuizType.CHOICE
+                          ? html`<sl-icon slot="prefix" src=${checkbox}></sl-icon>
+                              <p
+                                slot="suffix"
+                                style="color: lightgray; margin: 0px; padding: 4px;"
+                              >
+                                (${element.children[0].textContent + "..."})
+                              </p> `
+                          : quizType === QuizType.TEXT
                           ? html`<sl-icon
-                              slot="prefix"
-                              src=${helpOctagon}
-                            ></sl-icon>`
-                          : null}
-                      `
-                    : null}
-                </sl-option>
-              `
+                                slot="prefix"
+                                src=${blockquote}
+                              ></sl-icon>
+                              <p
+                                slot="suffix"
+                                style="color: lightgray; margin: 0px; padding: 4px;"
+                              >
+                                (${element.children[0].textContent + "..."})
+                              </p> `
+                          : quizType === QuizType.MARK
+                          ? html`<sl-icon
+                                slot="prefix"
+                                src=${highlight}
+                              ></sl-icon>
+                              <p
+                                slot="suffix"
+                                style="color: lightgray; margin: 0px; padding: 4px;"
+                              >
+                                (${element.children[0].textContent + "..."})
+                              </p> `
+                          : quizType === QuizType.SPEECH
+                          ? html`<sl-icon
+                                slot="prefix"
+                                src=${microphone}
+                              ></sl-icon>
+                              <p
+                                slot="suffix"
+                                style="color: lightgray; margin: 0px; padding: 4px;"
+                              >
+                                (${element.children[0].textContent + "..."})
+                              </p> `
+                          : null} `
+                      : (element as HTMLElement).tagName
+                          .toLowerCase()
+                          .includes("webwriter-quiz")
+                      ? html`
+                          ${(element as HTMLElement).tagName
+                            .replace("WEBWRITER-", "")
+                            .toLowerCase()
+                            .replace(/^./, (str) => str.toUpperCase())}
+                          ${element.tagName.toLowerCase().includes("quiz")
+                            ? html`<sl-icon
+                                slot="prefix"
+                                src=${helpOctagon}
+                              ></sl-icon>`
+                            : null}
+                        `
+                      : null}
+                  </sl-option>
+                `
+              }
             )}`}
       </sl-select>
     `;
@@ -237,6 +228,54 @@ export class WebWriterQuizSelect extends LitElement {
       this.value = selectedValue;
     }
   }
+
+  private _getQuizType(element: HTMLElement): QuizType {
+    const tagName = element.tagName.toLowerCase();
+
+    if (tagName !== "webwriter-task") {
+      return QuizType.UNKNOWN;
+    }
+
+    const childTagNames = Array.from(element.children).map((child) =>
+      child.tagName.toLowerCase()
+    );
+
+    for (const childTagName of childTagNames) {
+      if (childTagName.includes("order")) {
+        return QuizType.ORDER;
+      } else if (childTagName.includes("choice")) {
+        return QuizType.CHOICE;
+      } else if (childTagName.includes("text")) {
+        return QuizType.TEXT;
+      } else if (childTagName.includes("mark")) {
+        return QuizType.MARK;
+      } else if (childTagName.includes("speech")) {
+        return QuizType.SPEECH;
+      }
+    }
+
+    return QuizType.UNKNOWN;
+  }
+
+  private _getQuizTypeName(element: HTMLElement): string {
+    if (this._getQuizType(element) !== QuizType.UNKNOWN) {
+      return this._getQuizType(element);
+    } else {
+      return Array.from(element.children).at(-1).tagName
+        .toLowerCase()
+        .replace("webwriter-", "")
+        .replace(/^./, (str) => str.toUpperCase())
+    }
+  }
+}
+
+enum QuizType {
+  ORDER = "Order",
+  CHOICE = "Choice",
+  TEXT = "Text",
+  MARK = "Mark",
+  SPEECH = "Speech",
+  UNKNOWN = "Unknown",
 }
 
 // ${(element as HTMLElement).children[1]?.tagName

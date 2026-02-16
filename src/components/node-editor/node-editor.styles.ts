@@ -87,7 +87,7 @@ export default css`
 
     float: right;
     position: absolute;
-    bottom: 45px;
+    bottom: 40px;
     right: 20px;
     z-index: 0;
 
@@ -100,7 +100,7 @@ export default css`
     /* color: white;
     background: #555555; */
 
-    font-size: 8px;
+    font-size: 12px;
   }
 
   .zoomValue.fade-in-out {
