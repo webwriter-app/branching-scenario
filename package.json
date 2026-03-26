@@ -5,6 +5,7 @@
     "access": "public"
   },
   "description": "Create adaptable learning experiences by authoring a gamebook, where you present the student with choices on how to continue.",
+  "repository": "github:@webwriter-app/branching-scenario",
   "keywords": [
     "webwriter-widget",
     "widget-lang-en",
