@@ -8,8 +8,6 @@
   "repository": "github:@webwriter-app/branching-scenario",
   "keywords": [
     "webwriter-widget",
-    "widget-lang-en",
-    "widget-lang-de",
     "widget-presentational",
     "widget-practical",
     "isced2011-1",
@@ -30,11 +28,15 @@
     "iscedf2013-08",
     "iscedf2013-09",
     "iscedf2013-10",
+    "widget-lang-en",
     "widget-lang-en-US",
     "widget-lang-en-GB",
     "widget-lang-en-CA",
     "widget-lang-en-AU",
-    "widget-lang-en-IN"
+    "widget-lang-en-IN",
+    "widget-lang-fr",
+    "widget-lang-de",
+    "widget-lang-es"
   ],
   "license": "MIT",
   "author": "Andreas Dymek",

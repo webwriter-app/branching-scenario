@@ -98,7 +98,33 @@ export class WebWriterBranchingScenario extends LocalizedElement {
     return { title, editorContent };
   }
 
+  private applySnippetLabels() {
+    const seed = this.querySelector(':scope > script[type="application/json"][slot="data"][data-branching-labels]');
+    if (!seed) return;
+    let labels: {
+      pages?: Record<string, {pagetitle?: string; titlelabel?: string}>;
+      buttons?: Record<string, string>;
+    };
+    try { labels = JSON.parse(seed.textContent ?? ""); }
+    catch { return; }
+    if (!labels || typeof labels !== "object") return;
+
+    for (const page of this.querySelectorAll(":scope > webwriter-gamebook-page, :scope > webwriter-gamebook-popup")) {
+      const entry = labels.pages?.[page.getAttribute("drawflownodeid") ?? ""];
+      for (const attribute of ["pagetitle", "titlelabel"] as const) {
+        if (typeof entry?.[attribute] === "string") page.setAttribute(attribute, entry[attribute]);
+      }
+    }
+    for (const button of this.querySelectorAll("webwriter-gamebook-button[identifier]")) {
+      if (button.closest("webwriter-branching-scenario") !== this) continue;
+      const name = labels.buttons?.[button.getAttribute("identifier") ?? ""];
+      if (typeof name === "string") button.setAttribute("name", name);
+    }
+    seed.remove();
+  }
+
   private restoreScenario() {
+    this.applySnippetLabels();
     const text = this.dataText;
     if (this.lastDataText === text) return;
     this.lastDataText = text;
