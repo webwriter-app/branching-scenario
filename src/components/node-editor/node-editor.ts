@@ -1,4 +1,4 @@
-import { html, css, PropertyValues } from "lit";
+import { html, css } from "lit";
 import { consume } from "@lit/context";
 import { LitElementWw } from "@webwriter/lit";
 import {
@@ -213,17 +213,10 @@ export class NodeEditor extends LitElementWw {
     this.moveToNode(originNode as DrawflowNode, false);
   }
 
-  protected updated(_changedProperties: PropertyValues): void {
-    if (_changedProperties.has("editorStore")) {
-      //TODO: support undo/redo
-      // let editorContent = this.addHTMLToNodes(this.editorStore.editorContent);
-      // this.editor.import(editorContent);
-      // if (this.editorStore.selectedNode.id !== -1) {
-      //   this.programaticallySelectNode(
-      //     this.editorStore.selectedNode.id.toString()
-      //   );
-      // }
-    }
+  restoreAuthoredContent(content: GamebookEditorState["editorContent"]) {
+    if (!this.editor) return;
+    if (content) this.editor.import(this.addHTMLToNodes(structuredClone(content)));
+    else this.editor.clear();
   }
 
   /*

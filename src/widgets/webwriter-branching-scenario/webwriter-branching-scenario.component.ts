@@ -111,6 +111,7 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
     }));
     this.editorState.addObserver(this.onStoreChanged);
     this.savedState = JSON.stringify(this.authoredState());
+    this.nodeEditor?.restoreAuthoredContent(this.editorState.editorContent);
   }
 
   private onStoreChanged = () => {
