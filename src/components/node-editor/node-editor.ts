@@ -1637,33 +1637,22 @@ export class NodeEditor extends LitElementWw {
         incomingContainerIdAttr.value = indexMap[oldId].toString();
       }
 
-      const rulesAttr = container.attributes.find(
-        (attr) => attr.name === "rules"
-      );
-
-      if (rulesAttr) {
-        const rules = JSON.parse(rulesAttr.value);
-        rules.forEach((rule) => {
-          const oldId = Number(rule.target);
-          rule.target = indexMap[oldId].toString();
-        });
-        rulesAttr.value = JSON.stringify(rules);
-      }
-
-      const elseRuleAttr = container.attributes.find(
-        (attr) => attr.name === "elserule"
-      );
-
-      if (elseRuleAttr) {
-        const elseRule = JSON.parse(elseRuleAttr.value);
-        const oldId = Number(elseRule.target);
-        elseRule.target = indexMap[oldId].toString();
-        elseRuleAttr.value = JSON.stringify(elseRule);
-      }
-
-      // Update the datatargetid and identifier in the innerHTML
+      // Update authored branch rules and button targets in the template.
       const parser = new DOMParser();
       const doc = parser.parseFromString(container.innerHTML, "text/html");
+      if (container.tagName === "webwriter-gamebook-branch") {
+        const block = doc.body.querySelector(':scope > script[type="application/json"][slot="data"]') ??
+          doc.head.querySelector(':scope > script[type="application/json"][slot="data"]');
+        if (block) {
+          const data = JSON.parse(block.textContent ?? "{}");
+          for (const rule of [...(data.rules ?? []), data.elseRule].filter(Boolean)) {
+            const target = indexMap[Number(rule.target)];
+            if (target !== undefined) rule.target = target;
+          }
+          block.textContent = JSON.stringify(data).replace(/</g, "\\u003c");
+          doc.body.append(block);
+        }
+      }
       const buttons = doc.querySelectorAll(
         "webwriter-gamebook-button, webwriter-gamebook-branch-button"
       );

@@ -27,6 +27,10 @@ import {
  */
 @localized()
 export class WebWriterGamebookPage extends LitElementWw {
+  readonly options = {
+    pageTitle: {type: String, label: {_: "Page title", de: "Seitentitel"}},
+  };
+
   /** The state of the editor in a stringified JSON format */
   @consume({ context: editorState, subscribe: true })
   @property({ type: Object, attribute: true, reflect: false })
@@ -175,11 +179,7 @@ export class WebWriterGamebookPage extends LitElementWw {
 
   */
   render() {
-    return html`<slot class="page"></slot>
-      <webwriter-gamebook-options
-        class="author-only"
-        part="options"
-      ></webwriter-gamebook-options> `;
+    return html`<slot class="page"></slot> `;
   }
 
   /**

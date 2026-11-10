@@ -19,6 +19,12 @@ import { SlDialog } from "@shoelace-style/shoelace";
  */
 @localized()
 export class WebWriterGamebookPopup extends LitElementWw {
+  readonly options = {
+    pageTitle: {type: String, label: {_: "Page title", de: "Seitentitel"}},
+    titleLabel: {type: String, label: {_: "Dialog title", de: "Dialogtitel"}},
+    noHeader: {type: Boolean, label: {_: "Hide dialog header", de: "Dialogkopf ausblenden"}},
+  };
+
   /**
    * import CSS
    * @internal
@@ -226,10 +232,6 @@ export class WebWriterGamebookPopup extends LitElementWw {
     return html` ${this.isContentEditable
       ? html`
           <slot class="page"></slot>
-          <webwriter-gamebook-options
-            class="author-only"
-            part="options"
-          ></webwriter-gamebook-options>
         `
       : html`
           <sl-dialog
