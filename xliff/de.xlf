@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
 <file target-language="de" source-language="en">
 <body>
 <trans-unit id="sf9aee319a006c9b4">
@@ -63,8 +63,8 @@
   <target>Knoten löschen</target>
 </trans-unit>
 <trans-unit id="sf80fa7d9bacf0a78">
-  <source>You are about to delete the node <x id="0" equiv-text="${this.editorStore.selectedNode.data.title}"/>.  Do you want to proceed?</source>
-  <target>Sie sind dabei, den Knoten  <x id="0" equiv-text="${this.editorStore.selectedNode.data.title}"/> zu löschen. Wollen Sie fortfahren?</target>
+  <source>You are about to delete the node <x id="0" equiv-text="${this.editorStore.selectedNode.data.title}" />.  Do you want to proceed?</source>
+  <target>Sie sind dabei, den Knoten  <x id="0" equiv-text="${this.editorStore.selectedNode.data.title}" /> zu löschen. Wollen Sie fortfahren?</target>
 </trans-unit>
 <trans-unit id="s0491e53d9de2e899">
   <source>Abort</source>
@@ -83,16 +83,16 @@
   <target>einen Namen!</target>
 </trans-unit>
 <trans-unit id="s6fd70a9a8c6d8355">
-  <source>Untitled Page <x id="0" equiv-text="${this.pagesAdded}"/></source>
-  <target>Unbenannte Seite <x id="0" equiv-text="${this.pagesAdded}"/></target>
+  <source>Untitled Page <x id="0" equiv-text="${this.pagesAdded}" /></source>
+  <target>Unbenannte Seite <x id="0" equiv-text="${this.pagesAdded}" /></target>
 </trans-unit>
 <trans-unit id="s9e1a091f1c7c53b0">
-  <source>Untitled Popup <x id="0" equiv-text="${this.popupsAdded}"/></source>
-  <target>Unbenanntes Popup <x id="0" equiv-text="${this.popupsAdded}"/></target>
+  <source>Untitled Popup <x id="0" equiv-text="${this.popupsAdded}" /></source>
+  <target>Unbenanntes Popup <x id="0" equiv-text="${this.popupsAdded}" /></target>
 </trans-unit>
 <trans-unit id="s1a30b9a78d158c62">
-  <source>Untitled Branch <x id="0" equiv-text="${this.branchesAdded}"/></source>
-  <target>Unbenannte Verzweigung <x id="0" equiv-text="${this.branchesAdded}"/></target>
+  <source>Untitled Branch <x id="0" equiv-text="${this.branchesAdded}" /></source>
+  <target>Unbenannte Verzweigung <x id="0" equiv-text="${this.branchesAdded}" /></target>
 </trans-unit>
 <trans-unit id="s801ca3f7c573aebd">
   <source>Not connected</source>
@@ -155,12 +155,12 @@
   <target>Ausgang löschen</target>
 </trans-unit>
 <trans-unit id="sa805b1e63ef896e4">
-  <source>You are about to delete <x id="0" equiv-text="${this.deleteOutputClass}"/> which has an outgoing connection. Do you wish to proceed?</source>
-  <target> Sie sind im Begriff den Ausgang <x id="0" equiv-text="${this.deleteOutputClass}"/> zu löschen, obwohl dieser eine Verbindung hat. Wollen Sie fortfahren?</target>
+  <source>You are about to delete <x id="0" equiv-text="${this.deleteOutputClass}" /> which has an outgoing connection. Do you wish to proceed?</source>
+  <target> Sie sind im Begriff den Ausgang <x id="0" equiv-text="${this.deleteOutputClass}" /> zu löschen, obwohl dieser eine Verbindung hat. Wollen Sie fortfahren?</target>
 </trans-unit>
 <trans-unit id="s5fc4562bab5298a4">
-  <source>Incoming (<x id="0" equiv-text="${this.editorStore.selectedNode?.inputs[&quot;input_1&quot;]?.connections&#10;    .length ?? 0}"/>)</source>
-  <target> Eingehend (<x id="0" equiv-text="${this.editorStore.selectedNode?.inputs[&quot;input_1&quot;]?.connections&#10;    .length ?? 0}"/>)</target>
+  <source>Incoming (<x id="0" equiv-text="${this.editorStore.selectedNode?.inputs[&quot;input_1&quot;]?.connections&#10;    .length ?? 0}" />)</source>
+  <target> Eingehend (<x id="0" equiv-text="${this.editorStore.selectedNode?.inputs[&quot;input_1&quot;]?.connections&#10;    .length ?? 0}" />)</target>
 </trans-unit>
 <trans-unit id="s09134f2a8084426d">
   <source>Accessing</source>
@@ -232,37 +232,37 @@
 </trans-unit>
 <trans-unit id="h753ba5217e074fe6">
   <source>
-              Use the <x id="0" equiv-text="&lt;strong&gt;"/>search bar<x id="1" equiv-text="&lt;/strong&gt;"/> to find nodes by
-              <x id="2" equiv-text="&lt;strong&gt;"/>title<x id="3" equiv-text="&lt;/strong&gt;"/>, <x id="4" equiv-text="&lt;strong&gt;"/>type<x id="5" equiv-text="&lt;/strong&gt;"/>, and
-              <x id="6" equiv-text="&lt;strong&gt;"/>content<x id="7" equiv-text="&lt;/strong&gt;"/>. <x id="8" equiv-text="&lt;br&gt;&lt;br&gt;&#10;              &lt;em&gt;"/>Tip:<x id="9" equiv-text="&lt;/em&gt;"/> Clicking the search bar will display a
-              <x id="10" equiv-text="&lt;strong&gt;"/>list of all nodes<x id="11" equiv-text="&lt;/strong&gt;"/>. Click on any node in the list
-              to <x id="12" equiv-text="&lt;strong&gt;"/>select it in the node editor<x id="13" equiv-text="&lt;/strong&gt;"/>.
+              Use the <x id="0" equiv-text="&lt;strong&gt;" />search bar<x id="1" equiv-text="&lt;/strong&gt;" /> to find nodes by
+              <x id="2" equiv-text="&lt;strong&gt;" />title<x id="3" equiv-text="&lt;/strong&gt;" />, <x id="4" equiv-text="&lt;strong&gt;" />type<x id="5" equiv-text="&lt;/strong&gt;" />, and
+              <x id="6" equiv-text="&lt;strong&gt;" />content<x id="7" equiv-text="&lt;/strong&gt;" />. <x id="8" equiv-text="&lt;br&gt;&lt;br&gt;&#10;              &lt;em&gt;" />Tip:<x id="9" equiv-text="&lt;/em&gt;" /> Clicking the search bar will display a
+              <x id="10" equiv-text="&lt;strong&gt;" />list of all nodes<x id="11" equiv-text="&lt;/strong&gt;" />. Click on any node in the list
+              to <x id="12" equiv-text="&lt;strong&gt;" />select it in the node editor<x id="13" equiv-text="&lt;/strong&gt;" />.
             </source>
             <target>
-              Verwenden Sie die <x id="0" equiv-text="&lt;strong&gt;"/>Suchleiste<x id="1" equiv-text="&lt;/strong&gt;"/> um Knoten zu finden nach
-               <x id="2" equiv-text="&lt;strong&gt;"/>Titel<x id="3" equiv-text="&lt;/strong&gt;"/>, <x id="4" equiv-text="&lt;strong&gt;"/>Typ<x id="5" equiv-text="&lt;/strong&gt;"/>, und
-              <x id="6" equiv-text="&lt;strong&gt;"/>Inhalt<x id="7" equiv-text="&lt;/strong&gt;"/>. <x id="8" equiv-text="&lt;br&gt;&lt;br&gt;&#10;              &lt;em&gt;"/>Tipp:<x id="9" equiv-text="&lt;/em&gt;"/> Durch Anklicken der Suchleiste wird ein
-              <x id="10" equiv-text="&lt;strong&gt;"/>Liste mit allen Knoten<x id="11" equiv-text="&lt;/strong&gt;"/>. Klicken Sie auf einen beliebigen Knoten in der Liste
-              um <x id="12" equiv-text="&lt;strong&gt;"/>ihn im Knoteneditor<x id="13" equiv-text="&lt;/strong&gt;"/> auszuwählen.
+              Verwenden Sie die <x id="0" equiv-text="&lt;strong&gt;" />Suchleiste<x id="1" equiv-text="&lt;/strong&gt;" /> um Knoten zu finden nach
+               <x id="2" equiv-text="&lt;strong&gt;" />Titel<x id="3" equiv-text="&lt;/strong&gt;" />, <x id="4" equiv-text="&lt;strong&gt;" />Typ<x id="5" equiv-text="&lt;/strong&gt;" />, und
+              <x id="6" equiv-text="&lt;strong&gt;" />Inhalt<x id="7" equiv-text="&lt;/strong&gt;" />. <x id="8" equiv-text="&lt;br&gt;&lt;br&gt;&#10;              &lt;em&gt;" />Tipp:<x id="9" equiv-text="&lt;/em&gt;" /> Durch Anklicken der Suchleiste wird ein
+              <x id="10" equiv-text="&lt;strong&gt;" />Liste mit allen Knoten<x id="11" equiv-text="&lt;/strong&gt;" />. Klicken Sie auf einen beliebigen Knoten in der Liste
+              um <x id="12" equiv-text="&lt;strong&gt;" />ihn im Knoteneditor<x id="13" equiv-text="&lt;/strong&gt;" /> auszuwählen.
             </target>
 </trans-unit>
 <trans-unit id="h7eb8e051be10e053">
   <source>
-                  Inserts a predefined <x id="0" equiv-text="&lt;strong&gt;"/>pattern<x id="1" equiv-text="&lt;/strong&gt;"/> of multiple
-                  <x id="2" equiv-text="&lt;strong&gt;"/>connected nodes<x id="3" equiv-text="&lt;/strong&gt;"/> into the node editor.<x id="4" equiv-text="&lt;br&gt;&lt;br&gt;"/>
+                  Inserts a predefined <x id="0" equiv-text="&lt;strong&gt;" />pattern<x id="1" equiv-text="&lt;/strong&gt;" /> of multiple
+                  <x id="2" equiv-text="&lt;strong&gt;" />connected nodes<x id="3" equiv-text="&lt;/strong&gt;" /> into the node editor.<x id="4" equiv-text="&lt;br&gt;&lt;br&gt;" />
                   This allows you to quickly add a structured set of nodes
                   without manual placement.
                 </source>
                 <target>
-                  Fügt ein vordefiniertes <x id="0" equiv-text="&lt;strong&gt;"/>Muster<x id="1" equiv-text="&lt;/strong&gt;"/> aus mehreren
-                   <x id="2" equiv-text="&lt;strong&gt;"/>verbundenen Knoten<x id="3" equiv-text="&lt;/strong&gt;"/> in den Knoteneditor.<x id="4" equiv-text="&lt;br&gt;&lt;br&gt;"/>
+                  Fügt ein vordefiniertes <x id="0" equiv-text="&lt;strong&gt;" />Muster<x id="1" equiv-text="&lt;/strong&gt;" /> aus mehreren
+                   <x id="2" equiv-text="&lt;strong&gt;" />verbundenen Knoten<x id="3" equiv-text="&lt;/strong&gt;" /> in den Knoteneditor.<x id="4" equiv-text="&lt;br&gt;&lt;br&gt;" />
                   Auf diese Weise können Sie schnell einen strukturierten Satz von Knoten hinzufügen
                   ohne manuelle Platzierung.
                 </target>
 </trans-unit>
 <trans-unit id="s443fac2814907e18">
-  <source>Outputs (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}"/>)</source>
-  <target>Ausgänge (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}"/>)</target>
+  <source>Outputs (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}" />)</source>
+  <target>Ausgänge (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}" />)</target>
 </trans-unit>
 <trans-unit id="s0bdca49248ba4820">
   <source>Shortcuts</source>
@@ -284,6 +284,81 @@
   <source>Jump to origin node</source>
   <target>Zum Ursprungsknoten</target>
 </trans-unit>
+<trans-unit id="s54faffd0f371b98d">
+  <source>Scenario options</source>
+<target>Szenario-Optionen</target></trans-unit>
+<trans-unit id="s5e8250fb85d64c23">
+  <source>Close</source>
+<target>Schließen</target></trans-unit>
+<trans-unit id="s99f110d27e30b289">
+  <source>Title</source>
+<target>Titel</target></trans-unit>
+<trans-unit id="s78789724e789221c">
+  <source>Size</source>
+<target>Größe</target></trans-unit>
+<trans-unit id="s3d2cc8d952adebec">
+  <source>Small</source>
+<target>Klein</target></trans-unit>
+<trans-unit id="sac6bdc71f750ac96">
+  <source>Medium</source>
+<target>Mittel</target></trans-unit>
+<trans-unit id="sc8736ef79380e634">
+  <source>Large</source>
+<target>Groß</target></trans-unit>
+<trans-unit id="sbcabce7030eb33c6">
+  <source>Variant</source>
+<target>Variante</target></trans-unit>
+<trans-unit id="s11326fd2590f4e5e">
+  <source>Default</source>
+<target>Standard</target></trans-unit>
+<trans-unit id="s2492f5fb1b05b45e">
+  <source>Text</source>
+<target>Text</target></trans-unit>
+<trans-unit id="se14ede3bc78d9599">
+  <source>Primary</source>
+<target>Primär</target></trans-unit>
+<trans-unit id="s92a0d19a28995530">
+  <source>Success</source>
+<target>Erfolg</target></trans-unit>
+<trans-unit id="sc3e93c5b2fd1e0d8">
+  <source>Neutral</source>
+<target>Neutral</target></trans-unit>
+<trans-unit id="s34be76c6b1eadbef">
+  <source>Warning</source>
+<target>Warnung</target></trans-unit>
+<trans-unit id="s5183765fa43d93ee">
+  <source>Danger</source>
+<target>Gefahr</target></trans-unit>
+<trans-unit id="scf43f04b26b0197a">
+  <source>Rounded</source>
+<target>Abgerundet</target></trans-unit>
+<trans-unit id="s19daf2f26c19543d">
+  <source>Outline</source>
+<target>Umrandung</target></trans-unit>
+<trans-unit id="sf21fb4f4b9e8911f">
+  <source>Width</source>
+<target>Breite</target></trans-unit>
+<trans-unit id="sdf9bc5d9b7f3e3de">
+  <source>Alignment</source>
+<target>Ausrichtung</target></trans-unit>
+<trans-unit id="sa5c371b4bb75e590">
+  <source>Left</source>
+<target>Links</target></trans-unit>
+<trans-unit id="sb38d497d992ab4a4">
+  <source>Center</source>
+<target>Mitte</target></trans-unit>
+<trans-unit id="s366991b9c9287765">
+  <source>Right</source>
+<target>Rechts</target></trans-unit>
+<trans-unit id="scb05d5ab1e8e2844">
+  <source>Page title</source>
+<target>Seitentitel</target></trans-unit>
+<trans-unit id="s3c15568f5662789b">
+  <source>Dialog title</source>
+<target>Dialogtitel</target></trans-unit>
+<trans-unit id="s9b074ca77eff1ffc">
+  <source>Hide dialog header</source>
+<target>Dialogkopf ausblenden</target></trans-unit>
 </body>
 </file>
 </xliff>

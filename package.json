@@ -29,7 +29,12 @@
     "iscedf2013-07",
     "iscedf2013-08",
     "iscedf2013-09",
-    "iscedf2013-10"
+    "iscedf2013-10",
+    "widget-lang-en-US",
+    "widget-lang-en-GB",
+    "widget-lang-en-CA",
+    "widget-lang-en-AU",
+    "widget-lang-en-IN"
   ],
   "license": "MIT",
   "author": "Andreas Dymek",

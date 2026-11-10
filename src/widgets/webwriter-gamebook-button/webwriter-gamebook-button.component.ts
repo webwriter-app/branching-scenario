@@ -1,7 +1,7 @@
+import { localizeElement, LocalizedElement } from "../../utils/localization";
 import { buttonOptions } from "../../utils/button-options";
 import { html, css } from "lit";
 import { property, query } from "lit/decorators.js";
-import { LitElementWw } from "@webwriter/lit";
 
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import {
@@ -25,8 +25,14 @@ import alignCenter from "@tabler/icons/outline/align-center.svg";
 /**
  * Represents a button that branches to another part of the gamebook.
  */
-export class WebWriterGamebookButton extends LitElementWw {
-  readonly options = buttonOptions;
+export class WebWriterGamebookButton extends LocalizedElement {
+  private readonly messages = localizeElement(this);
+  constructor() {
+    super();
+    Object.defineProperty(this, "options", { configurable: true, get: () => this.getDrawerOptions() });
+  }
+
+  private getDrawerOptions() { return buttonOptions(this.messages.msg); }
 
 
   /** The identifier of the target node */

@@ -1,6 +1,6 @@
 import { readData, writeData } from "../../utils/data-block";
 import { html, css, PropertyValues } from "lit";
-import { LitElementWw } from "@webwriter/lit";
+import { LocalizedElement } from "../../utils/localization";
 import { property } from "lit/decorators.js";
 
 //Shoelace
@@ -9,7 +9,7 @@ import { SlButton } from "@shoelace-style/shoelace";
 /**
  * Represents the logic of a branch of a gamebook.
  */
-export class WebWriterGamebookBranch extends LitElementWw {
+export class WebWriterGamebookBranch extends LocalizedElement {
   /** Associated node id */
   @property({ type: Number, attribute: true, reflect: true })
   accessor drawflowNodeId;

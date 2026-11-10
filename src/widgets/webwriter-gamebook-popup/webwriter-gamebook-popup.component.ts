@@ -1,12 +1,11 @@
+import { localizeElement, LocalizedElement } from "../../utils/localization";
 import { html, css } from "lit";
-import { LitElementWw } from "@webwriter/lit";
 import {
   property,
   query,
   queryAssignedElements,
 } from "lit/decorators.js";
 
-import { msg, localized } from "@lit/localize";
 import { WebWriterGamebookButton } from "../webwriter-gamebook-button/webwriter-gamebook-button.component";
 import { WebWriterGamebookBranchButton } from "../webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component";
 import { WebWriterGamebookOptions } from "../../components/options-panel/webwriter-gamebook-options";
@@ -17,13 +16,15 @@ import { SlDialog } from "@shoelace-style/shoelace";
 /**
  * Represents a popup dialog in the gamebook
  */
-@localized()
-export class WebWriterGamebookPopup extends LitElementWw {
-  readonly options = {
-    pageTitle: {type: String, label: {_: "Page title", de: "Seitentitel"}},
-    titleLabel: {type: String, label: {_: "Dialog title", de: "Dialogtitel"}},
-    noHeader: {type: Boolean, label: {_: "Hide dialog header", de: "Dialogkopf ausblenden"}},
-  };
+export class WebWriterGamebookPopup extends LocalizedElement {
+  protected readonly messages = localizeElement(this);
+  private getDrawerOptions() {
+    return {
+      pageTitle: {type: String, label: {_: this.messages.msg("Page title")}},
+      titleLabel: {type: String, label: {_: this.messages.msg("Dialog title")}},
+      noHeader: {type: Boolean, label: {_: this.messages.msg("Hide dialog header")}},
+    };
+  }
 
   /**
    * import CSS
@@ -140,6 +141,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
   */
   constructor() {
     super();
+    Object.defineProperty(this, "options", { configurable: true, get: () => this.getDrawerOptions() });
     this.mutationObserver = new MutationObserver(this.mutationCallback);
   }
 
@@ -204,7 +206,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
 
     if (assignedElements.length == 0) {
       const par = document.createElement("p");
-      par.textContent = msg("Write something here...");
+      par.textContent = this.messages.msg("Write something here...");
       this.appendChild(par);
     }
 
@@ -357,7 +359,7 @@ export class WebWriterGamebookPopup extends LitElementWw {
     const paragraphs = this.querySelectorAll("p");
     if (paragraphs.length === 0) {
       const par = document.createElement("p");
-      par.textContent = msg("Write something here...");
+      par.textContent = this.messages.msg("Write something here...");
       this.appendChild(par);
     }
   };

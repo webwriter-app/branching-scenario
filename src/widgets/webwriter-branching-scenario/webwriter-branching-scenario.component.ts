@@ -1,11 +1,9 @@
+import { localizeElement, LocalizedElement } from "../../utils/localization";
 import { readData, writeData } from "../../utils/data-block";
 import { html } from "lit";
 import { provide } from "@lit/context";
 
-import { msg, localized } from "@lit/localize";
-import { setLocale } from "../../utils/localization";
 
-import * as lit from "@webwriter/lit";
 import { property, query } from "lit/decorators.js";
 
 import { NodeDetailsView } from "../../components/node-detail-view/node-detail-view";
@@ -31,8 +29,8 @@ import { WebWriterGamebookOptions } from "../../components/options-panel/webwrit
 /**
  * This widget allows for the creation and editing of branching gamebooks. These are adaptable learning experiences, where you present the student with choices on how to continue.
  */
-@localized()
-export class WebWriterBranchingScenario extends lit.LitElementWw {
+export class WebWriterBranchingScenario extends LocalizedElement {
+  protected readonly messages = localizeElement(this);
   /** @internal */
   @query("gamebook-container-manager") accessor gamebookContainerManager;
   /** The node editor component */
@@ -74,13 +72,13 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
    */
   @provide({ context: editorState })
   @property({ attribute: false })
-  public accessor editorState = new GamebookEditorState(
-    msg("Untitled Gamebook")
-  );
+  public accessor editorState = new GamebookEditorState("");
 
-  readonly actions = {
-    configureScenario: { label: { _: "Scenario options", de: "Szenario-Optionen" } },
-  };
+  private getDrawerActions() {
+    return {
+      configureScenario: { label: { _: this.messages.msg("Scenario options") } },
+    };
+  }
 
   configureScenario() {
     const dialog = this.renderRoot.querySelector<HTMLDialogElement>("#scenario-options");
@@ -106,7 +104,7 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
     this.lastDataText = text;
     const saved = readData<{title: string; editorContent: object}>(this);
     this.editorState = GamebookEditorState.fromString(JSON.stringify({
-      title: saved.title ?? msg("Untitled Gamebook"),
+      title: saved.title ?? "",
       editorContent: saved.editorContent ?? null,
     }));
     this.editorState.addObserver(this.onStoreChanged);
@@ -131,6 +129,7 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
   */
   constructor() {
     super();
+    Object.defineProperty(this, "actions", { configurable: true, get: () => this.getDrawerActions() });
     //Initial setting necessary to notify children of change
     this.savedState = JSON.stringify(this.authoredState());
   }
@@ -139,17 +138,14 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
   
   */
   protected firstUpdated(_changedProperties: any): void {
-    this.controller.initReferences(
-      this.nodeEditor,
-      this.gamebookContainerManager
-    );
-
     // Register an observer to react to store changes
     this.editorState.addObserver(this.onStoreChanged);
 
     console.log("firstUpdated", this.editorState.selectedNode);
+  }
 
-    setLocale(this.lang);
+  protected updated() {
+    this.controller.initReferences(this.nodeEditor, this.gamebookContainerManager);
   }
 
   /**
@@ -235,7 +231,7 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
       ${this.isContentEditable
         ? html`
             <split-view>
-              <!-- <p slot="start">${msg("Add")}</p> -->
+              <!-- <p slot="start">${this.messages.msg("Add")}</p> -->
               <node-editor
                 slot="start"
                 @editorInitialized=${() => this.controller._markUsedOutputs()}
@@ -341,8 +337,8 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
             </split-view>
 
             <!-- Options Menu -->
-            <dialog id="scenario-options" aria-label=${msg("Scenario options")} style="width:min(34rem,calc(100% - 2rem));max-height:85%;box-sizing:border-box">
-              <form method="dialog"><button>${msg("Close")}</button></form>
+            <dialog id="scenario-options" aria-label=${this.messages.msg("Scenario options")} style="width:min(34rem,calc(100% - 2rem));max-height:85%;box-sizing:border-box">
+              <form method="dialog"><button>${this.messages.msg("Close")}</button></form>
               <webwriter-gamebook-options
               @makeSelectedNodeOrigin=${(e: CustomEvent) =>
                 this.controller._changeOrigin(e)}
@@ -361,7 +357,7 @@ export class WebWriterBranchingScenario extends lit.LitElementWw {
         : html` <webwriter-gamebook-viewer
             gamebookTitle=${this.editorState.title != ""
               ? this.editorState.title
-              : "Untitled Gamebook"}
+              : this.messages.msg("Untitled Gamebook")}
             ><slot></slot
           ></webwriter-gamebook-viewer>`}
     `;

@@ -1,5 +1,5 @@
+import { localizeElement, LocalizedElement } from "../../utils/localization";
 import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
-import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
   property,
@@ -8,7 +8,6 @@ import {
   queryAssignedElements,
 } from "lit/decorators.js";
 
-import { msg, localized } from "@lit/localize";
 import { WebWriterGamebookButton } from "../webwriter-gamebook-button/webwriter-gamebook-button.component";
 
 //Shoelace
@@ -25,11 +24,13 @@ import {
 /**
  * Represents a page of the gamebook
  */
-@localized()
-export class WebWriterGamebookPage extends LitElementWw {
-  readonly options = {
-    pageTitle: {type: String, label: {_: "Page title", de: "Seitentitel"}},
-  };
+export class WebWriterGamebookPage extends LocalizedElement {
+  protected readonly messages = localizeElement(this);
+  private getDrawerOptions() {
+    return {
+      pageTitle: {type: String, label: {_: this.messages.msg("Page title")}},
+    };
+  }
 
   /** The state of the editor in a stringified JSON format */
   @consume({ context: editorState, subscribe: true })
@@ -114,6 +115,7 @@ export class WebWriterGamebookPage extends LitElementWw {
   */
   constructor() {
     super();
+    Object.defineProperty(this, "options", { configurable: true, get: () => this.getDrawerOptions() });
     this.mutationObserver = new MutationObserver(this.mutationCallback);
   }
 
@@ -169,7 +171,7 @@ export class WebWriterGamebookPage extends LitElementWw {
 
     if (assignedElements.length == 0) {
       const par = document.createElement("p");
-      par.textContent = msg("Write something here...");
+      par.textContent = this.messages.msg("Write something here...");
       this.appendChild(par);
     }
   }
@@ -269,7 +271,7 @@ export class WebWriterGamebookPage extends LitElementWw {
           const paragraphs = this.querySelectorAll("p");
           if (paragraphs.length === 0) {
             const par = document.createElement("p");
-            par.textContent = msg("Write something here...");
+            par.textContent = this.messages.msg("Write something here...");
             this.appendChild(par);
           }
         } else if (type === "attributes" && attributeName === "class") {
