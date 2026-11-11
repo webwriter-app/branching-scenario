@@ -15,7 +15,13 @@
     "zh-Hant",
     "zh",
     "ar",
-    "pl"
+    "pl",
+    "da",
+    "nb",
+    "no",
+    "sv",
+    "cs",
+    "ru"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {
