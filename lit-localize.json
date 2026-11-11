@@ -21,7 +21,9 @@
     "no",
     "sv",
     "cs",
-    "ru"
+    "ru",
+    "ko",
+    "tr"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {

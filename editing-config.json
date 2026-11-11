@@ -27,7 +27,9 @@
       "no": "Lag fleksible læringsopplevelser med en interaktiv fortelling der elevene velger hvordan de går videre.",
       "sv": "Skapa anpassningsbara lärandeupplevelser genom att skriva en interaktiv berättelse där eleverna själva väljer hur de vill fortsätta.",
       "cs": "Vytvářejte přizpůsobitelné vzdělávací zážitky v podobě interaktivního příběhu, ve kterém studenti sami rozhodují, jak bude pokračovat.",
-      "ru": "Создавайте гибкие учебные задания в виде интерактивной книги, в которой учащиеся выбирают, как продолжить историю."
+      "ru": "Создавайте гибкие учебные задания в виде интерактивной книги, в которой учащиеся выбирают, как продолжить историю.",
+      "ko": "학습자에게 계속 진행할 방법을 선택하게 하는 인터랙티브 북을 만들어 유연한 학습 경험을 설계하세요.",
+      "tr": "Öğrencilerin nasıl ilerleyeceklerini seçebildiği etkileşimli bir öykü oluşturarak uyarlanabilir öğrenme deneyimleri hazırlayın."
     },
     "label": {
       "_": "Branching Scenario",
@@ -56,7 +58,9 @@
       "no": "Forgrenet scenario",
       "sv": "Förgrenat scenario",
       "cs": "Rozvětvený scénář",
-      "ru": "Ветвящийся сценарий"
+      "ru": "Ветвящийся сценарий",
+      "ko": "분기형 시나리오",
+      "tr": "Dallanıp budaklanan senaryo"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -87,7 +91,9 @@
       "no": "Forgrenet scenario",
       "sv": "Förgrenat scenario",
       "cs": "Rozvětvený scénář",
-      "ru": "Ветвящийся сценарий"
+      "ru": "Ветвящийся сценарий",
+      "ko": "분기형 시나리오",
+      "tr": "Dallanıp budaklanan senaryo"
     }
   },
   "./snippets/art-of-europe": {
@@ -118,7 +124,9 @@
       "no": "Europeisk kunst",
       "sv": "Europeisk konst",
       "cs": "Umění Evropy",
-      "ru": "Искусство Европы"
+      "ru": "Искусство Европы",
+      "ko": "유럽의 미술",
+      "tr": "Avrupa Sanatı"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -149,7 +157,9 @@
       "no": "Forgrening i spillboka",
       "sv": "Berättelsegren",
       "cs": "Větev příběhu",
-      "ru": "Ветвь книги-игры"
+      "ru": "Ветвь книги-игры",
+      "ko": "인터랙티브 북 분기",
+      "tr": "Öykü dalı"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -180,7 +190,9 @@
       "no": "Forgreningsknapp",
       "sv": "Knapp för berättelsegren",
       "cs": "Tlačítko větve příběhu",
-      "ru": "Кнопка ветвления"
+      "ru": "Кнопка ветвления",
+      "ko": "분기 버튼",
+      "tr": "Öykü dalı düğmesi"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -211,7 +223,9 @@
       "no": "Knapp i spillboka",
       "sv": "Berättelseknapp",
       "cs": "Tlačítko příběhu",
-      "ru": "Кнопка книги-игры"
+      "ru": "Кнопка книги-игры",
+      "ko": "인터랙티브 북 버튼",
+      "tr": "Öykü düğmesi"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -242,7 +256,9 @@
       "no": "Side i spillboka",
       "sv": "Berättelsesida",
       "cs": "Stránka příběhu",
-      "ru": "Страница книги-игры"
+      "ru": "Страница книги-игры",
+      "ko": "인터랙티브 북 페이지",
+      "tr": "Öykü sayfası"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -273,7 +289,9 @@
       "no": "Dialogvindu i spillboka",
       "sv": "Berättelsefönster",
       "cs": "Vyskakovací okno příběhu",
-      "ru": "Окно книги-игры"
+      "ru": "Окно книги-игры",
+      "ko": "인터랙티브 북 팝업",
+      "tr": "Öykü açılır penceresi"
     }
   }
 }
