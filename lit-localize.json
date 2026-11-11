@@ -31,7 +31,14 @@
     "bn",
     "fi",
     "hu",
-    "ro"
+    "ro",
+    "bg",
+    "hr",
+    "pa",
+    "sk",
+    "sr-Cyrl",
+    "sr-Latn",
+    "sr"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {

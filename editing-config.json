@@ -37,7 +37,14 @@
       "bn": "গেমবুক তৈরি করে নমনীয় শেখার অভিজ্ঞতা গড়ুন, যেখানে শিক্ষার্থীকে পরের ধাপ বেছে নেওয়ার সুযোগ দেওয়া হয়।",
       "fi": "Luo mukautuvia oppimiskokemuksia kirjoittamalla vuorovaikutteinen pelikirja, jossa oppija valitsee, miten tarina jatkuu.",
       "hu": "Hozzon létre személyre szabható tanulási élményeket olyan interaktív történetek megírásával, amelyekben a diákok dönthetik el, hogyan folytatják.",
-      "ro": "Creați experiențe de învățare adaptabile alcătuind o carte interactivă în care îi oferiți elevului opțiuni despre cum să continue."
+      "ro": "Creați experiențe de învățare adaptabile alcătuind o carte interactivă în care îi oferiți elevului opțiuni despre cum să continue.",
+      "bg": "Създавайте адаптивни учебни занимания с интерактивна книга, в която учащите избират как да продължат.",
+      "hr": "Stvarajte prilagodljiva iskustva učenja oblikovanjem interaktivne knjige u kojoj učeniku nudite izbor kako nastaviti.",
+      "pa": "ਗੇਮਬੁੱਕ ਬਣਾਕੇ ਸਿੱਖਣ ਦੇ ਲਚਕੀਲੇ ਤਜਰਬੇ ਤਿਆਰ ਕਰੋ, ਜਿੱਥੇ ਵਿਦਿਆਰਥੀ ਨੂੰ ਅੱਗੇ ਵਧਣ ਦਾ ਰਾਹ ਚੁਣਨ ਲਈ ਵਿਕਲਪ ਮਿਲਣ।",
+      "sk": "Vytvárajte prispôsobiteľné vzdelávacie zážitky písaním interaktívneho príbehu, v ktorom si študenti sami vyberajú, ako budú pokračovať.",
+      "sr-Cyrl": "Стварајте прилагодљива искуства учења обликовањем интерактивне књиге у којој ученику нудите избор како наставити.",
+      "sr-Latn": "Stvarajte prilagodljiva iskustva učenja oblikovanjem interaktivne knjige u kojoj učeniku nudite izbor kako nastaviti.",
+      "sr": "Стварајте прилагодљива искуства учења обликовањем интерактивне књиге у којој ученику нудите избор како наставити."
     },
     "label": {
       "_": "Branching Scenario",
@@ -76,7 +83,14 @@
       "bn": "শাখাভিত্তিক দৃশ্যপট",
       "fi": "Haarautuva skenaario",
       "hu": "Elágazó forgatókönyv",
-      "ro": "Scenariu cu ramificații"
+      "ro": "Scenariu cu ramificații",
+      "bg": "Разклонен сценарий",
+      "hr": "Razgranati scenarij",
+      "pa": "ਸ਼ਾਖਾਵਾਂ ਵਾਲਾ ਦ੍ਰਿਸ਼ਟਾਂਤ",
+      "sk": "Vetviaci sa scenár",
+      "sr-Cyrl": "Разгранати сценариј",
+      "sr-Latn": "Razgranati scenarij",
+      "sr": "Разгранати сценариј"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -117,7 +131,14 @@
       "bn": "শাখাভিত্তিক দৃশ্যপট",
       "fi": "Haarautuva skenaario",
       "hu": "Elágazó forgatókönyv",
-      "ro": "Scenariu cu ramificații"
+      "ro": "Scenariu cu ramificații",
+      "bg": "Разклонен сценарий",
+      "hr": "Razgranati scenarij",
+      "pa": "ਸ਼ਾਖਾਵਾਂ ਵਾਲਾ ਦ੍ਰਿਸ਼ਟਾਂਤ",
+      "sk": "Vetviaci sa scenár",
+      "sr-Cyrl": "Разгранати сценариј",
+      "sr-Latn": "Razgranati scenarij",
+      "sr": "Разгранати сценариј"
     }
   },
   "./snippets/art-of-europe": {
@@ -158,7 +179,14 @@
       "bn": "ইউরোপের শিল্প",
       "fi": "Euroopan taide",
       "hu": "Európai művészet",
-      "ro": "Arta Europei"
+      "ro": "Arta Europei",
+      "bg": "Изкуството на Европа",
+      "hr": "Umjetnost Europe",
+      "pa": "ਯੂਰਪ ਦੀ ਕਲਾ",
+      "sk": "Európske umenie",
+      "sr-Cyrl": "Умјетност Европе",
+      "sr-Latn": "Umjetnost Evrope",
+      "sr": "Умјетност Европе"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -199,7 +227,14 @@
       "bn": "গেমবুক শাখা",
       "fi": "Pelikirjan haara",
       "hu": "Történetág",
-      "ro": "Ramură a cărții interactive"
+      "ro": "Ramură a cărții interactive",
+      "bg": "Клон на книгата-игра",
+      "hr": "Grana interaktivne knjige",
+      "pa": "ਗੇਮਬੁੱਕ ਦੀ ਸ਼ਾਖਾ",
+      "sk": "Vetva príbehu",
+      "sr-Cyrl": "Грана интерактивне књиге",
+      "sr-Latn": "Grana interaktivne knjige",
+      "sr": "Грана интерактивне књиге"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -240,7 +275,14 @@
       "bn": "গেমবুক শাখা বোতাম",
       "fi": "Haaran painike",
       "hu": "Történetág gomb",
-      "ro": "Buton pentru ramura cărții interactive"
+      "ro": "Buton pentru ramura cărții interactive",
+      "bg": "Бутон за разклоняване",
+      "hr": "Gumb grane interaktivne knjige",
+      "pa": "ਗੇਮਬੁੱਕ ਸ਼ਾਖਾ ਬਟਨ",
+      "sk": "Tlačidlo vetvy príbehu",
+      "sr-Cyrl": "Гумб гране интерактивне књиге",
+      "sr-Latn": "Gumb grane interaktivne knjige",
+      "sr": "Гумб гране интерактивне књиге"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -281,7 +323,14 @@
       "bn": "গেমবুক বোতাম",
       "fi": "Pelikirjan painike",
       "hu": "Történet gomb",
-      "ro": "Buton pentru cartea interactivă"
+      "ro": "Buton pentru cartea interactivă",
+      "bg": "Бутон на книгата-игра",
+      "hr": "Gumb interaktivne knjige",
+      "pa": "ਗੇਮਬੁੱਕ ਬਟਨ",
+      "sk": "Tlačidlo príbehu",
+      "sr-Cyrl": "Гумб интерактивне књиге",
+      "sr-Latn": "Gumb interaktivne knjige",
+      "sr": "Гумб интерактивне књиге"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -322,7 +371,14 @@
       "bn": "গেমবুক পৃষ্ঠা",
       "fi": "Pelikirjan sivu",
       "hu": "Történetoldal",
-      "ro": "Pagină a cărții interactive"
+      "ro": "Pagină a cărții interactive",
+      "bg": "Страница на книгата-игра",
+      "hr": "Stranica interaktivne knjige",
+      "pa": "ਗੇਮਬੁੱਕ ਸਫ਼ਾ",
+      "sk": "Stránka príbehu",
+      "sr-Cyrl": "Страница интерактивне књиге",
+      "sr-Latn": "Stranica interaktivne knjige",
+      "sr": "Страница интерактивне књиге"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -363,7 +419,14 @@
       "bn": "গেমবুক পপআপ",
       "fi": "Pelikirjan ponnahdusikkuna",
       "hu": "Történet felugró ablaka",
-      "ro": "Fereastră pop-up a cărții interactive"
+      "ro": "Fereastră pop-up a cărții interactive",
+      "bg": "Изскачащ прозорец на книгата-игра",
+      "hr": "Skočni prozor interaktivne knjige",
+      "pa": "ਗੇਮਬੁੱਕ ਪੌਪਅੱਪ",
+      "sk": "Vyskakovacie okno príbehu",
+      "sr-Cyrl": "Искачући прозор интерактивне књиге",
+      "sr-Latn": "Iskačući prozor interaktivne knjige",
+      "sr": "Искачући прозор интерактивне књиге"
     }
   }
 }
