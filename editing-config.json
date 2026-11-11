@@ -12,7 +12,14 @@
       "fr": "Créez des parcours d’apprentissage adaptables sous forme de livre-jeu où les élèves choisissent la suite.",
       "es": "Crea experiencias de aprendizaje adaptables con un librojuego en el que el alumnado elige cómo continuar.",
       "nl": "Maak aanpasbare leerervaringen met een interactief verhaal waarin leerlingen zelf kiezen hoe ze verdergaan.",
-      "it": "Crea esperienze di apprendimento adattabili con un librogioco in cui chi studia può scegliere come proseguire."
+      "it": "Crea esperienze di apprendimento adattabili con un librogioco in cui chi studia può scegliere come proseguire.",
+      "ja": "学習者が次の展開を選べるゲームブックを作り、選択に応じて進む学習体験を設計できます。",
+      "pt-BR": "Crie experiências de aprendizagem adaptáveis com um livro-jogo em que cada aluno pode escolher como avançar.",
+      "pt-PT": "Crie experiências de aprendizagem adaptáveis com um livro-jogo em que cada aluno pode escolher como avançar.",
+      "pt": "Crie experiências de aprendizagem adaptáveis com um livro-jogo em que cada aluno pode escolher como avançar.",
+      "zh-Hans": "创作互动游戏书，让学生选择接下来如何推进，从而构建可灵活调整的学习体验。",
+      "zh-Hant": "創作互動遊戲書，讓學生選擇接下來如何推進，從而建構可靈活調整的學習體驗。",
+      "zh": "创作互动游戏书，让学生选择接下来如何推进，从而构建可灵活调整的学习体验。"
     },
     "label": {
       "_": "Branching Scenario",
@@ -26,7 +33,14 @@
       "de": "Verzweigungszenarien",
       "es": "Escenario ramificado",
       "nl": "Vertakkend scenario",
-      "it": "Scenario a bivi"
+      "it": "Scenario a bivi",
+      "ja": "分岐シナリオ",
+      "pt-BR": "Cenário ramificado",
+      "pt-PT": "Cenário ramificado",
+      "pt": "Cenário ramificado",
+      "zh-Hans": "分支情境",
+      "zh-Hant": "分支情境",
+      "zh": "分支情境"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -42,7 +56,14 @@
       "fr": "Scénario à embranchements",
       "es": "Escenario ramificado",
       "nl": "Vertakkend scenario",
-      "it": "Scenario a bivi"
+      "it": "Scenario a bivi",
+      "ja": "分岐シナリオ",
+      "pt-BR": "Cenário ramificado",
+      "pt-PT": "Cenário ramificado",
+      "pt": "Cenário ramificado",
+      "zh-Hans": "分支情境",
+      "zh-Hant": "分支情境",
+      "zh": "分支情境"
     }
   },
   "./snippets/art-of-europe": {
@@ -58,7 +79,14 @@
       "de": "Kunst in Europa",
       "es": "El arte en Europa",
       "nl": "Europese kunst",
-      "it": "Arte europea"
+      "it": "Arte europea",
+      "ja": "ヨーロッパの美術",
+      "pt-BR": "Arte europeia",
+      "pt-PT": "Arte europeia",
+      "pt": "Arte europeia",
+      "zh-Hans": "欧洲艺术",
+      "zh-Hant": "歐洲藝術",
+      "zh": "欧洲艺术"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -74,7 +102,14 @@
       "de": "Spielbuch-Verzweigung",
       "es": "Rama del librojuego",
       "nl": "Vertakking van het verhaal",
-      "it": "Bivio del librogioco"
+      "it": "Bivio del librogioco",
+      "ja": "ゲームブックの分岐",
+      "pt-BR": "Ramificação do livro-jogo",
+      "pt-PT": "Ramificação do livro-jogo",
+      "pt": "Ramificação do livro-jogo",
+      "zh-Hans": "游戏书分支",
+      "zh-Hant": "遊戲書分支",
+      "zh": "游戏书分支"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -90,7 +125,14 @@
       "de": "Schaltfläche für Verzweigung",
       "es": "Botón de bifurcación",
       "nl": "Vertakkingsknop",
-      "it": "Pulsante del bivio"
+      "it": "Pulsante del bivio",
+      "ja": "分岐ボタン",
+      "pt-BR": "Botão de ramificação",
+      "pt-PT": "Botão de ramificação",
+      "pt": "Botão de ramificação",
+      "zh-Hans": "游戏书分支按钮",
+      "zh-Hant": "遊戲書分支按鈕",
+      "zh": "游戏书分支按钮"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -106,7 +148,14 @@
       "de": "Spielbuch-Schaltfläche",
       "es": "Botón del librojuego",
       "nl": "Verhaalknop",
-      "it": "Pulsante del librogioco"
+      "it": "Pulsante del librogioco",
+      "ja": "ゲームブックのボタン",
+      "pt-BR": "Botão do livro-jogo",
+      "pt-PT": "Botão do livro-jogo",
+      "pt": "Botão do livro-jogo",
+      "zh-Hans": "游戏书按钮",
+      "zh-Hant": "遊戲書按鈕",
+      "zh": "游戏书按钮"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -122,7 +171,14 @@
       "de": "Spielbuch-Seite",
       "es": "Página del librojuego",
       "nl": "Verhaalpagina",
-      "it": "Pagina del librogioco"
+      "it": "Pagina del librogioco",
+      "ja": "ゲームブックのページ",
+      "pt-BR": "Página do livro-jogo",
+      "pt-PT": "Página do livro-jogo",
+      "pt": "Página do livro-jogo",
+      "zh-Hans": "游戏书页面",
+      "zh-Hant": "遊戲書頁面",
+      "zh": "游戏书页面"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -138,7 +194,14 @@
       "de": "Spielbuch-Popup",
       "es": "Ventana del librojuego",
       "nl": "Verhaalvenster",
-      "it": "Finestra del librogioco"
+      "it": "Finestra del librogioco",
+      "ja": "ゲームブックのポップアップ",
+      "pt-BR": "Janela do livro-jogo",
+      "pt-PT": "Janela do livro-jogo",
+      "pt": "Janela do livro-jogo",
+      "zh-Hans": "游戏书弹窗",
+      "zh-Hant": "遊戲書視窗",
+      "zh": "游戏书弹窗"
     }
   }
 }
