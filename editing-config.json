@@ -91,7 +91,14 @@
       "sq": "Krijoni përvoja mësimore të përshtatshme duke shkruar një libër-lojë ku i ofroni nxënësit mundësi për të zgjedhur si të vazhdojë.",
       "th": "สร้างประสบการณ์การเรียนรู้ที่ปรับเปลี่ยนได้ โดยเขียนเกมบุ๊กที่ให้ผู้เรียนเลือกว่าจะดำเนินเรื่องต่ออย่างไร",
       "tpi": "Wokim buk bilong lainim samting we sumatin inap makim rot em i laik bihainim. Ol dispela makim rot inap senisim wanem samting em i lainim bihain.",
-      "uz": "O‘quvchiga qanday davom etishni tanlash imkonini beradigan o‘yin kitobini yaratib, moslashuvchan ta’lim tajribalarini ishlab chiqing."
+      "uz": "O‘quvchiga qanday davom etishni tanlash imkonini beradigan o‘yin kitobini yaratib, moslashuvchan ta’lim tajribalarini ishlab chiqing.",
+      "dv": "ކިޔަވާ ދަރިވަރުންނަށް ކުރިއަށް ދާނެ މަގު ހޮވޭނެ ފޮތެއް ހަދައި، އެބައިމީހުންގެ ހޮވުމަށް ފެތޭ ދަސްކުރުމެއް ފޯރުކޮށްދޭ.",
+      "ha": "Ƙirƙiri abubuwan koyo masu sassauƙa ta hanyar rubuta littafin wasa, inda ɗalibi zai zaɓi yadda zai ci gaba.",
+      "lo": "ສ້າງປະສົບການການຮຽນຮູ້ທີ່ປັບຕົວໄດ້ ໂດຍຂຽນປຶ້ມເກມທີ່ໃຫ້ນັກຮຽນເລືອກວິທີດຳເນີນຕໍ່.",
+      "mn": "Суралцагч цааш хэрхэн үргэлжлүүлэхээ сонгодог тоглоомон ном бүтээж, уян хатан суралцах туршлагыг бий болгоорой.",
+      "ps": "داسې د لوبې کتاب په جوړولو سره د زده‌کړې انعطاف‌منونکې تجربې رامنځته کړئ چې زده‌کوونکي ته د دوام د لارې د ټاکلو اختیار ورکړي.",
+      "so": "Abuur waayo-aragnimooyin waxbarasho oo dabacsan adigoo qoraya buug-ciyaareed uu ardaygu ka dooranayo sida uu u sii socdo.",
+      "tg": "Китоби интерактивӣ эҷод кунед, то хонанда роҳи идомаро интихоб карда тавонад ва рафти омӯзиш ба интихоби ӯ мутобиқ шавад."
     },
     "label": {
       "_": "Branching Scenario",
@@ -184,7 +191,14 @@
       "sq": "Skenar me degëzime",
       "th": "สถานการณ์แบบแยกสาขา",
       "tpi": "Stori i gat ol han rot",
-      "uz": "Tarmoqlanuvchi ssenariy"
+      "uz": "Tarmoqlanuvchi ssenariy",
+      "dv": "ގޮފިތައް ހިމެނޭ ހާދިސާ",
+      "ha": "Yanayin Labari Mai Rassa",
+      "lo": "ສະຖານະການແບ່ງສາຂາ",
+      "mn": "Салаалсан хувилбар",
+      "ps": "څانګیز سناریو",
+      "so": "Xaalad Laamo Leh",
+      "tg": "Сенарияи шохадор"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -279,7 +293,14 @@
       "sq": "Skenar me degëzime",
       "th": "สถานการณ์แบบแยกสาขา",
       "tpi": "Stori i gat ol han rot",
-      "uz": "Tarmoqlanuvchi ssenariy"
+      "uz": "Tarmoqlanuvchi ssenariy",
+      "dv": "ގޮފިތައް ހިމެނޭ ހާދިސާ",
+      "ha": "Yanayin Labari Mai Rassa",
+      "lo": "ສະຖານະການແບ່ງສາຂາ",
+      "mn": "Салаалсан хувилбар",
+      "ps": "څانګیز سناریو",
+      "so": "Xaalad Laamo Leh",
+      "tg": "Сенарияи шохадор"
     }
   },
   "./snippets/art-of-europe": {
@@ -374,7 +395,14 @@
       "sq": "Arti i Evropës",
       "th": "ศิลปะแห่งยุโรป",
       "tpi": "At bilong Yurop",
-      "uz": "Yevropa san’ati"
+      "uz": "Yevropa san’ati",
+      "dv": "ޔޫރަޕުގެ ފަންނު",
+      "ha": "Fasahar Turai",
+      "lo": "ສິນລະປະເອີຣົບ",
+      "mn": "Европын урлаг",
+      "ps": "د اروپا هنر",
+      "so": "Farshaxanka Yurub",
+      "tg": "Санъати Аврупо"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -469,7 +497,14 @@
       "sq": "Dega e librit-lojë",
       "th": "สาขาเกมบุ๊ก",
       "tpi": "Han rot bilong buk",
-      "uz": "O‘yin kitobi tarmog‘i"
+      "uz": "O‘yin kitobi tarmog‘i",
+      "dv": "ފޮތުގެ ގޮފި",
+      "ha": "Reshen Littafin Wasa",
+      "lo": "ສາຂາປຶ້ມເກມ",
+      "mn": "Тоглоомон номын салаа",
+      "ps": "د لوبې کتاب څانګه",
+      "so": "Laanta Buug-ciyaareedka",
+      "tg": "Шохаи китоби интерактивӣ"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -564,7 +599,14 @@
       "sq": "Butoni i degës së librit-lojë",
       "th": "ปุ่มสาขาเกมบุ๊ก",
       "tpi": "Baton bilong han rot bilong buk",
-      "uz": "O‘yin kitobi tarmog‘i tugmasi"
+      "uz": "O‘yin kitobi tarmog‘i tugmasi",
+      "dv": "ފޮތުގެ ގޮފީގެ ބަޓަން",
+      "ha": "Maɓallin Reshen Littafin Wasa",
+      "lo": "ປຸ່ມສາຂາປຶ້ມເກມ",
+      "mn": "Тоглоомон номын салааны товч",
+      "ps": "د لوبې کتاب د څانګې تڼۍ",
+      "so": "Badhanka Laanta Buug-ciyaareedka",
+      "tg": "Тугмаи шохаи китоби интерактивӣ"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -659,7 +701,14 @@
       "sq": "Butoni i librit-lojë",
       "th": "ปุ่มเกมบุ๊ก",
       "tpi": "Baton bilong buk",
-      "uz": "O‘yin kitobi tugmasi"
+      "uz": "O‘yin kitobi tugmasi",
+      "dv": "ފޮތުގެ ބަޓަން",
+      "ha": "Maɓallin Littafin Wasa",
+      "lo": "ປຸ່ມປຶ້ມເກມ",
+      "mn": "Тоглоомон номын товч",
+      "ps": "د لوبې کتاب تڼۍ",
+      "so": "Badhanka Buug-ciyaareedka",
+      "tg": "Тугмаи китоби интерактивӣ"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -754,7 +803,14 @@
       "sq": "Faqja e librit-lojë",
       "th": "หน้าเกมบุ๊ก",
       "tpi": "Pes bilong buk",
-      "uz": "O‘yin kitobi sahifasi"
+      "uz": "O‘yin kitobi sahifasi",
+      "dv": "ފޮތުގެ ސަފްޙާ",
+      "ha": "Shafin Littafin Wasa",
+      "lo": "ໜ້າປຶ້ມເກມ",
+      "mn": "Тоглоомон номын хуудас",
+      "ps": "د لوبې کتاب پاڼه",
+      "so": "Bogga Buug-ciyaareedka",
+      "tg": "Саҳифаи китоби интерактивӣ"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -849,7 +905,14 @@
       "sq": "Dritarja kërcyese e librit-lojë",
       "th": "ป๊อปอัปเกมบุ๊ก",
       "tpi": "Liklik windo bilong buk",
-      "uz": "O‘yin kitobi qalqib chiquvchi oynasi"
+      "uz": "O‘yin kitobi qalqib chiquvchi oynasi",
+      "dv": "ފޮތުގެ ފެންނަ ވިންޑޯ",
+      "ha": "Tagar Bayyanar Littafin Wasa",
+      "lo": "ປັອບອັບປຶ້ມເກມ",
+      "mn": "Тоглоомон номын цонх",
+      "ps": "د لوبې کتاب پاپ‌اپ",
+      "so": "Daaqadda Soo-baxa ee Buug-ciyaareedka",
+      "tg": "Равзанаи бозшавандаи китоби интерактивӣ"
     }
   }
 }

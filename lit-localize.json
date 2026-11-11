@@ -85,7 +85,14 @@
     "sq",
     "th",
     "tpi",
-    "uz"
+    "uz",
+    "dv",
+    "ha",
+    "lo",
+    "mn",
+    "ps",
+    "so",
+    "tg"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {
