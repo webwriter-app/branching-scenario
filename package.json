@@ -85,6 +85,7 @@
     "widget-lang-ca-ES-valencia",
     "widget-lang-eu",
     "widget-lang-gl",
+    "widget-lang-cy",
     "widget-lang-lb",
     "widget-lang-bn",
     "widget-lang-pa",
@@ -95,7 +96,10 @@
     "widget-lang-kn",
     "widget-lang-or",
     "widget-lang-ne",
-    "widget-lang-he"
+    "widget-lang-si",
+    "widget-lang-he",
+    "widget-lang-az",
+    "widget-lang-sw"
   ],
   "license": "MIT",
   "author": "Andreas Dymek",

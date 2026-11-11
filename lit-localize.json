@@ -63,7 +63,11 @@
     "or",
     "lb",
     "mt",
-    "ne"
+    "ne",
+    "az",
+    "cy",
+    "si",
+    "sw"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {

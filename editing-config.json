@@ -69,7 +69,11 @@
       "or": "ଛାତ୍ରଛାତ୍ରୀଙ୍କୁ ଆଗକୁ ବଢ଼ିବା ପାଇଁ ବିକଳ୍ପ ଦେଉଥିବା ଗେମ୍‌ବୁକ୍ ରଚନା କରି ଅନୁକୂଳନଶୀଳ ଶିକ୍ଷଣ ଅନୁଭବ ସୃଷ୍ଟି କରନ୍ତୁ୤",
       "lb": "Erstellt flexibel Léiererfarunge mat engem interaktive Spillbuch, an deem d'Léierender wielen, wéi d'Geschicht weidergeet.",
       "mt": "Oħloq esperjenzi ta’ tagħlim adattabbli billi tikteb ktieb-logħba li fih toffri lill-istudent għażliet dwar kif ikompli.",
-      "ne": "विद्यार्थीलाई अघि बढ्ने विकल्प दिँदै गेमबुक तयार गरेर अनुकूलनीय सिकाइ अनुभवहरू सिर्जना गर्नुहोस्।"
+      "ne": "विद्यार्थीलाई अघि बढ्ने विकल्प दिँदै गेमबुक तयार गरेर अनुकूलनीय सिकाइ अनुभवहरू सिर्जना गर्नुहोस्।",
+      "az": "Şagirdə necə davam edəcəyi barədə seçimlər təqdim edən oyun kitabı hazırlamaqla çevik öyrənmə təcrübələri yaradın.",
+      "cy": "Crëwch brofiadau dysgu hyblyg drwy lunio llyfr gêm sy’n cynnig dewisiadau i’r dysgwr ynghylch sut i barhau.",
+      "si": "ශිෂ්‍යයාට ඉදිරියට යන ආකාරය තෝරාගැනීමට විකල්ප දෙන ගේම්බුක් එකක් නිර්මාණය කර, අනුවර්තනය කළ හැකි ඉගෙනුම් අත්දැකීම් සකස් කරන්න.",
+      "sw": "Unda mafunzo yanayobadilika kwa kuandika kitabu cha mwingiliano ambamo wanafunzi huchagua jinsi ya kuendelea."
     },
     "label": {
       "_": "Branching Scenario",
@@ -140,7 +144,11 @@
       "or": "ଶାଖା ଦୃଶ୍ୟପଟ",
       "lb": "Verzweigte Szenario",
       "mt": "Xenarju b’fergħat",
-      "ne": "शाखायुक्त परिदृश्य"
+      "ne": "शाखायुक्त परिदृश्य",
+      "az": "Budaqlanan Ssenari",
+      "cy": "Senario Canghennog",
+      "si": "ශාඛාගත අවස්ථාව",
+      "sw": "Hali yenye matawi"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -213,7 +221,11 @@
       "or": "ଶାଖା ଦୃଶ୍ୟପଟ",
       "lb": "Verzweigte Szenario",
       "mt": "Xenarju b’fergħat",
-      "ne": "शाखायुक्त परिदृश्य"
+      "ne": "शाखायुक्त परिदृश्य",
+      "az": "Budaqlanan Ssenari",
+      "cy": "Senario Canghennog",
+      "si": "ශාඛාගත අවස්ථාව",
+      "sw": "Hali yenye matawi"
     }
   },
   "./snippets/art-of-europe": {
@@ -286,7 +298,11 @@
       "or": "ୟୁରୋପର କଳା",
       "lb": "Konscht vun Europa",
       "mt": "L-Arti tal-Ewropa",
-      "ne": "युरोपको कला"
+      "ne": "युरोपको कला",
+      "az": "Avropa İncəsənəti",
+      "cy": "Celf Ewrop",
+      "si": "යුරෝපයේ කලාව",
+      "sw": "Sanaa ya Ulaya"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -359,7 +375,11 @@
       "or": "ଗେମ୍‌ବୁକ୍ ଶାଖା",
       "lb": "Verzweigung am Spillbuch",
       "mt": "Fergħa tal-Ktieb-logħba",
-      "ne": "गेमबुक शाखा"
+      "ne": "गेमबुक शाखा",
+      "az": "Oyun Kitabı Budağı",
+      "cy": "Cangen Llyfr Gêm",
+      "si": "ගේම්බුක් ශාඛාව",
+      "sw": "Tawi la kitabu cha mchezo"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -432,7 +452,11 @@
       "or": "ଗେମ୍‌ବୁକ୍ ଶାଖା ବଟନ୍",
       "lb": "Verzweigungs-Knäppchen",
       "mt": "Buttuna tal-Fergħa tal-Ktieb-logħba",
-      "ne": "गेमबुक शाखा बटन"
+      "ne": "गेमबुक शाखा बटन",
+      "az": "Oyun Kitabı Budağı Düyməsi",
+      "cy": "Botwm Cangen Llyfr Gêm",
+      "si": "ගේම්බුක් ශාඛා බොත්තම",
+      "sw": "Kitufe cha tawi"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -505,7 +529,11 @@
       "or": "ଗେମ୍‌ବୁକ୍ ବଟନ୍",
       "lb": "Knäppche vum Spillbuch",
       "mt": "Buttuna tal-Ktieb-logħba",
-      "ne": "गेमबुक बटन"
+      "ne": "गेमबुक बटन",
+      "az": "Oyun Kitabı Düyməsi",
+      "cy": "Botwm Llyfr Gêm",
+      "si": "ගේම්බුක් බොත්තම",
+      "sw": "Kitufe cha kitabu cha mchezo"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -578,7 +606,11 @@
       "or": "ଗେମ୍‌ବୁକ୍ ପୃଷ୍ଠା",
       "lb": "Säit vum Spillbuch",
       "mt": "Paġna tal-Ktieb-logħba",
-      "ne": "गेमबुक पृष्ठ"
+      "ne": "गेमबुक पृष्ठ",
+      "az": "Oyun Kitabı Səhifəsi",
+      "cy": "Tudalen Llyfr Gêm",
+      "si": "ගේම්බුක් පිටුව",
+      "sw": "Ukurasa wa kitabu cha mchezo"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -651,7 +683,11 @@
       "or": "ଗେମ୍‌ବୁକ୍ ପପ୍‌ଅପ୍",
       "lb": "Dialogfënster vum Spillbuch",
       "mt": "Pop-up tal-Ktieb-logħba",
-      "ne": "गेमबुक पपअप"
+      "ne": "गेमबुक पपअप",
+      "az": "Oyun Kitabı Pop-up Pəncərəsi",
+      "cy": "Naidlen Llyfr Gêm",
+      "si": "ගේම්බුක් උත්පතනය",
+      "sw": "Dirisha ibukizi la kitabu cha mchezo"
     }
   }
 }

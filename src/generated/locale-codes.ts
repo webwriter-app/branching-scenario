@@ -12,6 +12,7 @@ export const sourceLocale = `en`;
  */
 export const targetLocales = [
   `ar`,
+  `az`,
   `bg`,
   `bn`,
   `bs`,
@@ -19,6 +20,7 @@ export const targetLocales = [
   `ca-ES-valencia`,
   `cnr`,
   `cs`,
+  `cy`,
   `da`,
   `de`,
   `el`,
@@ -59,6 +61,7 @@ export const targetLocales = [
   `pt-PT`,
   `ro`,
   `ru`,
+  `si`,
   `sk`,
   `sl`,
   `sr`,
@@ -66,6 +69,7 @@ export const targetLocales = [
   `sr-ijekavsk`,
   `sr-Latn`,
   `sv`,
+  `sw`,
   `te`,
   `tr`,
   `uk`,
@@ -80,6 +84,7 @@ export const targetLocales = [
  */
 export const allLocales = [
   `ar`,
+  `az`,
   `bg`,
   `bn`,
   `bs`,
@@ -87,6 +92,7 @@ export const allLocales = [
   `ca-ES-valencia`,
   `cnr`,
   `cs`,
+  `cy`,
   `da`,
   `de`,
   `el`,
@@ -128,6 +134,7 @@ export const allLocales = [
   `pt-PT`,
   `ro`,
   `ru`,
+  `si`,
   `sk`,
   `sl`,
   `sr`,
@@ -135,6 +142,7 @@ export const allLocales = [
   `sr-ijekavsk`,
   `sr-Latn`,
   `sv`,
+  `sw`,
   `te`,
   `tr`,
   `uk`,
