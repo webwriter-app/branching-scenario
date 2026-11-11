@@ -33,7 +33,11 @@
       "el": "Δημιουργήστε προσαρμόσιμες μαθησιακές εμπειρίες γράφοντας μια διαδραστική ιστορία, όπου οι μαθητές επιλέγουν πώς θα συνεχίσουν.",
       "hi": "गेमबुक बनाकर अनुकूलनीय सीखने के अनुभव तैयार करें, जिसमें आप विद्यार्थियों को आगे बढ़ने के विकल्प देते हैं।",
       "nn": "Lag fleksible læringsopplevingar med ei interaktiv forteljing der elevane vel korleis dei går vidare.",
-      "uk": "Створюйте гнучкі навчальні матеріали у форматі інтерактивної книги: запропонуйте учневі вибір, як продовжити."
+      "uk": "Створюйте гнучкі навчальні матеріали у форматі інтерактивної книги: запропонуйте учневі вибір, як продовжити.",
+      "bn": "গেমবুক তৈরি করে নমনীয় শেখার অভিজ্ঞতা গড়ুন, যেখানে শিক্ষার্থীকে পরের ধাপ বেছে নেওয়ার সুযোগ দেওয়া হয়।",
+      "fi": "Luo mukautuvia oppimiskokemuksia kirjoittamalla vuorovaikutteinen pelikirja, jossa oppija valitsee, miten tarina jatkuu.",
+      "hu": "Hozzon létre személyre szabható tanulási élményeket olyan interaktív történetek megírásával, amelyekben a diákok dönthetik el, hogyan folytatják.",
+      "ro": "Creați experiențe de învățare adaptabile alcătuind o carte interactivă în care îi oferiți elevului opțiuni despre cum să continue."
     },
     "label": {
       "_": "Branching Scenario",
@@ -68,7 +72,11 @@
       "el": "Διακλαδιζόμενο σενάριο",
       "hi": "शाखित परिदृश्य",
       "nn": "Forgrena scenario",
-      "uk": "Розгалужений сценарій"
+      "uk": "Розгалужений сценарій",
+      "bn": "শাখাভিত্তিক দৃশ্যপট",
+      "fi": "Haarautuva skenaario",
+      "hu": "Elágazó forgatókönyv",
+      "ro": "Scenariu cu ramificații"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -105,7 +113,11 @@
       "el": "Διακλαδιζόμενο σενάριο",
       "hi": "शाखित परिदृश्य",
       "nn": "Forgrena scenario",
-      "uk": "Розгалужений сценарій"
+      "uk": "Розгалужений сценарій",
+      "bn": "শাখাভিত্তিক দৃশ্যপট",
+      "fi": "Haarautuva skenaario",
+      "hu": "Elágazó forgatókönyv",
+      "ro": "Scenariu cu ramificații"
     }
   },
   "./snippets/art-of-europe": {
@@ -142,7 +154,11 @@
       "el": "Ευρωπαϊκή τέχνη",
       "hi": "यूरोप की कला",
       "nn": "Europeisk kunst",
-      "uk": "Мистецтво Європи"
+      "uk": "Мистецтво Європи",
+      "bn": "ইউরোপের শিল্প",
+      "fi": "Euroopan taide",
+      "hu": "Európai művészet",
+      "ro": "Arta Europei"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -179,7 +195,11 @@
       "el": "Κλάδος ιστορίας",
       "hi": "गेमबुक शाखा",
       "nn": "Forgreining i spelboka",
-      "uk": "Гілка інтерактивної книги"
+      "uk": "Гілка інтерактивної книги",
+      "bn": "গেমবুক শাখা",
+      "fi": "Pelikirjan haara",
+      "hu": "Történetág",
+      "ro": "Ramură a cărții interactive"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -216,7 +236,11 @@
       "el": "Κουμπί κλάδου ιστορίας",
       "hi": "गेमबुक शाखा बटन",
       "nn": "Forgreiningsknapp",
-      "uk": "Кнопка гілки інтерактивної книги"
+      "uk": "Кнопка гілки інтерактивної книги",
+      "bn": "গেমবুক শাখা বোতাম",
+      "fi": "Haaran painike",
+      "hu": "Történetág gomb",
+      "ro": "Buton pentru ramura cărții interactive"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -253,7 +277,11 @@
       "el": "Κουμπί ιστορίας",
       "hi": "गेमबुक बटन",
       "nn": "Knapp i spelboka",
-      "uk": "Кнопка інтерактивної книги"
+      "uk": "Кнопка інтерактивної книги",
+      "bn": "গেমবুক বোতাম",
+      "fi": "Pelikirjan painike",
+      "hu": "Történet gomb",
+      "ro": "Buton pentru cartea interactivă"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -290,7 +318,11 @@
       "el": "Σελίδα ιστορίας",
       "hi": "गेमबुक पृष्ठ",
       "nn": "Side i spelboka",
-      "uk": "Сторінка інтерактивної книги"
+      "uk": "Сторінка інтерактивної книги",
+      "bn": "গেমবুক পৃষ্ঠা",
+      "fi": "Pelikirjan sivu",
+      "hu": "Történetoldal",
+      "ro": "Pagină a cărții interactive"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -327,7 +359,11 @@
       "el": "Αναδυόμενο παράθυρο ιστορίας",
       "hi": "गेमबुक पॉपअप",
       "nn": "Dialogvindauge i spelboka",
-      "uk": "Спливне вікно інтерактивної книги"
+      "uk": "Спливне вікно інтерактивної книги",
+      "bn": "গেমবুক পপআপ",
+      "fi": "Pelikirjan ponnahdusikkuna",
+      "hu": "Történet felugró ablaka",
+      "ro": "Fereastră pop-up a cărții interactive"
     }
   }
 }

@@ -27,7 +27,11 @@
     "el",
     "hi",
     "nn",
-    "uk"
+    "uk",
+    "bn",
+    "fi",
+    "hu",
+    "ro"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {
