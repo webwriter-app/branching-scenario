@@ -83,10 +83,10 @@
 <target>Bir neçə qovşaq</target></trans-unit>
 <trans-unit id="s7984347f31306aca">
   <source>Popup to Pages</source>
-<target>Pop-up pəncərədən səhifələrə</target></trans-unit>
+<target>Açılan pəncərədən səhifələrə</target></trans-unit>
 <trans-unit id="s7f747127243108b9">
   <source>Popup to Popups</source>
-<target>Pop-up pəncərədən pop-up pəncərələrə</target></trans-unit>
+<target>Açılan pəncərədən açılan pəncərələrə</target></trans-unit>
 <trans-unit id="s7e617fb8024f45f4">
   <source>Quiz to Branch to Pages</source>
 <target>Viktorinadan budağa, sonra səhifələrə</target></trans-unit>
@@ -122,25 +122,25 @@
 <target>Qovşaq əlavə olunur</target></trans-unit>
 <trans-unit id="s03acb46b5470e0c9">
   <source>Give your new</source>
-<target>Yeni qovşağınıza başlıq verin</target></trans-unit>
+<target>Yeni</target></trans-unit>
 <trans-unit id="s0b52f3ea315aa9be">
   <source>Page node</source>
-<target>səhifə qovşağı</target></trans-unit>
+<target>səhifə qovşağına</target></trans-unit>
 <trans-unit id="sdc3d2121c3bc5907">
   <source>Popup node</source>
-<target>pop-up pəncərə qovşağı</target></trans-unit>
+<target>açılan pəncərə qovşağına</target></trans-unit>
 <trans-unit id="s487473fdf35474ff">
   <source>Branch node</source>
-<target>budaq qovşağı</target></trans-unit>
+<target>budaq qovşağına</target></trans-unit>
 <trans-unit id="s629e3dc56b1d35e9">
   <source>a title!</source>
-<target>!</target></trans-unit>
+<target>başlıq verin!</target></trans-unit>
 <trans-unit id="s6fd70a9a8c6d8355">
   <source>Untitled Page <x id="0" equiv-text="${this.pagesAdded}" /></source>
 <target>Başlıqsız səhifə <x id="0" equiv-text="${this.pagesAdded}" /></target></trans-unit>
 <trans-unit id="s9e1a091f1c7c53b0">
   <source>Untitled Popup <x id="0" equiv-text="${this.popupsAdded}" /></source>
-<target>Başlıqsız pop-up <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
+<target>Başlıqsız açılan pəncərə <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
 <trans-unit id="s1a30b9a78d158c62">
   <source>Untitled Branch <x id="0" equiv-text="${this.branchesAdded}" /></source>
 <target>Başlıqsız budaq <x id="0" equiv-text="${this.branchesAdded}" /></target></trans-unit>
@@ -158,7 +158,7 @@
 <target>Səhifələr</target></trans-unit>
 <trans-unit id="sc7aeb596f1dcb1bd">
   <source>Popup</source>
-<target>Pop-up</target></trans-unit>
+<target>Açılan pəncərə</target></trans-unit>
 <trans-unit id="s7a07940a2b62f185">
   <source>Branch</source>
 <target>Budaq</target></trans-unit>

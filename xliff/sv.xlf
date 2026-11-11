@@ -83,10 +83,10 @@
 <target>Flera noder</target></trans-unit>
 <trans-unit id="s7984347f31306aca">
   <source>Popup to Pages</source>
-<target>Popup till sidor</target></trans-unit>
+<target>Från popupfönster till sidor</target></trans-unit>
 <trans-unit id="s7f747127243108b9">
   <source>Popup to Popups</source>
-<target>Popup till popuper</target></trans-unit>
+<target>Från popupfönster till popupfönster</target></trans-unit>
 <trans-unit id="s7e617fb8024f45f4">
   <source>Quiz to Branch to Pages</source>
 <target>Frågesport till gren till sidor</target></trans-unit>
@@ -140,7 +140,7 @@
 <target>Namnlös sida <x id="0" equiv-text="${this.pagesAdded}" /></target></trans-unit>
 <trans-unit id="s9e1a091f1c7c53b0">
   <source>Untitled Popup <x id="0" equiv-text="${this.popupsAdded}" /></source>
-<target>Namnlös popup <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
+<target>Namnlöst popupfönster <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
 <trans-unit id="s1a30b9a78d158c62">
   <source>Untitled Branch <x id="0" equiv-text="${this.branchesAdded}" /></source>
 <target>Namnlös gren <x id="0" equiv-text="${this.branchesAdded}" /></target></trans-unit>
@@ -158,7 +158,7 @@
 <target>Sidor</target></trans-unit>
 <trans-unit id="sc7aeb596f1dcb1bd">
   <source>Popup</source>
-<target>Popup</target></trans-unit>
+<target>Popupfönster</target></trans-unit>
 <trans-unit id="s7a07940a2b62f185">
   <source>Branch</source>
 <target>Gren</target></trans-unit>

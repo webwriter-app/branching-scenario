@@ -122,16 +122,16 @@
 <target>Ychwanegu Nod</target></trans-unit>
 <trans-unit id="s03acb46b5470e0c9">
   <source>Give your new</source>
-<target>Rhowch deitl i’ch nod newydd</target></trans-unit>
+<target>Rhowch deitl i’ch</target></trans-unit>
 <trans-unit id="s0b52f3ea315aa9be">
   <source>Page node</source>
-<target>nod tudalen</target></trans-unit>
+<target>nod tudalen newydd</target></trans-unit>
 <trans-unit id="sdc3d2121c3bc5907">
   <source>Popup node</source>
-<target>nod naidlen</target></trans-unit>
+<target>nod naidlen newydd</target></trans-unit>
 <trans-unit id="s487473fdf35474ff">
   <source>Branch node</source>
-<target>nod cangen</target></trans-unit>
+<target>nod cangen newydd</target></trans-unit>
 <trans-unit id="s629e3dc56b1d35e9">
   <source>a title!</source>
 <target>!</target></trans-unit>

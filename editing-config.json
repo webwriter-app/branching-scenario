@@ -73,7 +73,17 @@
       "az": "Şagirdə necə davam edəcəyi barədə seçimlər təqdim edən oyun kitabı hazırlamaqla çevik öyrənmə təcrübələri yaradın.",
       "cy": "Crëwch brofiadau dysgu hyblyg drwy lunio llyfr gêm sy’n cynnig dewisiadau i’r dysgwr ynghylch sut i barhau.",
       "si": "ශිෂ්‍යයාට ඉදිරියට යන ආකාරය තෝරාගැනීමට විකල්ප දෙන ගේම්බුක් එකක් නිර්මාණය කර, අනුවර්තනය කළ හැකි ඉගෙනුම් අත්දැකීම් සකස් කරන්න.",
-      "sw": "Unda mafunzo yanayobadilika kwa kuandika kitabu cha mwingiliano ambamo wanafunzi huchagua jinsi ya kuendelea."
+      "sw": "Unda mafunzo yanayobadilika kwa kuandika kitabu cha mwingiliano ambamo wanafunzi huchagua jinsi ya kuendelea.",
+      "be": "Стварайце гнуткія навучальныя гісторыі ў выглядзе інтэрактыўнай кнігі, у якой вучні выбіраюць, як працягваць.",
+      "id": "Buat pengalaman belajar yang fleksibel dengan menulis buku permainan yang memberi siswa pilihan untuk melanjutkan.",
+      "ka": "შექმენით მოქნილი სასწავლო გამოცდილება თამაშის წიგნის დაწერით, რომელშიც მოსწავლეს გაგრძელების გზის არჩევის შესაძლებლობას აძლევთ.",
+      "ms": "Cipta pengalaman pembelajaran yang anjal dengan mengarang buku permainan yang memberikan pilihan kepada murid tentang cara untuk meneruskan.",
+      "ta": "மாணவருக்கு எவ்வாறு தொடர்வது என்று தேர்வுகளை வழங்கும் கேம்புக் ஒன்றை உருவாக்கி, மாற்றத்துக்கு ஏற்ற கற்றல் அனுபவங்களை வடிவமைக்கவும்.",
+      "tk": "Okuwça dowam etmegiň ýoluny saýlamaga mümkinçilik berýän oýun-kitap ýazyp, uýgunlaşýan okuw tejribelerini dörediň.",
+      "tl": "Lumikha ng mga nababagong karanasan sa pagkatuto sa pamamagitan ng pagsulat ng gamebook na nagbibigay sa mag-aaral ng mga mapagpipilian kung paano magpapatuloy.",
+      "hy": "Ստեղծեք հարմարվող ուսումնական փորձառություններ՝ հեղինակելով խաղագիրք, որտեղ սովորողին առաջարկում եք շարունակելու տարբերակներ։",
+      "ml": "വിദ്യാർത്ഥിക്ക് എങ്ങനെ തുടരണമെന്ന് തിരഞ്ഞെടുക്കാനുള്ള അവസരങ്ങൾ നൽകുന്ന ഗെയിംബുക്ക് രചിച്ച് വഴക്കമുള്ള പഠനാനുഭവങ്ങൾ സൃഷ്ടിക്കുക.",
+      "vi": "Tạo trải nghiệm học tập linh hoạt bằng cách soạn một sách tương tác, trong đó người học có thể chọn cách tiếp tục."
     },
     "label": {
       "_": "Branching Scenario",
@@ -142,13 +152,23 @@
       "lt": "Šakotas scenarijus",
       "mk": "Разгрането сценарио",
       "or": "ଶାଖା ଦୃଶ୍ୟପଟ",
-      "lb": "Verzweigte Szenario",
+      "lb": "Szenario mat Verzweigungen",
       "mt": "Xenarju b’fergħat",
       "ne": "शाखायुक्त परिदृश्य",
       "az": "Budaqlanan Ssenari",
       "cy": "Senario Canghennog",
       "si": "ශාඛාගත අවස්ථාව",
-      "sw": "Hali yenye matawi"
+      "sw": "Hali yenye matawi",
+      "be": "Разгалінаваны сцэнарый",
+      "id": "Skenario bercabang",
+      "ka": "განშტოებული სცენარი",
+      "ms": "Senario Bercabang",
+      "ta": "கிளைப் பின்னணி",
+      "tk": "Şahalanýan ssenariý",
+      "tl": "Sangay na Senaryo",
+      "hy": "Ճյուղավորվող սցենար",
+      "ml": "ശാഖാ സാഹചര്യം",
+      "vi": "Kịch bản phân nhánh"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -219,13 +239,23 @@
       "lt": "Šakotas scenarijus",
       "mk": "Разгрането сценарио",
       "or": "ଶାଖା ଦୃଶ୍ୟପଟ",
-      "lb": "Verzweigte Szenario",
+      "lb": "Szenario mat Verzweigungen",
       "mt": "Xenarju b’fergħat",
       "ne": "शाखायुक्त परिदृश्य",
       "az": "Budaqlanan Ssenari",
       "cy": "Senario Canghennog",
       "si": "ශාඛාගත අවස්ථාව",
-      "sw": "Hali yenye matawi"
+      "sw": "Hali yenye matawi",
+      "be": "Разгалінаваны сцэнарый",
+      "id": "Skenario bercabang",
+      "ka": "განშტოებული სცენარი",
+      "ms": "Senario Bercabang",
+      "ta": "கிளைப் பின்னணி",
+      "tk": "Şahalanýan ssenariý",
+      "tl": "Sangay na Senaryo",
+      "hy": "Ճյուղավորվող սցենար",
+      "ml": "ശാഖാ സാഹചര്യം",
+      "vi": "Kịch bản phân nhánh"
     }
   },
   "./snippets/art-of-europe": {
@@ -302,7 +332,17 @@
       "az": "Avropa İncəsənəti",
       "cy": "Celf Ewrop",
       "si": "යුරෝපයේ කලාව",
-      "sw": "Sanaa ya Ulaya"
+      "sw": "Sanaa ya Ulaya",
+      "be": "Мастацтва Еўропы",
+      "id": "Seni Eropa",
+      "ka": "ევროპის ხელოვნება",
+      "ms": "Seni Eropah",
+      "ta": "ஐரோப்பியக் கலை",
+      "tk": "Ýewropa sungaty",
+      "tl": "Sining ng Europa",
+      "hy": "Եվրոպայի արվեստը",
+      "ml": "യൂറോപ്പിന്റെ കല",
+      "vi": "Nghệ thuật châu Âu"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -379,7 +419,17 @@
       "az": "Oyun Kitabı Budağı",
       "cy": "Cangen Llyfr Gêm",
       "si": "ගේම්බුක් ශාඛාව",
-      "sw": "Tawi la kitabu cha mchezo"
+      "sw": "Tawi la kitabu cha mchezo",
+      "be": "Адгалінаванне кнігі-гульні",
+      "id": "Cabang Buku Permainan",
+      "ka": "თამაშის წიგნის განშტოება",
+      "ms": "Cabang Buku Permainan",
+      "ta": "கேம்புக் கிளை",
+      "tk": "Oýun-kitabyň şahasy",
+      "tl": "Sangay ng Gamebook",
+      "hy": "Խաղագրքի ճյուղ",
+      "ml": "ഗെയിംബുക്ക് ശാഖ",
+      "vi": "Nhánh của sách tương tác"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -456,7 +506,17 @@
       "az": "Oyun Kitabı Budağı Düyməsi",
       "cy": "Botwm Cangen Llyfr Gêm",
       "si": "ගේම්බුක් ශාඛා බොත්තම",
-      "sw": "Kitufe cha tawi"
+      "sw": "Kitufe cha tawi",
+      "be": "Кнопка адгалінавання",
+      "id": "Tombol Cabang Buku Permainan",
+      "ka": "თამაშის წიგნის განშტოების ღილაკი",
+      "ms": "Butang Cabang Buku Permainan",
+      "ta": "கேம்புக் கிளை பொத்தான்",
+      "tk": "Oýun-kitap şahasy düwmesi",
+      "tl": "Button ng Sangay ng Gamebook",
+      "hy": "Խաղագրքի ճյուղի կոճակ",
+      "ml": "ഗെയിംബുക്ക് ശാഖാ ബട്ടൺ",
+      "vi": "Nút phân nhánh của sách tương tác"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -533,7 +593,17 @@
       "az": "Oyun Kitabı Düyməsi",
       "cy": "Botwm Llyfr Gêm",
       "si": "ගේම්බුක් බොත්තම",
-      "sw": "Kitufe cha kitabu cha mchezo"
+      "sw": "Kitufe cha kitabu cha mchezo",
+      "be": "Кнопка кнігі-гульні",
+      "id": "Tombol Buku Permainan",
+      "ka": "თამაშის წიგნის ღილაკი",
+      "ms": "Butang Buku Permainan",
+      "ta": "கேம்புக் பொத்தான்",
+      "tk": "Oýun-kitap düwmesi",
+      "tl": "Button ng Gamebook",
+      "hy": "Խաղագրքի կոճակ",
+      "ml": "ഗെയിംബുക്ക് ബട്ടൺ",
+      "vi": "Nút của sách tương tác"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -610,7 +680,17 @@
       "az": "Oyun Kitabı Səhifəsi",
       "cy": "Tudalen Llyfr Gêm",
       "si": "ගේම්බුක් පිටුව",
-      "sw": "Ukurasa wa kitabu cha mchezo"
+      "sw": "Ukurasa wa kitabu cha mchezo",
+      "be": "Старонка кнігі-гульні",
+      "id": "Halaman Buku Permainan",
+      "ka": "თამაშის წიგნის გვერდი",
+      "ms": "Halaman Buku Permainan",
+      "ta": "கேம்புக் பக்கம்",
+      "tk": "Oýun-kitap sahypasy",
+      "tl": "Pahina ng Gamebook",
+      "hy": "Խաղագրքի էջ",
+      "ml": "ഗെയിംബുക്ക് പേജ്",
+      "vi": "Trang sách tương tác"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -687,7 +767,17 @@
       "az": "Oyun Kitabı Pop-up Pəncərəsi",
       "cy": "Naidlen Llyfr Gêm",
       "si": "ගේම්බුක් උත්පතනය",
-      "sw": "Dirisha ibukizi la kitabu cha mchezo"
+      "sw": "Dirisha ibukizi la kitabu cha mchezo",
+      "be": "Усплывальнае акно кнігі-гульні",
+      "id": "Popup Buku Permainan",
+      "ka": "თამაშის წიგნის ამომხტარი ფანჯარა",
+      "ms": "Pop timbul Buku Permainan",
+      "ta": "கேம்புக் பாப்அப்",
+      "tk": "Oýun-kitap açylýan penjiresi",
+      "tl": "Pop-up na Window ng Gamebook",
+      "hy": "Խաղագրքի ելնող պատուհան",
+      "ml": "ഗെയിംബുക്ക് പോപ്പപ്പ്",
+      "vi": "Hộp thoại của sách tương tác"
     }
   }
 }

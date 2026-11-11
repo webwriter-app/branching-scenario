@@ -28,10 +28,10 @@
 <target>Żum ’il ġewwa/’il barra</target></trans-unit>
 <trans-unit id="s0bdca49248ba4820">
   <source>Shortcuts</source>
-<target>Shortcuts</target></trans-unit>
+<target>Tasti ta’ malajr</target></trans-unit>
 <trans-unit id="s443fac2814907e18">
   <source>Outputs (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}" />)</source>
-<target>Outputs (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}" />)</target></trans-unit>
+<target>Ħruġ (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}" />)</target></trans-unit>
 <trans-unit id="s57f8d0db44da6177">
   <source>Delete Output</source>
 <target>Ħassar l-output</target></trans-unit>
@@ -40,7 +40,7 @@
 <target>Se tħassar <x id="0" equiv-text="${this.deleteOutputClass}" /> li għandu konnessjoni ħierġa. Trid tkompli?</target></trans-unit>
 <trans-unit id="s5fc4562bab5298a4">
   <source>Incoming (<x id="0" equiv-text="${this.editorStore.selectedNode?.inputs[&quot;input_1&quot;]?.connections&#10;    .length ?? 0}" />)</source>
-<target>Inputs (<x id="0" equiv-text="${this.editorStore.selectedNode?.inputs[&quot;input_1&quot;]?.connections&#10;    .length ?? 0}" />)</target></trans-unit>
+<target>Dħul (<x id="0" equiv-text="${this.editorStore.selectedNode?.inputs[&quot;input_1&quot;]?.connections&#10;    .length ?? 0}" />)</target></trans-unit>
 <trans-unit id="s09134f2a8084426d">
   <source>Accessing</source>
 <target>Qed taċċessa</target></trans-unit>
@@ -83,10 +83,10 @@
 <target>Diversi Nodi</target></trans-unit>
 <trans-unit id="s7984347f31306aca">
   <source>Popup to Pages</source>
-<target>Pop-up għal Paġni</target></trans-unit>
+<target>Minn tieqa li titfaċċa għal paġni</target></trans-unit>
 <trans-unit id="s7f747127243108b9">
   <source>Popup to Popups</source>
-<target>Pop-up għal Pop-ups</target></trans-unit>
+<target>Minn tieqa li titfaċċa għal twieqi li jitfaċċaw</target></trans-unit>
 <trans-unit id="s7e617fb8024f45f4">
   <source>Quiz to Branch to Pages</source>
 <target>Kwiżż għal Fergħa u mbagħad għal Paġni</target></trans-unit>
@@ -122,16 +122,16 @@
 <target>Qed iżżid nodu</target></trans-unit>
 <trans-unit id="s03acb46b5470e0c9">
   <source>Give your new</source>
-<target>Agħti titlu lin-nodu l-ġdid tiegħek</target></trans-unit>
+<target>Agħti titlu lin-nodu l-ġdid</target></trans-unit>
 <trans-unit id="s0b52f3ea315aa9be">
   <source>Page node</source>
-<target>tan-nodu tal-paġna</target></trans-unit>
+<target>tal-paġna</target></trans-unit>
 <trans-unit id="sdc3d2121c3bc5907">
   <source>Popup node</source>
-<target>tan-nodu tal-pop-up</target></trans-unit>
+<target>tat-tieqa li titfaċċa</target></trans-unit>
 <trans-unit id="s487473fdf35474ff">
   <source>Branch node</source>
-<target>tan-nodu tal-fergħa</target></trans-unit>
+<target>tal-fergħa</target></trans-unit>
 <trans-unit id="s629e3dc56b1d35e9">
   <source>a title!</source>
 <target>!</target></trans-unit>
@@ -140,7 +140,7 @@
 <target>Paġna bla Titlu <x id="0" equiv-text="${this.pagesAdded}" /></target></trans-unit>
 <trans-unit id="s9e1a091f1c7c53b0">
   <source>Untitled Popup <x id="0" equiv-text="${this.popupsAdded}" /></source>
-<target>Pop-up bla Titlu <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
+<target>Tieqa li titfaċċa bla titlu <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
 <trans-unit id="s1a30b9a78d158c62">
   <source>Untitled Branch <x id="0" equiv-text="${this.branchesAdded}" /></source>
 <target>Fergħa bla Titlu <x id="0" equiv-text="${this.branchesAdded}" /></target></trans-unit>
@@ -158,7 +158,7 @@
 <target>Paġni</target></trans-unit>
 <trans-unit id="sc7aeb596f1dcb1bd">
   <source>Popup</source>
-<target>Pop-up</target></trans-unit>
+<target>Tieqa li titfaċċa</target></trans-unit>
 <trans-unit id="s7a07940a2b62f185">
   <source>Branch</source>
 <target>Fergħa</target></trans-unit>
@@ -203,7 +203,7 @@
 <target>Evita l-Għeluq</target></trans-unit>
 <trans-unit id="s75d83fc3f0cfab40">
   <source>Header</source>
-<target>Header</target></trans-unit>
+<target>Intestatura</target></trans-unit>
 <trans-unit id="s7aaa8587048ed4d9">
   <source>Select element</source>
 <target>Agħżel Element</target></trans-unit>
@@ -245,7 +245,7 @@
 <target>Varjant</target></trans-unit>
 <trans-unit id="s11326fd2590f4e5e">
   <source>Default</source>
-<target>Default</target></trans-unit>
+<target>Predefinit</target></trans-unit>
 <trans-unit id="s2492f5fb1b05b45e">
   <source>Text</source>
 <target>Test</target></trans-unit>
@@ -293,7 +293,7 @@
 <target>Titlu tad-djalogu</target></trans-unit>
 <trans-unit id="s9b074ca77eff1ffc">
   <source>Hide dialog header</source>
-<target>Aħbi l-header tad-djalogu</target></trans-unit>
+<target>Aħbi l-intestatura tad-djalogu</target></trans-unit>
 </body>
 </file>
 </xliff>

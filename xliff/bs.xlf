@@ -7,7 +7,7 @@
 <target>Pravila</target></trans-unit>
 <trans-unit id="sd0182c6d73eaa2be">
   <source>Condition</source>
-<target>Uvjet</target></trans-unit>
+<target>Uslov</target></trans-unit>
 <trans-unit id="sad9ce781382a9f6e">
   <source>If no rule is satisfied, go to</source>
 <target>Ako nijedno pravilo nije ispunjeno, prijeđite na</target></trans-unit>
@@ -122,16 +122,16 @@
 <target>Dodavanje čvora</target></trans-unit>
 <trans-unit id="s03acb46b5470e0c9">
   <source>Give your new</source>
-<target>Naslov novog čvora:</target></trans-unit>
+<target>Dajte naslov novom</target></trans-unit>
 <trans-unit id="s0b52f3ea315aa9be">
   <source>Page node</source>
-<target>straničnog čvora</target></trans-unit>
+<target>čvoru stranice</target></trans-unit>
 <trans-unit id="sdc3d2121c3bc5907">
   <source>Popup node</source>
-<target>skočnog čvora</target></trans-unit>
+<target>čvoru iskačućeg prozora</target></trans-unit>
 <trans-unit id="s487473fdf35474ff">
   <source>Branch node</source>
-<target>čvora grane</target></trans-unit>
+<target>čvoru grananja</target></trans-unit>
 <trans-unit id="s629e3dc56b1d35e9">
   <source>a title!</source>
 <target>!</target></trans-unit>

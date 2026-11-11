@@ -83,10 +83,10 @@
 <target>Mai multe noduri</target></trans-unit>
 <trans-unit id="s7984347f31306aca">
   <source>Popup to Pages</source>
-<target>Pop-up către pagini</target></trans-unit>
+<target>Din fereastră emergentă spre pagini</target></trans-unit>
 <trans-unit id="s7f747127243108b9">
   <source>Popup to Popups</source>
-<target>Pop-up către pop-up-uri</target></trans-unit>
+<target>Din fereastră emergentă spre ferestre emergente</target></trans-unit>
 <trans-unit id="s7e617fb8024f45f4">
   <source>Quiz to Branch to Pages</source>
 <target>Test către ramură și pagini</target></trans-unit>
@@ -128,7 +128,7 @@
 <target>nod de pagină</target></trans-unit>
 <trans-unit id="sdc3d2121c3bc5907">
   <source>Popup node</source>
-<target>nod pop-up</target></trans-unit>
+<target>nod de fereastră emergentă</target></trans-unit>
 <trans-unit id="s487473fdf35474ff">
   <source>Branch node</source>
 <target>nod de ramificare</target></trans-unit>
@@ -140,7 +140,7 @@
 <target>Pagină fără titlu <x id="0" equiv-text="${this.pagesAdded}" /></target></trans-unit>
 <trans-unit id="s9e1a091f1c7c53b0">
   <source>Untitled Popup <x id="0" equiv-text="${this.popupsAdded}" /></source>
-<target>Pop-up fără titlu <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
+<target>Fereastră emergentă fără titlu <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
 <trans-unit id="s1a30b9a78d158c62">
   <source>Untitled Branch <x id="0" equiv-text="${this.branchesAdded}" /></source>
 <target>Ramură fără titlu <x id="0" equiv-text="${this.branchesAdded}" /></target></trans-unit>
@@ -158,7 +158,7 @@
 <target>Pagini</target></trans-unit>
 <trans-unit id="sc7aeb596f1dcb1bd">
   <source>Popup</source>
-<target>Pop-up</target></trans-unit>
+<target>Fereastră emergentă</target></trans-unit>
 <trans-unit id="s7a07940a2b62f185">
   <source>Branch</source>
 <target>Ramură</target></trans-unit>

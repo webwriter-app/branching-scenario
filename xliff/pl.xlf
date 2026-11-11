@@ -82,13 +82,13 @@
 <target>Wiele węzłów</target></trans-unit>
 <trans-unit id="s7984347f31306aca">
   <source>Popup to Pages</source>
-<target>Okno do stron</target></trans-unit>
+<target>Wyskakujące okno → strony</target></trans-unit>
 <trans-unit id="s7f747127243108b9">
   <source>Popup to Popups</source>
-<target>Okno do okien</target></trans-unit>
+<target>Wyskakujące okno → wyskakujące okna</target></trans-unit>
 <trans-unit id="s7e617fb8024f45f4">
   <source>Quiz to Branch to Pages</source>
-<target>Quiz do gałęzi, a następnie stron</target></trans-unit>
+<target>Quiz → gałąź → strony</target></trans-unit>
 <trans-unit id="sb4f1dffbb6be6302">
   <source>Clear</source>
 <target>Wyczyść</target></trans-unit>
@@ -121,25 +121,25 @@
 <target>Dodawanie węzła</target></trans-unit>
 <trans-unit id="s03acb46b5470e0c9">
   <source>Give your new</source>
-<target>Nadaj nowemu</target></trans-unit>
+<target>Nadaj tytuł nowemu</target></trans-unit>
 <trans-unit id="s0b52f3ea315aa9be">
   <source>Page node</source>
 <target>węzłowi strony</target></trans-unit>
 <trans-unit id="sdc3d2121c3bc5907">
   <source>Popup node</source>
-<target>węzłowi okna</target></trans-unit>
+<target>węzłowi wyskakującego okna</target></trans-unit>
 <trans-unit id="s487473fdf35474ff">
   <source>Branch node</source>
 <target>węzłowi gałęzi</target></trans-unit>
 <trans-unit id="s629e3dc56b1d35e9">
   <source>a title!</source>
-<target>tytuł!</target></trans-unit>
+<target>!</target></trans-unit>
 <trans-unit id="s6fd70a9a8c6d8355">
   <source>Untitled Page <x id="0" equiv-text="${this.pagesAdded}" /></source>
 <target>Strona bez tytułu <x id="0" equiv-text="${this.pagesAdded}" /></target></trans-unit>
 <trans-unit id="s9e1a091f1c7c53b0">
   <source>Untitled Popup <x id="0" equiv-text="${this.popupsAdded}" /></source>
-<target>Okno bez tytułu <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
+<target>Wyskakujące okno bez tytułu <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
 <trans-unit id="s1a30b9a78d158c62">
   <source>Untitled Branch <x id="0" equiv-text="${this.branchesAdded}" /></source>
 <target>Gałąź bez tytułu <x id="0" equiv-text="${this.branchesAdded}" /></target></trans-unit>
@@ -157,7 +157,7 @@
 <target>Strony</target></trans-unit>
 <trans-unit id="sc7aeb596f1dcb1bd">
   <source>Popup</source>
-<target>Okno</target></trans-unit>
+<target>Wyskakujące okno</target></trans-unit>
 <trans-unit id="s7a07940a2b62f185">
   <source>Branch</source>
 <target>Gałąź</target></trans-unit>

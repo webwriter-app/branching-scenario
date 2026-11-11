@@ -67,7 +67,17 @@
     "az",
     "cy",
     "si",
-    "sw"
+    "sw",
+    "be",
+    "id",
+    "ka",
+    "ms",
+    "ta",
+    "tk",
+    "tl",
+    "hy",
+    "ml",
+    "vi"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {
