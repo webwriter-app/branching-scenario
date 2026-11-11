@@ -29,7 +29,11 @@
       "cs": "Vytvářejte přizpůsobitelné vzdělávací zážitky v podobě interaktivního příběhu, ve kterém studenti sami rozhodují, jak bude pokračovat.",
       "ru": "Создавайте гибкие учебные задания в виде интерактивной книги, в которой учащиеся выбирают, как продолжить историю.",
       "ko": "학습자에게 계속 진행할 방법을 선택하게 하는 인터랙티브 북을 만들어 유연한 학습 경험을 설계하세요.",
-      "tr": "Öğrencilerin nasıl ilerleyeceklerini seçebildiği etkileşimli bir öykü oluşturarak uyarlanabilir öğrenme deneyimleri hazırlayın."
+      "tr": "Öğrencilerin nasıl ilerleyeceklerini seçebildiği etkileşimli bir öykü oluşturarak uyarlanabilir öğrenme deneyimleri hazırlayın.",
+      "el": "Δημιουργήστε προσαρμόσιμες μαθησιακές εμπειρίες γράφοντας μια διαδραστική ιστορία, όπου οι μαθητές επιλέγουν πώς θα συνεχίσουν.",
+      "hi": "गेमबुक बनाकर अनुकूलनीय सीखने के अनुभव तैयार करें, जिसमें आप विद्यार्थियों को आगे बढ़ने के विकल्प देते हैं।",
+      "nn": "Lag fleksible læringsopplevingar med ei interaktiv forteljing der elevane vel korleis dei går vidare.",
+      "uk": "Створюйте гнучкі навчальні матеріали у форматі інтерактивної книги: запропонуйте учневі вибір, як продовжити."
     },
     "label": {
       "_": "Branching Scenario",
@@ -60,7 +64,11 @@
       "cs": "Rozvětvený scénář",
       "ru": "Ветвящийся сценарий",
       "ko": "분기형 시나리오",
-      "tr": "Dallanıp budaklanan senaryo"
+      "tr": "Dallanıp budaklanan senaryo",
+      "el": "Διακλαδιζόμενο σενάριο",
+      "hi": "शाखित परिदृश्य",
+      "nn": "Forgrena scenario",
+      "uk": "Розгалужений сценарій"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -93,7 +101,11 @@
       "cs": "Rozvětvený scénář",
       "ru": "Ветвящийся сценарий",
       "ko": "분기형 시나리오",
-      "tr": "Dallanıp budaklanan senaryo"
+      "tr": "Dallanıp budaklanan senaryo",
+      "el": "Διακλαδιζόμενο σενάριο",
+      "hi": "शाखित परिदृश्य",
+      "nn": "Forgrena scenario",
+      "uk": "Розгалужений сценарій"
     }
   },
   "./snippets/art-of-europe": {
@@ -126,7 +138,11 @@
       "cs": "Umění Evropy",
       "ru": "Искусство Европы",
       "ko": "유럽의 미술",
-      "tr": "Avrupa Sanatı"
+      "tr": "Avrupa Sanatı",
+      "el": "Ευρωπαϊκή τέχνη",
+      "hi": "यूरोप की कला",
+      "nn": "Europeisk kunst",
+      "uk": "Мистецтво Європи"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -159,7 +175,11 @@
       "cs": "Větev příběhu",
       "ru": "Ветвь книги-игры",
       "ko": "인터랙티브 북 분기",
-      "tr": "Öykü dalı"
+      "tr": "Öykü dalı",
+      "el": "Κλάδος ιστορίας",
+      "hi": "गेमबुक शाखा",
+      "nn": "Forgreining i spelboka",
+      "uk": "Гілка інтерактивної книги"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -192,7 +212,11 @@
       "cs": "Tlačítko větve příběhu",
       "ru": "Кнопка ветвления",
       "ko": "분기 버튼",
-      "tr": "Öykü dalı düğmesi"
+      "tr": "Öykü dalı düğmesi",
+      "el": "Κουμπί κλάδου ιστορίας",
+      "hi": "गेमबुक शाखा बटन",
+      "nn": "Forgreiningsknapp",
+      "uk": "Кнопка гілки інтерактивної книги"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -225,7 +249,11 @@
       "cs": "Tlačítko příběhu",
       "ru": "Кнопка книги-игры",
       "ko": "인터랙티브 북 버튼",
-      "tr": "Öykü düğmesi"
+      "tr": "Öykü düğmesi",
+      "el": "Κουμπί ιστορίας",
+      "hi": "गेमबुक बटन",
+      "nn": "Knapp i spelboka",
+      "uk": "Кнопка інтерактивної книги"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -258,7 +286,11 @@
       "cs": "Stránka příběhu",
       "ru": "Страница книги-игры",
       "ko": "인터랙티브 북 페이지",
-      "tr": "Öykü sayfası"
+      "tr": "Öykü sayfası",
+      "el": "Σελίδα ιστορίας",
+      "hi": "गेमबुक पृष्ठ",
+      "nn": "Side i spelboka",
+      "uk": "Сторінка інтерактивної книги"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -291,7 +323,11 @@
       "cs": "Vyskakovací okno příběhu",
       "ru": "Окно книги-игры",
       "ko": "인터랙티브 북 팝업",
-      "tr": "Öykü açılır penceresi"
+      "tr": "Öykü açılır penceresi",
+      "el": "Αναδυόμενο παράθυρο ιστορίας",
+      "hi": "गेमबुक पॉपअप",
+      "nn": "Dialogvindauge i spelboka",
+      "uk": "Спливне вікно інтерактивної книги"
     }
   }
 }

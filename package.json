@@ -43,6 +43,7 @@
     "widget-lang-nl",
     "widget-lang-fr",
     "widget-lang-de",
+    "widget-lang-el",
     "widget-lang-it",
     "widget-lang-pl",
     "widget-lang-pt",
@@ -51,11 +52,14 @@
     "widget-lang-ru",
     "widget-lang-es",
     "widget-lang-sv",
+    "widget-lang-hi",
     "widget-lang-ja",
     "widget-lang-ko",
     "widget-lang-no",
     "widget-lang-nb",
-    "widget-lang-tr"
+    "widget-lang-nn",
+    "widget-lang-tr",
+    "widget-lang-uk"
   ],
   "license": "MIT",
   "author": "Andreas Dymek",

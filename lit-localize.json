@@ -23,7 +23,11 @@
     "cs",
     "ru",
     "ko",
-    "tr"
+    "tr",
+    "el",
+    "hi",
+    "nn",
+    "uk"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {
