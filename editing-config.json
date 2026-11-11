@@ -103,7 +103,16 @@
       "jv": "Gawe pengalaman sinau sing bisa dicocogake kanthi nulis buku game, ing ngendi siswa diwenehi pilihan kanggo nerusake.",
       "km": "បង្កើតបទពិសោធន៍រៀនសូត្រដែលអាចសម្របតាមបាន ដោយសរសេរសៀវភៅហ្គេមដែលផ្តល់ជម្រើសឱ្យសិស្សអំពីរបៀបបន្ត។",
       "om": "Kitaaba taphaa barreessuun muuxannoowwan barnootaa jijjiiramu danda’an uumi; barataan akkamitti itti fufu akka filatu dhiyeessi.",
-      "ti": "ተምሃሮ ብኸመይ ከም ዝቕጽሉ ክመርጹ ዝኽእሉሉ መጽሓፍ ምርጫ ብምድላው፣ ምስ ምርጫኦም ዝሰማማዕ ተመኩሮ ትምህርቲ ፍጠር።"
+      "ti": "ተምሃሮ ብኸመይ ከም ዝቕጽሉ ክመርጹ ዝኽእሉሉ መጽሓፍ ምርጫ ብምድላው፣ ምስ ምርጫኦም ዝሰማማዕ ተመኩሮ ትምህርቲ ፍጠር።",
+      "af-NA": "Skep aanpasbare leerervarings deur ’n spelboek te skryf waarin leerders keuses kry oor hoe om voort te gaan.",
+      "af-ZA": "Skep aanpasbare leerervarings deur ’n spelboek te skryf waarin leerders keuses kry oor hoe om voort te gaan.",
+      "ckb-Arab": "ئەزموونی فێربوونی گونجاو دروست بکە بە نووسینی کتێبێکی یاری کە لە فێرخواز دەپرسی چۆن بەردەوام بێت و هەڵبژاردەی پێ دەدات.",
+      "ckb": "ئەزموونی فێربوونی گونجاو دروست بکە بە نووسینی کتێبێکی یاری کە لە فێرخواز دەپرسی چۆن بەردەوام بێت و هەڵبژاردەی پێ دەدات.",
+      "kmr-Arab": "ب نڤیساندنا پرتووکەکە لیستکێ, ئەزموونێن فێربوونێ یێن گونجاو چێبکە; بژارتەیان پێشکێشی خوەندەکار بکە دا کو ئەو بریار بدە کا چاوا بدۆمینە.",
+      "kmr-Latn": "Bi nivîsandina pirtûkeke lîstikê, ezmûnên fêrbûnê yên guncaw çêbike; bijarteyan pêşkêşî xwendekar bike da ku ew biryar bide ka çawa bidomîne.",
+      "kmr": "Bi nivîsandina pirtûkeke lîstikê, ezmûnên fêrbûnê yên guncaw çêbike; bijarteyan pêşkêşî xwendekar bike da ku ew biryar bide ka çawa bidomîne.",
+      "yue-Hans": "创作互动游戏书，让学生拣接下来如何推进，从而建构可灵活调整嘅学习体验。",
+      "yue-Hant": "創作互動遊戲書，讓學生揀接下來如何推進，從而建構可靈活調整嘅學習體驗。"
     },
     "label": {
       "_": "Branching Scenario",
@@ -208,7 +217,16 @@
       "jv": "Skenario Cabang",
       "km": "សេណារីយ៉ូបែកសាខា",
       "om": "Haala Dameewwan Qabu",
-      "ti": "ጨናፍር ዘለዎ ትዕይንቲ"
+      "ti": "ጨናፍር ዘለዎ ትዕይንቲ",
+      "af-NA": "Vertakkende scenario",
+      "af-ZA": "Vertakkende scenario",
+      "ckb-Arab": "دۆخی لق‌بوو",
+      "ckb": "دۆخی لق‌بوو",
+      "kmr-Arab": "سەناریۆیا شاخدار",
+      "kmr-Latn": "Senaryoya Şaxdar",
+      "kmr": "Senaryoya Şaxdar",
+      "yue-Hans": "分支情境",
+      "yue-Hant": "分支情境"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -315,7 +333,16 @@
       "jv": "Skenario Cabang",
       "km": "សេណារីយ៉ូបែកសាខា",
       "om": "Haala Dameewwan Qabu",
-      "ti": "ጨናፍር ዘለዎ ትዕይንቲ"
+      "ti": "ጨናፍር ዘለዎ ትዕይንቲ",
+      "af-NA": "Vertakkende scenario",
+      "af-ZA": "Vertakkende scenario",
+      "ckb-Arab": "دۆخی لق‌بوو",
+      "ckb": "دۆخی لق‌بوو",
+      "kmr-Arab": "سەناریۆیا شاخدار",
+      "kmr-Latn": "Senaryoya Şaxdar",
+      "kmr": "Senaryoya Şaxdar",
+      "yue-Hans": "分支情境",
+      "yue-Hant": "分支情境"
     }
   },
   "./snippets/art-of-europe": {
@@ -422,7 +449,16 @@
       "jv": "Seni Éropah",
       "km": "សិល្បៈអឺរ៉ុប",
       "om": "Ogummaa Awurooppaa",
-      "ti": "ስነ ጥበብ ኤውሮጳ"
+      "ti": "ስነ ጥበብ ኤውሮጳ",
+      "af-NA": "Kuns van Europa",
+      "af-ZA": "Kuns van Europa",
+      "ckb-Arab": "هونەری ئەورووپا",
+      "ckb": "هونەری ئەورووپا",
+      "kmr-Arab": "هونەرێ ئەورۆپایێ",
+      "kmr-Latn": "Hunerê Ewropayê",
+      "kmr": "Hunerê Ewropayê",
+      "yue-Hans": "欧洲艺术",
+      "yue-Hant": "歐洲藝術"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -529,7 +565,16 @@
       "jv": "Cabang Buku Game",
       "km": "សាខាសៀវភៅហ្គេម",
       "om": "Damee Kitaaba Taphaa",
-      "ti": "ጨንፈር መጽሓፍ ምርጫ"
+      "ti": "ጨንፈር መጽሓፍ ምርጫ",
+      "af-NA": "Spelboektak",
+      "af-ZA": "Spelboektak",
+      "ckb-Arab": "لقی کتێبی یاری",
+      "ckb": "لقی کتێبی یاری",
+      "kmr-Arab": "شاخا پرتووکا لیستکێ",
+      "kmr-Latn": "Şaxa Pirtûka Lîstikê",
+      "kmr": "Şaxa Pirtûka Lîstikê",
+      "yue-Hans": "游戏书分支",
+      "yue-Hant": "遊戲書分支"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -636,7 +681,16 @@
       "jv": "Tombol Cabang Buku Game",
       "km": "ប៊ូតុងសាខាសៀវភៅហ្គេម",
       "om": "Qabduu Damee Kitaaba Taphaa",
-      "ti": "መጠወቒ ጨንፈር መጽሓፍ ምርጫ"
+      "ti": "መጠወቒ ጨንፈር መጽሓፍ ምርጫ",
+      "af-NA": "Spelboektakknoppie",
+      "af-ZA": "Spelboektakknoppie",
+      "ckb-Arab": "دوگمەی لقی کتێبی یاری",
+      "ckb": "دوگمەی لقی کتێبی یاری",
+      "kmr-Arab": "بشکۆکا شاخا پرتووکا لیستکێ",
+      "kmr-Latn": "Bişkoka Şaxa Pirtûka Lîstikê",
+      "kmr": "Bişkoka Şaxa Pirtûka Lîstikê",
+      "yue-Hans": "游戏书分支按钮",
+      "yue-Hant": "遊戲書分支按鈕"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -743,7 +797,16 @@
       "jv": "Tombol Buku Game",
       "km": "ប៊ូតុងសៀវភៅហ្គេម",
       "om": "Qabduu Kitaaba Taphaa",
-      "ti": "መጠወቒ መጽሓፍ ምርጫ"
+      "ti": "መጠወቒ መጽሓፍ ምርጫ",
+      "af-NA": "Spelboekknoppie",
+      "af-ZA": "Spelboekknoppie",
+      "ckb-Arab": "دوگمەی کتێبی یاری",
+      "ckb": "دوگمەی کتێبی یاری",
+      "kmr-Arab": "بشکۆکا پرتووکا لیستکێ",
+      "kmr-Latn": "Bişkoka Pirtûka Lîstikê",
+      "kmr": "Bişkoka Pirtûka Lîstikê",
+      "yue-Hans": "游戏书按钮",
+      "yue-Hant": "遊戲書按鈕"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -850,7 +913,16 @@
       "jv": "Kaca Buku Game",
       "km": "ទំព័រសៀវភៅហ្គេម",
       "om": "Fuula Kitaaba Taphaa",
-      "ti": "ገጽ መጽሓፍ ምርጫ"
+      "ti": "ገጽ መጽሓፍ ምርጫ",
+      "af-NA": "Spelboekbladsy",
+      "af-ZA": "Spelboekbladsy",
+      "ckb-Arab": "پەڕەی کتێبی یاری",
+      "ckb": "پەڕەی کتێبی یاری",
+      "kmr-Arab": "رووپەلا پرتووکا لیستکێ",
+      "kmr-Latn": "Rûpela Pirtûka Lîstikê",
+      "kmr": "Rûpela Pirtûka Lîstikê",
+      "yue-Hans": "游戏书页面",
+      "yue-Hant": "遊戲書頁面"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -957,7 +1029,16 @@
       "jv": "Jendhela Pop-up Buku Game",
       "km": "ផ្ទាំងលោតសៀវភៅហ្គេម",
       "om": "Foddaa Kitaaba Taphaa",
-      "ti": "ቅልቅል ዝብል መስኮት መጽሓፍ ምርጫ"
+      "ti": "ቅልቅል ዝብል መስኮት መጽሓፍ ምርጫ",
+      "af-NA": "Spelboek-opspringvenster",
+      "af-ZA": "Spelboek-opspringvenster",
+      "ckb-Arab": "پەنجەرەی سەرپێی کتێبی یاری",
+      "ckb": "پەنجەرەی سەرپێی کتێبی یاری",
+      "kmr-Arab": "پۆپوپا پرتووکا لیستکێ",
+      "kmr-Latn": "Popupa Pirtûka Lîstikê",
+      "kmr": "Popupa Pirtûka Lîstikê",
+      "yue-Hans": "游戏书视窗",
+      "yue-Hant": "遊戲書視窗"
     }
   }
 }

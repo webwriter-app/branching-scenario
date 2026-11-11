@@ -97,7 +97,16 @@
     "jv",
     "km",
     "om",
-    "ti"
+    "ti",
+    "af-NA",
+    "af-ZA",
+    "ckb-Arab",
+    "ckb",
+    "kmr-Arab",
+    "kmr-Latn",
+    "kmr",
+    "yue-Hans",
+    "yue-Hant"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {
