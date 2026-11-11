@@ -77,7 +77,15 @@
     "tl",
     "hy",
     "ml",
-    "vi"
+    "vi",
+    "kk",
+    "ky",
+    "la",
+    "my",
+    "sq",
+    "th",
+    "tpi",
+    "uz"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {

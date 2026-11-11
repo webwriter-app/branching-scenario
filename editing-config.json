@@ -83,7 +83,15 @@
       "tl": "Lumikha ng mga nababagong karanasan sa pagkatuto sa pamamagitan ng pagsulat ng gamebook na nagbibigay sa mag-aaral ng mga mapagpipilian kung paano magpapatuloy.",
       "hy": "Ստեղծեք հարմարվող ուսումնական փորձառություններ՝ հեղինակելով խաղագիրք, որտեղ սովորողին առաջարկում եք շարունակելու տարբերակներ։",
       "ml": "വിദ്യാർത്ഥിക്ക് എങ്ങനെ തുടരണമെന്ന് തിരഞ്ഞെടുക്കാനുള്ള അവസരങ്ങൾ നൽകുന്ന ഗെയിംബുക്ക് രചിച്ച് വഴക്കമുള്ള പഠനാനുഭവങ്ങൾ സൃഷ്ടിക്കുക.",
-      "vi": "Tạo trải nghiệm học tập linh hoạt bằng cách soạn một sách tương tác, trong đó người học có thể chọn cách tiếp tục."
+      "vi": "Tạo trải nghiệm học tập linh hoạt bằng cách soạn một sách tương tác, trong đó người học có thể chọn cách tiếp tục.",
+      "kk": "Оқушыға әрі қарай қалай жалғастыру керегін таңдауға мүмкіндік беретін ойын-кітап жасау арқылы икемді оқу тәжірибелерін құрастырыңыз.",
+      "ky": "Окуучуга мындан ары кандай улантууну тандоо мүмкүнчүлүгүн берген оюн китеп түзүп, ыңгайлашма окуу тажрыйбаларын жаратыңыз.",
+      "la": "Librum interactivum compone ut discipuli discendi cursum aptare possint, eligentes qua via pergant.",
+      "my": "ကျောင်းသားကို ဆက်လက်လုပ်ဆောင်ပုံ ရွေးချယ်ခွင့်ပေးသည့် ဂိမ်းစာအုပ်တစ်အုပ် ရေးသားခြင်းဖြင့် လိုက်လျောညီထွေရှိသော သင်ယူမှုအတွေ့အကြုံများ ဖန်တီးပါ။",
+      "sq": "Krijoni përvoja mësimore të përshtatshme duke shkruar një libër-lojë ku i ofroni nxënësit mundësi për të zgjedhur si të vazhdojë.",
+      "th": "สร้างประสบการณ์การเรียนรู้ที่ปรับเปลี่ยนได้ โดยเขียนเกมบุ๊กที่ให้ผู้เรียนเลือกว่าจะดำเนินเรื่องต่ออย่างไร",
+      "tpi": "Wokim buk bilong lainim samting we sumatin inap makim rot em i laik bihainim. Ol dispela makim rot inap senisim wanem samting em i lainim bihain.",
+      "uz": "O‘quvchiga qanday davom etishni tanlash imkonini beradigan o‘yin kitobini yaratib, moslashuvchan ta’lim tajribalarini ishlab chiqing."
     },
     "label": {
       "_": "Branching Scenario",
@@ -168,7 +176,15 @@
       "tl": "Sangay na Senaryo",
       "hy": "Ճյուղավորվող սցենար",
       "ml": "ശാഖാ സാഹചര്യം",
-      "vi": "Kịch bản phân nhánh"
+      "vi": "Kịch bản phân nhánh",
+      "kk": "Тармақталған сценарий",
+      "ky": "Тармакталган сценарий",
+      "la": "Scaenarium ramosum",
+      "my": "အကိုင်းအခက်ပါသော အခြေအနေ",
+      "sq": "Skenar me degëzime",
+      "th": "สถานการณ์แบบแยกสาขา",
+      "tpi": "Stori i gat ol han rot",
+      "uz": "Tarmoqlanuvchi ssenariy"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -255,7 +271,15 @@
       "tl": "Sangay na Senaryo",
       "hy": "Ճյուղավորվող սցենար",
       "ml": "ശാഖാ സാഹചര്യം",
-      "vi": "Kịch bản phân nhánh"
+      "vi": "Kịch bản phân nhánh",
+      "kk": "Тармақталған сценарий",
+      "ky": "Тармакталган сценарий",
+      "la": "Scaenarium ramosum",
+      "my": "အကိုင်းအခက်ပါသော အခြေအနေ",
+      "sq": "Skenar me degëzime",
+      "th": "สถานการณ์แบบแยกสาขา",
+      "tpi": "Stori i gat ol han rot",
+      "uz": "Tarmoqlanuvchi ssenariy"
     }
   },
   "./snippets/art-of-europe": {
@@ -342,7 +366,15 @@
       "tl": "Sining ng Europa",
       "hy": "Եվրոպայի արվեստը",
       "ml": "യൂറോപ്പിന്റെ കല",
-      "vi": "Nghệ thuật châu Âu"
+      "vi": "Nghệ thuật châu Âu",
+      "kk": "Еуропа өнері",
+      "ky": "Европа искусствосу",
+      "la": "Ars Europae",
+      "my": "ဥရောပအနုပညာ",
+      "sq": "Arti i Evropës",
+      "th": "ศิลปะแห่งยุโรป",
+      "tpi": "At bilong Yurop",
+      "uz": "Yevropa san’ati"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -429,7 +461,15 @@
       "tl": "Sangay ng Gamebook",
       "hy": "Խաղագրքի ճյուղ",
       "ml": "ഗെയിംബുക്ക് ശാഖ",
-      "vi": "Nhánh của sách tương tác"
+      "vi": "Nhánh của sách tương tác",
+      "kk": "Ойын-кітап тармағы",
+      "ky": "Оюн китептин бутагы",
+      "la": "Ramus libri interactivi",
+      "my": "ဂိမ်းစာအုပ် အကိုင်း",
+      "sq": "Dega e librit-lojë",
+      "th": "สาขาเกมบุ๊ก",
+      "tpi": "Han rot bilong buk",
+      "uz": "O‘yin kitobi tarmog‘i"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -516,7 +556,15 @@
       "tl": "Button ng Sangay ng Gamebook",
       "hy": "Խաղագրքի ճյուղի կոճակ",
       "ml": "ഗെയിംബുക്ക് ശാഖാ ബട്ടൺ",
-      "vi": "Nút phân nhánh của sách tương tác"
+      "vi": "Nút phân nhánh của sách tương tác",
+      "kk": "Ойын-кітап тармағының түймесі",
+      "ky": "Оюн китеп бутагынын баскычы",
+      "la": "Bulla rami libri interactivi",
+      "my": "ဂိမ်းစာအုပ် အကိုင်းခလုတ်",
+      "sq": "Butoni i degës së librit-lojë",
+      "th": "ปุ่มสาขาเกมบุ๊ก",
+      "tpi": "Baton bilong han rot bilong buk",
+      "uz": "O‘yin kitobi tarmog‘i tugmasi"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -603,7 +651,15 @@
       "tl": "Button ng Gamebook",
       "hy": "Խաղագրքի կոճակ",
       "ml": "ഗെയിംബുക്ക് ബട്ടൺ",
-      "vi": "Nút của sách tương tác"
+      "vi": "Nút của sách tương tác",
+      "kk": "Ойын-кітап түймесі",
+      "ky": "Оюн китеп баскычы",
+      "la": "Bulla libri interactivi",
+      "my": "ဂိမ်းစာအုပ်ခလုတ်",
+      "sq": "Butoni i librit-lojë",
+      "th": "ปุ่มเกมบุ๊ก",
+      "tpi": "Baton bilong buk",
+      "uz": "O‘yin kitobi tugmasi"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -690,7 +746,15 @@
       "tl": "Pahina ng Gamebook",
       "hy": "Խաղագրքի էջ",
       "ml": "ഗെയിംബുക്ക് പേജ്",
-      "vi": "Trang sách tương tác"
+      "vi": "Trang sách tương tác",
+      "kk": "Ойын-кітап беті",
+      "ky": "Оюн китеп бети",
+      "la": "Pagina libri interactivi",
+      "my": "ဂိမ်းစာအုပ်စာမျက်နှာ",
+      "sq": "Faqja e librit-lojë",
+      "th": "หน้าเกมบุ๊ก",
+      "tpi": "Pes bilong buk",
+      "uz": "O‘yin kitobi sahifasi"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -777,7 +841,15 @@
       "tl": "Pop-up na Window ng Gamebook",
       "hy": "Խաղագրքի ելնող պատուհան",
       "ml": "ഗെയിംബുക്ക് പോപ്പപ്പ്",
-      "vi": "Hộp thoại của sách tương tác"
+      "vi": "Hộp thoại của sách tương tác",
+      "kk": "Ойын-кітап қалқымалы терезесі",
+      "ky": "Оюн китеп калкыма терезеси",
+      "la": "Fenestra emergens libri interactivi",
+      "my": "ဂိမ်းစာအုပ် ပေါ့ပ်အပ်",
+      "sq": "Dritarja kërcyese e librit-lojë",
+      "th": "ป๊อปอัปเกมบุ๊ก",
+      "tpi": "Liklik windo bilong buk",
+      "uz": "O‘yin kitobi qalqib chiquvchi oynasi"
     }
   }
 }
