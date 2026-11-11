@@ -53,7 +53,14 @@
     "lv",
     "sl",
     "te",
-    "ur"
+    "ur",
+    "bs",
+    "eu",
+    "ga",
+    "is",
+    "lt",
+    "mk",
+    "or"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {

@@ -59,7 +59,14 @@
       "lv": "Izveido pielāgojamu mācību pieredzi ar interaktīvu grāmatu, kurā skolēni izvēlas, kā turpināt stāstu.",
       "sl": "Ustvarite prilagodljive učne izkušnje z interaktivno knjigo, v kateri učencem ponudite izbiro, kako nadaljevati.",
       "te": "విద్యార్థికి కొనసాగింపుపై ఎంపికలు ఇచ్చే గేమ్‌బుక్‌ను రూపొందించి, అనుకూలంగా మార్చగల అభ్యాస అనుభవాలను సృష్టించండి.",
-      "ur": "ایسی لچک دار تعلیمی سرگرمیاں بنائیں جن میں گیم بُک لکھ کر طالب علم کو آگے بڑھنے کے مختلف انتخاب دیے جائیں۔"
+      "ur": "ایسی لچک دار تعلیمی سرگرمیاں بنائیں جن میں گیم بُک لکھ کر طالب علم کو آگے بڑھنے کے مختلف انتخاب دیے جائیں۔",
+      "bs": "Stvarajte prilagodljiva iskustva učenja oblikovanjem interaktivne knjige u kojoj učeniku nudite izbor kako nastaviti.",
+      "eu": "Sortu ikaskuntza-esperientzia moldagarriak, ikasleei nola jarraitu aukerak eskaintzen dizkien liburu-joko bat idatziz.",
+      "ga": "Cruthaigh eispéiris foghlama inoiriúnaithe trí leabhar cluiche a scríobh ina dtugann tú roghanna don fhoghlaimeoir maidir leis an gcéad chéim eile.",
+      "is": "Búðu til sveigjanlegt námsefni sem gagnvirka bók þar sem nemendur velja hvernig sagan heldur áfram.",
+      "lt": "Kurkite prisitaikančias mokymosi patirtis interaktyvioje knygoje, kurioje mokiniai patys renkasi, kaip tęsti istoriją.",
+      "mk": "Создавајте приспособливи образовни искуства со пишување интерактивна книга во која на ученикот му нудите избор како да продолжи.",
+      "or": "ଛାତ୍ରଛାତ୍ରୀଙ୍କୁ ଆଗକୁ ବଢ଼ିବା ପାଇଁ ବିକଳ୍ପ ଦେଉଥିବା ଗେମ୍‌ବୁକ୍ ରଚନା କରି ଅନୁକୂଳନଶୀଳ ଶିକ୍ଷଣ ଅନୁଭବ ସୃଷ୍ଟି କରନ୍ତୁ୤"
     },
     "label": {
       "_": "Branching Scenario",
@@ -120,7 +127,14 @@
       "lv": "Sazarots scenārijs",
       "sl": "Razvejani scenarij",
       "te": "శాఖలుగల దృశ్యకథ",
-      "ur": "شاخ دار منظرنامہ"
+      "ur": "شاخ دار منظرنامہ",
+      "bs": "Razgranati scenarij",
+      "eu": "Adarkatze-eszenatokia",
+      "ga": "Cás Brainseach",
+      "is": "Sviðsmynd með greinum",
+      "lt": "Šakotas scenarijus",
+      "mk": "Разгрането сценарио",
+      "or": "ଶାଖା ଦୃଶ୍ୟପଟ"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -183,7 +197,14 @@
       "lv": "Sazarots scenārijs",
       "sl": "Razvejani scenarij",
       "te": "శాఖలుగల దృశ్యకథ",
-      "ur": "شاخ دار منظرنامہ"
+      "ur": "شاخ دار منظرنامہ",
+      "bs": "Razgranati scenarij",
+      "eu": "Adarkatze-eszenatokia",
+      "ga": "Cás Brainseach",
+      "is": "Sviðsmynd með greinum",
+      "lt": "Šakotas scenarijus",
+      "mk": "Разгрането сценарио",
+      "or": "ଶାଖା ଦୃଶ୍ୟପଟ"
     }
   },
   "./snippets/art-of-europe": {
@@ -246,7 +267,14 @@
       "lv": "Eiropas māksla",
       "sl": "Umetnost Evrope",
       "te": "యూరప్ కళ",
-      "ur": "یورپ کا فن"
+      "ur": "یورپ کا فن",
+      "bs": "Umjetnost Evrope",
+      "eu": "Europako artea",
+      "ga": "Ealaín na hEorpa",
+      "is": "List Evrópu",
+      "lt": "Europos menas",
+      "mk": "Уметноста на Европа",
+      "or": "ୟୁରୋପର କଳା"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -309,7 +337,14 @@
       "lv": "Spēļu grāmatas atzars",
       "sl": "Veja interaktivne knjige",
       "te": "గేమ్‌బుక్ శాఖ",
-      "ur": "گیم بُک شاخ"
+      "ur": "گیم بُک شاخ",
+      "bs": "Grana interaktivne knjige",
+      "eu": "Liburu-jokoaren adarra",
+      "ga": "Brainse Leabhair Cluiche",
+      "is": "Grein í leikjabók",
+      "lt": "Žaidimų knygos šaka",
+      "mk": "Гранка на интерактивната книга",
+      "or": "ଗେମ୍‌ବୁକ୍ ଶାଖା"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -372,7 +407,14 @@
       "lv": "Atzara poga",
       "sl": "Gumb za vejo interaktivne knjige",
       "te": "గేమ్‌బుక్ శాఖ బటన్",
-      "ur": "گیم بُک شاخ کا بٹن"
+      "ur": "گیم بُک شاخ کا بٹن",
+      "bs": "Gumb grane interaktivne knjige",
+      "eu": "Liburu-jokoaren adar-botoia",
+      "ga": "Cnaipe Brainse Leabhair Cluiche",
+      "is": "Greinarhnappur",
+      "lt": "Šakos mygtukas",
+      "mk": "Копче за гранка на интерактивната книга",
+      "or": "ଗେମ୍‌ବୁକ୍ ଶାଖା ବଟନ୍"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -435,7 +477,14 @@
       "lv": "Spēļu grāmatas poga",
       "sl": "Gumb interaktivne knjige",
       "te": "గేమ్‌బుక్ బటన్",
-      "ur": "گیم بُک بٹن"
+      "ur": "گیم بُک بٹن",
+      "bs": "Gumb interaktivne knjige",
+      "eu": "Liburu-jokoaren botoia",
+      "ga": "Cnaipe Leabhair Cluiche",
+      "is": "Hnappur í leikjabók",
+      "lt": "Žaidimų knygos mygtukas",
+      "mk": "Копче за интерактивна книга",
+      "or": "ଗେମ୍‌ବୁକ୍ ବଟନ୍"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -498,7 +547,14 @@
       "lv": "Spēļu grāmatas lapa",
       "sl": "Stran interaktivne knjige",
       "te": "గేమ్‌బుక్ పేజీ",
-      "ur": "گیم بُک صفحہ"
+      "ur": "گیم بُک صفحہ",
+      "bs": "Stranica interaktivne knjige",
+      "eu": "Liburu-jokoaren orria",
+      "ga": "Leathanach Leabhair Cluiche",
+      "is": "Síða í leikjabók",
+      "lt": "Žaidimų knygos puslapis",
+      "mk": "Страница на интерактивната книга",
+      "or": "ଗେମ୍‌ବୁକ୍ ପୃଷ୍ଠା"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -561,7 +617,14 @@
       "lv": "Spēļu grāmatas uznirstošais logs",
       "sl": "Pojavno okno interaktivne knjige",
       "te": "గేమ్‌బుక్ పాప్‌అప్",
-      "ur": "گیم بُک پاپ اَپ"
+      "ur": "گیم بُک پاپ اَپ",
+      "bs": "Iskačući prozor interaktivne knjige",
+      "eu": "Liburu-jokoaren leiho gainerakorra",
+      "ga": "Preabfhuinneog Leabhair Cluiche",
+      "is": "Sprettigluggi í leikjabók",
+      "lt": "Žaidimų knygos iškylantysis langas",
+      "mk": "Скок-прозорец на интерактивната книга",
+      "or": "ଗେମ୍‌ବୁକ୍ ପପ୍‌ଅପ୍"
     }
   }
 }
