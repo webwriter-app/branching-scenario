@@ -10,7 +10,7 @@
 <target>Uvjet</target></trans-unit>
 <trans-unit id="sad9ce781382a9f6e">
   <source>If no rule is satisfied, go to</source>
-<target>Ako nijedno pravilo nije ispunjeno, prijeđite na</target></trans-unit>
+<target>Ako nijedno pravilo nije ispunjeno, pređite na</target></trans-unit>
 <trans-unit id="s524638d3ef766239">
   <source>No branching rules</source>
 <target>Nema pravila grananja</target></trans-unit>
@@ -49,13 +49,13 @@
 <target> Povežite čvor da biste stvorili pravila na temelju njegova sadržaja!</target></trans-unit>
 <trans-unit id="s5c17e8980e6b5b18">
   <source>Click on a node to view its content</source>
-<target>Kliknite čvor da biste vidjeli njegov sadržaj</target></trans-unit>
+<target>Kliknite čvor da biste videli njegov sadržaj</target></trans-unit>
 <trans-unit id="scda086c697995b38">
   <source>The content of this node cannot be found.</source>
 <target>Sadržaj ovog čvora nije moguće pronaći.</target></trans-unit>
 <trans-unit id="s748c82bdc348610f">
   <source>If reloading does not solve this issue, try recreating the node.</source>
-<target>Ako ponovno učitavanje ne riješi problem, pokušajte ponovno izraditi čvor.</target></trans-unit>
+<target>Ako ponovo učitavanje ne riješi problem, pokušajte ponovo izraditi čvor.</target></trans-unit>
 <trans-unit id="sad79fd47752866d8">
   <source>Recreate node</source>
 <target>Ponovno izradi čvor</target></trans-unit>
@@ -73,7 +73,7 @@
                   without manual placement.
                 </source>
 <target>
-                  U uređivač čvorova umeće unaprijed definiran <x id="0" equiv-text="&lt;strong&gt;" />uzorak<x id="1" equiv-text="&lt;/strong&gt;" /> od više
+                  U uređivač čvorova umeće unapred definiran <x id="0" equiv-text="&lt;strong&gt;" />uzorak<x id="1" equiv-text="&lt;/strong&gt;" /> od više
                   <x id="2" equiv-text="&lt;strong&gt;" />povezanih čvorova<x id="3" equiv-text="&lt;/strong&gt;" />.<x id="4" equiv-text="&lt;br&gt;&lt;br&gt;" />
                   Tako možete brzo dodati strukturirani skup čvorova
                   bez ručnog postavljanja.
@@ -194,13 +194,13 @@
 <target>Postavi kao početnu stranicu</target></trans-unit>
 <trans-unit id="secf2ae437afa81c6">
   <source>Create rules to guide how your gamebook progresses. The first rule that applies will be used.</source>
-<target>Stvorite pravila koja određuju tijek interaktivne knjige. Primijenit će se prvo pravilo koje vrijedi.</target></trans-unit>
+<target>Stvorite pravila koja određuju tijek interaktivne knjige. Primijenit će se prvo pravilo koje vredi.</target></trans-unit>
 <trans-unit id="sae5d9ee99fe0a8f5">
   <source>Requires</source>
 <target>Zahtijeva</target></trans-unit>
 <trans-unit id="s5b01e19e4efa5a9e">
   <source>Prevent Closing</source>
-<target>Spriječi zatvaranje</target></trans-unit>
+<target>Spreči zatvaranje</target></trans-unit>
 <trans-unit id="s75d83fc3f0cfab40">
   <source>Header</source>
 <target>Zaglavlje</target></trans-unit>
@@ -293,7 +293,7 @@
 <target>Naslov dijaloškog okvira</target></trans-unit>
 <trans-unit id="s9b074ca77eff1ffc">
   <source>Hide dialog header</source>
-<target>Sakrij zaglavlje dijaloškog okvira</target></trans-unit>
+<target>Sakrij zaglavlje dijaloga</target></trans-unit>
 </body>
 </file>
 </xliff>

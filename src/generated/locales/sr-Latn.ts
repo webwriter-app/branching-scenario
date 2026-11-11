@@ -18,7 +18,7 @@
               <strong>izabrali u uređivaču čvorova</strong>.
             `,
 'h7eb8e051be10e053': html`
-                  U uređivač čvorova umeće unaprijed definiran <strong>uzorak</strong> od više
+                  U uređivač čvorova umeće unapred definiran <strong>uzorak</strong> od više
                   <strong>povezanih čvorova</strong>.<br><br>
                   Tako možete brzo dodati strukturirani skup čvorova
                   bez ručnog postavljanja.
@@ -55,8 +55,8 @@
 's524638d3ef766239': `Nema pravila grananja`,
 's54faffd0f371b98d': `Opcije scenarija`,
 's57f8d0db44da6177': `Izbriši izlaz`,
-'s5b01e19e4efa5a9e': `Spriječi zatvaranje`,
-'s5c17e8980e6b5b18': `Kliknite čvor da biste vidjeli njegov sadržaj`,
+'s5b01e19e4efa5a9e': `Spreči zatvaranje`,
+'s5c17e8980e6b5b18': `Kliknite čvor da biste videli njegov sadržaj`,
 's5e8250fb85d64c23': `Zatvori`,
 's5f2f575fee43e7f8': `Pojedinačni čvorovi`,
 's5f7ab55b6ba8729c': `Ovdje nešto napišite...`,
@@ -66,7 +66,7 @@
 's6abd1339f5659d50': `Više čvorova`,
 's6ac0c20ddc5c15ff': `Stranice`,
 's6fd70a9a8c6d8355': str`Stranica bez naslova ${0}`,
-'s748c82bdc348610f': `Ako ponovno učitavanje ne riješi problem, pokušajte ponovno izraditi čvor.`,
+'s748c82bdc348610f': `Ako ponovo učitavanje ne riješi problem, pokušajte ponovo izraditi čvor.`,
 's75d83fc3f0cfab40': `Zaglavlje`,
 's78789724e789221c': `Veličina`,
 's7984347f31306aca': `Iskačući prozor u stranice`,
@@ -77,14 +77,14 @@
 's801ca3f7c573aebd': `Nije povezano`,
 's92a0d19a28995530': `Uspjeh`,
 's99f110d27e30b289': `Naslov`,
-'s9b074ca77eff1ffc': `Sakrij zaglavlje dijaloškog okvira`,
+'s9b074ca77eff1ffc': `Sakrij zaglavlje dijaloga`,
 's9e1a091f1c7c53b0': str`Iskačući prozor bez naslova ${0}`,
 'sa5c371b4bb75e590': `Lijevo`,
 'sa805b1e63ef896e4': str`Namjeravate izbrisati ${0} koji ima izlaznu vezu. Želite li nastaviti?`,
 'sac6bdc71f750ac96': `Srednja`,
 'sac7bd907d39a570e': `Očisti graf`,
 'sad79fd47752866d8': `Ponovno izradi čvor`,
-'sad9ce781382a9f6e': `Ako nijedno pravilo nije ispunjeno, prijeđite na`,
+'sad9ce781382a9f6e': `Ako nijedno pravilo nije ispunjeno, pređite na`,
 'sae5d9ee99fe0a8f5': `Zahtijeva`,
 'sb38d497d992ab4a4': `Sredina`,
 'sb4f1dffbb6be6302': `Očisti`,
@@ -106,7 +106,7 @@
 'sdc673e73b5c13aea': `Izbriši`,
 'sdf9bc5d9b7f3e3de': `Poravnanje`,
 'se14ede3bc78d9599': `Primarno`,
-'secf2ae437afa81c6': `Stvorite pravila koja određuju tijek interaktivne knjige. Primijenit će se prvo pravilo koje vrijedi.`,
+'secf2ae437afa81c6': `Stvorite pravila koja određuju tijek interaktivne knjige. Primijenit će se prvo pravilo koje vredi.`,
 'sf21fb4f4b9e8911f': `Širina`,
 'sf80fa7d9bacf0a78': str`Namjeravate izbrisati čvor ${0}. Želite li nastaviti?`,
 'sf9aee319a006c9b4': `Dodaj`,

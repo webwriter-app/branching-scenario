@@ -38,7 +38,16 @@
     "sk",
     "sr-Cyrl",
     "sr-Latn",
-    "sr"
+    "sr",
+    "ca-ES-valencia",
+    "ca",
+    "et",
+    "fa",
+    "gl",
+    "gu",
+    "he",
+    "mr",
+    "sr-ijekavsk"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {

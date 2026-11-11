@@ -44,7 +44,16 @@
       "sk": "Vytvárajte prispôsobiteľné vzdelávacie zážitky písaním interaktívneho príbehu, v ktorom si študenti sami vyberajú, ako budú pokračovať.",
       "sr-Cyrl": "Стварајте прилагодљива искуства учења обликовањем интерактивне књиге у којој ученику нудите избор како наставити.",
       "sr-Latn": "Stvarajte prilagodljiva iskustva učenja oblikovanjem interaktivne knjige u kojoj učeniku nudite izbor kako nastaviti.",
-      "sr": "Стварајте прилагодљива искуства учења обликовањем интерактивне књиге у којој ученику нудите избор како наставити."
+      "sr": "Стварајте прилагодљива искуства учења обликовањем интерактивне књиге у којој ученику нудите избор како наставити.",
+      "ca-ES-valencia": "Crea experiències d’aprenentatge adaptables amb un llibre-joc en què presentes a l’alumnat diferents opcions per continuar.",
+      "ca": "Crea experiències d’aprenentatge adaptables amb un llibre-joc en què presentes a l’alumnat diferents opcions per continuar.",
+      "et": "Loo kohandatavaid õpikogemusi interaktiivse raamatu abil, kus õppija saab valida, kuidas lugu jätkub.",
+      "fa": "با ساخت یک کتاب تعاملی، تجربهٔ یادگیری انعطاف‌پذیری طراحی کنید که در آن یادگیرنده مسیر ادامهٔ داستان را انتخاب می‌کند.",
+      "gl": "Crea experiencias de aprendizaxe adaptables cun libroxogo no que presentas ao alumnado opcións para continuar.",
+      "gu": "ગેમબુક બનાવીને લવચીક શૈક્ષણિક અનુભવ તૈયાર કરો, જેમાં વિદ્યાર્થીને આગળ કેવી રીતે વધવું તેની પસંદગી આપો.",
+      "he": "צרו חוויות למידה גמישות באמצעות ספר אינטראקטיבי שבו הלומדים בוחרים כיצד להמשיך.",
+      "mr": "गेमबुक तयार करून लवचिक शिक्षणानुभव घडवा; विद्यार्थ्यांना पुढे कसे जायचे याचे पर्याय द्या.",
+      "sr-ijekavsk": "Стварајте прилагодљива искуства учења обликовањем интерактивне књиге у којој ученику нудите избор како наставити."
     },
     "label": {
       "_": "Branching Scenario",
@@ -88,9 +97,18 @@
       "hr": "Razgranati scenarij",
       "pa": "ਸ਼ਾਖਾਵਾਂ ਵਾਲਾ ਦ੍ਰਿਸ਼ਟਾਂਤ",
       "sk": "Vetviaci sa scenár",
-      "sr-Cyrl": "Разгранати сценариј",
-      "sr-Latn": "Razgranati scenarij",
-      "sr": "Разгранати сценариј"
+      "sr-Cyrl": "Разгранати сценарио",
+      "sr-Latn": "Razgranati scenario",
+      "sr": "Разгранати сценарио",
+      "ca-ES-valencia": "Escenari ramificat",
+      "ca": "Escenari ramificat",
+      "et": "Hargnev stsenaarium",
+      "fa": "سناریوی شاخه‌دار",
+      "gl": "Escenario ramificado",
+      "gu": "શાખાયુક્ત પરિસ્થિતિ",
+      "he": "תרחיש מסתעף",
+      "mr": "शाखायुक्त प्रसंग",
+      "sr-ijekavsk": "Разгранати сценарио"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -136,9 +154,18 @@
       "hr": "Razgranati scenarij",
       "pa": "ਸ਼ਾਖਾਵਾਂ ਵਾਲਾ ਦ੍ਰਿਸ਼ਟਾਂਤ",
       "sk": "Vetviaci sa scenár",
-      "sr-Cyrl": "Разгранати сценариј",
-      "sr-Latn": "Razgranati scenarij",
-      "sr": "Разгранати сценариј"
+      "sr-Cyrl": "Разгранати сценарио",
+      "sr-Latn": "Razgranati scenario",
+      "sr": "Разгранати сценарио",
+      "ca-ES-valencia": "Escenari ramificat",
+      "ca": "Escenari ramificat",
+      "et": "Hargnev stsenaarium",
+      "fa": "سناریوی شاخه‌دار",
+      "gl": "Escenario ramificado",
+      "gu": "શાખાયુક્ત પરિસ્થિતિ",
+      "he": "תרחיש מסתעף",
+      "mr": "शाखायुक्त प्रसंग",
+      "sr-ijekavsk": "Разгранати сценарио"
     }
   },
   "./snippets/art-of-europe": {
@@ -184,9 +211,18 @@
       "hr": "Umjetnost Europe",
       "pa": "ਯੂਰਪ ਦੀ ਕਲਾ",
       "sk": "Európske umenie",
-      "sr-Cyrl": "Умјетност Европе",
-      "sr-Latn": "Umjetnost Evrope",
-      "sr": "Умјетност Европе"
+      "sr-Cyrl": "Уметност Европе",
+      "sr-Latn": "Umetnost Evrope",
+      "sr": "Уметност Европе",
+      "ca-ES-valencia": "Art d’Europa",
+      "ca": "Art d’Europa",
+      "et": "Euroopa kunst",
+      "fa": "هنر اروپا",
+      "gl": "Arte de Europa",
+      "gu": "યુરોપની કલા",
+      "he": "אמנות אירופה",
+      "mr": "युरोपची कला",
+      "sr-ijekavsk": "Умјетност Европе"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -234,7 +270,16 @@
       "sk": "Vetva príbehu",
       "sr-Cyrl": "Грана интерактивне књиге",
       "sr-Latn": "Grana interaktivne knjige",
-      "sr": "Грана интерактивне књиге"
+      "sr": "Грана интерактивне књиге",
+      "ca-ES-valencia": "Branca del llibre-joc",
+      "ca": "Branca del llibre-joc",
+      "et": "Mänguraamatu haru",
+      "fa": "شاخهٔ کتاب تعاملی",
+      "gl": "Rama do libroxogo",
+      "gu": "ગેમબુક શાખા",
+      "he": "הסתעפות בספר המשחק",
+      "mr": "गेमबुक शाखा",
+      "sr-ijekavsk": "Грана интерактивне књиге"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -280,9 +325,18 @@
       "hr": "Gumb grane interaktivne knjige",
       "pa": "ਗੇਮਬੁੱਕ ਸ਼ਾਖਾ ਬਟਨ",
       "sk": "Tlačidlo vetvy príbehu",
-      "sr-Cyrl": "Гумб гране интерактивне књиге",
-      "sr-Latn": "Gumb grane interaktivne knjige",
-      "sr": "Гумб гране интерактивне књиге"
+      "sr-Cyrl": "Дугме гране интерактивне књиге",
+      "sr-Latn": "Dugme grane interaktivne knjige",
+      "sr": "Дугме гране интерактивне књиге",
+      "ca-ES-valencia": "Botó de branca del llibre-joc",
+      "ca": "Botó de branca del llibre-joc",
+      "et": "Harunupp",
+      "fa": "دکمهٔ شاخه",
+      "gl": "Botón de rama do libroxogo",
+      "gu": "ગેમબુક શાખા બટન",
+      "he": "כפתור הסתעפות",
+      "mr": "गेमबुक शाखा बटण",
+      "sr-ijekavsk": "Дугме гране интерактивне књиге"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -328,9 +382,18 @@
       "hr": "Gumb interaktivne knjige",
       "pa": "ਗੇਮਬੁੱਕ ਬਟਨ",
       "sk": "Tlačidlo príbehu",
-      "sr-Cyrl": "Гумб интерактивне књиге",
-      "sr-Latn": "Gumb interaktivne knjige",
-      "sr": "Гумб интерактивне књиге"
+      "sr-Cyrl": "Дугме интерактивне књиге",
+      "sr-Latn": "Dugme interaktivne knjige",
+      "sr": "Дугме интерактивне књиге",
+      "ca-ES-valencia": "Botó del llibre-joc",
+      "ca": "Botó del llibre-joc",
+      "et": "Mänguraamatu nupp",
+      "fa": "دکمهٔ کتاب تعاملی",
+      "gl": "Botón do libroxogo",
+      "gu": "ગેમબુક બટન",
+      "he": "כפתור בספר המשחק",
+      "mr": "गेमबुक बटण",
+      "sr-ijekavsk": "Дугме интерактивне књиге"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -378,7 +441,16 @@
       "sk": "Stránka príbehu",
       "sr-Cyrl": "Страница интерактивне књиге",
       "sr-Latn": "Stranica interaktivne knjige",
-      "sr": "Страница интерактивне књиге"
+      "sr": "Страница интерактивне књиге",
+      "ca-ES-valencia": "Pàgina del llibre-joc",
+      "ca": "Pàgina del llibre-joc",
+      "et": "Mänguraamatu leht",
+      "fa": "صفحهٔ کتاب تعاملی",
+      "gl": "Páxina do libroxogo",
+      "gu": "ગેમબુક પૃષ્ઠ",
+      "he": "עמוד בספר המשחק",
+      "mr": "गेमबुक पान",
+      "sr-ijekavsk": "Страница интерактивне књиге"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -426,7 +498,16 @@
       "sk": "Vyskakovacie okno príbehu",
       "sr-Cyrl": "Искачући прозор интерактивне књиге",
       "sr-Latn": "Iskačući prozor interaktivne knjige",
-      "sr": "Искачући прозор интерактивне књиге"
+      "sr": "Искачући прозор интерактивне књиге",
+      "ca-ES-valencia": "Finestra emergent del llibre-joc",
+      "ca": "Finestra emergent del llibre-joc",
+      "et": "Mänguraamatu hüpikaken",
+      "fa": "پنجرهٔ بازشوی کتاب تعاملی",
+      "gl": "Ventá emerxente do libroxogo",
+      "gu": "ગેમબુક પોપઅપ",
+      "he": "חלונית בספר המשחק",
+      "mr": "गेमबुक पॉपअप",
+      "sr-ijekavsk": "Искачући прозор интерактивне књиге"
     }
   }
 }
