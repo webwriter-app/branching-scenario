@@ -98,7 +98,12 @@
       "mn": "Суралцагч цааш хэрхэн үргэлжлүүлэхээ сонгодог тоглоомон ном бүтээж, уян хатан суралцах туршлагыг бий болгоорой.",
       "ps": "داسې د لوبې کتاب په جوړولو سره د زده‌کړې انعطاف‌منونکې تجربې رامنځته کړئ چې زده‌کوونکي ته د دوام د لارې د ټاکلو اختیار ورکړي.",
       "so": "Abuur waayo-aragnimooyin waxbarasho oo dabacsan adigoo qoraya buug-ciyaareed uu ardaygu ka dooranayo sida uu u sii socdo.",
-      "tg": "Китоби интерактивӣ эҷод кунед, то хонанда роҳи идомаро интихоб карда тавонад ва рафти омӯзиш ба интихоби ӯ мутобиқ шавад."
+      "tg": "Китоби интерактивӣ эҷод кунед, то хонанда роҳи идомаро интихоб карда тавонад ва рафти омӯзиш ба интихоби ӯ мутобиқ шавад.",
+      "am": "ተማሪው እንዴት እንደሚቀጥል ምርጫዎችን የሚሰጥ የጨዋታ መጽሐፍ በመፍጠር ተለዋዋጭ የመማር ተሞክሮዎችን ያዘጋጁ።",
+      "jv": "Gawe pengalaman sinau sing bisa dicocogake kanthi nulis buku game, ing ngendi siswa diwenehi pilihan kanggo nerusake.",
+      "km": "បង្កើតបទពិសោធន៍រៀនសូត្រដែលអាចសម្របតាមបាន ដោយសរសេរសៀវភៅហ្គេមដែលផ្តល់ជម្រើសឱ្យសិស្សអំពីរបៀបបន្ត។",
+      "om": "Kitaaba taphaa barreessuun muuxannoowwan barnootaa jijjiiramu danda’an uumi; barataan akkamitti itti fufu akka filatu dhiyeessi.",
+      "ti": "ተምሃሮ ብኸመይ ከም ዝቕጽሉ ክመርጹ ዝኽእሉሉ መጽሓፍ ምርጫ ብምድላው፣ ምስ ምርጫኦም ዝሰማማዕ ተመኩሮ ትምህርቲ ፍጠር።"
     },
     "label": {
       "_": "Branching Scenario",
@@ -198,7 +203,12 @@
       "mn": "Салаалсан хувилбар",
       "ps": "څانګیز سناریو",
       "so": "Xaalad Laamo Leh",
-      "tg": "Сенарияи шохадор"
+      "tg": "Сенарияи шохадор",
+      "am": "ቅርንጫፋዊ ሁኔታ",
+      "jv": "Skenario Cabang",
+      "km": "សេណារីយ៉ូបែកសាខា",
+      "om": "Haala Dameewwan Qabu",
+      "ti": "ጨናፍር ዘለዎ ትዕይንቲ"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -300,7 +310,12 @@
       "mn": "Салаалсан хувилбар",
       "ps": "څانګیز سناریو",
       "so": "Xaalad Laamo Leh",
-      "tg": "Сенарияи шохадор"
+      "tg": "Сенарияи шохадор",
+      "am": "ቅርንጫፋዊ ሁኔታ",
+      "jv": "Skenario Cabang",
+      "km": "សេណារីយ៉ូបែកសាខា",
+      "om": "Haala Dameewwan Qabu",
+      "ti": "ጨናፍር ዘለዎ ትዕይንቲ"
     }
   },
   "./snippets/art-of-europe": {
@@ -402,7 +417,12 @@
       "mn": "Европын урлаг",
       "ps": "د اروپا هنر",
       "so": "Farshaxanka Yurub",
-      "tg": "Санъати Аврупо"
+      "tg": "Санъати Аврупо",
+      "am": "የአውሮፓ ጥበብ",
+      "jv": "Seni Éropah",
+      "km": "សិល្បៈអឺរ៉ុប",
+      "om": "Ogummaa Awurooppaa",
+      "ti": "ስነ ጥበብ ኤውሮጳ"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -504,7 +524,12 @@
       "mn": "Тоглоомон номын салаа",
       "ps": "د لوبې کتاب څانګه",
       "so": "Laanta Buug-ciyaareedka",
-      "tg": "Шохаи китоби интерактивӣ"
+      "tg": "Шохаи китоби интерактивӣ",
+      "am": "የጨዋታ መጽሐፍ ቅርንጫፍ",
+      "jv": "Cabang Buku Game",
+      "km": "សាខាសៀវភៅហ្គេម",
+      "om": "Damee Kitaaba Taphaa",
+      "ti": "ጨንፈር መጽሓፍ ምርጫ"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -606,7 +631,12 @@
       "mn": "Тоглоомон номын салааны товч",
       "ps": "د لوبې کتاب د څانګې تڼۍ",
       "so": "Badhanka Laanta Buug-ciyaareedka",
-      "tg": "Тугмаи шохаи китоби интерактивӣ"
+      "tg": "Тугмаи шохаи китоби интерактивӣ",
+      "am": "የጨዋታ መጽሐፍ ቅርንጫፍ አዝራር",
+      "jv": "Tombol Cabang Buku Game",
+      "km": "ប៊ូតុងសាខាសៀវភៅហ្គេម",
+      "om": "Qabduu Damee Kitaaba Taphaa",
+      "ti": "መጠወቒ ጨንፈር መጽሓፍ ምርጫ"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -708,7 +738,12 @@
       "mn": "Тоглоомон номын товч",
       "ps": "د لوبې کتاب تڼۍ",
       "so": "Badhanka Buug-ciyaareedka",
-      "tg": "Тугмаи китоби интерактивӣ"
+      "tg": "Тугмаи китоби интерактивӣ",
+      "am": "የጨዋታ መጽሐፍ አዝራር",
+      "jv": "Tombol Buku Game",
+      "km": "ប៊ូតុងសៀវភៅហ្គេម",
+      "om": "Qabduu Kitaaba Taphaa",
+      "ti": "መጠወቒ መጽሓፍ ምርጫ"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -810,7 +845,12 @@
       "mn": "Тоглоомон номын хуудас",
       "ps": "د لوبې کتاب پاڼه",
       "so": "Bogga Buug-ciyaareedka",
-      "tg": "Саҳифаи китоби интерактивӣ"
+      "tg": "Саҳифаи китоби интерактивӣ",
+      "am": "የጨዋታ መጽሐፍ ገጽ",
+      "jv": "Kaca Buku Game",
+      "km": "ទំព័រសៀវភៅហ្គេម",
+      "om": "Fuula Kitaaba Taphaa",
+      "ti": "ገጽ መጽሓፍ ምርጫ"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -912,7 +952,12 @@
       "mn": "Тоглоомон номын цонх",
       "ps": "د لوبې کتاب پاپ‌اپ",
       "so": "Daaqadda Soo-baxa ee Buug-ciyaareedka",
-      "tg": "Равзанаи бозшавандаи китоби интерактивӣ"
+      "tg": "Равзанаи бозшавандаи китоби интерактивӣ",
+      "am": "የጨዋታ መጽሐፍ ብቅ-ባይ",
+      "jv": "Jendhela Pop-up Buku Game",
+      "km": "ផ្ទាំងលោតសៀវភៅហ្គេម",
+      "om": "Foddaa Kitaaba Taphaa",
+      "ti": "ቅልቅል ዝብል መስኮት መጽሓፍ ምርጫ"
     }
   }
 }

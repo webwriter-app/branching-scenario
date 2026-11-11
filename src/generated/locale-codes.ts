@@ -11,6 +11,7 @@ export const sourceLocale = `en`;
  * lexicographically.
  */
 export const targetLocales = [
+  `am`,
   `ar`,
   `az`,
   `be`,
@@ -45,8 +46,10 @@ export const targetLocales = [
   `is`,
   `it`,
   `ja`,
+  `jv`,
   `ka`,
   `kk`,
+  `km`,
   `kn`,
   `ko`,
   `ky`,
@@ -67,6 +70,7 @@ export const targetLocales = [
   `nl`,
   `nn`,
   `no`,
+  `om`,
   `or`,
   `pa`,
   `pl`,
@@ -91,6 +95,7 @@ export const targetLocales = [
   `te`,
   `tg`,
   `th`,
+  `ti`,
   `tk`,
   `tl`,
   `tpi`,
@@ -108,6 +113,7 @@ export const targetLocales = [
  * All valid project locale codes. Sorted lexicographically.
  */
 export const allLocales = [
+  `am`,
   `ar`,
   `az`,
   `be`,
@@ -143,8 +149,10 @@ export const allLocales = [
   `is`,
   `it`,
   `ja`,
+  `jv`,
   `ka`,
   `kk`,
+  `km`,
   `kn`,
   `ko`,
   `ky`,
@@ -165,6 +173,7 @@ export const allLocales = [
   `nl`,
   `nn`,
   `no`,
+  `om`,
   `or`,
   `pa`,
   `pl`,
@@ -189,6 +198,7 @@ export const allLocales = [
   `te`,
   `tg`,
   `th`,
+  `ti`,
   `tk`,
   `tl`,
   `tpi`,

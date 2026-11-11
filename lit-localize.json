@@ -92,7 +92,12 @@
     "mn",
     "ps",
     "so",
-    "tg"
+    "tg",
+    "am",
+    "jv",
+    "km",
+    "om",
+    "ti"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {
