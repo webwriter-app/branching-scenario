@@ -19,7 +19,9 @@
       "pt": "Crie experiências de aprendizagem adaptáveis com um livro-jogo em que cada aluno pode escolher como avançar.",
       "zh-Hans": "创作互动游戏书，让学生选择接下来如何推进，从而构建可灵活调整的学习体验。",
       "zh-Hant": "創作互動遊戲書，讓學生選擇接下來如何推進，從而建構可靈活調整的學習體驗。",
-      "zh": "创作互动游戏书，让学生选择接下来如何推进，从而构建可灵活调整的学习体验。"
+      "zh": "创作互动游戏书，让学生选择接下来如何推进，从而构建可灵活调整的学习体验。",
+      "ar": "أنشئ تجربة تعلّم قابلة للتكيّف من خلال تأليف كتاب تفاعلي يختار فيه المتعلّم طريقة مواصلة القصة.",
+      "pl": "Twórz elastyczne doświadczenia edukacyjne, opracowując interaktywną opowieść, w której uczeń sam wybiera dalszy przebieg."
     },
     "label": {
       "_": "Branching Scenario",
@@ -40,7 +42,9 @@
       "pt": "Cenário ramificado",
       "zh-Hans": "分支情境",
       "zh-Hant": "分支情境",
-      "zh": "分支情境"
+      "zh": "分支情境",
+      "ar": "سيناريو متفرّع",
+      "pl": "Scenariusz rozgałęziony"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -63,7 +67,9 @@
       "pt": "Cenário ramificado",
       "zh-Hans": "分支情境",
       "zh-Hant": "分支情境",
-      "zh": "分支情境"
+      "zh": "分支情境",
+      "ar": "سيناريو متفرّع",
+      "pl": "Scenariusz rozgałęziony"
     }
   },
   "./snippets/art-of-europe": {
@@ -86,7 +92,9 @@
       "pt": "Arte europeia",
       "zh-Hans": "欧洲艺术",
       "zh-Hant": "歐洲藝術",
-      "zh": "欧洲艺术"
+      "zh": "欧洲艺术",
+      "ar": "فن أوروبا",
+      "pl": "Sztuka Europy"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -109,7 +117,9 @@
       "pt": "Ramificação do livro-jogo",
       "zh-Hans": "游戏书分支",
       "zh-Hant": "遊戲書分支",
-      "zh": "游戏书分支"
+      "zh": "游戏书分支",
+      "ar": "فرع الكتاب التفاعلي",
+      "pl": "Gałąź opowieści"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -132,7 +142,9 @@
       "pt": "Botão de ramificação",
       "zh-Hans": "游戏书分支按钮",
       "zh-Hant": "遊戲書分支按鈕",
-      "zh": "游戏书分支按钮"
+      "zh": "游戏书分支按钮",
+      "ar": "زر الفرع",
+      "pl": "Przycisk gałęzi opowieści"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -155,7 +167,9 @@
       "pt": "Botão do livro-jogo",
       "zh-Hans": "游戏书按钮",
       "zh-Hant": "遊戲書按鈕",
-      "zh": "游戏书按钮"
+      "zh": "游戏书按钮",
+      "ar": "زر الكتاب التفاعلي",
+      "pl": "Przycisk opowieści"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -178,7 +192,9 @@
       "pt": "Página do livro-jogo",
       "zh-Hans": "游戏书页面",
       "zh-Hant": "遊戲書頁面",
-      "zh": "游戏书页面"
+      "zh": "游戏书页面",
+      "ar": "صفحة الكتاب التفاعلي",
+      "pl": "Strona opowieści"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -201,7 +217,9 @@
       "pt": "Janela do livro-jogo",
       "zh-Hans": "游戏书弹窗",
       "zh-Hant": "遊戲書視窗",
-      "zh": "游戏书弹窗"
+      "zh": "游戏书弹窗",
+      "ar": "نافذة الكتاب التفاعلي",
+      "pl": "Okno opowieści"
     }
   }
 }
