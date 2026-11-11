@@ -34,8 +34,10 @@
     "widget-lang-en-CA",
     "widget-lang-en-AU",
     "widget-lang-en-IN",
+    "widget-lang-nl",
     "widget-lang-fr",
     "widget-lang-de",
+    "widget-lang-it",
     "widget-lang-es"
   ],
   "license": "MIT",

@@ -10,7 +10,9 @@
       "en-AU": "Create adaptable learning experiences by authoring a gamebook, where you present the student with choices on how to continue.",
       "en-IN": "Create adaptable learning experiences by authoring a gamebook, where you present the student with choices on how to continue.",
       "fr": "Créez des parcours d’apprentissage adaptables sous forme de livre-jeu où les élèves choisissent la suite.",
-      "es": "Crea experiencias de aprendizaje adaptables con un librojuego en el que el alumnado elige cómo continuar."
+      "es": "Crea experiencias de aprendizaje adaptables con un librojuego en el que el alumnado elige cómo continuar.",
+      "nl": "Maak aanpasbare leerervaringen met een interactief verhaal waarin leerlingen zelf kiezen hoe ze verdergaan.",
+      "it": "Crea esperienze di apprendimento adattabili con un librogioco in cui chi studia può scegliere come proseguire."
     },
     "label": {
       "_": "Branching Scenario",
@@ -22,7 +24,9 @@
       "en-IN": "Branching Scenario",
       "fr": "Scénario à embranchements",
       "de": "Verzweigungszenarien",
-      "es": "Escenario ramificado"
+      "es": "Escenario ramificado",
+      "nl": "Vertakkend scenario",
+      "it": "Scenario a bivi"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -36,7 +40,9 @@
       "en-AU": "Branching Scenario",
       "en-IN": "Branching Scenario",
       "fr": "Scénario à embranchements",
-      "es": "Escenario ramificado"
+      "es": "Escenario ramificado",
+      "nl": "Vertakkend scenario",
+      "it": "Scenario a bivi"
     }
   },
   "./snippets/art-of-europe": {
@@ -50,7 +56,9 @@
       "en-IN": "Art Of Europe",
       "fr": "L’art en Europe",
       "de": "Kunst in Europa",
-      "es": "El arte en Europa"
+      "es": "El arte en Europa",
+      "nl": "Europese kunst",
+      "it": "Arte europea"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -64,7 +72,9 @@
       "en-IN": "Gamebook Branch",
       "fr": "Branche du livre-jeu",
       "de": "Spielbuch-Verzweigung",
-      "es": "Rama del librojuego"
+      "es": "Rama del librojuego",
+      "nl": "Vertakking van het verhaal",
+      "it": "Bivio del librogioco"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -78,7 +88,9 @@
       "en-IN": "Gamebook Branch Button",
       "fr": "Bouton de branche",
       "de": "Schaltfläche für Verzweigung",
-      "es": "Botón de bifurcación"
+      "es": "Botón de bifurcación",
+      "nl": "Vertakkingsknop",
+      "it": "Pulsante del bivio"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -92,7 +104,9 @@
       "en-IN": "Gamebook Button",
       "fr": "Bouton du livre-jeu",
       "de": "Spielbuch-Schaltfläche",
-      "es": "Botón del librojuego"
+      "es": "Botón del librojuego",
+      "nl": "Verhaalknop",
+      "it": "Pulsante del librogioco"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -106,7 +120,9 @@
       "en-IN": "Gamebook Page",
       "fr": "Page du livre-jeu",
       "de": "Spielbuch-Seite",
-      "es": "Página del librojuego"
+      "es": "Página del librojuego",
+      "nl": "Verhaalpagina",
+      "it": "Pagina del librogioco"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -120,7 +136,9 @@
       "en-IN": "Gamebook Popup",
       "fr": "Fenêtre du livre-jeu",
       "de": "Spielbuch-Popup",
-      "es": "Ventana del librojuego"
+      "es": "Ventana del librojuego",
+      "nl": "Verhaalvenster",
+      "it": "Finestra del librogioco"
     }
   }
 }

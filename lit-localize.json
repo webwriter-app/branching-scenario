@@ -4,7 +4,9 @@
   "targetLocales": [
     "de",
     "fr",
-    "es"
+    "es",
+    "nl",
+    "it"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {

@@ -14,6 +14,8 @@ export const targetLocales = [
   `de`,
   `es`,
   `fr`,
+  `it`,
+  `nl`,
 ] as const;
 
 /**
@@ -24,4 +26,6 @@ export const allLocales = [
   `en`,
   `es`,
   `fr`,
+  `it`,
+  `nl`,
 ] as const;
