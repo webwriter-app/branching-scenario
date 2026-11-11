@@ -10,25 +10,25 @@
 <target>Condición</target></trans-unit>
 <trans-unit id="sad9ce781382a9f6e">
   <source>If no rule is satisfied, go to</source>
-<target>Se non se cumpre ningunha regra, vai a</target></trans-unit>
+<target>Se non se cumpre ningunha regra, ir a</target></trans-unit>
 <trans-unit id="s524638d3ef766239">
   <source>No branching rules</source>
 <target>Non hai regras de ramificación</target></trans-unit>
 <trans-unit id="sfc63e31ac7c956ed">
   <source>Select</source>
-<target>Escolle</target></trans-unit>
+<target>Seleccionar</target></trans-unit>
 <trans-unit id="s51cf605b81d7c915">
   <source>Drag Connection</source>
-<target>Arrastra a conexión</target></trans-unit>
+<target>Arrastrar conexión</target></trans-unit>
 <trans-unit id="sdc673e73b5c13aea">
   <source>Delete</source>
 <target>Eliminar</target></trans-unit>
 <trans-unit id="s081de6398e897576">
   <source>Zoom In/Out</source>
-<target>Achegar/Afastar</target></trans-unit>
+<target>Achegar ou afastar a vista</target></trans-unit>
 <trans-unit id="s0bdca49248ba4820">
   <source>Shortcuts</source>
-<target>Atallos</target></trans-unit>
+<target>Atallos de teclado</target></trans-unit>
 <trans-unit id="s443fac2814907e18">
   <source>Outputs (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}" />)</source>
 <target>Saídas (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}" />)</target></trans-unit>
@@ -37,28 +37,28 @@
 <target>Eliminar saída</target></trans-unit>
 <trans-unit id="sa805b1e63ef896e4">
   <source>You are about to delete <x id="0" equiv-text="${this.deleteOutputClass}" /> which has an outgoing connection. Do you wish to proceed?</source>
-<target>Estás a piques de eliminar <x id="0" equiv-text="${this.deleteOutputClass}" />, que ten unha conexión de saída. Queres continuar?</target></trans-unit>
+<target>Vas eliminar <x id="0" equiv-text="${this.deleteOutputClass}" />, que ten unha conexión de saída. Queres continuar?</target></trans-unit>
 <trans-unit id="s5fc4562bab5298a4">
   <source>Incoming (<x id="0" equiv-text="${this.editorStore.selectedNode?.inputs[&quot;input_1&quot;]?.connections&#10;    .length ?? 0}" />)</source>
 <target>Entradas (<x id="0" equiv-text="${this.editorStore.selectedNode?.inputs[&quot;input_1&quot;]?.connections&#10;    .length ?? 0}" />)</target></trans-unit>
 <trans-unit id="s09134f2a8084426d">
   <source>Accessing</source>
-<target>Accedendo</target></trans-unit>
+<target>Abrindo</target></trans-unit>
 <trans-unit id="s0c17144a11b9576e">
   <source> Connect a node to create rules based on its content!</source>
-<target>Conecta un nodo para crear regras baseadas no seu contido!</target></trans-unit>
+<target>Conecta un nodo para crear regras a partir do seu contido!</target></trans-unit>
 <trans-unit id="s5c17e8980e6b5b18">
   <source>Click on a node to view its content</source>
 <target>Preme nun nodo para ver o seu contido</target></trans-unit>
 <trans-unit id="scda086c697995b38">
   <source>The content of this node cannot be found.</source>
-<target>Non se pode atopar o contido deste nodo.</target></trans-unit>
+<target>Non se atopou o contido deste nodo.</target></trans-unit>
 <trans-unit id="s748c82bdc348610f">
   <source>If reloading does not solve this issue, try recreating the node.</source>
-<target>Se recargar non resolve o problema, proba a crear de novo o nodo.</target></trans-unit>
+<target>Se recargar a páxina non resolve o problema, tenta crear o nodo de novo.</target></trans-unit>
 <trans-unit id="sad79fd47752866d8">
   <source>Recreate node</source>
-<target>Crear de novo o nodo</target></trans-unit>
+<target>Crear o nodo de novo</target></trans-unit>
 <trans-unit id="sf9aee319a006c9b4">
   <source>Add</source>
 <target>Engadir</target></trans-unit>
@@ -72,24 +72,19 @@
                   This allows you to quickly add a structured set of nodes
                   without manual placement.
                 </source>
-<target>
-                  Insire no editor de nodos un <x id="0" equiv-text="&lt;strong&gt;" />patrón<x id="1" equiv-text="&lt;/strong&gt;" /> predefinido de varios
-                  <x id="2" equiv-text="&lt;strong&gt;" />nodos conectados<x id="3" equiv-text="&lt;/strong&gt;" />.<x id="4" equiv-text="&lt;br&gt;&lt;br&gt;" />
-                  Así podes engadir rapidamente un conxunto estruturado de nodos
-                  sen colocalos manualmente.
-                </target></trans-unit>
+<target>Insire no editor un <x id="0" equiv-text="&lt;strong&gt;" />patrón<x id="1" equiv-text="&lt;/strong&gt;" /> predefinido de varios <x id="2" equiv-text="&lt;strong&gt;" />nodos conectados<x id="3" equiv-text="&lt;/strong&gt;" />.<x id="4" equiv-text="&lt;br&gt;&lt;br&gt;" /> Así podes engadir axiña un grupo de nodos sen colocalos á man.</target></trans-unit>
 <trans-unit id="s6abd1339f5659d50">
   <source>Multiple Nodes</source>
 <target>Varios nodos</target></trans-unit>
 <trans-unit id="s7984347f31306aca">
   <source>Popup to Pages</source>
-<target>Ventá emerxente a páxinas</target></trans-unit>
+<target>Da xanela a páxinas</target></trans-unit>
 <trans-unit id="s7f747127243108b9">
   <source>Popup to Popups</source>
-<target>Ventá emerxente a ventás emerxentes</target></trans-unit>
+<target>Da xanela a xanelas</target></trans-unit>
 <trans-unit id="s7e617fb8024f45f4">
   <source>Quiz to Branch to Pages</source>
-<target>Cuestionario a rama e despois a páxinas</target></trans-unit>
+<target>Da proba a páxinas mediante unha rama</target></trans-unit>
 <trans-unit id="sb4f1dffbb6be6302">
   <source>Clear</source>
 <target>Limpar</target></trans-unit>
@@ -113,34 +108,34 @@
 <target>Eliminar nodo</target></trans-unit>
 <trans-unit id="sf80fa7d9bacf0a78">
   <source>You are about to delete the node <x id="0" equiv-text="${this.editorStore.selectedNode.data.title}" />.  Do you want to proceed?</source>
-<target>Estás a piques de eliminar o nodo <x id="0" equiv-text="${this.editorStore.selectedNode.data.title}" />. Queres continuar?</target></trans-unit>
+<target>Vas eliminar o nodo <x id="0" equiv-text="${this.editorStore.selectedNode.data.title}" />. Queres continuar?</target></trans-unit>
 <trans-unit id="s0491e53d9de2e899">
   <source>Abort</source>
-<target>Abortar</target></trans-unit>
+<target>Deter</target></trans-unit>
 <trans-unit id="sb89f410de72cb268">
   <source>Adding Node</source>
-<target>Engadir nodo</target></trans-unit>
+<target>Engadindo un nodo</target></trans-unit>
 <trans-unit id="s03acb46b5470e0c9">
   <source>Give your new</source>
-<target>Ponlle un título ao teu novo</target></trans-unit>
+<target>Ponlle ao novo</target></trans-unit>
 <trans-unit id="s0b52f3ea315aa9be">
   <source>Page node</source>
 <target>nodo de páxina</target></trans-unit>
 <trans-unit id="sdc3d2121c3bc5907">
   <source>Popup node</source>
-<target>nodo de ventá emerxente</target></trans-unit>
+<target>nodo de xanela</target></trans-unit>
 <trans-unit id="s487473fdf35474ff">
   <source>Branch node</source>
 <target>nodo de rama</target></trans-unit>
 <trans-unit id="s629e3dc56b1d35e9">
   <source>a title!</source>
-<target>!</target></trans-unit>
+<target>un título!</target></trans-unit>
 <trans-unit id="s6fd70a9a8c6d8355">
   <source>Untitled Page <x id="0" equiv-text="${this.pagesAdded}" /></source>
 <target>Páxina sen título <x id="0" equiv-text="${this.pagesAdded}" /></target></trans-unit>
 <trans-unit id="s9e1a091f1c7c53b0">
   <source>Untitled Popup <x id="0" equiv-text="${this.popupsAdded}" /></source>
-<target>Ventá emerxente sen título <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
+<target>Xanela sen título <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
 <trans-unit id="s1a30b9a78d158c62">
   <source>Untitled Branch <x id="0" equiv-text="${this.branchesAdded}" /></source>
 <target>Rama sen título <x id="0" equiv-text="${this.branchesAdded}" /></target></trans-unit>
@@ -149,7 +144,7 @@
 <target>Sen conexión</target></trans-unit>
 <trans-unit id="s291e8cf07019837e">
   <source>Search Nodes...</source>
-<target>Buscar nodos...</target></trans-unit>
+<target>Buscar nodos…</target></trans-unit>
 <trans-unit id="s603d69217de4e83b">
   <source>No nodes found</source>
 <target>Non se atoparon nodos</target></trans-unit>
@@ -158,7 +153,7 @@
 <target>Páxinas</target></trans-unit>
 <trans-unit id="sc7aeb596f1dcb1bd">
   <source>Popup</source>
-<target>Ventá emerxente</target></trans-unit>
+<target>Xanela</target></trans-unit>
 <trans-unit id="s7a07940a2b62f185">
   <source>Branch</source>
 <target>Rama</target></trans-unit>
@@ -170,13 +165,7 @@
               <x id="10" equiv-text="&lt;strong&gt;" />list of all nodes<x id="11" equiv-text="&lt;/strong&gt;" />. Click on any node in the list
               to <x id="12" equiv-text="&lt;strong&gt;" />select it in the node editor<x id="13" equiv-text="&lt;/strong&gt;" />.
             </source>
-<target>
-              Usa a <x id="0" equiv-text="&lt;strong&gt;" />barra de busca<x id="1" equiv-text="&lt;/strong&gt;" /> para atopar nodos polo
-              <x id="2" equiv-text="&lt;strong&gt;" />título<x id="3" equiv-text="&lt;/strong&gt;" />, o <x id="4" equiv-text="&lt;strong&gt;" />tipo<x id="5" equiv-text="&lt;/strong&gt;" /> e o
-              <x id="6" equiv-text="&lt;strong&gt;" />contido<x id="7" equiv-text="&lt;/strong&gt;" />. <x id="8" equiv-text="&lt;br&gt;&lt;br&gt;&#10;              &lt;em&gt;" />Consello:<x id="9" equiv-text="&lt;/em&gt;" /> Ao premer na barra de busca amosarase unha
-              <x id="10" equiv-text="&lt;strong&gt;" />lista de todos os nodos<x id="11" equiv-text="&lt;/strong&gt;" />. Preme nun nodo da lista para
-              <x id="12" equiv-text="&lt;strong&gt;" />seleccionalo no editor de nodos<x id="13" equiv-text="&lt;/strong&gt;" />.
-            </target></trans-unit>
+<target>Usa a <x id="0" equiv-text="&lt;strong&gt;" />barra de busca<x id="1" equiv-text="&lt;/strong&gt;" /> para atopar nodos por <x id="2" equiv-text="&lt;strong&gt;" />título<x id="3" equiv-text="&lt;/strong&gt;" />, <x id="4" equiv-text="&lt;strong&gt;" />tipo<x id="5" equiv-text="&lt;/strong&gt;" /> e <x id="6" equiv-text="&lt;strong&gt;" />contido<x id="7" equiv-text="&lt;/strong&gt;" />. <x id="8" equiv-text="&lt;br&gt;&lt;br&gt;&#10;              &lt;em&gt;" />Consello:<x id="9" equiv-text="&lt;/em&gt;" /> ao premer na barra de busca verás unha <x id="10" equiv-text="&lt;strong&gt;" />lista de todos os nodos<x id="11" equiv-text="&lt;/strong&gt;" />. Preme nun nodo da lista para <x id="12" equiv-text="&lt;strong&gt;" />seleccionalo no editor<x id="13" equiv-text="&lt;/strong&gt;" />.</target></trans-unit>
 <trans-unit id="s3687049d1af562c4">
   <source>Copy</source>
 <target>Copiar</target></trans-unit>
@@ -191,10 +180,10 @@
 <target>Páxina inicial</target></trans-unit>
 <trans-unit id="sb5a5848245f9e0e8">
   <source>Set as Start Page</source>
-<target>Establecer como páxina inicial</target></trans-unit>
+<target>Definir como páxina inicial</target></trans-unit>
 <trans-unit id="secf2ae437afa81c6">
   <source>Create rules to guide how your gamebook progresses. The first rule that applies will be used.</source>
-<target>Crea regras para guiar o avance do teu libroxogo. Aplicarase a primeira regra que se cumpra.</target></trans-unit>
+<target>Crea regras para decidir como continúa o libro de xogo. Aplicarase a primeira regra que se cumpra.</target></trans-unit>
 <trans-unit id="sae5d9ee99fe0a8f5">
   <source>Requires</source>
 <target>Require</target></trans-unit>
@@ -206,7 +195,7 @@
 <target>Cabeceira</target></trans-unit>
 <trans-unit id="s7aaa8587048ed4d9">
   <source>Select element</source>
-<target>Escolle un elemento</target></trans-unit>
+<target>Seleccionar elemento</target></trans-unit>
 <trans-unit id="s3b151ca64eb26ec1">
   <source>Expand</source>
 <target>Expandir</target></trans-unit>
@@ -215,7 +204,7 @@
 <target>Contraer</target></trans-unit>
 <trans-unit id="s46d93e3b43f99a6f">
   <source>Untitled Gamebook</source>
-<target>Libroxogo sen título</target></trans-unit>
+<target>Libro de xogo sen título</target></trans-unit>
 <trans-unit id="s54faffd0f371b98d">
   <source>Scenario options</source>
 <target>Opcións do escenario</target></trans-unit>
@@ -224,7 +213,7 @@
 <target>Pechar</target></trans-unit>
 <trans-unit id="s5f7ab55b6ba8729c">
   <source>Write something here...</source>
-<target>Escribe algo aquí...</target></trans-unit>
+<target>Escribe aquí…</target></trans-unit>
 <trans-unit id="s99f110d27e30b289">
   <source>Title</source>
 <target>Título</target></trans-unit>
@@ -245,7 +234,7 @@
 <target>Variante</target></trans-unit>
 <trans-unit id="s11326fd2590f4e5e">
   <source>Default</source>
-<target>Predeterminado</target></trans-unit>
+<target>Predeterminada</target></trans-unit>
 <trans-unit id="s2492f5fb1b05b45e">
   <source>Text</source>
 <target>Texto</target></trans-unit>
@@ -257,7 +246,7 @@
 <target>Éxito</target></trans-unit>
 <trans-unit id="sc3e93c5b2fd1e0d8">
   <source>Neutral</source>
-<target>Neutro</target></trans-unit>
+<target>Neutra</target></trans-unit>
 <trans-unit id="s34be76c6b1eadbef">
   <source>Warning</source>
 <target>Aviso</target></trans-unit>
@@ -278,22 +267,22 @@
 <target>Aliñamento</target></trans-unit>
 <trans-unit id="sa5c371b4bb75e590">
   <source>Left</source>
-<target>Esquerda</target></trans-unit>
+<target>Á esquerda</target></trans-unit>
 <trans-unit id="sb38d497d992ab4a4">
   <source>Center</source>
-<target>Centro</target></trans-unit>
+<target>Centrado</target></trans-unit>
 <trans-unit id="s366991b9c9287765">
   <source>Right</source>
-<target>Dereita</target></trans-unit>
+<target>Á dereita</target></trans-unit>
 <trans-unit id="scb05d5ab1e8e2844">
   <source>Page title</source>
 <target>Título da páxina</target></trans-unit>
 <trans-unit id="s3c15568f5662789b">
   <source>Dialog title</source>
-<target>Título do diálogo</target></trans-unit>
+<target>Título da xanela</target></trans-unit>
 <trans-unit id="s9b074ca77eff1ffc">
   <source>Hide dialog header</source>
-<target>Agochar a cabeceira do diálogo</target></trans-unit>
+<target>Agochar a cabeceira da xanela</target></trans-unit>
 </body>
 </file>
 </xliff>

@@ -47,7 +47,13 @@
     "gu",
     "he",
     "mr",
-    "sr-ijekavsk"
+    "sr-ijekavsk",
+    "cnr",
+    "kn",
+    "lv",
+    "sl",
+    "te",
+    "ur"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {

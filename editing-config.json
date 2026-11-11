@@ -49,11 +49,17 @@
       "ca": "Crea experiències d’aprenentatge adaptables amb un llibre-joc en què presentes a l’alumnat diferents opcions per continuar.",
       "et": "Loo kohandatavaid õpikogemusi interaktiivse raamatu abil, kus õppija saab valida, kuidas lugu jätkub.",
       "fa": "با ساخت یک کتاب تعاملی، تجربهٔ یادگیری انعطاف‌پذیری طراحی کنید که در آن یادگیرنده مسیر ادامهٔ داستان را انتخاب می‌کند.",
-      "gl": "Crea experiencias de aprendizaxe adaptables cun libroxogo no que presentas ao alumnado opcións para continuar.",
+      "gl": "Crea experiencias de aprendizaxe adaptables cun libro interactivo no que o alumnado pode decidir como continúa a historia.",
       "gu": "ગેમબુક બનાવીને લવચીક શૈક્ષણિક અનુભવ તૈયાર કરો, જેમાં વિદ્યાર્થીને આગળ કેવી રીતે વધવું તેની પસંદગી આપો.",
       "he": "צרו חוויות למידה גמישות באמצעות ספר אינטראקטיבי שבו הלומדים בוחרים כיצד להמשיך.",
       "mr": "गेमबुक तयार करून लवचिक शिक्षणानुभव घडवा; विद्यार्थ्यांना पुढे कसे जायचे याचे पर्याय द्या.",
-      "sr-ijekavsk": "Стварајте прилагодљива искуства учења обликовањем интерактивне књиге у којој ученику нудите избор како наставити."
+      "sr-ijekavsk": "Стварајте прилагодљива искуства учења обликовањем интерактивне књиге у којој ученику нудите избор како наставити.",
+      "cnr": "Stvarajte prilagodljiva iskustva učenja oblikovanjem interaktivne knjige u kojoj učeniku nudite izbor kako nastaviti.",
+      "kn": "ವಿದ್ಯಾರ್ಥಿಗೆ ಮುಂದುವರಿಯಲು ಆಯ್ಕೆಗಳನ್ನು ನೀಡುವ ಗೇಮ್‌ಬುಕ್ ರಚಿಸಿ, ಹೊಂದಿಕೊಳ್ಳುವ ಕಲಿಕಾ ಅನುಭವಗಳನ್ನು ರೂಪಿಸಿ.",
+      "lv": "Izveido pielāgojamu mācību pieredzi ar interaktīvu grāmatu, kurā skolēni izvēlas, kā turpināt stāstu.",
+      "sl": "Ustvarite prilagodljive učne izkušnje z interaktivno knjigo, v kateri učencem ponudite izbiro, kako nadaljevati.",
+      "te": "విద్యార్థికి కొనసాగింపుపై ఎంపికలు ఇచ్చే గేమ్‌బుక్‌ను రూపొందించి, అనుకూలంగా మార్చగల అభ్యాస అనుభవాలను సృష్టించండి.",
+      "ur": "ایسی لچک دار تعلیمی سرگرمیاں بنائیں جن میں گیم بُک لکھ کر طالب علم کو آگے بڑھنے کے مختلف انتخاب دیے جائیں۔"
     },
     "label": {
       "_": "Branching Scenario",
@@ -108,7 +114,13 @@
       "gu": "શાખાયુક્ત પરિસ્થિતિ",
       "he": "תרחיש מסתעף",
       "mr": "शाखायुक्त प्रसंग",
-      "sr-ijekavsk": "Разгранати сценарио"
+      "sr-ijekavsk": "Разгранати сценарио",
+      "cnr": "Razgranati scenario",
+      "kn": "ಶಾಖೆಯ ಸನ್ನಿವೇಶ",
+      "lv": "Sazarots scenārijs",
+      "sl": "Razvejani scenarij",
+      "te": "శాఖలుగల దృశ్యకథ",
+      "ur": "شاخ دار منظرنامہ"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -165,7 +177,13 @@
       "gu": "શાખાયુક્ત પરિસ્થિતિ",
       "he": "תרחיש מסתעף",
       "mr": "शाखायुक्त प्रसंग",
-      "sr-ijekavsk": "Разгранати сценарио"
+      "sr-ijekavsk": "Разгранати сценарио",
+      "cnr": "Razgranati scenario",
+      "kn": "ಶಾಖೆಯ ಸನ್ನಿವೇಶ",
+      "lv": "Sazarots scenārijs",
+      "sl": "Razvejani scenarij",
+      "te": "శాఖలుగల దృశ్యకథ",
+      "ur": "شاخ دار منظرنامہ"
     }
   },
   "./snippets/art-of-europe": {
@@ -222,7 +240,13 @@
       "gu": "યુરોપની કલા",
       "he": "אמנות אירופה",
       "mr": "युरोपची कला",
-      "sr-ijekavsk": "Умјетност Европе"
+      "sr-ijekavsk": "Умјетност Европе",
+      "cnr": "Umjetnost Evrope",
+      "kn": "ಯುರೋಪಿನ ಕಲೆ",
+      "lv": "Eiropas māksla",
+      "sl": "Umetnost Evrope",
+      "te": "యూరప్ కళ",
+      "ur": "یورپ کا فن"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -275,11 +299,17 @@
       "ca": "Branca del llibre-joc",
       "et": "Mänguraamatu haru",
       "fa": "شاخهٔ کتاب تعاملی",
-      "gl": "Rama do libroxogo",
+      "gl": "Rama do libro de xogo",
       "gu": "ગેમબુક શાખા",
       "he": "הסתעפות בספר המשחק",
       "mr": "गेमबुक शाखा",
-      "sr-ijekavsk": "Грана интерактивне књиге"
+      "sr-ijekavsk": "Грана интерактивне књиге",
+      "cnr": "Grana interaktivne knjige",
+      "kn": "ಗೇಮ್‌ಬುಕ್ ಶಾಖೆ",
+      "lv": "Spēļu grāmatas atzars",
+      "sl": "Veja interaktivne knjige",
+      "te": "గేమ్‌బుక్ శాఖ",
+      "ur": "گیم بُک شاخ"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -332,11 +362,17 @@
       "ca": "Botó de branca del llibre-joc",
       "et": "Harunupp",
       "fa": "دکمهٔ شاخه",
-      "gl": "Botón de rama do libroxogo",
+      "gl": "Botón de ramificación",
       "gu": "ગેમબુક શાખા બટન",
       "he": "כפתור הסתעפות",
       "mr": "गेमबुक शाखा बटण",
-      "sr-ijekavsk": "Дугме гране интерактивне књиге"
+      "sr-ijekavsk": "Дугме гране интерактивне књиге",
+      "cnr": "Dugme grane interaktivne knjige",
+      "kn": "ಗೇಮ್‌ಬುಕ್ ಶಾಖೆ ಬಟನ್",
+      "lv": "Atzara poga",
+      "sl": "Gumb za vejo interaktivne knjige",
+      "te": "గేమ్‌బుక్ శాఖ బటన్",
+      "ur": "گیم بُک شاخ کا بٹن"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -389,11 +425,17 @@
       "ca": "Botó del llibre-joc",
       "et": "Mänguraamatu nupp",
       "fa": "دکمهٔ کتاب تعاملی",
-      "gl": "Botón do libroxogo",
+      "gl": "Botón do libro de xogo",
       "gu": "ગેમબુક બટન",
       "he": "כפתור בספר המשחק",
       "mr": "गेमबुक बटण",
-      "sr-ijekavsk": "Дугме интерактивне књиге"
+      "sr-ijekavsk": "Дугме интерактивне књиге",
+      "cnr": "Dugme interaktivne knjige",
+      "kn": "ಗೇಮ್‌ಬುಕ್ ಬಟನ್",
+      "lv": "Spēļu grāmatas poga",
+      "sl": "Gumb interaktivne knjige",
+      "te": "గేమ్‌బుక్ బటన్",
+      "ur": "گیم بُک بٹن"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -446,11 +488,17 @@
       "ca": "Pàgina del llibre-joc",
       "et": "Mänguraamatu leht",
       "fa": "صفحهٔ کتاب تعاملی",
-      "gl": "Páxina do libroxogo",
+      "gl": "Páxina do libro de xogo",
       "gu": "ગેમબુક પૃષ્ઠ",
       "he": "עמוד בספר המשחק",
       "mr": "गेमबुक पान",
-      "sr-ijekavsk": "Страница интерактивне књиге"
+      "sr-ijekavsk": "Страница интерактивне књиге",
+      "cnr": "Stranica interaktivne knjige",
+      "kn": "ಗೇಮ್‌ಬುಕ್ ಪುಟ",
+      "lv": "Spēļu grāmatas lapa",
+      "sl": "Stran interaktivne knjige",
+      "te": "గేమ్‌బుక్ పేజీ",
+      "ur": "گیم بُک صفحہ"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -503,11 +551,17 @@
       "ca": "Finestra emergent del llibre-joc",
       "et": "Mänguraamatu hüpikaken",
       "fa": "پنجرهٔ بازشوی کتاب تعاملی",
-      "gl": "Ventá emerxente do libroxogo",
+      "gl": "Xanela do libro de xogo",
       "gu": "ગેમબુક પોપઅપ",
       "he": "חלונית בספר המשחק",
       "mr": "गेमबुक पॉपअप",
-      "sr-ijekavsk": "Искачући прозор интерактивне књиге"
+      "sr-ijekavsk": "Искачући прозор интерактивне књиге",
+      "cnr": "Iskačući prozor interaktivne knjige",
+      "kn": "ಗೇಮ್‌ಬುಕ್ ಪಾಪ್‌ಅಪ್",
+      "lv": "Spēļu grāmatas uznirstošais logs",
+      "sl": "Pojavno okno interaktivne knjige",
+      "te": "గేమ్‌బుక్ పాప్‌అప్",
+      "ur": "گیم بُک پاپ اَپ"
     }
   }
 }
