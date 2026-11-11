@@ -66,7 +66,10 @@
       "is": "Búðu til sveigjanlegt námsefni sem gagnvirka bók þar sem nemendur velja hvernig sagan heldur áfram.",
       "lt": "Kurkite prisitaikančias mokymosi patirtis interaktyvioje knygoje, kurioje mokiniai patys renkasi, kaip tęsti istoriją.",
       "mk": "Создавајте приспособливи образовни искуства со пишување интерактивна книга во која на ученикот му нудите избор како да продолжи.",
-      "or": "ଛାତ୍ରଛାତ୍ରୀଙ୍କୁ ଆଗକୁ ବଢ଼ିବା ପାଇଁ ବିକଳ୍ପ ଦେଉଥିବା ଗେମ୍‌ବୁକ୍ ରଚନା କରି ଅନୁକୂଳନଶୀଳ ଶିକ୍ଷଣ ଅନୁଭବ ସୃଷ୍ଟି କରନ୍ତୁ୤"
+      "or": "ଛାତ୍ରଛାତ୍ରୀଙ୍କୁ ଆଗକୁ ବଢ଼ିବା ପାଇଁ ବିକଳ୍ପ ଦେଉଥିବା ଗେମ୍‌ବୁକ୍ ରଚନା କରି ଅନୁକୂଳନଶୀଳ ଶିକ୍ଷଣ ଅନୁଭବ ସୃଷ୍ଟି କରନ୍ତୁ୤",
+      "lb": "Erstellt flexibel Léiererfarunge mat engem interaktive Spillbuch, an deem d'Léierender wielen, wéi d'Geschicht weidergeet.",
+      "mt": "Oħloq esperjenzi ta’ tagħlim adattabbli billi tikteb ktieb-logħba li fih toffri lill-istudent għażliet dwar kif ikompli.",
+      "ne": "विद्यार्थीलाई अघि बढ्ने विकल्प दिँदै गेमबुक तयार गरेर अनुकूलनीय सिकाइ अनुभवहरू सिर्जना गर्नुहोस्।"
     },
     "label": {
       "_": "Branching Scenario",
@@ -134,7 +137,10 @@
       "is": "Sviðsmynd með greinum",
       "lt": "Šakotas scenarijus",
       "mk": "Разгрането сценарио",
-      "or": "ଶାଖା ଦୃଶ୍ୟପଟ"
+      "or": "ଶାଖା ଦୃଶ୍ୟପଟ",
+      "lb": "Verzweigte Szenario",
+      "mt": "Xenarju b’fergħat",
+      "ne": "शाखायुक्त परिदृश्य"
     }
   },
   "./widgets/webwriter-branching-scenario": {
@@ -204,7 +210,10 @@
       "is": "Sviðsmynd með greinum",
       "lt": "Šakotas scenarijus",
       "mk": "Разгрането сценарио",
-      "or": "ଶାଖା ଦୃଶ୍ୟପଟ"
+      "or": "ଶାଖା ଦୃଶ୍ୟପଟ",
+      "lb": "Verzweigte Szenario",
+      "mt": "Xenarju b’fergħat",
+      "ne": "शाखायुक्त परिदृश्य"
     }
   },
   "./snippets/art-of-europe": {
@@ -274,7 +283,10 @@
       "is": "List Evrópu",
       "lt": "Europos menas",
       "mk": "Уметноста на Европа",
-      "or": "ୟୁରୋପର କଳା"
+      "or": "ୟୁରୋପର କଳା",
+      "lb": "Konscht vun Europa",
+      "mt": "L-Arti tal-Ewropa",
+      "ne": "युरोपको कला"
     }
   },
   "./widgets/webwriter-gamebook-branch": {
@@ -344,7 +356,10 @@
       "is": "Grein í leikjabók",
       "lt": "Žaidimų knygos šaka",
       "mk": "Гранка на интерактивната книга",
-      "or": "ଗେମ୍‌ବୁକ୍ ଶାଖା"
+      "or": "ଗେମ୍‌ବୁକ୍ ଶାଖା",
+      "lb": "Verzweigung am Spillbuch",
+      "mt": "Fergħa tal-Ktieb-logħba",
+      "ne": "गेमबुक शाखा"
     }
   },
   "./widgets/webwriter-gamebook-branch-button": {
@@ -414,7 +429,10 @@
       "is": "Greinarhnappur",
       "lt": "Šakos mygtukas",
       "mk": "Копче за гранка на интерактивната книга",
-      "or": "ଗେମ୍‌ବୁକ୍ ଶାଖା ବଟନ୍"
+      "or": "ଗେମ୍‌ବୁକ୍ ଶାଖା ବଟନ୍",
+      "lb": "Verzweigungs-Knäppchen",
+      "mt": "Buttuna tal-Fergħa tal-Ktieb-logħba",
+      "ne": "गेमबुक शाखा बटन"
     }
   },
   "./widgets/webwriter-gamebook-button": {
@@ -484,7 +502,10 @@
       "is": "Hnappur í leikjabók",
       "lt": "Žaidimų knygos mygtukas",
       "mk": "Копче за интерактивна книга",
-      "or": "ଗେମ୍‌ବୁକ୍ ବଟନ୍"
+      "or": "ଗେମ୍‌ବୁକ୍ ବଟନ୍",
+      "lb": "Knäppche vum Spillbuch",
+      "mt": "Buttuna tal-Ktieb-logħba",
+      "ne": "गेमबुक बटन"
     }
   },
   "./widgets/webwriter-gamebook-page": {
@@ -554,7 +575,10 @@
       "is": "Síða í leikjabók",
       "lt": "Žaidimų knygos puslapis",
       "mk": "Страница на интерактивната книга",
-      "or": "ଗେମ୍‌ବୁକ୍ ପୃଷ୍ଠା"
+      "or": "ଗେମ୍‌ବୁକ୍ ପୃଷ୍ଠା",
+      "lb": "Säit vum Spillbuch",
+      "mt": "Paġna tal-Ktieb-logħba",
+      "ne": "गेमबुक पृष्ठ"
     }
   },
   "./widgets/webwriter-gamebook-popup": {
@@ -624,7 +648,10 @@
       "is": "Sprettigluggi í leikjabók",
       "lt": "Žaidimų knygos iškylantysis langas",
       "mk": "Скок-прозорец на интерактивната книга",
-      "or": "ଗେମ୍‌ବୁକ୍ ପପ୍‌ଅପ୍"
+      "or": "ଗେମ୍‌ବୁକ୍ ପପ୍‌ଅପ୍",
+      "lb": "Dialogfënster vum Spillbuch",
+      "mt": "Pop-up tal-Ktieb-logħba",
+      "ne": "गेमबुक पपअप"
     }
   }
 }

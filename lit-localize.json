@@ -60,7 +60,10 @@
     "is",
     "lt",
     "mk",
-    "or"
+    "or",
+    "lb",
+    "mt",
+    "ne"
   ],
   "tsConfig": "./tsconfig.json",
   "output": {
