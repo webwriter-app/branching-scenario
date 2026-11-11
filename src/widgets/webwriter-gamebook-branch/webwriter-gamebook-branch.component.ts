@@ -1,5 +1,6 @@
+import { readData, writeData } from "../../utils/data-block";
 import { html, css, PropertyValues } from "lit";
-import { LitElementWw } from "@webwriter/lit";
+import { LocalizedElement } from "../../utils/localization";
 import { property } from "lit/decorators.js";
 
 //Shoelace
@@ -8,7 +9,7 @@ import { SlButton } from "@shoelace-style/shoelace";
 /**
  * Represents the logic of a branch of a gamebook.
  */
-export class WebWriterGamebookBranch extends LitElementWw {
+export class WebWriterGamebookBranch extends LocalizedElement {
   /** Associated node id */
   @property({ type: Number, attribute: true, reflect: true })
   accessor drawflowNodeId;
@@ -18,12 +19,52 @@ export class WebWriterGamebookBranch extends LitElementWw {
   accessor incomingContainerId = -1;
 
   /** Array of custom objects (rules) */
-  @property({ type: Array, attribute: true, reflect: true })
+  @property({ attribute: false })
   accessor rules: Rule[] = [];
 
   /** The else rule (custom object) */
-  @property({ type: Object, attribute: true, reflect: true })
+  @property({ attribute: false })
   accessor elseRule: Rule;
+
+  private ruleDataText: string | null = null;
+  private rulesObserver = new MutationObserver(() => this.restoreRules());
+
+  private get ruleText() {
+    return this.querySelector(':scope > script[type="application/json"][slot="data"]:not([src])')?.textContent ?? null;
+  }
+
+  private restoreRules() {
+    const text = this.ruleText;
+    if (text === this.ruleDataText) return;
+    this.ruleDataText = text;
+    const data = readData<{rules: Rule[]; elseRule: Rule}>(this);
+    this.rules = Array.isArray(data.rules) ? data.rules : [];
+    this.elseRule = data.elseRule;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.restoreRules();
+    this.rulesObserver.observe(this, {childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["type", "slot", "src"]});
+  }
+
+  disconnectedCallback() {
+    this.rulesObserver.disconnect();
+    super.disconnectedCallback();
+  }
+
+  protected updated(changed: PropertyValues) {
+    if (!changed.has("rules") && !changed.has("elseRule")) return;
+    if (this.ruleDataText !== this.ruleText) {
+      this.restoreRules();
+      return;
+    }
+    const data = readData<{rules: Rule[]; elseRule: Rule}>(this);
+    const state = {rules: this.rules, elseRule: this.elseRule};
+    if (JSON.stringify(state) === JSON.stringify({rules: data.rules ?? [], elseRule: data.elseRule})) return;
+    writeData(this, state);
+    this.ruleDataText = this.ruleText;
+  }
 
   /** The title of the page */
   @property({ type: String, attribute: true, reflect: true })

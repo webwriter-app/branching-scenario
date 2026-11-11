@@ -1,6 +1,6 @@
-import { html, css, PropertyValues } from "lit";
+import { localizeElement, LocalizedElement } from "../../utils/localization";
+import { html, css } from "lit";
 import { consume } from "@lit/context";
-import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
   property,
@@ -10,7 +10,7 @@ import {
 } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 
-import { msg, str, localized } from "@lit/localize";
+import { str } from "@lit/localize";
 
 //Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -61,8 +61,9 @@ import {
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
-@localized()
-export class NodeEditor extends LitElementWw {
+export class NodeEditor extends LocalizedElement {
+  protected readonly messages = localizeElement(this);
+  readonly msg = this.messages.msg;
   //registering custom elements used in the Web component
   static get scopedElements() {
     return {
@@ -189,7 +190,7 @@ export class NodeEditor extends LitElementWw {
     this._registerEditorEventHandlers();
 
     if (this.editorStore.editorContent == null) {
-      this.addPageNode(msg("First Page"), true);
+      this.addPageNode(this.messages.msg("First Page"), true);
     } else {
       let editorContent = this.addHTMLToNodes(this.editorStore.editorContent);
       this.editor.import(editorContent);
@@ -213,17 +214,10 @@ export class NodeEditor extends LitElementWw {
     this.moveToNode(originNode as DrawflowNode, false);
   }
 
-  protected updated(_changedProperties: PropertyValues): void {
-    if (_changedProperties.has("editorStore")) {
-      //TODO: support undo/redo
-      // let editorContent = this.addHTMLToNodes(this.editorStore.editorContent);
-      // this.editor.import(editorContent);
-      // if (this.editorStore.selectedNode.id !== -1) {
-      //   this.programaticallySelectNode(
-      //     this.editorStore.selectedNode.id.toString()
-      //   );
-      // }
-    }
+  restoreAuthoredContent(content: GamebookEditorState["editorContent"]) {
+    if (!this.editor) return;
+    if (content) this.editor.import(this.addHTMLToNodes(structuredClone(content)));
+    else this.editor.clear();
   }
 
   /*
@@ -293,7 +287,7 @@ export class NodeEditor extends LitElementWw {
         <div id="drawflowEditorDiv" style=${styleMap(gridStyles)}></div>
 
         <div class="zoomControls">
-          <sl-tooltip content=${msg("Jump to origin node")}>
+          <sl-tooltip content=${this.messages.msg("Jump to origin node")}>
             <sl-icon-button
               id="jumpToOriginBtn"
               src=${mapPin}
@@ -332,8 +326,8 @@ export class NodeEditor extends LitElementWw {
         <node-editor-help-menu></node-editor-help-menu>
       </div>
       <!-- Dialog for clearing editor-->
-      <sl-dialog label="${msg("Clear Graph")}" class="dialog" id="dialog">
-        ${msg(
+      <sl-dialog label="${this.messages.msg("Clear Graph")}" class="dialog" id="dialog">
+        ${this.messages.msg(
           "Do you want to clear the graph? All your progress will be lost."
         )}
         <sl-button
@@ -342,22 +336,22 @@ export class NodeEditor extends LitElementWw {
           outline
           @click=${() =>
             (this.shadowRoot.getElementById("dialog") as SlDialog).hide()}
-          >${msg("Cancel")}</sl-button
+          >${this.messages.msg("Cancel")}</sl-button
         >
         <sl-button
           slot="footer"
           variant="danger"
           outline
           @click=${() => this._clearEditor()}
-          >${msg("Clear")}</sl-button
+          >${this.messages.msg("Clear")}</sl-button
         >
       </sl-dialog>
       <sl-dialog
-        label=${msg("Delete node")}
+        label=${this.messages.msg("Delete node")}
         class="dialog"
         id="delete_node_dialog"
       >
-        ${msg(
+        ${this.messages.msg(
           str`You are about to delete the node ${this.editorStore.selectedNode.data.title}.  Do you want to proceed?`
         )}
         <sl-button
@@ -368,7 +362,7 @@ export class NodeEditor extends LitElementWw {
             (
               this.shadowRoot.getElementById("delete_node_dialog") as SlDialog
             ).hide()}
-          >${msg("Abort")}</sl-button
+          >${this.messages.msg("Abort")}</sl-button
         >
         <sl-button
           slot="footer"
@@ -379,7 +373,7 @@ export class NodeEditor extends LitElementWw {
         >
       </sl-dialog>
       <sl-dialog
-        label=${msg("Adding Node")}
+        label=${this.messages.msg("Adding Node")}
         class="dialog"
         id="add_node_dialog"
         style="width: 100%"
@@ -391,7 +385,7 @@ export class NodeEditor extends LitElementWw {
           }
         }}
       >
-        ${msg("Give your new")}
+        ${this.messages.msg("Give your new")}
         <div
           style="display: inline-flex; align-items: baseline; padding-left: 4px; padding-right: 4px; padding-top: 0px; padding-bottom: 0px; color: #262629;"
         >
@@ -407,26 +401,26 @@ export class NodeEditor extends LitElementWw {
           ></sl-icon>
           <span style="margin-left: 6px;">
             ${this.typeAdded === "Page"
-              ? msg("Page node")
+              ? this.messages.msg("Page node")
               : this.typeAdded === "Popup"
-              ? msg("Popup node")
+              ? this.messages.msg("Popup node")
               : this.typeAdded === "Branch"
-              ? msg("Branch node")
+              ? this.messages.msg("Branch node")
               : ""}
           </span>
         </div>
-        ${msg("a title!")}
+        ${this.messages.msg("a title!")}
         <br />
         <br />
         <sl-input
           autofocus
           id="title_input"
           value=${this.typeAdded === "Page"
-            ? msg(str`Untitled Page ${this.pagesAdded}`)
+            ? this.messages.msg(str`Untitled Page ${this.pagesAdded}`)
             : this.typeAdded === "Popup"
-            ? msg(str`Untitled Popup ${this.popupsAdded}`)
+            ? this.messages.msg(str`Untitled Popup ${this.popupsAdded}`)
             : this.typeAdded === "Branch"
-            ? msg(str`Untitled Branch ${this.branchesAdded}`)
+            ? this.messages.msg(str`Untitled Branch ${this.branchesAdded}`)
             : ""}
         ></sl-input>
 
@@ -438,7 +432,7 @@ export class NodeEditor extends LitElementWw {
             (
               this.shadowRoot.getElementById("add_node_dialog") as SlDialog
             ).hide()}
-          >${msg("Cancel")}</sl-button
+          >${this.messages.msg("Cancel")}</sl-button
         >
         <sl-button
           id="addButton"
@@ -464,7 +458,7 @@ export class NodeEditor extends LitElementWw {
                     .value
                 )
             : () => console.log()}
-          >${msg("Add")}</sl-button
+          >${this.messages.msg("Add")}</sl-button
         >
       </sl-dialog>
     `;
@@ -644,7 +638,7 @@ export class NodeEditor extends LitElementWw {
       })
     );
 
-    this.addPageNode(msg("First Page"), true);
+    this.addPageNode(this.messages.msg("First Page"), true);
 
     this.pagesAdded = 1;
     this.popupsAdded = 1;
@@ -1249,12 +1243,12 @@ export class NodeEditor extends LitElementWw {
       arrowIcon.setAttribute("src", circleArrowRight);
       badge.appendChild(arrowIcon);
 
-      nameLabel.textContent = msg("Start Page");
+      nameLabel.textContent = this.messages.msg("Start Page");
       badge.appendChild(nameLabel);
       contentDiv.appendChild(badge);
     } else {
       nameLabel.classList.add("input-label");
-      nameLabel.textContent = msg("Page"); // Set the text content of the label
+      nameLabel.textContent = this.messages.msg("Page"); // Set the text content of the label
       contentDiv.appendChild(nameLabel);
     }
 
@@ -1301,7 +1295,7 @@ export class NodeEditor extends LitElementWw {
     //Add label to the input for the nodes name
     const nameLabel = document.createElement("p");
     nameLabel.classList.add("input-label");
-    nameLabel.textContent = msg("Popup"); // Set the text content of the label
+    nameLabel.textContent = this.messages.msg("Popup"); // Set the text content of the label
     contentDiv.appendChild(nameLabel);
 
     containerDiv.appendChild(contentDiv);
@@ -1346,7 +1340,7 @@ export class NodeEditor extends LitElementWw {
     //Add label to the input for the nodes name
     const nameLabel = document.createElement("p");
     nameLabel.classList.add("input-label");
-    nameLabel.textContent = msg("Branch"); // Set the text content of the label
+    nameLabel.textContent = this.messages.msg("Branch"); // Set the text content of the label
     contentDiv.appendChild(nameLabel);
 
     containerDiv.appendChild(contentDiv);
@@ -1637,33 +1631,22 @@ export class NodeEditor extends LitElementWw {
         incomingContainerIdAttr.value = indexMap[oldId].toString();
       }
 
-      const rulesAttr = container.attributes.find(
-        (attr) => attr.name === "rules"
-      );
-
-      if (rulesAttr) {
-        const rules = JSON.parse(rulesAttr.value);
-        rules.forEach((rule) => {
-          const oldId = Number(rule.target);
-          rule.target = indexMap[oldId].toString();
-        });
-        rulesAttr.value = JSON.stringify(rules);
-      }
-
-      const elseRuleAttr = container.attributes.find(
-        (attr) => attr.name === "elserule"
-      );
-
-      if (elseRuleAttr) {
-        const elseRule = JSON.parse(elseRuleAttr.value);
-        const oldId = Number(elseRule.target);
-        elseRule.target = indexMap[oldId].toString();
-        elseRuleAttr.value = JSON.stringify(elseRule);
-      }
-
-      // Update the datatargetid and identifier in the innerHTML
+      // Update authored branch rules and button targets in the template.
       const parser = new DOMParser();
       const doc = parser.parseFromString(container.innerHTML, "text/html");
+      if (container.tagName === "webwriter-gamebook-branch") {
+        const block = doc.body.querySelector(':scope > script[type="application/json"][slot="data"]') ??
+          doc.head.querySelector(':scope > script[type="application/json"][slot="data"]');
+        if (block) {
+          const data = JSON.parse(block.textContent ?? "{}");
+          for (const rule of [...(data.rules ?? []), data.elseRule].filter(Boolean)) {
+            const target = indexMap[Number(rule.target)];
+            if (target !== undefined) rule.target = target;
+          }
+          block.textContent = JSON.stringify(data).replace(/</g, "\\u003c");
+          doc.body.append(block);
+        }
+      }
       const buttons = doc.querySelectorAll(
         "webwriter-gamebook-button, webwriter-gamebook-branch-button"
       );
@@ -1786,7 +1769,7 @@ export class NodeEditor extends LitElementWw {
         const originNodeContentDiv = originNodeDiv.querySelector(".content");
         const nameLabel = document.createElement("p");
         nameLabel.classList.add("input-label");
-        nameLabel.textContent = msg("Page"); // Set the text content of the label
+        nameLabel.textContent = this.messages.msg("Page"); // Set the text content of the label
         originNodeContentDiv.appendChild(nameLabel);
 
         originNodeDiv.classList.remove("origin");
@@ -1817,7 +1800,7 @@ export class NodeEditor extends LitElementWw {
             badge.appendChild(arrowIcon);
 
             const nameLabel = document.createElement("p");
-            nameLabel.textContent = msg("Start Page");
+            nameLabel.textContent = this.messages.msg("Start Page");
             badge.appendChild(nameLabel);
 
             contentDiv.appendChild(badge);

@@ -1,6 +1,5 @@
+import { localizeElement, LocalizedElement } from "../../utils/localization";
 import { html, css, LitElement } from "lit";
-import { msg, localized } from "@lit/localize";
-import { LitElementWw } from "@webwriter/lit";
 import {
   customElement,
   property,
@@ -17,8 +16,8 @@ import { SlIcon, SlIconButton, SlTooltip } from "@shoelace-style/shoelace";
 //Import Styles
 import styles from "./node-editor-help-menu.styles";
 
-@localized()
-export class NodeEditorHelpMenu extends LitElementWw {
+export class NodeEditorHelpMenu extends LocalizedElement {
+  protected readonly messages = localizeElement(this);
   //import CSS
   static styles = [styles];
 
@@ -105,22 +104,22 @@ export class NodeEditorHelpMenu extends LitElementWw {
         </div>
 
         <div class="column">
-            <div class="help-item"><p class="label">${msg("Select")}</p></div>
+            <div class="help-item"><p class="label">${this.messages.msg("Select")}</p></div>
 
-            <div class="help-item"><p class="label"> ${msg(
+            <div class="help-item"><p class="label"> ${this.messages.msg(
               "Drag Connection"
             )}</p></div>
-            <div class="help-item"><p class="label">${msg("Delete")}
+            <div class="help-item"><p class="label">${this.messages.msg("Delete")}
               
             </p></div>
-            <!-- <div class="help-item"><p class="label">${msg(
+            <!-- <div class="help-item"><p class="label">${this.messages.msg(
               "Zoom In/Out"
             )}</p></div> -->
         </div>
       </div>
     </div>`
       : html` <div class="helpIconButton">
-          <sl-tooltip content=${msg("Shortcuts")} placement="top" skidding="16">
+          <sl-tooltip content=${this.messages.msg("Shortcuts")} placement="top" skidding="16">
             <sl-icon-button
               class="helpIcon"
               src=${questionMark}

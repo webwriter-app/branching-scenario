@@ -1,3 +1,4 @@
+import { localizeElement } from "../../utils/localization";
 import { html, css, LitElement, PropertyValues } from "lit";
 import { customElement, property, state, query } from "lit/decorators.js";
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -8,7 +9,7 @@ import squares from "@tabler/icons/outline/squares.svg";
 import arrowsSplit2 from "@tabler/icons/outline/arrows-split-2.svg";
 import search from "@tabler/icons/outline/search.svg";
 
-import { msg, str, localized } from "@lit/localize";
+import { str } from "@lit/localize";
 
 import { provide, consume, createContext } from "@lit/context";
 import {
@@ -16,8 +17,8 @@ import {
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
-@localized()
 export class NodeOutputSelect extends LitElement {
+  protected readonly messages = localizeElement(this);
   @property({ type: Number }) accessor incomingNodeId;
   @property({ type: String }) accessor outputClass;
   @property({ type: Boolean }) accessor disabled;
@@ -151,7 +152,7 @@ export class NodeOutputSelect extends LitElement {
           ? "no-value"
           : ""}"
         size=${this.inOutputList ? "small" : "medium"}
-        placeholder=${msg("Not connected")}
+        placeholder=${this.messages.msg("Not connected")}
         clearable
         .value=${this.editorStore.selectedNode.outputs?.[this.outputClass]
           ?.connections?.[0]?.node ?? ""}
@@ -170,7 +171,7 @@ export class NodeOutputSelect extends LitElement {
       >
         <div style="padding: 10px">
           <sl-input
-            placeholder=${msg("Search Nodes...")}
+            placeholder=${this.messages.msg("Search Nodes...")}
             @sl-input=${this.handleSearch}
             @click=${() => this.searchElement.focus()}
             @keydown=${this.handleKeydown}
@@ -183,12 +184,12 @@ export class NodeOutputSelect extends LitElement {
         <sl-divider></sl-divider>
 
         ${dataFiltered.length === 0
-          ? html`<small>${msg("No nodes found")}</small>`
+          ? html`<small>${this.messages.msg("No nodes found")}</small>`
           : html`
               ${hasNodesOfClass("page") || hasNodesOfClass("origin")
                 ? html`
                     <small class="icon-header" id="divider-page"
-                      ><sl-icon src="${file}"></sl-icon> ${msg("Pages")}</small
+                      ><sl-icon src="${file}"></sl-icon> ${this.messages.msg("Pages")}</small
                     >
                     ${options("page")} ${options("origin")}
                     ${hasNodesOfClass("popup") || hasNodesOfClass("branch")
@@ -199,7 +200,7 @@ export class NodeOutputSelect extends LitElement {
               ${hasNodesOfClass("popup")
                 ? html`
                     <small class="icon-header" id="divider-popup"
-                      ><sl-icon src="${squares}"></sl-icon> ${msg(
+                      ><sl-icon src="${squares}"></sl-icon> ${this.messages.msg(
                         "Popup"
                       )}</small
                     >
@@ -212,7 +213,7 @@ export class NodeOutputSelect extends LitElement {
               ${hasNodesOfClass("branch")
                 ? html`
                     <small class="icon-header" id="divider-branch"
-                      ><sl-icon src="${arrowsSplit2}"></sl-icon> ${msg(
+                      ><sl-icon src="${arrowsSplit2}"></sl-icon> ${this.messages.msg(
                         "Branch"
                       )}</small
                     >
