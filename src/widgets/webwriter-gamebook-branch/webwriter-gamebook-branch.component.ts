@@ -1,15 +1,12 @@
-import { readData, writeData } from "../../utils/data-block";
-import { html, css, PropertyValues } from "lit";
-import { LocalizedElement } from "../../utils/localization";
+import { GamebookContainer } from "../../utils/gamebook-container";
+import { dataBlockSelector, DataBlockObserver, parseData, writeData } from "../../utils/data-block";
+import { html, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
-
-//Shoelace
-import { SlButton } from "@shoelace-style/shoelace";
 
 /**
  * Represents the logic of a branch of a gamebook.
  */
-export class WebWriterGamebookBranch extends LocalizedElement {
+export class WebWriterGamebookBranch extends GamebookContainer {
   /** Associated node id */
   @property({ type: Number, attribute: true, reflect: true })
   accessor drawflowNodeId;
@@ -27,17 +24,17 @@ export class WebWriterGamebookBranch extends LocalizedElement {
   accessor elseRule: Rule;
 
   private ruleDataText: string | null = null;
-  private rulesObserver = new MutationObserver(() => this.restoreRules());
+  private rulesObserver = new DataBlockObserver(this, () => this.restoreRules());
 
   private get ruleText() {
-    return this.querySelector(':scope > script[type="application/json"][slot="data"]:not([src])')?.textContent ?? null;
+    return this.querySelector(dataBlockSelector)?.textContent ?? null;
   }
 
   private restoreRules() {
     const text = this.ruleText;
     if (text === this.ruleDataText) return;
     this.ruleDataText = text;
-    const data = readData<{rules: Rule[]; elseRule: Rule}>(this);
+    const data = parseData<{rules: Rule[]; elseRule: Rule}>(text);
     this.rules = Array.isArray(data.rules) ? data.rules : [];
     this.elseRule = data.elseRule;
   }
@@ -45,11 +42,13 @@ export class WebWriterGamebookBranch extends LocalizedElement {
   connectedCallback() {
     super.connectedCallback();
     this.restoreRules();
-    this.rulesObserver.observe(this, {childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["type", "slot", "src"]});
+    this.mutationObserver.observe(this, { attributes: true, attributeFilter: ["class"] });
+    this.rulesObserver.connect();
   }
 
   disconnectedCallback() {
     this.rulesObserver.disconnect();
+    this.mutationObserver.disconnect();
     super.disconnectedCallback();
   }
 
@@ -59,7 +58,7 @@ export class WebWriterGamebookBranch extends LocalizedElement {
       this.restoreRules();
       return;
     }
-    const data = readData<{rules: Rule[]; elseRule: Rule}>(this);
+    const data = parseData<{rules: Rule[]; elseRule: Rule}>(this.ruleDataText);
     const state = {rules: this.rules, elseRule: this.elseRule};
     if (JSON.stringify(state) === JSON.stringify({rules: data.rules ?? [], elseRule: data.elseRule})) return;
     writeData(this, state);
@@ -69,24 +68,6 @@ export class WebWriterGamebookBranch extends LocalizedElement {
   /** The title of the page */
   @property({ type: String, attribute: true, reflect: true })
   accessor pageTitle;
-
-  /**
-   * import CSS
-   * @internal
-   */
-  static get styles() {
-    return css``;
-  }
-
-  /**
-   * registering custom elements used in the widget
-   * @internal
-   */
-  static get scopedElements() {
-    return {
-      "sl-button": SlButton
-    };
-  }
 
   // Create an observer instance linked to the callback function
   private mutationObserver: MutationObserver;
@@ -99,35 +80,8 @@ export class WebWriterGamebookBranch extends LocalizedElement {
     this.mutationObserver = new MutationObserver(this.mutationCallback);
   }
 
-  protected firstUpdated(_changedProperties: PropertyValues): void {
-    // Options for the observer (which mutations to observe)
-    const config: MutationObserverInit = {
-      attributes: true,
-      attributeFilter: ["class"],
-    };
-    // Start observing the target node for configured mutations
-    this.mutationObserver.observe(this, config);
-  }
-
-  /*
-
-  */
   render() {
     return html`<slot></slot>`;
-  }
-
-  /*
-
-  */
-  public hide() {
-    this.style.display = "none";
-  }
-
-  /*
-
-  */
-  public show() {
-    this.style.display = "block";
   }
 
   /**
@@ -653,6 +607,7 @@ export class WebWriterGamebookBranch extends LocalizedElement {
   }
 
   private mutationCallback = (mutationList: MutationRecord[]) => {
+    if (!this.authoring) return;
     mutationList.forEach(
       ({ type, attributeName }) => {
         if (type === "attributes" && attributeName === "class") {

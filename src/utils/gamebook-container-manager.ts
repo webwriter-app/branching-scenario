@@ -67,10 +67,8 @@ export class GamebookContainerManager extends LitElementWw {
     this._hideAllGamebookContainers();
 
     if (this.editorStore.selectedContainer !== undefined) {
-      //Extraced the drawflowNodeId from the serialized container
-      const value = this.editorStore.selectedContainer.attributes.find(
-        (attr) => attr.name === "drawflownodeid"
-      ).value;
+      const selected = this.editorStore.selectedContainer;
+      const value = selected.getAttribute("drawflownodeid");
 
       if (value) {
         const event = new CustomEvent("containerSelectFirstUpdate", {
@@ -201,16 +199,7 @@ export class GamebookContainerManager extends LitElementWw {
 
   */
   public _hideAllGamebookContainers() {
-    console.log("hideAll");
-    this.gamebookContainers.forEach((container) => {
-      //console.log(container);
-      if (typeof container.hide === "function") {
-        container.hide();
-      } else {
-        container.style.display = "none";
-      }
-      //console.log(container);
-    });
+    for (const container of this.gamebookContainers) container.hide?.();
   }
 
   /*

@@ -3,7 +3,7 @@ import { DrawflowNode } from "drawflow";
 
 export const editorState = createContext<GamebookEditorState>("editorState");
 
-type Observer = () => void;
+type Observer = (authored: boolean) => void;
 
 const NO_NODE_SELECTED: any = {
   id: -1,
@@ -74,7 +74,7 @@ export class GamebookEditorState {
   */
   setTitle(newTitle = Math.random().toString()) {
     this.title = newTitle;
-    this.notifyObservers(); // Notify all observers when updated
+    this.notifyObservers(true); // Notify all observers when updated
   }
 
   /*
@@ -94,8 +94,6 @@ export class GamebookEditorState {
 
   */
   setSelectedContainer(selectedContainer = undefined) {
-    //console.log(JSON.stringify(selectedContainer, this.containerReplacer));
-
     this.selectedContainer = selectedContainer;
     this.notifyObservers(); // Notify all observers when updated
   }
@@ -144,14 +142,8 @@ export class GamebookEditorState {
 
   */
   setEditorContent(editorContent = null) {
-    let copy = editorContent;
-    Object.values(copy.drawflow.Home.data).forEach((node) => {
-      delete (node as DrawflowNode).html;
-      delete (node as DrawflowNode).name;
-    });
-
-    this.editorContent = copy;
-    this.notifyObservers();
+    this.editorContent = editorContent;
+    this.notifyObservers(true);
   }
 
   /*
@@ -208,115 +200,23 @@ export class GamebookEditorState {
 
   */
   // Method to notify all observers
-  private notifyObservers() {
+  private notifyObservers(authored = false) {
     if (this.observer !== null) {
-      this.observer();
+      this.observer(authored);
     }
   }
 
-  /*
-
-  */
-  toString() {
-    const stringify = JSON.stringify(
-      {
-        title: this.title,
-        observer: this.observer,
-        selectedNode: this.selectedNode,
-        editorZoom: this.editorZoom,
-        editorPosition: this.editorPosition,
-        dividerPosition: this.dividerPosition,
-        editorIsCollapsed: this.editorIsCollapsed,
-        editorContent: this.editorContent,
-        detailViewHeight: this.detailViewHeight,
-        copiedNode: this.copiedNode,
-        selectedContainer: this.selectedContainer, // Include selectedContainer here
-        branchIncomingContainer: this.branchIncomingContainer,
-        searchTerm: this.searchTerm,
-        searchResults: this.searchResults,
-      },
-      this.replacer.bind(this)
-    );
-
-    return stringify;
-  }
-
-  /*
-
-  */
-  replacer(key, value) {
-    // Call the domElementReplacer for selectedContainer (HTMLElement)
-    if (key === "selectedContainer" || key === "branchIncomingContainer") {
-      return this.domElementReplacer(key, value);
-    }
-
-    if (key === "editorContent") {
-      if (value) {
-        const home = value.drawflow.Home;
-        const data = Object.fromEntries(Object.entries(home.data).map(([id, node]) => {
-          const { html, ...authored } = node as DrawflowNode;
-          return [id, authored];
-        }));
-        return { ...value, drawflow: { ...value.drawflow, Home: { ...home, data } } };
-      }
-    }
-    // Handle other cyclic structures or return value as is
-    return value;
-  }
-
-  /*
-
-  */
-  private domElementReplacer(key, value) {
-    if (value instanceof HTMLElement) {
-      return {
-        tagName: value.tagName,
-        attributes: [...value.attributes]
-          .filter(
-            (attr) =>
-              ![
-                "id",
-                "class",
-                "contenteditable",
-                "style",
-                "tabindex",
-                "draggable",
-              ].includes(attr.name)
-          )
-
-          .map((attr) => ({
-            name: attr.name,
-            value: attr.value,
-          })),
-      };
-    }
-    return value;
-  }
-
-  /*
-
-  */
-  // Static method to deserialize from string to GamebookEditorState instance
-  static fromString(serialized: string) {
-    console.log("fromString");
-    const data = JSON.parse(serialized);
-    console.log(data.selectedNode);
-
-    return new GamebookEditorState(
-      data.title,
-      data.observer,
-      data.selectedNode,
-      data.editorZoom,
-      data.editorPosition,
-      data.dividerPosition,
-      data.editorIsCollapsed,
-      data.editorContent,
-      data.detailViewHeight,
-      data.copiedNode,
-      undefined,
-      data.branchIncomingContainer,
-      data.searchTerm,
-      data.searchResults
-    );
+  authoredState() {
+    const { title, editorContent } = this;
+    const home = editorContent?.drawflow?.Home;
+    if (!home?.data) return { title, editorContent: null };
+    const data = Object.fromEntries(Object.entries(home.data).map(([id, node]) => {
+      const { html, name, ...authored } = node as DrawflowNode;
+      return [id, authored];
+    }));
+    return {
+      title,
+      editorContent: { ...editorContent, drawflow: { ...editorContent.drawflow, Home: { ...home, data } } },
+    };
   }
 }

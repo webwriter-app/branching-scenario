@@ -125,30 +125,27 @@ export class SplitView extends LocalizedElement {
   /*
   
   */
-  protected firstUpdated(_changedProperties: PropertyValues) {
-    this.updateComplete.then(() => {
-      const splitPanel = this.shadowRoot.querySelector(
-        ".splitPanel"
-      ) as HTMLElement;
-      const itemStart = this.shadowRoot.querySelector(
-        ".itemStart"
-      ) as HTMLElement;
-      // Set initial height of the start panel based on the dividerPosition
-      itemStart.style.height = `${this.editorStore.dividerPosition}px`;
-      // Calculate and set the initial height of the splitPanel
-      const initialSplitPanelHeight =
-        this.editorStore.dividerPosition +
-        this.itemEndHeight() +
-        DIVIDER_HEIGHT;
-      splitPanel.style.height = `${initialSplitPanelHeight}px`;
+  private readonly endResizeObserver = new ResizeObserver(() => this.adjustSplitPanelHeight());
 
-      // Set up a ResizeObserver on the itemEnd to adjust the splitPanel's height when content changes
-      const itemEnd = this.shadowRoot.querySelector(".itemEnd") as HTMLElement;
-      const resizeObserver = new ResizeObserver(() => {
-        this.adjustSplitPanelHeight();
-      });
-      resizeObserver.observe(itemEnd);
-    });
+  protected firstUpdated() {
+    const itemStart = this.renderRoot.querySelector<HTMLElement>(".itemStart");
+    itemStart.style.height = `${this.editorStore.dividerPosition}px`;
+    this.adjustSplitPanelHeight();
+    this.observeEndSize();
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    if (this.hasUpdated) this.observeEndSize();
+  }
+
+  disconnectedCallback() {
+    this.endResizeObserver.disconnect();
+    super.disconnectedCallback();
+  }
+
+  private observeEndSize() {
+    if (this.isConnected) this.endResizeObserver.observe(this.renderRoot.querySelector(".itemEnd"));
   }
 
   /*
@@ -183,6 +180,7 @@ export class SplitView extends LocalizedElement {
     // Remove global listeners
     this.removeEventListener("mousemove", this.onMouseMove);
     this.removeEventListener("mouseup", this.onMouseUp);
+    this.removeEventListener("mouseleave", this.onMouseUp);
 
     // Update the dividerPosition property to reflect the new height
     const itemStart = this.shadowRoot.querySelector(

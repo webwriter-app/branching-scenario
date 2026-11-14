@@ -1,22 +1,24 @@
-import { localizeElement, LocalizedElement } from "../../utils/localization";
-import { html, css } from "lit";
+import { GamebookContainer } from "../../utils/gamebook-container";
+import { localizeElement } from "../../utils/localization";
+import { html, css, nothing } from "lit";
 import {
   property,
   query,
+  state,
   queryAssignedElements,
 } from "lit/decorators.js";
 
 import { WebWriterGamebookButton } from "../webwriter-gamebook-button/webwriter-gamebook-button.component";
 import { WebWriterGamebookBranchButton } from "../webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component";
-import { WebWriterGamebookOptions } from "../../components/options-panel/webwriter-gamebook-options";
 
 //Shoelace
-import { SlDialog } from "@shoelace-style/shoelace";
+import "@shoelace-style/shoelace/dist/themes/light.css";
+import SlDialog from "@shoelace-style/shoelace/dist/components/dialog/dialog.component.js";
 
 /**
  * Represents a popup dialog in the gamebook
  */
-export class WebWriterGamebookPopup extends LocalizedElement {
+export class WebWriterGamebookPopup extends GamebookContainer {
   protected readonly messages = localizeElement(this);
   private getDrawerOptions() {
     return {
@@ -31,33 +33,18 @@ export class WebWriterGamebookPopup extends LocalizedElement {
    * @internal
    */
   static get styles() {
-    return css`
-      :host(:not([contenteditable="true"]):not([contenteditable=""])) .page {
+    return [GamebookContainer.styles, css`
+      .page {
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
-        gap: 10px; /* Adjust the value to your desired spacing */
-        box-sizing: border-box;
+        gap: 10px;
         width: 100%;
-        height: auto;
-        padding: 0px;
-      }
-
-      :host([contenteditable="true"]) .page,
-      :host([contenteditable=""]) .page {
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        gap: 10px; /* Adjust the value to your desired spacing */
-        box-sizing: border-box;
-        width: 100%;
-        height: auto;
         padding: 20px;
       }
 
-      :host(:not([contenteditable="true"]):not([contenteditable=""]))
-        .author-only {
-        display: none;
+      sl-dialog .page {
+        padding: 0;
       }
 
       /* Base style for the close button visibility */
@@ -78,7 +65,7 @@ export class WebWriterGamebookPopup extends LocalizedElement {
         position: absolute; /* Make the overlay absolute */
         background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
       }
-    `;
+    `];
   }
 
   /**
@@ -88,8 +75,6 @@ export class WebWriterGamebookPopup extends LocalizedElement {
   static get scopedElements() {
     return {
       "sl-dialog": SlDialog,
-      //"webwriter-gamebook-button": WebWriterGamebookButton,
-      "webwriter-gamebook-options": WebWriterGamebookOptions,
     };
   }
   /** associated node id */
@@ -151,22 +136,13 @@ export class WebWriterGamebookPopup extends LocalizedElement {
   connectedCallback() {
     super.connectedCallback();
     this.addEventListener("keydown", this._handleKeydown, true);
-
-    const fixLayoutShiftSheet = new CSSStyleSheet();
-    fixLayoutShiftSheet.replaceSync("html.sl-scroll-lock { scrollbar-gutter: auto !important }");
-
-    this.addEventListener("sl-show", () => {
-      if (this.ownerDocument.defaultView.innerWidth <= this.ownerDocument.documentElement.clientWidth) {
-        this.ownerDocument.adoptedStyleSheets.push(fixLayoutShiftSheet);
-      }
+    this.mutationObserver.observe(this, {
+      attributes: true,
+      attributeFilter: ["class"],
+      childList: true,
+      subtree: true,
     });
-    this.addEventListener("sl-hide", () => {
-      setTimeout(() => {
-        this.ownerDocument.adoptedStyleSheets = this.ownerDocument.adoptedStyleSheets.filter(
-          (sheet) => sheet !== fixLayoutShiftSheet
-        );
-      }, 300);
-    });
+
   }
 
   /*
@@ -174,14 +150,17 @@ export class WebWriterGamebookPopup extends LocalizedElement {
   */
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener("keydown", this._handleKeydown);
+    this.dialogRequested = false;
+    if (this.dialog) this.dialog.open = false;
+    this.mutationObserver.disconnect();
+    this.removeEventListener("keydown", this._handleKeydown, true);
   }
 
   /*
    * Handles CTRL+A to select all content within the page instead of the whole widget
    */
   private _handleKeydown = (event: KeyboardEvent) => {
-    if ((event.metaKey || event.ctrlKey) && event.key === "a") {
+    if (this.authoring && (event.metaKey || event.ctrlKey) && event.key === "a") {
       event.preventDefault();
       event.stopPropagation();
 
@@ -197,115 +176,72 @@ export class WebWriterGamebookPopup extends LocalizedElement {
   
   */
   protected firstUpdated(_changedProperties: any): void {
-    // Options for the observer (which mutations to observe)
-    const config = { attributes: true, childList: true, subtree: true };
-    this.mutationObserver.observe(this, config);
-
-    const slot = this.shadowRoot.querySelector("slot");
-    const assignedElements = slot.assignedElements();
-
-    if (assignedElements.length == 0) {
+    if (this.authoring && !this.firstElementChild && !this.textContent?.trim()) {
       const par = document.createElement("p");
       par.textContent = this.messages.msg("Write something here...");
       this.appendChild(par);
     }
 
-    if (this.preventClosing && this.dialog) {
-      // Prevent the dialog from closing when the user clicks on the overlay
-      this.dialog.addEventListener("sl-request-close", (event) => {
-        if (
-          event.detail.source === "overlay" ||
-          event.detail.source === "close-button" ||
-          event.detail.source === "keyboard"
-        ) {
-          event.preventDefault();
-        }
-      });
-
-      this.dialog.classList.add("hide-close-button");
-    }
   }
 
-  /*
+  @state() private accessor dialogMounted = false;
+  private dialogRequested = false;
 
-
-  */
   render() {
-    return html` ${this.isContentEditable
-      ? html`
-          <slot class="page"></slot>
-        `
-      : html`
-          <sl-dialog
-            id="dialog"
-            style="--width: 100%;"
-            label=${this.titleLabel}
-            ?no-header=${this.noHeader ? true : false}
-            ><slot class="page"></slot
-          ></sl-dialog>
-        `}`;
+    if (this.authoring) return html`<slot class="page"></slot>`;
+    if (!this.dialogMounted) return nothing;
+    return html`
+      <sl-dialog
+        id="dialog"
+        class=${this.preventClosing ? "hide-close-button" : ""}
+        style="--width: 100%"
+        label=${this.titleLabel}
+        ?no-header=${this.noHeader}
+        @sl-request-close=${this.handleCloseRequest}
+        @sl-hide=${this.handleDialogHide}
+      ><slot class="page"></slot></sl-dialog>
+    `;
   }
 
-  /*
-
-
-  */
-  public hide() {
-    this.style.display = "none";
-    this.stopAllMedia();
+  private handleCloseRequest(event: Event) {
+    if (this.preventClosing && event.target === this.dialog) event.preventDefault();
   }
 
-  /**
-   * Enables the popup
-   */
+  private handleDialogHide(event: Event) {
+    if (event.target === this.dialog) this.hide();
+  }
+
   public show() {
-    this.style.display = "block";
-  }  
-  
-  /**
-   * Stops all HTML media elements in the popup
-   */
-  private stopAllMedia() {
-    const mediaElements = this.slotContent.filter((el) =>
-      el.matches("audio, video")
-    ) as (HTMLAudioElement | HTMLVideoElement)[];
-
-    mediaElements.forEach((media) => {
-      media.pause();
-      media.currentTime = 0;
-    });
+    if (this.authoring) this.requestUpdate();
+    super.show();
   }
 
-  /**
-   * Hides the popup
-   */
   public hideDialog() {
-    this.dialog.hide();
-    this.style.display = "none";
+    this.dialogRequested = false;
+    void this.dialog?.hide();
+    this.hide();
   }
 
-  /**
-   * Shows the popup
-   */
-  public showDialog() {
-    this.style.display = "block";
-    this.dialog.show();
+  public async showDialog() {
+    this.dialogRequested = true;
+    this.dialogMounted = true;
+    this.requestUpdate();
+    await this.updateComplete;
+    const dialog = this.dialog;
+    await dialog?.updateComplete;
+    if (!this.dialogRequested || !this.isConnected || !dialog?.isConnected) return;
+    this.show();
+    void dialog.show();
   }
 
-  /*
-
-
-  */
   private mutationCallback = (mutationList: MutationRecord[]) => {
-    mutationList.forEach(({ type, removedNodes, attributeName }) => {
+    if (!this.authoring) return;
+    mutationList.forEach(({ type, removedNodes, attributeName, target }) => {
       if (type === "childList") {
         removedNodes.forEach((node) => {
           const element = node as HTMLElement;
+          if (this.contains(element)) return;
           const nodeName = element.nodeName.toLowerCase();
-
-          const isSelectedNode = element.classList?.contains(
-            "ProseMirror-selectednode"
-          );
 
           const dispatchEventIfNeeded = (eventName: string, detail: any) => {
             const event = new CustomEvent(eventName, {
@@ -343,7 +279,7 @@ export class WebWriterGamebookPopup extends LocalizedElement {
             }
           }
         });
-      } else if (type === "attributes" && attributeName === "class") {
+      } else if (type === "attributes" && attributeName === "class" && target === this) {
         if (this.classList.contains("ProseMirror-selectednode")) {
           const event = new CustomEvent("nodeWwSelected", {
             detail: { nodeId: this.drawflowNodeId },
@@ -355,9 +291,8 @@ export class WebWriterGamebookPopup extends LocalizedElement {
       }
     });
 
-    // Check if there is at least one paragraph <p> element in the container
-    const paragraphs = this.querySelectorAll("p");
-    if (paragraphs.length === 0) {
+    if (mutationList.some(record => record.type === "childList" && record.removedNodes.length)
+      && !this.firstElementChild && !this.textContent?.trim()) {
       const par = document.createElement("p");
       par.textContent = this.messages.msg("Write something here...");
       this.appendChild(par);

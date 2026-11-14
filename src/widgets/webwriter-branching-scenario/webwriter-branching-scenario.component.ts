@@ -1,10 +1,10 @@
 import { localizeElement, LocalizedElement } from "../../utils/localization";
-import { readData, writeData } from "../../utils/data-block";
+import { dataBlockSelector, DataBlockObserver, parseData, writeData } from "../../utils/data-block";
 import { html } from "lit";
 import { provide } from "@lit/context";
 
 
-import { property, query } from "lit/decorators.js";
+import { property, query, state } from "lit/decorators.js";
 
 import { NodeDetailsView } from "../../components/node-detail-view/node-detail-view";
 import { WebWriterGamebookViewer } from "../../components/gamebook-viewer/webwriter-gamebook-viewer";
@@ -12,10 +12,6 @@ import { GamebookContainerManager } from "../../utils/gamebook-container-manager
 import { NodeEditor } from "../../components/node-editor/node-editor";
 import { SplitView } from "../../components/split-view/split-view";
 import { VerticalResizeView } from "../../components/vertical-resize-view/vertical-resize-view";
-
-// Shoelace Imports
-import "@shoelace-style/shoelace/dist/themes/light.css";
-import { SlDialog } from "@shoelace-style/shoelace";
 
 import styles from "./webwriter-branching-scenario.styles";
 
@@ -36,7 +32,8 @@ export class WebWriterBranchingScenario extends LocalizedElement {
   /** The node editor component */
   @query("node-editor") public accessor nodeEditor;
   /** @internal */
-  @query("webwriter-gamebook-options") accessor gamebookOptions;
+  @query("webwriter-gamebook-options") accessor gamebookOptions: WebWriterGamebookOptions;
+  @state() private accessor optionsMounted = false;
 
   /** @internal */
   @property({ type: Number, attribute: true, reflect: true })
@@ -55,7 +52,6 @@ export class WebWriterBranchingScenario extends LocalizedElement {
       "webwriter-gamebook-options": WebWriterGamebookOptions,
       "split-view": SplitView,
       "vertical-resize-view": VerticalResizeView,
-      "sl-dialog": SlDialog,
     };
   }
 
@@ -80,22 +76,21 @@ export class WebWriterBranchingScenario extends LocalizedElement {
     };
   }
 
-  configureScenario() {
+  async configureScenario() {
+    if (!this.isContentEditable) return;
+    this.optionsMounted = true;
+    await this.updateComplete;
     const dialog = this.renderRoot.querySelector<HTMLDialogElement>("#scenario-options");
-    if (dialog && !dialog.open) dialog.showModal();
+    if (dialog?.isConnected && !dialog.open) dialog.showModal();
   }
 
   private lastDataText: string | null = null;
-  private savedState = "";
-  private dataObserver = new MutationObserver(() => this.restoreScenario());
+  private savedGraph = "null";
+  private savedTitle = "";
+  private dataObserver = new DataBlockObserver(this, () => this.restoreScenario());
 
   private get dataText() {
-    return this.querySelector(':scope > script[type="application/json"][slot="data"]:not([src])')?.textContent ?? null;
-  }
-
-  private authoredState() {
-    const { title, editorContent } = JSON.parse(this.editorState.toString());
-    return { title, editorContent };
+    return this.querySelector(dataBlockSelector + ":not([data-branching-labels])")?.textContent ?? null;
   }
 
   private applySnippetLabels() {
@@ -128,85 +123,49 @@ export class WebWriterBranchingScenario extends LocalizedElement {
     const text = this.dataText;
     if (this.lastDataText === text) return;
     this.lastDataText = text;
-    const saved = readData<{title: string; editorContent: object}>(this);
-    this.editorState = GamebookEditorState.fromString(JSON.stringify({
-      title: saved.title ?? "",
-      editorContent: saved.editorContent ?? null,
-    }));
-    this.editorState.addObserver(this.onStoreChanged);
-    this.savedState = JSON.stringify(this.authoredState());
-    this.nodeEditor?.restoreAuthoredContent(this.editorState.editorContent);
+    const saved = parseData<{ title: string; editorContent: object }>(text);
+    const store = new GamebookEditorState(saved.title ?? "", this.onStoreChanged);
+    store.editorContent = saved.editorContent ?? null;
+    const snapshot = store.authoredState();
+    const encodedGraph = JSON.stringify(snapshot.editorContent);
+    const graphChanged = encodedGraph !== this.savedGraph;
+    store.editorContent = snapshot.editorContent;
+    this.savedTitle = snapshot.title;
+    this.savedGraph = encodedGraph;
+    if (graphChanged) {
+      this.editorState = store;
+      this.nodeEditor?.restoreAuthoredContent(store.editorContent);
+    } else {
+      this.editorState = Object.assign(new GamebookEditorState(), this.editorState, { title: store.title });
+    }
   }
 
-  private onStoreChanged = () => {
-    this.reflectStoreChangesinDOM();
-    this.requestUpdate();
+  private onStoreChanged = (authored: boolean) => {
+    if (authored) {
+      if (this.lastDataText !== this.dataText) {
+        this.restoreScenario();
+        return;
+      }
+      const snapshot = this.editorState.authoredState();
+      const encodedGraph = JSON.stringify(snapshot.editorContent);
+      if (snapshot.title !== this.savedTitle || encodedGraph !== this.savedGraph) {
+        writeData(this, snapshot);
+        this.savedTitle = snapshot.title;
+        this.savedGraph = encodedGraph;
+        this.lastDataText = this.dataText;
+      }
+    }
+    this.editorState = Object.assign(new GamebookEditorState(), this.editorState);
   };
 
-  // public static get shadowRootOptions(): ShadowRootInit {
-  //   return {
-  //     ...LitElement.shadowRootOptions,
-  //     delegatesFocus: true,
-  //   };
-  // }
-
-  /* 
-  
-  */
   constructor() {
     super();
     Object.defineProperty(this, "actions", { configurable: true, get: () => this.getDrawerActions() });
-    //Initial setting necessary to notify children of change
-    this.savedState = JSON.stringify(this.authoredState());
-  }
-
-  /*
-  
-  */
-  protected firstUpdated(_changedProperties: any): void {
-    // Register an observer to react to store changes
     this.editorState.addObserver(this.onStoreChanged);
-
-    console.log("firstUpdated", this.editorState.selectedNode);
   }
 
   protected updated() {
     this.controller.initReferences(this.nodeEditor, this.gamebookContainerManager);
-  }
-
-  /**
-   * Saves the current state to the editor state attribute so that it is reflected in the DOM
-   */
-  reflectStoreChangesinDOM() {
-    const snapshot = this.authoredState();
-    const encoded = JSON.stringify(snapshot);
-    if (this.lastDataText !== this.dataText) {
-      this.restoreScenario();
-      return;
-    }
-    if (encoded !== this.savedState) {
-      writeData(this, snapshot);
-      this.savedState = encoded;
-      this.lastDataText = this.dataText;
-    }
-    this.editorState = new GamebookEditorState(
-      this.editorState.title,
-      this.editorState.observer,
-      this.editorState.selectedNode,
-      this.editorState.editorZoom,
-      this.editorState.editorPosition,
-      this.editorState.dividerPosition,
-      this.editorState.editorIsCollapsed,
-      this.editorState.editorContent,
-      this.editorState.detailViewHeight,
-      this.editorState.copiedNode,
-      this.editorState.selectedContainer,
-      this.editorState.branchIncomingContainer,
-      this.editorState.searchTerm,
-      this.editorState.searchResults
-    );
-
-    console.log("reflectStoreChangesinDOM", this.editorState.selectedNode);
   }
 
   /*
@@ -215,7 +174,7 @@ export class WebWriterBranchingScenario extends LocalizedElement {
   connectedCallback() {
     super.connectedCallback();
     this.restoreScenario();
-    this.dataObserver.observe(this, {childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["type", "slot", "src"]});
+    this.dataObserver.connect();
     this.addEventListener("keydown", this._handleKeydown);
   }
   /*
@@ -230,11 +189,14 @@ export class WebWriterBranchingScenario extends LocalizedElement {
   /*
   
   */
-  private _handleKeydown = (event: KeyboardEvent) => {
+  private _handleKeydown = async (event: KeyboardEvent) => {
+    if (!this.isContentEditable) return;
     // Check if CMD (Mac) or CTRL (Windows/Linux) and F key is pressed
     if ((event.metaKey || event.ctrlKey) && event.key === "f") {
       event.preventDefault(); // Prevent the default browser find functionality
-      this.gamebookOptions.searchInput.focus(); // Focus the sl-input element
+      await this.configureScenario();
+      await this.gamebookOptions?.updateComplete;
+      this.gamebookOptions?.searchInput?.focus();
     }
     //
     else if ((event.metaKey || event.ctrlKey) && event.key === "c") {
@@ -253,11 +215,9 @@ export class WebWriterBranchingScenario extends LocalizedElement {
   */
   render() {
     return html`
-      <!-- <button @click=${() => this.exportContainersAsString()}></button> -->
       ${this.isContentEditable
         ? html`
             <split-view>
-              <!-- <p slot="start">${this.messages.msg("Add")}</p> -->
               <node-editor
                 slot="start"
                 @editorInitialized=${() => this.controller._markUsedOutputs()}
@@ -362,8 +322,7 @@ export class WebWriterBranchingScenario extends LocalizedElement {
               </vertical-resize-view>
             </split-view>
 
-            <!-- Options Menu -->
-            <dialog id="scenario-options" aria-label=${this.messages.msg("Scenario options")} style="width:min(34rem,calc(100% - 2rem));max-height:85%;box-sizing:border-box">
+            ${this.optionsMounted ? html`<dialog id="scenario-options" aria-label=${this.messages.msg("Scenario options")} style="width:min(34rem,calc(100% - 2rem));max-height:85%;box-sizing:border-box">
               <form method="dialog"><button>${this.messages.msg("Close")}</button></form>
               <webwriter-gamebook-options
               @makeSelectedNodeOrigin=${(e: CustomEvent) =>
@@ -378,9 +337,10 @@ export class WebWriterBranchingScenario extends LocalizedElement {
               @unhighlightNode=${(e: CustomEvent) =>
                 this.controller._unhighlightNode(e)}
               ></webwriter-gamebook-options>
-            </dialog>
+            </dialog>` : null}
           `
         : html` <webwriter-gamebook-viewer
+            .scenario=${this}
             gamebookTitle=${this.editorState.title != ""
               ? this.editorState.title
               : this.messages.msg("Untitled Gamebook")}
@@ -389,34 +349,4 @@ export class WebWriterBranchingScenario extends LocalizedElement {
     `;
   }
 
-  /*
-
-
-  */
-  private exportContainersAsString() {
-    console.log(JSON.stringify(this.nodeEditor.editor.drawflow));
-    console.log(
-      JSON.stringify(
-        this.gamebookContainerManager.gamebookContainers,
-        this.domElementReplacer
-      )
-    );
-  }
-
-  /*
-
-  */
-  private domElementReplacer(key, value) {
-    if (value instanceof HTMLElement) {
-      return {
-        tagName: value.tagName,
-        attributes: [...value.attributes].map((attr) => ({
-          name: attr.name,
-          value: attr.value,
-        })),
-        innerHTML: value.innerHTML,
-      };
-    }
-    return value;
-  }
 }
