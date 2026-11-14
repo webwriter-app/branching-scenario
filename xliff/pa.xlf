@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file target-language="pa" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="s26d236d09a66a620">
+  <source>Rules</source>
+<target>ਨਿਯਮ</target></trans-unit>
+<trans-unit id="sd0182c6d73eaa2be">
+  <source>Condition</source>
+<target>ਸ਼ਰਤ</target></trans-unit>
+<trans-unit id="sad9ce781382a9f6e">
+  <source>If no rule is satisfied, go to</source>
+<target>ਜੇ ਕੋਈ ਨਿਯਮ ਪੂਰਾ ਨਾ ਹੋਵੇ, ਤਾਂ ਇੱਥੇ ਜਾਓ</target></trans-unit>
+<trans-unit id="s524638d3ef766239">
+  <source>No branching rules</source>
+<target>ਕੋਈ ਸ਼ਾਖਾ ਨਿਯਮ ਨਹੀਂ</target></trans-unit>
+<trans-unit id="sfc63e31ac7c956ed">
+  <source>Select</source>
+<target>ਚੁਣੋ</target></trans-unit>
+<trans-unit id="s51cf605b81d7c915">
+  <source>Drag Connection</source>
+<target>ਕਨੈਕਸ਼ਨ ਖਿੱਚੋ</target></trans-unit>
+<trans-unit id="sdc673e73b5c13aea">
+  <source>Delete</source>
+<target>ਮਿਟਾਓ</target></trans-unit>
+<trans-unit id="s081de6398e897576">
+  <source>Zoom In/Out</source>
+<target>ਜ਼ੂਮ ਅੰਦਰ/ਬਾਹਰ</target></trans-unit>
+<trans-unit id="s0bdca49248ba4820">
+  <source>Shortcuts</source>
+<target>ਸ਼ਾਰਟਕੱਟ</target></trans-unit>
+<trans-unit id="s443fac2814907e18">
+  <source>Outputs (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}" />)</source>
+<target>ਆਉਟਪੁੱਟ (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}" />)</target></trans-unit>
+<trans-unit id="s57f8d0db44da6177">
+  <source>Delete Output</source>
+<target>ਆਉਟਪੁੱਟ ਮਿਟਾਓ</target></trans-unit>
+<trans-unit id="sa805b1e63ef896e4">
+  <source>You are about to delete <x id="0" equiv-text="${this.deleteOutputClass}" /> which has an outgoing connection. Do you wish to proceed?</source>
+<target>ਤੁਸੀਂ <x id="0" equiv-text="${this.deleteOutputClass}" /> ਨੂੰ ਮਿਟਾਉਣ ਲੱਗੇ ਹੋ ਜਿਸ ਨਾਲ ਬਾਹਰ ਜਾਣ ਵਾਲਾ ਕਨੈਕਸ਼ਨ ਜੁੜਿਆ ਹੈ। ਕੀ ਅੱਗੇ ਵਧਣਾ ਹੈ?</target></trans-unit>
+<trans-unit id="s5fc4562bab5298a4">
+  <source>Incoming (<x id="0" equiv-text="${this.editorStore.selectedNode?.inputs[&quot;input_1&quot;]?.connections&#10;    .length ?? 0}" />)</source>
+<target>ਅੰਦਰ ਆਉਣ ਵਾਲੇ (<x id="0" equiv-text="${this.editorStore.selectedNode?.inputs[&quot;input_1&quot;]?.connections&#10;    .length ?? 0}" />)</target></trans-unit>
+<trans-unit id="s09134f2a8084426d">
+  <source>Accessing</source>
+<target>ਪਹੁੰਚ ਰਿਹਾ ਹੈ</target></trans-unit>
+<trans-unit id="s0c17144a11b9576e">
+  <source> Connect a node to create rules based on its content!</source>
+<target>ਨਿਯਮ ਬਣਾਉਣ ਲਈ ਨੋਡ ਜੋੜੋ!</target></trans-unit>
+<trans-unit id="s5c17e8980e6b5b18">
+  <source>Click on a node to view its content</source>
+<target>ਕਿਸੇ ਨੋਡ ਦੀ ਸਮੱਗਰੀ ਦੇਖਣ ਲਈ ਉਸ ਉੱਤੇ ਕਲਿੱਕ ਕਰੋ</target></trans-unit>
+<trans-unit id="scda086c697995b38">
+  <source>The content of this node cannot be found.</source>
+<target>ਇਸ ਨੋਡ ਦੀ ਸਮੱਗਰੀ ਨਹੀਂ ਲੱਭੀ ਜਾ ਸਕਦੀ।</target></trans-unit>
+<trans-unit id="s748c82bdc348610f">
+  <source>If reloading does not solve this issue, try recreating the node.</source>
+<target>ਜੇ ਮੁੜ ਲੋਡ ਕਰਨ ਨਾਲ ਸਮੱਸਿਆ ਹੱਲ ਨਾ ਹੋਵੇ, ਨੋਡ ਫਿਰ ਬਣਾਓ।</target></trans-unit>
+<trans-unit id="sad79fd47752866d8">
+  <source>Recreate node</source>
+<target>ਨੋਡ ਮੁੜ ਬਣਾਓ</target></trans-unit>
+<trans-unit id="sf9aee319a006c9b4">
+  <source>Add</source>
+<target>ਜੋੜੋ</target></trans-unit>
+<trans-unit id="s5f2f575fee43e7f8">
+  <source>Single Nodes</source>
+<target>ਇਕੱਲੇ ਨੋਡ</target></trans-unit>
+<trans-unit id="h7eb8e051be10e053">
+  <source>
+                  Inserts a predefined <x id="0" equiv-text="&lt;strong&gt;" />pattern<x id="1" equiv-text="&lt;/strong&gt;" /> of multiple
+                  <x id="2" equiv-text="&lt;strong&gt;" />connected nodes<x id="3" equiv-text="&lt;/strong&gt;" /> into the node editor.<x id="4" equiv-text="&lt;br&gt;&lt;br&gt;" />
+                  This allows you to quickly add a structured set of nodes
+                  without manual placement.
+                </source>
+<target>ਨੋਡ ਸੰਪਾਦਕ ਵਿੱਚ ਕਈ <x id="0" equiv-text="&lt;strong&gt;" />ਪਹਿਲਾਂ ਤੋਂ ਤਿਆਰ ਨਮੂਨਾ<x id="1" equiv-text="&lt;/strong&gt;" /> <x id="2" equiv-text="&lt;strong&gt;" />ਜੁੜੇ ਨੋਡ<x id="3" equiv-text="&lt;/strong&gt;" /> ਪਾਉਂਦਾ ਹੈ।<x id="4" equiv-text="&lt;br&gt;&lt;br&gt;" /> ਇਸ ਨਾਲ ਹੱਥੀਂ ਰੱਖੇ ਬਿਨਾਂ ਨੋਡਾਂ ਦਾ ਬਣਿਆ-ਬਣਾਇਆ ਸਮੂਹ ਛੇਤੀ ਜੋੜਿਆ ਜਾ ਸਕਦਾ ਹੈ।</target></trans-unit>
+<trans-unit id="s6abd1339f5659d50">
+  <source>Multiple Nodes</source>
+<target>ਕਈ ਨੋਡ</target></trans-unit>
+<trans-unit id="s7984347f31306aca">
+  <source>Popup to Pages</source>
+<target>ਪੌਪਅੱਪ ਤੋਂ ਸਫ਼ਿਆਂ ਵੱਲ</target></trans-unit>
+<trans-unit id="s7f747127243108b9">
+  <source>Popup to Popups</source>
+<target>ਪੌਪਅੱਪ ਤੋਂ ਪੌਪਅੱਪ</target></trans-unit>
+<trans-unit id="s7e617fb8024f45f4">
+  <source>Quiz to Branch to Pages</source>
+<target>ਕੁਇਜ਼ ਤੋਂ ਸ਼ਾਖਾ ਰਾਹੀਂ ਸਫ਼ਿਆਂ ਵੱਲ</target></trans-unit>
+<trans-unit id="sb4f1dffbb6be6302">
+  <source>Clear</source>
+<target>ਸਾਫ਼ ਕਰੋ</target></trans-unit>
+<trans-unit id="s42657469b069bee8">
+  <source>First Page</source>
+<target>ਪਹਿਲਾ ਸਫ਼ਾ</target></trans-unit>
+<trans-unit id="sd1c592ccade3cd3c">
+  <source>Jump to origin node</source>
+<target>ਮੂਲ ਨੋਡ ’ਤੇ ਜਾਓ</target></trans-unit>
+<trans-unit id="sac7bd907d39a570e">
+  <source>Clear Graph</source>
+<target>ਗ੍ਰਾਫ਼ ਸਾਫ਼ ਕਰੋ</target></trans-unit>
+<trans-unit id="sd8c7b6a9132e593b">
+  <source>Do you want to clear the graph? All your progress will be lost.</source>
+<target>ਕੀ ਗ੍ਰਾਫ਼ ਸਾਫ਼ ਕਰਨਾ ਹੈ? ਤੁਹਾਡੀ ਸਾਰੀ ਤਰੱਕੀ ਮਿਟ ਜਾਵੇਗੀ।</target></trans-unit>
+<trans-unit id="s2ceb11be2290bb1b">
+  <source>Cancel</source>
+<target>ਰੱਦ ਕਰੋ</target></trans-unit>
+<trans-unit id="sd9bdfc0f95188eea">
+  <source>Delete node</source>
+<target>ਨੋਡ ਮਿਟਾਓ</target></trans-unit>
+<trans-unit id="sf80fa7d9bacf0a78">
+  <source>You are about to delete the node <x id="0" equiv-text="${this.editorStore.selectedNode.data.title}" />.  Do you want to proceed?</source>
+<target>ਤੁਸੀਂ ਨੋਡ <x id="0" equiv-text="${this.editorStore.selectedNode.data.title}" /> ਮਿਟਾਉਣ ਲੱਗੇ ਹੋ। ਕੀ ਅੱਗੇ ਵਧਣਾ ਹੈ?</target></trans-unit>
+<trans-unit id="s0491e53d9de2e899">
+  <source>Abort</source>
+<target>ਰੋਕੋ</target></trans-unit>
+<trans-unit id="sb89f410de72cb268">
+  <source>Adding Node</source>
+<target>ਨੋਡ ਜੋੜਿਆ ਜਾ ਰਿਹਾ ਹੈ</target></trans-unit>
+<trans-unit id="s03acb46b5470e0c9">
+  <source>Give your new</source>
+<target>ਆਪਣੇ ਨਵੇਂ</target></trans-unit>
+<trans-unit id="s0b52f3ea315aa9be">
+  <source>Page node</source>
+<target>ਸਫ਼ਾ ਨੋਡ</target></trans-unit>
+<trans-unit id="sdc3d2121c3bc5907">
+  <source>Popup node</source>
+<target>ਪੌਪਅੱਪ ਨੋਡ</target></trans-unit>
+<trans-unit id="s487473fdf35474ff">
+  <source>Branch node</source>
+<target>ਸ਼ਾਖਾ ਨੋਡ</target></trans-unit>
+<trans-unit id="s629e3dc56b1d35e9">
+  <source>a title!</source>
+<target>ਦਾ ਸਿਰਲੇਖ ਦਿਓ!</target></trans-unit>
+<trans-unit id="s6fd70a9a8c6d8355">
+  <source>Untitled Page <x id="0" equiv-text="${this.pagesAdded}" /></source>
+<target>ਬਿਨਾਂ ਸਿਰਲੇਖ ਵਾਲਾ ਸਫ਼ਾ <x id="0" equiv-text="${this.pagesAdded}" /></target></trans-unit>
+<trans-unit id="s9e1a091f1c7c53b0">
+  <source>Untitled Popup <x id="0" equiv-text="${this.popupsAdded}" /></source>
+<target>ਬਿਨਾਂ ਸਿਰਲੇਖ ਵਾਲਾ ਪੌਪਅੱਪ <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
+<trans-unit id="s1a30b9a78d158c62">
+  <source>Untitled Branch <x id="0" equiv-text="${this.branchesAdded}" /></source>
+<target>ਬਿਨਾਂ ਸਿਰਲੇਖ ਵਾਲੀ ਸ਼ਾਖਾ <x id="0" equiv-text="${this.branchesAdded}" /></target></trans-unit>
+<trans-unit id="s801ca3f7c573aebd">
+  <source>Not connected</source>
+<target>ਜੁੜਿਆ ਨਹੀਂ</target></trans-unit>
+<trans-unit id="s291e8cf07019837e">
+  <source>Search Nodes...</source>
+<target>ਨੋਡ ਲੱਭੋ...</target></trans-unit>
+<trans-unit id="s603d69217de4e83b">
+  <source>No nodes found</source>
+<target>ਕੋਈ ਨੋਡ ਨਹੀਂ ਮਿਲਿਆ</target></trans-unit>
+<trans-unit id="s6ac0c20ddc5c15ff">
+  <source>Pages</source>
+<target>ਸਫ਼ੇ</target></trans-unit>
+<trans-unit id="sc7aeb596f1dcb1bd">
+  <source>Popup</source>
+<target>ਪੌਪਅੱਪ</target></trans-unit>
+<trans-unit id="s7a07940a2b62f185">
+  <source>Branch</source>
+<target>ਸ਼ਾਖਾ</target></trans-unit>
+<trans-unit id="h753ba5217e074fe6">
+  <source>
+              Use the <x id="0" equiv-text="&lt;strong&gt;" />search bar<x id="1" equiv-text="&lt;/strong&gt;" /> to find nodes by
+              <x id="2" equiv-text="&lt;strong&gt;" />title<x id="3" equiv-text="&lt;/strong&gt;" />, <x id="4" equiv-text="&lt;strong&gt;" />type<x id="5" equiv-text="&lt;/strong&gt;" />, and
+              <x id="6" equiv-text="&lt;strong&gt;" />content<x id="7" equiv-text="&lt;/strong&gt;" />. <x id="8" equiv-text="&lt;br&gt;&lt;br&gt;&#10;              &lt;em&gt;" />Tip:<x id="9" equiv-text="&lt;/em&gt;" /> Clicking the search bar will display a
+              <x id="10" equiv-text="&lt;strong&gt;" />list of all nodes<x id="11" equiv-text="&lt;/strong&gt;" />. Click on any node in the list
+              to <x id="12" equiv-text="&lt;strong&gt;" />select it in the node editor<x id="13" equiv-text="&lt;/strong&gt;" />.
+            </source>
+<target><x id="0" equiv-text="&lt;strong&gt;" />ਖੋਜ ਪੱਟੀ<x id="1" equiv-text="&lt;/strong&gt;" /> ਨਾਲ ਨੋਡਾਂ ਨੂੰ <x id="2" equiv-text="&lt;strong&gt;" />ਸਿਰਲੇਖ<x id="3" equiv-text="&lt;/strong&gt;" />, <x id="4" equiv-text="&lt;strong&gt;" />ਕਿਸਮ<x id="5" equiv-text="&lt;/strong&gt;" /> ਅਤੇ <x id="6" equiv-text="&lt;strong&gt;" />ਸਮੱਗਰੀ<x id="7" equiv-text="&lt;/strong&gt;" /> ਅਨੁਸਾਰ ਲੱਭੋ। <x id="8" equiv-text="&lt;br&gt;&lt;br&gt;&#10;              &lt;em&gt;" />ਸੁਝਾਅ:<x id="9" equiv-text="&lt;/em&gt;" /> ਖੋਜ ਪੱਟੀ ’ਤੇ ਕਲਿੱਕ ਕਰਨ ਨਾਲ <x id="10" equiv-text="&lt;strong&gt;" />ਸਾਰੇ ਨੋਡਾਂ ਦੀ ਸੂਚੀ<x id="11" equiv-text="&lt;/strong&gt;" /> ਦਿੱਸੇਗੀ। ਸੂਚੀ ਵਿੱਚ ਕਿਸੇ ਵੀ ਨੋਡ ’ਤੇ ਕਲਿੱਕ ਕਰਕੇ ਨੋਡ ਸੰਪਾਦਕ ਵਿੱਚ ਉਸਨੂੰ <x id="12" equiv-text="&lt;strong&gt;" />ਚੁਣੋ<x id="13" equiv-text="&lt;/strong&gt;" />।</target></trans-unit>
+<trans-unit id="s3687049d1af562c4">
+  <source>Copy</source>
+<target>ਕਾਪੀ</target></trans-unit>
+<trans-unit id="sd374c80e17e18808">
+  <source>Paste</source>
+<target>ਚਿਪਕਾਓ</target></trans-unit>
+<trans-unit id="s2e192b19ed15fcf6">
+  <source>Page</source>
+<target>ਸਫ਼ਾ</target></trans-unit>
+<trans-unit id="s060e481b4a246a3e">
+  <source>Start Page</source>
+<target>ਸ਼ੁਰੂਆਤੀ ਸਫ਼ਾ</target></trans-unit>
+<trans-unit id="sb5a5848245f9e0e8">
+  <source>Set as Start Page</source>
+<target>ਸ਼ੁਰੂਆਤੀ ਸਫ਼ੇ ਵਜੋਂ ਸੈੱਟ ਕਰੋ</target></trans-unit>
+<trans-unit id="secf2ae437afa81c6">
+  <source>Create rules to guide how your gamebook progresses. The first rule that applies will be used.</source>
+<target>ਗੇਮਬੁੱਕ ਦੀ ਤਰੱਕੀ ਦਾ ਰਾਹ ਦੱਸਣ ਲਈ ਨਿਯਮ ਬਣਾਓ। ਜੋ ਪਹਿਲਾ ਨਿਯਮ ਲਾਗੂ ਹੋਵੇਗਾ, ਉਹੀ ਵਰਤਿਆ ਜਾਵੇਗਾ।</target></trans-unit>
+<trans-unit id="sae5d9ee99fe0a8f5">
+  <source>Requires</source>
+<target>ਲੋੜੀਂਦਾ</target></trans-unit>
+<trans-unit id="s5b01e19e4efa5a9e">
+  <source>Prevent Closing</source>
+<target>ਬੰਦ ਹੋਣ ਤੋਂ ਰੋਕੋ</target></trans-unit>
+<trans-unit id="s75d83fc3f0cfab40">
+  <source>Header</source>
+<target>ਸਿਰਲੇਖ</target></trans-unit>
+<trans-unit id="s7aaa8587048ed4d9">
+  <source>Select element</source>
+<target>ਤੱਤ ਚੁਣੋ</target></trans-unit>
+<trans-unit id="s3b151ca64eb26ec1">
+  <source>Expand</source>
+<target>ਖੋਲ੍ਹੋ</target></trans-unit>
+<trans-unit id="s4993444bfd3f3e5e">
+  <source>Collapse</source>
+<target>ਸਮੇਟੋ</target></trans-unit>
+<trans-unit id="s46d93e3b43f99a6f">
+  <source>Untitled Gamebook</source>
+<target>ਬਿਨਾਂ ਸਿਰਲੇਖ ਵਾਲੀ ਗੇਮਬੁੱਕ</target></trans-unit>
+<trans-unit id="s54faffd0f371b98d">
+  <source>Scenario options</source>
+<target>ਦ੍ਰਿਸ਼ਟਾਂਤ ਦੇ ਵਿਕਲਪ</target></trans-unit>
+<trans-unit id="s5e8250fb85d64c23">
+  <source>Close</source>
+<target>ਬੰਦ ਕਰੋ</target></trans-unit>
+<trans-unit id="s5f7ab55b6ba8729c">
+  <source>Write something here...</source>
+<target>ਇੱਥੇ ਕੁਝ ਲਿਖੋ...</target></trans-unit>
+<trans-unit id="s99f110d27e30b289">
+  <source>Title</source>
+<target>ਸਿਰਲੇਖ</target></trans-unit>
+<trans-unit id="s78789724e789221c">
+  <source>Size</source>
+<target>ਆਕਾਰ</target></trans-unit>
+<trans-unit id="s3d2cc8d952adebec">
+  <source>Small</source>
+<target>ਛੋਟਾ</target></trans-unit>
+<trans-unit id="sac6bdc71f750ac96">
+  <source>Medium</source>
+<target>ਦਰਮਿਆਨਾ</target></trans-unit>
+<trans-unit id="sc8736ef79380e634">
+  <source>Large</source>
+<target>ਵੱਡਾ</target></trans-unit>
+<trans-unit id="sbcabce7030eb33c6">
+  <source>Variant</source>
+<target>ਰੂਪ</target></trans-unit>
+<trans-unit id="s11326fd2590f4e5e">
+  <source>Default</source>
+<target>ਮੂਲ</target></trans-unit>
+<trans-unit id="s2492f5fb1b05b45e">
+  <source>Text</source>
+<target>ਲਿਖਤ</target></trans-unit>
+<trans-unit id="se14ede3bc78d9599">
+  <source>Primary</source>
+<target>ਮੁੱਖ</target></trans-unit>
+<trans-unit id="s92a0d19a28995530">
+  <source>Success</source>
+<target>ਸਫ਼ਲਤਾ</target></trans-unit>
+<trans-unit id="sc3e93c5b2fd1e0d8">
+  <source>Neutral</source>
+<target>ਨਿਰਪੱਖ</target></trans-unit>
+<trans-unit id="s34be76c6b1eadbef">
+  <source>Warning</source>
+<target>ਚੇਤਾਵਨੀ</target></trans-unit>
+<trans-unit id="s5183765fa43d93ee">
+  <source>Danger</source>
+<target>ਖ਼ਤਰਾ</target></trans-unit>
+<trans-unit id="scf43f04b26b0197a">
+  <source>Rounded</source>
+<target>ਗੋਲ ਕਿਨਾਰੇ</target></trans-unit>
+<trans-unit id="s19daf2f26c19543d">
+  <source>Outline</source>
+<target>ਆਊਟਲਾਈਨ</target></trans-unit>
+<trans-unit id="sf21fb4f4b9e8911f">
+  <source>Width</source>
+<target>ਚੌੜਾਈ</target></trans-unit>
+<trans-unit id="sdf9bc5d9b7f3e3de">
+  <source>Alignment</source>
+<target>ਅਲਾਈਨਮੈਂਟ</target></trans-unit>
+<trans-unit id="sa5c371b4bb75e590">
+  <source>Left</source>
+<target>ਖੱਬੇ</target></trans-unit>
+<trans-unit id="sb38d497d992ab4a4">
+  <source>Center</source>
+<target>ਵਿਚਕਾਰ</target></trans-unit>
+<trans-unit id="s366991b9c9287765">
+  <source>Right</source>
+<target>ਸੱਜੇ</target></trans-unit>
+<trans-unit id="scb05d5ab1e8e2844">
+  <source>Page title</source>
+<target>ਸਫ਼ੇ ਦਾ ਸਿਰਲੇਖ</target></trans-unit>
+<trans-unit id="s3c15568f5662789b">
+  <source>Dialog title</source>
+<target>ਡਾਇਲਾਗ ਦਾ ਸਿਰਲੇਖ</target></trans-unit>
+<trans-unit id="s9b074ca77eff1ffc">
+  <source>Hide dialog header</source>
+<target>ਡਾਇਲਾਗ ਦਾ ਸਿਰਲੇਖ-ਭਾਗ ਲੁਕਾਓ</target></trans-unit>
+</body>
+</file>
+</xliff>

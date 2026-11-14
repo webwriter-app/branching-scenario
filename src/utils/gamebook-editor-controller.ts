@@ -7,7 +7,6 @@ import { WebWriterGamebookBranch } from "../widgets/webwriter-gamebook-branch/we
 import { WebWriterGamebookPage } from "../widgets/webwriter-gamebook-page/webwriter-gamebook-page.component";
 import { WebWriterGamebookPopup } from "../widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.component";
 
-import { msg, str } from "@lit/localize";
 
 export class GamebookEditorController implements ReactiveController {
   private host: ReactiveControllerHost;
@@ -52,7 +51,9 @@ export class GamebookEditorController implements ReactiveController {
   /*
 
   */
-  hostDisconnected() {}
+  hostDisconnected() {
+    this.mutationObserver?.disconnect();
+  }
 
   /*
 
@@ -731,6 +732,7 @@ export class GamebookEditorController implements ReactiveController {
     mutationList.forEach((mutation) => {
       if (mutation.type === "childList") {
         mutation.removedNodes.forEach((node) => {
+          if (!(node instanceof HTMLElement)) return;
           const nodeName = (node as HTMLElement).nodeName.toLowerCase();
           const isWidget = (node as HTMLElement).classList.contains(
             "ww-widget"
@@ -753,7 +755,7 @@ export class GamebookEditorController implements ReactiveController {
               const container = node as WebWriterGamebookPage;
               containerDeletedEvent(container);
               if (container.originPage === 1) {
-                this.nodeEditor.addPageNode(msg("First Page"), true);
+                this.nodeEditor.addPageNode(this.nodeEditor.msg("First Page"), true);
               }
 
               if (container.branchesOff !== -1) {

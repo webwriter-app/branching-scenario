@@ -1,7 +1,6 @@
+import { localizeElement, LocalizedElement } from "../../utils/localization";
 import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
-import { LitElementWw } from "@webwriter/lit";
 import { customElement, property } from "lit/decorators.js";
-import { msg, localized } from "@lit/localize";
 
 //Drawflow Imports
 import { DrawflowNode } from "drawflow";
@@ -26,8 +25,8 @@ import {
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
-@localized()
-export class PageNodeDetailView extends LitElementWw {
+export class PageNodeDetailView extends LocalizedElement {
+  protected readonly messages = localizeElement(this);
   //registering custom elements used in the widget
   static get scopedElements() {
     return {
@@ -55,7 +54,7 @@ export class PageNodeDetailView extends LitElementWw {
             .text=${this.editorStore.selectedNode.data.title}
             .saveChanges=${(string) => this.renameNode(string)}
           ></toggle-text-input>
-          <p class="subtitle">${msg("Page")}</p>
+          <p class="subtitle">${this.messages.msg("Page")}</p>
         </div>
         <div class="inputOutputControls">
           <node-connection-list input></node-connection-list>

@@ -1,5 +1,5 @@
+import { localizeElement, LocalizedElement } from "../../utils/localization";
 import { html, PropertyValues } from "lit";
-import { LitElementWw } from "@webwriter/lit";
 import { customElement, property } from "lit/decorators.js";
 
 //Import Styles
@@ -45,10 +45,9 @@ import {
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
-import { msg, localized } from "@lit/localize";
 
-@localized()
-export class NodeEditorToolbar extends LitElementWw {
+export class NodeEditorToolbar extends LocalizedElement {
+  protected readonly messages = localizeElement(this);
   //registering custom elements used in the widget
   static get scopedElements() {
     return {
@@ -84,7 +83,7 @@ export class NodeEditorToolbar extends LitElementWw {
             id="gamebookTitle"
             rows="1"
             resize="none"
-            placeholder="Gamebook Title"
+            placeholder=${this.messages.msg("Untitled Gamebook")}
             @input="${this.textAreaInputChanged}"
             .value="${this.editorStore.title}"
           >
@@ -94,11 +93,11 @@ export class NodeEditorToolbar extends LitElementWw {
 
         <sl-dropdown placement="bottom-end" hoist>
           <sl-button slot="trigger">
-            ${msg("Add")}
+            ${this.messages.msg("Add")}
             <sl-icon src=${plus} slot="prefix"></sl-icon>
           </sl-button>
           <sl-menu style="width: 200px;" hoist>
-            <sl-menu-label>${msg("Single Nodes")}</sl-menu-label>
+            <sl-menu-label>${this.messages.msg("Single Nodes")}</sl-menu-label>
             <sl-menu-item
               @click=${() => {
                 this.dispatchEvent(
@@ -110,7 +109,7 @@ export class NodeEditorToolbar extends LitElementWw {
               }}
             >
               <sl-icon slot="prefix" src=${file}></sl-icon>
-              ${msg("Page")}
+              ${this.messages.msg("Page")}
             </sl-menu-item>
             <sl-menu-item
               @click=${() => {
@@ -123,7 +122,7 @@ export class NodeEditorToolbar extends LitElementWw {
               }}
             >
               <sl-icon slot="prefix" src=${squares}></sl-icon>
-              ${msg("Popup")}
+              ${this.messages.msg("Popup")}
             </sl-menu-item>
             <sl-menu-item
               @click=${() => {
@@ -136,19 +135,19 @@ export class NodeEditorToolbar extends LitElementWw {
               }}
             >
               <sl-icon slot="prefix" src=${arrowsSplit2}></sl-icon>
-              ${msg("Branch")}
+              ${this.messages.msg("Branch")}
             </sl-menu-item>
             <sl-divider></sl-divider>
             <sl-tooltip hoist placement="left-start">
               <div slot="content">
-                ${msg(html`
+                ${this.messages.msg(html`
                   Inserts a predefined <strong>pattern</strong> of multiple
                   <strong>connected nodes</strong> into the node editor.<br /><br />
                   This allows you to quickly add a structured set of nodes
                   without manual placement.
                 `)}
               </div>
-              <sl-menu-label> ${msg("Multiple Nodes")}</sl-menu-label>
+              <sl-menu-label> ${this.messages.msg("Multiple Nodes")}</sl-menu-label>
             </sl-tooltip>
 
             <sl-menu-item
@@ -163,7 +162,7 @@ export class NodeEditorToolbar extends LitElementWw {
               }}
             >
               <sl-icon slot="prefix" src=${fileArrowRight}></sl-icon>
-              ${msg("Popup to Pages")}
+              ${this.messages.msg("Popup to Pages")}
             </sl-menu-item>
 
             <sl-menu-item
@@ -178,7 +177,7 @@ export class NodeEditorToolbar extends LitElementWw {
               }}
             >
               <sl-icon slot="prefix" src=${messageForward}></sl-icon>
-              ${msg("Popup to Popups")}
+              ${this.messages.msg("Popup to Popups")}
             </sl-menu-item>
 
             <sl-menu-item
@@ -193,7 +192,7 @@ export class NodeEditorToolbar extends LitElementWw {
               }}
             >
               <sl-icon slot="prefix" src=${helpOctagon}></sl-icon>
-              ${msg("Quiz to Branch to Pages")}
+              ${this.messages.msg("Quiz to Branch to Pages")}
               <sl-badge variant="primary" pill slot="suffix">
                 <sl-icon src=${packages}></sl-icon
               ></sl-badge>
@@ -206,7 +205,7 @@ export class NodeEditorToolbar extends LitElementWw {
             this.dispatchEvent(new CustomEvent("clearDialog"));
           }}
         >
-          ${msg("Clear")}
+          ${this.messages.msg("Clear")}
         </sl-button>
       </div>
     `;

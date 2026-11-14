@@ -1,8 +1,8 @@
+import { localizeElement, LocalizedElement } from "../../utils/localization";
 import { html, css } from "lit";
-import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
-import { msg, str, localized } from "@lit/localize";
+import { str } from "@lit/localize";
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import {
@@ -24,8 +24,8 @@ import {
   GamebookEditorState,
 } from "../../utils/gamebook-editor-state-context";
 
-@localized()
-export class NodeConnectionList extends LitElementWw {
+export class NodeConnectionList extends LocalizedElement {
+  protected readonly messages = localizeElement(this);
   @property({ type: Boolean, reflect: true }) accessor output = false;
   @property({ type: Boolean, reflect: true }) accessor input = false;
   @property({ type: Boolean, reflect: true }) accessor branch = false;
@@ -216,7 +216,7 @@ export class NodeConnectionList extends LitElementWw {
       <div class="container">
         <div class="titlebar">
           <p>
-            ${msg(
+            ${this.messages.msg(
               str`Outputs (${
                 Object.keys(this.editorStore.selectedNode.outputs).length
               })`
@@ -275,11 +275,11 @@ export class NodeConnectionList extends LitElementWw {
       </div>
 
       <sl-dialog
-        label=${msg("Delete Output")}
+        label=${this.messages.msg("Delete Output")}
         class="dialog"
         id="delete_output_dialog"
       >
-        ${msg(
+        ${this.messages.msg(
           str`You are about to delete ${this.deleteOutputClass} which has an outgoing connection. Do you wish to proceed?`
         )}
         <sl-button
@@ -319,7 +319,7 @@ export class NodeConnectionList extends LitElementWw {
       <div class="container">
         <div class="titlebar">
           <p>
-            ${msg(
+            ${this.messages.msg(
               str`Incoming (${
                 this.editorStore.selectedNode?.inputs["input_1"]?.connections
                   .length ?? 0
@@ -405,7 +405,7 @@ export class NodeConnectionList extends LitElementWw {
     return html`
       <div class="container">
         <div class="titlebar">
-          <p>${msg("Accessing")}</p>
+          <p>${this.messages.msg("Accessing")}</p>
         </div>
         <div class="verticalStack">
           ${length > 0
@@ -474,7 +474,7 @@ export class NodeConnectionList extends LitElementWw {
               )}`
             : html` <div class="container">
                 <p class="no-node-message">
-                  ${msg(
+                  ${this.messages.msg(
                     " Connect a node to create rules based on its content!"
                   )}
                 </p>

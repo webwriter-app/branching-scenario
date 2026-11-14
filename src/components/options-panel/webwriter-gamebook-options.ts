@@ -1,7 +1,7 @@
+import { localizeElement, LocalizedElement } from "../../utils/localization";
 import { html, css, LitElement, PropertyValues } from "lit";
 import { provide, consume, createContext } from "@lit/context";
 
-import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 import search from "@tabler/icons/outline/search.svg";
@@ -23,7 +23,6 @@ import {
 //Drawflow Imports
 import Drawflow, { DrawflowNode } from "drawflow";
 
-import { msg, localized } from "@lit/localize";
 
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -43,8 +42,8 @@ import {
   SlTooltip,
 } from "@shoelace-style/shoelace";
 
-@localized()
-export class WebWriterGamebookOptions extends LitElementWw {
+export class WebWriterGamebookOptions extends LocalizedElement {
+  protected readonly messages = localizeElement(this);
   static get styles() {
     return css`
       .author-only {
@@ -160,7 +159,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
 
         <sl-tooltip hoist placement="right-end">
           <div slot="content">
-            ${msg(html`
+            ${this.messages.msg(html`
               Use the <strong>search bar</strong> to find nodes by
               <strong>title</strong>, <strong>type</strong>, and
               <strong>content</strong>. <br /><br />
@@ -173,7 +172,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
             <sl-input
               slot="trigger"
               id="searchInput"
-              placeholder=${msg("Search Nodes...")}
+              placeholder=${this.messages.msg("Search Nodes...")}
               clearable
               @sl-input=${this._handleNodeSearch}
               @keydown=${this._handleInputKeydown}
@@ -205,7 +204,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
               this.editorStore.setCopiedNode(this.editorStore.selectedNode)}
             ?disabled=${this.editorStore.selectedNode.id === -1}
           >
-            ${msg("Copy")}
+            ${this.messages.msg("Copy")}
           </sl-button>
 
           <sl-button
@@ -219,7 +218,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
               )}
             ?disabled=${this.editorStore.copiedNode.id === -1}
           >
-            ${msg("Paste")}
+            ${this.messages.msg("Paste")}
           </sl-button>
 
           <sl-button
@@ -240,22 +239,22 @@ export class WebWriterGamebookOptions extends LitElementWw {
                 ${this.editorStore.selectedNode.class == "page"
                   ? html`
                       <sl-icon src=${file}></sl-icon>
-                      <p>${msg("Page")}</p>
+                      <p>${this.messages.msg("Page")}</p>
                     `
                   : this.editorStore.selectedNode.class == "origin"
                   ? html`
                       <sl-icon src=${file}></sl-icon>
-                      <p>${msg("Start Page")}</p>
+                      <p>${this.messages.msg("Start Page")}</p>
                     `
                   : this.editorStore.selectedNode.class == "popup"
                   ? html`
                       <sl-icon src=${squares}></sl-icon>
-                      <p>${msg("Popup")}</p>
+                      <p>${this.messages.msg("Popup")}</p>
                     `
                   : this.editorStore.selectedNode.class == "branch"
                   ? html`
                       <sl-icon src=${arrowsSplit2}></sl-icon>
-                      <p>${msg("Branch")}</p>
+                      <p>${this.messages.msg("Branch")}</p>
                     `
                   : null}
               </div>
@@ -272,7 +271,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
                         : false}
                     >
                       <sl-icon src=${circleArrowRight} slot="prefix"></sl-icon>
-                      ${msg("Set as Start Page")}
+                      ${this.messages.msg("Set as Start Page")}
                     </sl-button>
                   `
                 : null}
@@ -283,7 +282,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
                         src="${infoSquareRounded}"
                         style="vertical-align: middle; margin: 1px;"
                       ></sl-icon>
-                      ${msg(
+                      ${this.messages.msg(
                         "Create rules to guide how your gamebook progresses. The first rule that applies will be used."
                       )}
                     </p>
@@ -292,7 +291,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
                         src="${packages}"
                         style="vertical-align: middle; margin: 1px;"
                       ></sl-icon>
-                      ${msg("Requires")}
+                      ${this.messages.msg("Requires")}
                       <a
                         href="https://webwriter.app/packages/@webwriter/quiz/"
                         target="https://webwriter.app/packages/@webwriter/quiz/"
@@ -311,7 +310,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
                       @sl-input=${(event) =>
                         this.handleSwitchPreventClosing(event)}
                     >
-                      ${msg("Prevent Closing")}
+                      ${this.messages.msg("Prevent Closing")}
                     </sl-switch>
                     <sl-switch
                       style="padding-left: 5px;"
@@ -320,7 +319,7 @@ export class WebWriterGamebookOptions extends LitElementWw {
                         : true}
                       @sl-input=${(event) => this.handleSwitchNoHeader(event)}
                     >
-                      ${msg("Header")}
+                      ${this.messages.msg("Header")}
                     </sl-switch>
                   `
                 : null}

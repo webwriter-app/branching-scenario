@@ -1,3 +1,4 @@
+import { localizeElement } from "../../utils/localization";
 import { html, css, LitElement, PropertyValues } from "lit";
 import { customElement, property, state, query } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -25,10 +26,9 @@ import packages from "@tabler/icons/outline/packages.svg";
 import { WebWriterGamebookPage } from "../../widgets/webwriter-gamebook-page/webwriter-gamebook-page.component";
 import { WebWriterGamebookPopup } from "../../widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.component";
 
-import { msg, localized } from "@lit/localize";
 
-@localized()
 export class WebWriterQuizSelect extends LitElement {
+  protected readonly messages = localizeElement(this);
   @property({ type: Object }) accessor container;
   @property({ type: Object }) accessor options = [];
   @property({ type: String }) accessor value;
@@ -101,7 +101,7 @@ export class WebWriterQuizSelect extends LitElement {
         placement="bottom"
         hoist
         class="nodeSelect"
-        placeholder=${msg("Select element")}
+        placeholder=${this.messages.msg("Select element")}
         clearable
         .value=${this.value}
         @sl-input=${this._handleElementSelect}

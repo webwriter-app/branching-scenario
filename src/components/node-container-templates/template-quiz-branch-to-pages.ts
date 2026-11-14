@@ -116,19 +116,9 @@ export const templateQuizBranchToPages = {
         { name: "drawflownodeid", value: "3" },
         { name: "pagetitle", value: "Untitled Branch" },
         { name: "incomingcontainerid", value: "2" },
-        {
-          name: "rules",
-          value:
-            '[{"output_id":"output_1","elementId":"ww-c246dffc-d87a-4f36-a314-d49fe0adfbf0","quizTasks":"ww-2959750b-0180-4eaf-af4c-43afd35766ab","condition":"correct","match":"100","target":5,"isConditionEnabled":true,"isMatchEnabled":true,"isTargetEnabled":true}]',
-        },
         { name: "contenteditable", value: "" },
-        {
-          name: "elserule",
-          value:
-            '{"output_id":"output_2","elementId":"","quizTasks":"","condition":"","match":"","target":6,"isConditionEnabled":false,"isMatchEnabled":false,"isTargetEnabled":false}',
-        },
       ],
-      innerHTML: "",
+      innerHTML: "<script type=\"application/json\" slot=\"data\">{\"rules\":[{\"output_id\":\"output_1\",\"elementId\":\"ww-c246dffc-d87a-4f36-a314-d49fe0adfbf0\",\"quizTasks\":\"ww-2959750b-0180-4eaf-af4c-43afd35766ab\",\"condition\":\"correct\",\"match\":\"100\",\"target\":5,\"isConditionEnabled\":true,\"isMatchEnabled\":true,\"isTargetEnabled\":true}],\"elseRule\":{\"output_id\":\"output_2\",\"elementId\":\"\",\"quizTasks\":\"\",\"condition\":\"\",\"match\":\"\",\"target\":6,\"isConditionEnabled\":false,\"isMatchEnabled\":false,\"isTargetEnabled\":false}}</script>",
     },
     {
       tagName: "webwriter-gamebook-popup",

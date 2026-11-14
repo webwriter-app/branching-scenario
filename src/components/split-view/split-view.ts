@@ -1,8 +1,7 @@
+import { localizeElement, LocalizedElement } from "../../utils/localization";
 import { html, css, LitElement, PropertyValues } from "lit";
-import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import { msg, localized } from "@lit/localize";
 
 // Shoelace Imports
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -20,9 +19,9 @@ import {
 
 const DIVIDER_HEIGHT = 30;
 
-@localized()
 @customElement("split-view")
-export class SplitView extends LitElementWw {
+export class SplitView extends LocalizedElement {
+  protected readonly messages = localizeElement(this);
   @property({ type: Number, attribute: true, reflect: true })
   accessor minStart = 230;
   @property({ type: Number, attribute: true, reflect: true })
@@ -290,8 +289,8 @@ export class SplitView extends LitElementWw {
             variant="text"
           >
             ${this.editorStore.editorIsCollapsed
-              ? msg("Expand")
-              : msg("Collapse")}
+              ? this.messages.msg("Expand")
+              : this.messages.msg("Collapse")}
             <sl-icon
               slot="suffix"
               src=${this.editorStore.editorIsCollapsed

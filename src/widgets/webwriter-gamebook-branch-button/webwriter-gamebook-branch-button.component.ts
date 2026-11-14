@@ -1,6 +1,7 @@
+import { localizeElement, LocalizedElement } from "../../utils/localization";
+import { buttonOptions } from "../../utils/button-options";
 import { html, css } from "lit";
 import { property, query } from "lit/decorators.js";
-import { LitElementWw } from "@webwriter/lit";
 
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import {
@@ -23,7 +24,16 @@ import alignCenter from "@tabler/icons/outline/align-center.svg";
 /**
  * Represents a button that is connected to a branch.
  */
-export class WebWriterGamebookBranchButton extends LitElementWw {
+export class WebWriterGamebookBranchButton extends LocalizedElement {
+  private readonly messages = localizeElement(this);
+  constructor() {
+    super();
+    Object.defineProperty(this, "options", { configurable: true, get: () => this.getDrawerOptions() });
+  }
+
+  private getDrawerOptions() { return buttonOptions(this.messages.msg); }
+
+
   /** The identifier of the target node */
   @property({ type: Number, reflect: true }) accessor dataTargetId: number;
 
@@ -139,17 +149,6 @@ export class WebWriterGamebookBranchButton extends LitElementWw {
   }
 
   firstUpdated() {
-    (this.shadowRoot.querySelector("#sizeSelect") as SlSelect).value =
-      this.size;
-    (this.shadowRoot.querySelector("#pillCheckbox") as SlCheckbox).checked =
-      this.pill;
-    (this.shadowRoot.querySelector("#outlineCheckbox") as SlCheckbox).checked =
-      this.outline;
-    (this.shadowRoot.querySelector("#widthRange") as SlRange).value =
-      this.width;
-    (this.shadowRoot.querySelector("#variantSelect") as SlSelect).value =
-      this.variant;
-
     this.addEventListener("mouseover", () => {
       const parsed = this.parseConnectionIdentifier(this.identifier);
       const event = new CustomEvent("hoverButton", {
@@ -183,30 +182,6 @@ export class WebWriterGamebookBranchButton extends LitElementWw {
     });
   }
 
-  private handleSizeChange(e) {
-    this.size = e.target.value;
-  }
-
-  private handlePillChange(e) {
-    this.pill = e.target.checked;
-  }
-
-  private handleOutlineChange(e) {
-    this.outline = e.target.checked;
-  }
-
-  private handleWidthChange(e) {
-    this.width = e.target.value;
-  }
-
-  private handleVariantChange(e) {
-    this.variant = e.target.value;
-  }
-
-  private handleAlignmentChange(alignment) {
-    this.alignment = alignment;
-  }
-
   render() {
     return html`
       <div class="container" style="justify-content: ${this.alignment};">
@@ -224,104 +199,6 @@ export class WebWriterGamebookBranchButton extends LitElementWw {
           <p>${this.name}</p>
         </sl-button>
 
-        <div part="options" class="author-only">
-          <div class="item">
-            <p>Title</p>
-            <sl-input
-              size="small"
-              .value=${this.name}
-              @input=${(e) => (this.name = e.target.value)}
-            ></sl-input>
-          </div>
-          <div class="item">
-            <p>Size</p>
-            <sl-select
-              size="small"
-              id="sizeSelect"
-              @sl-change=${this.handleSizeChange}
-            >
-              <sl-option value="small">Small</sl-option>
-              <sl-option value="medium">Medium</sl-option>
-              <sl-option value="large">Large</sl-option>
-            </sl-select>
-          </div>
-          <div class="item">
-            <p>Variant</p>
-            <sl-select
-              size="small"
-              id="variantSelect"
-              @sl-change=${this.handleVariantChange}
-            >
-              <sl-option value="default">Default</sl-option>
-              <sl-option value="text">Text</sl-option>
-              <sl-option value="primary">Primary</sl-option>
-              <sl-option value="success">Success</sl-option>
-              <sl-option value="neutral">Neutral</sl-option>
-              <sl-option value="warning">Warning</sl-option>
-              <sl-option value="danger">Danger</sl-option>
-            </sl-select>
-          </div>
-          <div
-            style="display: flex; gap: 5px; align-items: center; justify-content: flex-start;"
-          >
-            <p style="margin-right: auto;">Pill</p>
-            <sl-checkbox id="pillCheckbox" @sl-change=${this.handlePillChange}>
-            </sl-checkbox>
-          </div>
-          <div
-            style="display: flex; gap: 5px; align-items: center; justify-content: flex-start;"
-          >
-            <p style="margin-right: auto;">Outline</p>
-            <sl-checkbox
-              id="outlineCheckbox"
-              @sl-change=${this.handleOutlineChange}
-            >
-            </sl-checkbox>
-          </div>
-          <div class="item">
-            <div
-              style="display: flex; gap: 5px; align-items: center; justify-content: flex-start; padding: 0px; margin: 0px;"
-            >
-              <p style="margin-right: auto;">Width</p>
-              <p style="font-weight: 300;">${this.width}%</p>
-            </div>
-            <sl-range
-              size="small"
-              id="widthRange"
-              min="10"
-              max="100"
-              tooltip="none"
-              value=${this.width}
-              @input=${this.handleWidthChange}
-              style="--thumb-size: 17px;"
-            ></sl-range>
-          </div>
-          <div
-            style="display: flex; gap: 5px; align-items: center; justify-content: flex-start; padding: 0px; margin: 0px; flex-direction: column;"
-          >
-            <p style="margin-right: auto;">Alignment</p>
-            <sl-button-group style="width: 100%">
-              <sl-button
-                class=${this.alignment === "flex-start" ? "active" : ""}
-                @click=${() => this.handleAlignmentChange("flex-start")}
-              >
-                <sl-icon slot="prefix" src=${alignLeft}></sl-icon>
-              </sl-button>
-              <sl-button
-                class=${this.alignment === "center" ? "active" : ""}
-                @click=${() => this.handleAlignmentChange("center")}
-              >
-                <sl-icon slot="prefix" src=${alignCenter}></sl-icon>
-              </sl-button>
-              <sl-button
-                class=${this.alignment === "flex-end" ? "active" : ""}
-                @click=${() => this.handleAlignmentChange("flex-end")}
-              >
-                <sl-icon slot="prefix" src=${alignRight}></sl-icon>
-              </sl-button>
-            </sl-button-group>
-          </div>
-        </div>
       </div>
     `;
   }

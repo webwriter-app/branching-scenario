@@ -252,9 +252,12 @@ export class GamebookEditorState {
 
     if (key === "editorContent") {
       if (value) {
-        Object.values(value.drawflow.Home.data).forEach((node) => {
-          delete (node as DrawflowNode).html;
-        });
+        const home = value.drawflow.Home;
+        const data = Object.fromEntries(Object.entries(home.data).map(([id, node]) => {
+          const { html, ...authored } = node as DrawflowNode;
+          return [id, authored];
+        }));
+        return { ...value, drawflow: { ...value.drawflow, Home: { ...home, data } } };
       }
     }
     // Handle other cyclic structures or return value as is

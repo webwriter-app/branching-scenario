@@ -576,6 +576,8 @@ export class WebWriterGamebookViewer extends LitElementWw {
       (container) => container.getAttribute("originPage") == 1
     );
 
+    if (!originPageContainer) return -1;
+
     this.pageTitle = originPageContainer.pageTitle;
 
     this.gamebookContainers.forEach((container) => {
@@ -597,6 +599,8 @@ export class WebWriterGamebookViewer extends LitElementWw {
     const container = this.gamebookContainers.find(
       (container) => container.getAttribute("drawflowNodeId") == containerId
     );
+
+    if (!container) return;
 
     //initialise the elements on the origin page
     container.buttons.forEach((button) => {

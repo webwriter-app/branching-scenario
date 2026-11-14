@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file target-language="tk" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="s26d236d09a66a620">
+  <source>Rules</source>
+<target>Düzgünler</target></trans-unit>
+<trans-unit id="sd0182c6d73eaa2be">
+  <source>Condition</source>
+<target>Şert</target></trans-unit>
+<trans-unit id="sad9ce781382a9f6e">
+  <source>If no rule is satisfied, go to</source>
+<target>Hiç bir düzgün ýerine ýetirilmese, şu ýere geçiň</target></trans-unit>
+<trans-unit id="s524638d3ef766239">
+  <source>No branching rules</source>
+<target>Şahalanma düzgüni ýok</target></trans-unit>
+<trans-unit id="sfc63e31ac7c956ed">
+  <source>Select</source>
+<target>Saýlaň</target></trans-unit>
+<trans-unit id="s51cf605b81d7c915">
+  <source>Drag Connection</source>
+<target>Baglanyşygy süýşüriň</target></trans-unit>
+<trans-unit id="sdc673e73b5c13aea">
+  <source>Delete</source>
+<target>Poz</target></trans-unit>
+<trans-unit id="s081de6398e897576">
+  <source>Zoom In/Out</source>
+<target>Ýakynlaşdyr/Uzaklaşdyr</target></trans-unit>
+<trans-unit id="s0bdca49248ba4820">
+  <source>Shortcuts</source>
+<target>Gysga düwmeler</target></trans-unit>
+<trans-unit id="s443fac2814907e18">
+  <source>Outputs (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}" />)</source>
+<target>Çykyşlar (<x id="0" equiv-text="${Object.keys(this.editorStore.selectedNode.outputs).length}" />)</target></trans-unit>
+<trans-unit id="s57f8d0db44da6177">
+  <source>Delete Output</source>
+<target>Çykyşy poz</target></trans-unit>
+<trans-unit id="sa805b1e63ef896e4">
+  <source>You are about to delete <x id="0" equiv-text="${this.deleteOutputClass}" /> which has an outgoing connection. Do you wish to proceed?</source>
+<target>Çykyş baglanyşygy bolan <x id="0" equiv-text="${this.deleteOutputClass}" /> elementi pozjak bolýarsyňyz. Dowam etmek isleýärsiňizmi?</target></trans-unit>
+<trans-unit id="s5fc4562bab5298a4">
+  <source>Incoming (<x id="0" equiv-text="${this.editorStore.selectedNode?.inputs[&quot;input_1&quot;]?.connections&#10;    .length ?? 0}" />)</source>
+<target>Girişler (<x id="0" equiv-text="${this.editorStore.selectedNode?.inputs[&quot;input_1&quot;]?.connections&#10;    .length ?? 0}" />)</target></trans-unit>
+<trans-unit id="s09134f2a8084426d">
+  <source>Accessing</source>
+<target>Girýär</target></trans-unit>
+<trans-unit id="s0c17144a11b9576e">
+  <source> Connect a node to create rules based on its content!</source>
+<target>Mazmunyna esaslanýan düzgünleri döretmek üçin düwüni birikdiriň!</target></trans-unit>
+<trans-unit id="s5c17e8980e6b5b18">
+  <source>Click on a node to view its content</source>
+<target>Mazmunyny görmek üçin düwne basyň</target></trans-unit>
+<trans-unit id="scda086c697995b38">
+  <source>The content of this node cannot be found.</source>
+<target>Bu düwüniň mazmunyny tapyp bolmady.</target></trans-unit>
+<trans-unit id="s748c82bdc348610f">
+  <source>If reloading does not solve this issue, try recreating the node.</source>
+<target>Gaýtadan ýüklemek meseläni çözmese, düwüni täzeden döretmäge synanyşyň.</target></trans-unit>
+<trans-unit id="sad79fd47752866d8">
+  <source>Recreate node</source>
+<target>Düwüni täzeden dörediň</target></trans-unit>
+<trans-unit id="sf9aee319a006c9b4">
+  <source>Add</source>
+<target>Goş</target></trans-unit>
+<trans-unit id="s5f2f575fee43e7f8">
+  <source>Single Nodes</source>
+<target>Aýratyn düwünler</target></trans-unit>
+<trans-unit id="h7eb8e051be10e053">
+  <source>
+                  Inserts a predefined <x id="0" equiv-text="&lt;strong&gt;" />pattern<x id="1" equiv-text="&lt;/strong&gt;" /> of multiple
+                  <x id="2" equiv-text="&lt;strong&gt;" />connected nodes<x id="3" equiv-text="&lt;/strong&gt;" /> into the node editor.<x id="4" equiv-text="&lt;br&gt;&lt;br&gt;" />
+                  This allows you to quickly add a structured set of nodes
+                  without manual placement.
+                </source>
+<target>
+                  Öňünden kesgitlenen <x id="0" equiv-text="&lt;strong&gt;" />nusgany<x id="1" equiv-text="&lt;/strong&gt;" />, birnäçe
+                  <x id="2" equiv-text="&lt;strong&gt;" />birikdirilen düwüni<x id="3" equiv-text="&lt;/strong&gt;" /> düwün redaktoryna goýuň.<x id="4" equiv-text="&lt;br&gt;&lt;br&gt;" />
+                  Bu düwünleri el bilen ýerleşdirmän, tertipli topary
+                  çalt goşmaga mümkinçilik berýär.
+                </target></trans-unit>
+<trans-unit id="s6abd1339f5659d50">
+  <source>Multiple Nodes</source>
+<target>Birnäçe düwün</target></trans-unit>
+<trans-unit id="s7984347f31306aca">
+  <source>Popup to Pages</source>
+<target>Açylýan penjireden sahypalara</target></trans-unit>
+<trans-unit id="s7f747127243108b9">
+  <source>Popup to Popups</source>
+<target>Açylýan penjireden açylýan penjirelere</target></trans-unit>
+<trans-unit id="s7e617fb8024f45f4">
+  <source>Quiz to Branch to Pages</source>
+<target>Wiktorinadan şaha, soň sahypalara</target></trans-unit>
+<trans-unit id="sb4f1dffbb6be6302">
+  <source>Clear</source>
+<target>Arassala</target></trans-unit>
+<trans-unit id="s42657469b069bee8">
+  <source>First Page</source>
+<target>Ilkinji sahypa</target></trans-unit>
+<trans-unit id="sd1c592ccade3cd3c">
+  <source>Jump to origin node</source>
+<target>Başlangyç düwne geç</target></trans-unit>
+<trans-unit id="sac7bd907d39a570e">
+  <source>Clear Graph</source>
+<target>Grafigi arassala</target></trans-unit>
+<trans-unit id="sd8c7b6a9132e593b">
+  <source>Do you want to clear the graph? All your progress will be lost.</source>
+<target>Grafigi arassalamak isleýärsiňizmi? Ähli ösüşiňiz ýiter.</target></trans-unit>
+<trans-unit id="s2ceb11be2290bb1b">
+  <source>Cancel</source>
+<target>Ýatyr</target></trans-unit>
+<trans-unit id="sd9bdfc0f95188eea">
+  <source>Delete node</source>
+<target>Düwüni poz</target></trans-unit>
+<trans-unit id="sf80fa7d9bacf0a78">
+  <source>You are about to delete the node <x id="0" equiv-text="${this.editorStore.selectedNode.data.title}" />.  Do you want to proceed?</source>
+<target><x id="0" equiv-text="${this.editorStore.selectedNode.data.title}" /> düwünini pozjak bolýarsyňyz. Dowam etmek isleýärsiňizmi?</target></trans-unit>
+<trans-unit id="s0491e53d9de2e899">
+  <source>Abort</source>
+<target>Bes et</target></trans-unit>
+<trans-unit id="sb89f410de72cb268">
+  <source>Adding Node</source>
+<target>Düwün goşulýar</target></trans-unit>
+<trans-unit id="s03acb46b5470e0c9">
+  <source>Give your new</source>
+<target>Täze düwniňize at beriň</target></trans-unit>
+<trans-unit id="s0b52f3ea315aa9be">
+  <source>Page node</source>
+<target>sahypa düwüni</target></trans-unit>
+<trans-unit id="sdc3d2121c3bc5907">
+  <source>Popup node</source>
+<target>açylýan penjire düwüni</target></trans-unit>
+<trans-unit id="s487473fdf35474ff">
+  <source>Branch node</source>
+<target>şaha düwüni</target></trans-unit>
+<trans-unit id="s629e3dc56b1d35e9">
+  <source>a title!</source>
+<target>!</target></trans-unit>
+<trans-unit id="s6fd70a9a8c6d8355">
+  <source>Untitled Page <x id="0" equiv-text="${this.pagesAdded}" /></source>
+<target>Ady ýok sahypa <x id="0" equiv-text="${this.pagesAdded}" /></target></trans-unit>
+<trans-unit id="s9e1a091f1c7c53b0">
+  <source>Untitled Popup <x id="0" equiv-text="${this.popupsAdded}" /></source>
+<target>Ady ýok açylýan penjire <x id="0" equiv-text="${this.popupsAdded}" /></target></trans-unit>
+<trans-unit id="s1a30b9a78d158c62">
+  <source>Untitled Branch <x id="0" equiv-text="${this.branchesAdded}" /></source>
+<target>Ady ýok şaha <x id="0" equiv-text="${this.branchesAdded}" /></target></trans-unit>
+<trans-unit id="s801ca3f7c573aebd">
+  <source>Not connected</source>
+<target>Birikdirilmedik</target></trans-unit>
+<trans-unit id="s291e8cf07019837e">
+  <source>Search Nodes...</source>
+<target>Düwünleri gözle...</target></trans-unit>
+<trans-unit id="s603d69217de4e83b">
+  <source>No nodes found</source>
+<target>Düwün tapylmady</target></trans-unit>
+<trans-unit id="s6ac0c20ddc5c15ff">
+  <source>Pages</source>
+<target>Sahypalar</target></trans-unit>
+<trans-unit id="sc7aeb596f1dcb1bd">
+  <source>Popup</source>
+<target>Açylýan penjire</target></trans-unit>
+<trans-unit id="s7a07940a2b62f185">
+  <source>Branch</source>
+<target>Şaha</target></trans-unit>
+<trans-unit id="h753ba5217e074fe6">
+  <source>
+              Use the <x id="0" equiv-text="&lt;strong&gt;" />search bar<x id="1" equiv-text="&lt;/strong&gt;" /> to find nodes by
+              <x id="2" equiv-text="&lt;strong&gt;" />title<x id="3" equiv-text="&lt;/strong&gt;" />, <x id="4" equiv-text="&lt;strong&gt;" />type<x id="5" equiv-text="&lt;/strong&gt;" />, and
+              <x id="6" equiv-text="&lt;strong&gt;" />content<x id="7" equiv-text="&lt;/strong&gt;" />. <x id="8" equiv-text="&lt;br&gt;&lt;br&gt;&#10;              &lt;em&gt;" />Tip:<x id="9" equiv-text="&lt;/em&gt;" /> Clicking the search bar will display a
+              <x id="10" equiv-text="&lt;strong&gt;" />list of all nodes<x id="11" equiv-text="&lt;/strong&gt;" />. Click on any node in the list
+              to <x id="12" equiv-text="&lt;strong&gt;" />select it in the node editor<x id="13" equiv-text="&lt;/strong&gt;" />.
+            </source>
+<target>
+              Düwünleri <x id="0" equiv-text="&lt;strong&gt;" />gözleg setiri<x id="1" equiv-text="&lt;/strong&gt;" /> arkaly
+              <x id="2" equiv-text="&lt;strong&gt;" />ady<x id="3" equiv-text="&lt;/strong&gt;" />, <x id="4" equiv-text="&lt;strong&gt;" />görnüşi<x id="5" equiv-text="&lt;/strong&gt;" /> we
+              <x id="6" equiv-text="&lt;strong&gt;" />mazmuny<x id="7" equiv-text="&lt;/strong&gt;" /> boýunça tapyň. <x id="8" equiv-text="&lt;br&gt;&lt;br&gt;&#10;              &lt;em&gt;" />Maslahat:<x id="9" equiv-text="&lt;/em&gt;" /> gözleg setirine basanyňyzda
+              <x id="10" equiv-text="&lt;strong&gt;" />ähli düwünleriň sanawy<x id="11" equiv-text="&lt;/strong&gt;" /> görkeziler. Sanawdaky islendik düwne basyp ony
+              <x id="12" equiv-text="&lt;strong&gt;" />düwün redaktorynda saýlaň<x id="13" equiv-text="&lt;/strong&gt;" />.
+            </target></trans-unit>
+<trans-unit id="s3687049d1af562c4">
+  <source>Copy</source>
+<target>Göçür</target></trans-unit>
+<trans-unit id="sd374c80e17e18808">
+  <source>Paste</source>
+<target>Ýelme</target></trans-unit>
+<trans-unit id="s2e192b19ed15fcf6">
+  <source>Page</source>
+<target>Sahypa</target></trans-unit>
+<trans-unit id="s060e481b4a246a3e">
+  <source>Start Page</source>
+<target>Başlangyç sahypa</target></trans-unit>
+<trans-unit id="sb5a5848245f9e0e8">
+  <source>Set as Start Page</source>
+<target>Başlangyç sahypa hökmünde belle</target></trans-unit>
+<trans-unit id="secf2ae437afa81c6">
+  <source>Create rules to guide how your gamebook progresses. The first rule that applies will be used.</source>
+<target>Oýun-kitabyňyzyň ösüşini ugrukdyrmak üçin düzgünleri dörediň. Ilkinji gabat gelýän düzgün ulanylar.</target></trans-unit>
+<trans-unit id="sae5d9ee99fe0a8f5">
+  <source>Requires</source>
+<target>Talap edýär</target></trans-unit>
+<trans-unit id="s5b01e19e4efa5a9e">
+  <source>Prevent Closing</source>
+<target>Ýapylmagynyň öňüni al</target></trans-unit>
+<trans-unit id="s75d83fc3f0cfab40">
+  <source>Header</source>
+<target>Ýokarky sözbaşy</target></trans-unit>
+<trans-unit id="s7aaa8587048ed4d9">
+  <source>Select element</source>
+<target>Element saýla</target></trans-unit>
+<trans-unit id="s3b151ca64eb26ec1">
+  <source>Expand</source>
+<target>Giňelt</target></trans-unit>
+<trans-unit id="s4993444bfd3f3e5e">
+  <source>Collapse</source>
+<target>Daralt</target></trans-unit>
+<trans-unit id="s46d93e3b43f99a6f">
+  <source>Untitled Gamebook</source>
+<target>Ady ýok oýun kitaby</target></trans-unit>
+<trans-unit id="s54faffd0f371b98d">
+  <source>Scenario options</source>
+<target>Ssenariý opsiýalary</target></trans-unit>
+<trans-unit id="s5e8250fb85d64c23">
+  <source>Close</source>
+<target>Ýap</target></trans-unit>
+<trans-unit id="s5f7ab55b6ba8729c">
+  <source>Write something here...</source>
+<target>Bu ýere bir zat ýazyň...</target></trans-unit>
+<trans-unit id="s99f110d27e30b289">
+  <source>Title</source>
+<target>At</target></trans-unit>
+<trans-unit id="s78789724e789221c">
+  <source>Size</source>
+<target>Ölçeg</target></trans-unit>
+<trans-unit id="s3d2cc8d952adebec">
+  <source>Small</source>
+<target>Kiçi</target></trans-unit>
+<trans-unit id="sac6bdc71f750ac96">
+  <source>Medium</source>
+<target>Orta</target></trans-unit>
+<trans-unit id="sc8736ef79380e634">
+  <source>Large</source>
+<target>Uly</target></trans-unit>
+<trans-unit id="sbcabce7030eb33c6">
+  <source>Variant</source>
+<target>Görnüş</target></trans-unit>
+<trans-unit id="s11326fd2590f4e5e">
+  <source>Default</source>
+<target>Bellenen</target></trans-unit>
+<trans-unit id="s2492f5fb1b05b45e">
+  <source>Text</source>
+<target>Tekst</target></trans-unit>
+<trans-unit id="se14ede3bc78d9599">
+  <source>Primary</source>
+<target>Esasy</target></trans-unit>
+<trans-unit id="s92a0d19a28995530">
+  <source>Success</source>
+<target>Üstünlik</target></trans-unit>
+<trans-unit id="sc3e93c5b2fd1e0d8">
+  <source>Neutral</source>
+<target>Bitarap</target></trans-unit>
+<trans-unit id="s34be76c6b1eadbef">
+  <source>Warning</source>
+<target>Duýduryş</target></trans-unit>
+<trans-unit id="s5183765fa43d93ee">
+  <source>Danger</source>
+<target>Howp</target></trans-unit>
+<trans-unit id="scf43f04b26b0197a">
+  <source>Rounded</source>
+<target>Tegelek</target></trans-unit>
+<trans-unit id="s19daf2f26c19543d">
+  <source>Outline</source>
+<target>Kontur</target></trans-unit>
+<trans-unit id="sf21fb4f4b9e8911f">
+  <source>Width</source>
+<target>Ini</target></trans-unit>
+<trans-unit id="sdf9bc5d9b7f3e3de">
+  <source>Alignment</source>
+<target>Deňlemek</target></trans-unit>
+<trans-unit id="sa5c371b4bb75e590">
+  <source>Left</source>
+<target>Çep</target></trans-unit>
+<trans-unit id="sb38d497d992ab4a4">
+  <source>Center</source>
+<target>Merkez</target></trans-unit>
+<trans-unit id="s366991b9c9287765">
+  <source>Right</source>
+<target>Sag</target></trans-unit>
+<trans-unit id="scb05d5ab1e8e2844">
+  <source>Page title</source>
+<target>Sahypanyň ady</target></trans-unit>
+<trans-unit id="s3c15568f5662789b">
+  <source>Dialog title</source>
+<target>Dialogyň ady</target></trans-unit>
+<trans-unit id="s9b074ca77eff1ffc">
+  <source>Hide dialog header</source>
+<target>Dialogyň ýokarky sözbaşysyny gizle</target></trans-unit>
+</body>
+</file>
+</xliff>

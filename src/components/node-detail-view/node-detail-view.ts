@@ -1,7 +1,6 @@
+import { localizeElement, LocalizedElement } from "../../utils/localization";
 import { html, css, LitElement, unsafeCSS } from "lit";
-import { LitElementWw } from "@webwriter/lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { msg, localized } from "@lit/localize";
 import { PageNodeDetailView } from "../page-node-detail-view/page-node-detail-view";
 import { BranchNodeDetailView } from "../branch-node-detail-view/branch-node-detail-view";
 import { provide, consume, createContext } from "@lit/context";
@@ -23,8 +22,8 @@ import { NodeConnectionList } from "../node-connection-list/node-connection-list
 //Tabler Icon Import
 import fileUnknown from "@tabler/icons/outline/file-unknown.svg";
 
-@localized()
-export class NodeDetailsView extends LitElementWw {
+export class NodeDetailsView extends LocalizedElement {
+  protected readonly messages = localizeElement(this);
   static get scopedElements() {
     return {
       "page-node-detail-view": PageNodeDetailView,
@@ -100,7 +99,7 @@ export class NodeDetailsView extends LitElementWw {
           </div>`
         : html`
             <div class="no-node-selected">
-              <p>${msg("Click on a node to view its content")}</p>
+              <p>${this.messages.msg("Click on a node to view its content")}</p>
               <slot></slot>
             </div>
           `}
@@ -111,13 +110,13 @@ export class NodeDetailsView extends LitElementWw {
     return html`<div class="no-node-selected node-not-found">
       <sl-icon src=${fileUnknown}></sl-icon>
       <p>
-        ${msg("The content of this node cannot be found.")}<br />
-        ${msg(
+        ${this.messages.msg("The content of this node cannot be found.")}<br />
+        ${this.messages.msg(
           "If reloading does not solve this issue, try recreating the node."
         )}
       </p>
       <sl-button variant="default" @click=${this.handleRecreateNode}>
-        ${msg("Recreate node")}
+        ${this.messages.msg("Recreate node")}
       </sl-button>
       <slot></slot>
     </div>`;
