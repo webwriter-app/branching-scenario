@@ -10,6 +10,7 @@
     "webwriter-widget",
     "widget-presentational",
     "widget-practical",
+    "widget-testable",
     "isced2011-1",
     "isced2011-2",
     "isced2011-3",
@@ -143,7 +144,7 @@
   "license": "MIT",
   "author": "Andreas Dymek",
   "scripts": {
-    "prepublishOnly": "npx @webwriter/build",
+    "prepublishOnly": "npx @webwriter/build && esbuild tests/reader.js --bundle --minify --format=esm --target=es2022 --loader:.svg=dataurl --outfile=dist/tests/reader.js",
     "dev": "npx @webwriter/build dev",
     "localize": "lit-localize extract && npx @webwriter/build localize && lit-localize build"
   },
@@ -163,7 +164,8 @@
     "@webwriter/build": "^1.13.1",
     "@lit/localize-tools": "^0.8.2",
     "@types/drawflow": "^0.0.12",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "esbuild": "0.28.2"
   },
   "exports": {
     "./widgets/webwriter-branching-scenario.*": {
@@ -190,6 +192,10 @@
     "./widgets/webwriter-gamebook-popup.*": {
       "source": "./src/widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.ts",
       "default": "./dist/widgets/webwriter-gamebook-popup.*"
+    },
+    "./tests/reader.*": {
+      "source": "./tests/reader.js",
+      "default": "./dist/tests/reader.*"
     },
     "./package.json": "./package.json",
     "./icon": "./icon.svg",

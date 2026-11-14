@@ -6,23 +6,12 @@ export default css`
   }
 
   :host {
+    --gamebook-choice-pointer-events: auto;
+    display: block;
+    position: relative;
     width: 100%;
-    height: fit-content;
     box-sizing: border-box;
     overflow: hidden;
-  }
-
-  .gamebook {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Center items vertically */
-    gap: 0px;
-    //-webkit-box-shadow: 0 2px 20px 2px #d0d0d0;
-    //box-shadow: 0 2px 20px 2px #d0d0d0;
-
-    box-sizing: border-box;
-    width: 100%;
     border: 1px solid #e4e4e4;
   }
 
@@ -100,9 +89,9 @@ export default css`
     z-index: 1; /* Ensure content in page appears above the overlay */
   }
 
-  webwriter-gamebook-popup {
-    position: unset !important; /* Use !important to override any inline styles */
-  }
+  .page[data-popup-open] { overflow-y: hidden; }
+
+  ::slotted(webwriter-gamebook-popup) { position: static !important; }
 
   .overlay {
     position: absolute; /* To overlay the .page div */

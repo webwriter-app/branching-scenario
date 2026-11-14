@@ -192,7 +192,7 @@ export class NodeEditor extends LocalizedElement {
     if (this.editorStore.editorContent == null) {
       this.addPageNode(this.messages.msg("First Page"), true);
     } else {
-      let editorContent = this.addHTMLToNodes(this.editorStore.editorContent);
+      const editorContent = this.addHTMLToNodes(structuredClone(this.editorStore.editorContent));
       this.editor.import(editorContent);
       if (this.editorStore.selectedNode.id !== -1) {
         this.programaticallySelectNode(
@@ -223,40 +223,6 @@ export class NodeEditor extends LocalizedElement {
   /*
 
   */
-  connectedCallback() {
-    super.connectedCallback();
-    this.shadowRoot?.addEventListener("mousemove", this.onMouseMove.bind(this));
-    this.shadowRoot?.addEventListener("mousedown", this.onMouseDown.bind(this));
-    this.shadowRoot?.addEventListener("mouseup", this.onMouseUp.bind(this));
-    this.shadowRoot?.addEventListener(
-      "mouseleave",
-      this.onMouseLeave.bind(this)
-    );
-  }
-
-  /*
-
-  */
-  disconnectedCallback() {
-    this.shadowRoot?.removeEventListener(
-      "mousemove",
-      this.onMouseMove.bind(this)
-    );
-    this.shadowRoot?.removeEventListener(
-      "mousedown",
-      this.onMouseDown.bind(this)
-    );
-    this.shadowRoot?.removeEventListener("mouseup", this.onMouseUp.bind(this));
-    this.shadowRoot?.removeEventListener(
-      "mouseleave",
-      this.onMouseLeave.bind(this)
-    );
-    super.disconnectedCallback();
-  }
-
-  /*
-
-  */
   render() {
     const gridStyles = {
       backgroundPosition: `${this.backgroundTranslateX}px ${this.backgroundTranslateY}px`,
@@ -266,7 +232,8 @@ export class NodeEditor extends LocalizedElement {
     };
 
     return html`
-      <div id="nodeEditor">
+      <div id="nodeEditor" @mousemove=${this.onMouseMove}
+        @mousedown=${this.onMouseDown} @mouseup=${this.onMouseUp} @mouseleave=${this.onMouseLeave}>
         <node-editor-toolbar
           @addPageNode=${(e: CustomEvent) => {
             this.preAddPageNode();
@@ -470,8 +437,8 @@ export class NodeEditor extends LocalizedElement {
   private onMouseDown(event: MouseEvent) {
     //console.log(event);
     if (
-      (event.target as HTMLElement).classList.contains("drawflow") ||
-      (event.target as HTMLElement).id === "drawflowEditorDiv"
+      event.target instanceof HTMLElement &&
+      event.target.matches(".drawflow, #drawflowEditorDiv")
     ) {
       this.backgroundIsDragging = true;
       this.backgroundLastX = event.clientX;

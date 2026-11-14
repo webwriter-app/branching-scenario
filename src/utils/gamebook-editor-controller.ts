@@ -38,12 +38,7 @@ export class GamebookEditorController implements ReactiveController {
     this.mutationObserver = new MutationObserver(
       this.monitorHostUserContainerDeletion
     );
-    const config = {
-      attributes: true,
-      childList: true,
-      subtree: false,
-      characterData: false,
-    };
+    const config = { childList: true };
     // Start observing the target node for configured mutations
     this.mutationObserver.observe(this.host as LitElement, config);
   }
@@ -109,7 +104,6 @@ export class GamebookEditorController implements ReactiveController {
     if (setFocus) {
       (this.host as any).focus();
     }
-    (this.host as any).reflectStoreChangesinDOM();
     this.host.requestUpdate(); // Update the host component after changes
   };
 
@@ -129,7 +123,6 @@ export class GamebookEditorController implements ReactiveController {
 
     console.log((this.host as any).editorState.selectedNode);
     this.host.requestUpdate(); // Update the host component after changes
-    (this.host as any).reflectStoreChangesinDOM();
   };
 
   /*
@@ -729,6 +722,7 @@ export class GamebookEditorController implements ReactiveController {
   private monitorHostUserContainerDeletion = (
     mutationList: MutationRecord[]
   ) => {
+    if (!this.nodeEditor || !this.gamebookContainerManager) return;
     mutationList.forEach((mutation) => {
       if (mutation.type === "childList") {
         mutation.removedNodes.forEach((node) => {

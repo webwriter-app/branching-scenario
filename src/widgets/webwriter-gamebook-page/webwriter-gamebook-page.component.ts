@@ -1,4 +1,5 @@
-import { localizeElement, LocalizedElement } from "../../utils/localization";
+import { GamebookContainer } from "../../utils/gamebook-container";
+import { localizeElement } from "../../utils/localization";
 import { html, css, LitElement, unsafeCSS, PropertyValues } from "lit";
 import {
   customElement,
@@ -10,10 +11,7 @@ import {
 
 import { WebWriterGamebookButton } from "../webwriter-gamebook-button/webwriter-gamebook-button.component";
 
-//Shoelace
-import { SlButton } from "@shoelace-style/shoelace";
 import { WebWriterGamebookBranchButton } from "../webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component";
-import { WebWriterGamebookOptions } from "../../components/options-panel/webwriter-gamebook-options";
 
 import { consume } from "@lit/context";
 import {
@@ -24,7 +22,7 @@ import {
 /**
  * Represents a page of the gamebook
  */
-export class WebWriterGamebookPage extends LocalizedElement {
+export class WebWriterGamebookPage extends GamebookContainer {
   protected readonly messages = localizeElement(this);
   private getDrawerOptions() {
     return {
@@ -46,7 +44,7 @@ export class WebWriterGamebookPage extends LocalizedElement {
    * @internal
    */
   static get styles() {
-    return css`
+    return [GamebookContainer.styles, css`
       .page {
         display: flex;
         flex-direction: column;
@@ -62,19 +60,7 @@ export class WebWriterGamebookPage extends LocalizedElement {
         .author-only {
         display: none;
       }
-    `;
-  }
-
-  /**
-   * registering custom elements used in the widget
-   * @internal
-   */
-  static get scopedElements() {
-    return {
-      "sl-button": SlButton,
-      //"webwriter-gamebook-button": WebWriterGamebookButton,
-      "webwriter-gamebook-options": WebWriterGamebookOptions,
-    };
+    `];
   }
 
   /** Associated node id */
@@ -125,6 +111,12 @@ export class WebWriterGamebookPage extends LocalizedElement {
   connectedCallback() {
     super.connectedCallback();
     this.addEventListener("keydown", this._handleKeydown, true);
+    this.mutationObserver.observe(this, {
+      attributes: true,
+      attributeFilter: ["class"],
+      childList: true,
+      subtree: true,
+    });
   }
 
   /*
@@ -132,14 +124,15 @@ export class WebWriterGamebookPage extends LocalizedElement {
   */
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener("keydown", this._handleKeydown);
+    this.mutationObserver.disconnect();
+    this.removeEventListener("keydown", this._handleKeydown, true);
   }
 
   /*
    * Handles CTRL+A to select all content within the page instead of the whole widget
    */
   private _handleKeydown = (event: KeyboardEvent) => {
-    if ((event.metaKey || event.ctrlKey) && event.key === "a") {
+    if (this.authoring && (event.metaKey || event.ctrlKey) && event.key === "a") {
       event.preventDefault();
       event.stopPropagation();
 
@@ -155,21 +148,7 @@ export class WebWriterGamebookPage extends LocalizedElement {
   
   */
   protected firstUpdated(_changedProperties: any): void {
-    // Options for the observer (which mutations to observe)
-    const config = {
-      attributes: true,
-      childList: true,
-      subtree: true,
-      characterData: true,
-    };
-    // Start observing the target node for configured mutations
-    this.mutationObserver.observe(this, config);
-
-    //create an empty p element if container has no children
-    const slot = this.shadowRoot.querySelector("slot");
-    const assignedElements = slot.assignedElements();
-
-    if (assignedElements.length == 0) {
+    if (this.authoring && !this.firstElementChild && !this.textContent?.trim()) {
       const par = document.createElement("p");
       par.textContent = this.messages.msg("Write something here...");
       this.appendChild(par);
@@ -184,51 +163,19 @@ export class WebWriterGamebookPage extends LocalizedElement {
     return html`<slot class="page"></slot> `;
   }
 
-  /**
-   * Hides the page
-   */
-  public hide() {
-    this.style.display = "none";
-    //TODO after Thesis: move it to the right in viewer
-    this.stopAllMedia();
-  }
-
-  /**
-   * Shows the page
-   */
-  public show() {
-    this.style.display = "block";
-  }
-
-  /**
-   * Stops all HTML media elements on the page
-   */
-  private stopAllMedia() {
-    const mediaElements = this.slotContent.filter((el) =>
-      el.matches("audio, video")
-    ) as (HTMLAudioElement | HTMLVideoElement)[];
-
-    mediaElements.forEach((media) => {
-      media.pause();
-      media.currentTime = 0;
-    });
-  }
-
   /*
 
   */
   private mutationCallback = (mutationList: MutationRecord[]) => {
+    if (!this.authoring) return;
     mutationList.forEach(
-      ({ type, removedNodes, addedNodes, attributeName, target }) => {
+      ({ type, removedNodes, attributeName, target }) => {
         //
         if (type === "childList") {
           removedNodes.forEach((node) => {
             const element = node as HTMLElement;
+            if (this.contains(element)) return;
             const nodeName = element.nodeName.toLowerCase();
-
-            const isSelectedNode = element.classList?.contains(
-              "ProseMirror-selectednode"
-            );
 
             const dispatchEventIfNeeded = (eventName: string, detail: any) => {
               const event = new CustomEvent(eventName, {
@@ -267,14 +214,7 @@ export class WebWriterGamebookPage extends LocalizedElement {
             }
           });
 
-          // Check if there is at least one paragraph <p> element in the container
-          const paragraphs = this.querySelectorAll("p");
-          if (paragraphs.length === 0) {
-            const par = document.createElement("p");
-            par.textContent = this.messages.msg("Write something here...");
-            this.appendChild(par);
-          }
-        } else if (type === "attributes" && attributeName === "class") {
+        } else if (type === "attributes" && attributeName === "class" && target === this) {
           if (this.classList.contains("ProseMirror-selectednode")) {
             const event = new CustomEvent("nodeWwSelected", {
               detail: { nodeId: this.drawflowNodeId },
@@ -286,5 +226,11 @@ export class WebWriterGamebookPage extends LocalizedElement {
         }
       }
     );
+    if (mutationList.some(record => record.type === "childList" && record.removedNodes.length)
+      && !this.firstElementChild && !this.textContent?.trim()) {
+      const par = document.createElement("p");
+      par.textContent = this.messages.msg("Write something here...");
+      this.appendChild(par);
+    }
   };
 }
