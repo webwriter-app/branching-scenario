@@ -4,138 +4,1807 @@
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "src/widgets/webwriter-branching-scenario/webwriter-branching-scenario.ts",
-      "declarations": [],
+      "path": "src/widgets/webwriter-branching-scenario.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "This widget allows for the creation and editing of branching gamebooks. These are adaptable learning experiences, where you present the student with choices on how to continue.",
+          "name": "WebwriterBranchingScenario",
+          "members": [
+            {
+              "kind": "field",
+              "name": "actions",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ configureScenario: { label: (widget: { msg: MsgFn }) => widget.msg(\"Scenario options\") }, }"
+            },
+            {
+              "kind": "field",
+              "name": "localize",
+              "privacy": "protected",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "msg",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#permissions",
+              "privacy": "private",
+              "default": "new Permissions(this)"
+            },
+            {
+              "kind": "field",
+              "name": "controller",
+              "privacy": "private",
+              "default": "new GamebookEditorController(this)"
+            },
+            {
+              "kind": "field",
+              "name": "editorState",
+              "privacy": "public",
+              "default": "new GamebookEditorState(\"\")",
+              "description": "The state of the editor in a stringified JSON format"
+            },
+            {
+              "kind": "field",
+              "name": "nodeEditor",
+              "type": {
+                "text": "NodeEditor"
+              },
+              "privacy": "public",
+              "description": "The node editor component"
+            },
+            {
+              "kind": "field",
+              "name": "optionsMounted",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "lastDataText",
+              "type": {
+                "text": "string | null"
+              },
+              "privacy": "private",
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "savedGraph",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "private",
+              "default": "\"null\""
+            },
+            {
+              "kind": "field",
+              "name": "savedTitle",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "private",
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "dataObserver",
+              "privacy": "private",
+              "default": "new DataBlockObserver(this, () => this.restoreScenario())"
+            },
+            {
+              "kind": "field",
+              "name": "dataText",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "applySnippetLabels",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "restoreScenario",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "onStoreChanged",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "configureScenario"
+            },
+            {
+              "kind": "field",
+              "name": "_handleKeydown",
+              "privacy": "private"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-branching-scenario",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-branching-scenario.ts",
+          "definitionPath": "src/widgets/webwriter-branching-scenario.ts"
+        }
+      ],
       "exports": [
         {
           "kind": "js",
-          "name": "*",
+          "name": "WebwriterBranchingScenario",
           "declaration": {
-            "name": "*",
-            "module": "src/widgets/webwriter-branching-scenario/webwriter-branching-scenario.component"
+            "name": "WebwriterBranchingScenario",
+            "module": "src/widgets/webwriter-branching-scenario.ts"
           }
         },
         {
           "kind": "custom-element-definition",
           "name": "webwriter-branching-scenario",
           "declaration": {
-            "name": "WebWriterBranchingScenario",
-            "module": "/src/widgets/webwriter-branching-scenario/webwriter-branching-scenario.component"
+            "name": "WebwriterBranchingScenario",
+            "module": "src/widgets/webwriter-branching-scenario.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/widgets/webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.ts",
-      "declarations": [],
+      "path": "src/widgets/webwriter-gamebook-branch-button.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Represents a button that is connected to a branch.",
+          "name": "WebwriterGamebookBranchButton",
+          "members": [
+            {
+              "kind": "field",
+              "name": "localize",
+              "privacy": "protected",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "static": true,
+              "default": "buttonOptions"
+            },
+            {
+              "kind": "field",
+              "name": "msg",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "dataTargetId",
+              "type": {
+                "text": "number"
+              },
+              "description": "The identifier of the target node",
+              "attribute": "dataTargetId",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "identifier",
+              "type": {
+                "text": "string"
+              },
+              "description": "Identifier of the connection",
+              "attribute": "identifier",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Button\"",
+              "description": "Button text",
+              "attribute": "name",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"small\"",
+              "description": "Button size: small, medium, large",
+              "attribute": "size",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "pill",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Button pill style",
+              "attribute": "pill",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "outline",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Button outline style",
+              "attribute": "outline",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "width",
+              "type": {
+                "text": "number"
+              },
+              "default": "50",
+              "description": "Button width percentage",
+              "attribute": "width",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "alignment",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"center\"",
+              "description": "Button alignment: flex-start, center, flex-end",
+              "attribute": "alignment",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "variant",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"default\"",
+              "description": "Button variant: default, text, primary, success, neutral, warning, danger",
+              "attribute": "variant",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disabled state",
+              "attribute": "disabled"
+            },
+            {
+              "kind": "field",
+              "name": "button",
+              "type": {
+                "text": "SlButton"
+              },
+              "description": "The Shoelace button element"
+            },
+            {
+              "kind": "method",
+              "name": "parseConnectionIdentifier",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "identifier",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "dataTargetId",
+              "type": {
+                "text": "number"
+              },
+              "description": "The identifier of the target node",
+              "fieldName": "dataTargetId"
+            },
+            {
+              "name": "identifier",
+              "type": {
+                "text": "string"
+              },
+              "description": "Identifier of the connection",
+              "fieldName": "identifier"
+            },
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Button\"",
+              "description": "Button text",
+              "fieldName": "name"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"small\"",
+              "description": "Button size: small, medium, large",
+              "fieldName": "size"
+            },
+            {
+              "name": "pill",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Button pill style",
+              "fieldName": "pill"
+            },
+            {
+              "name": "outline",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Button outline style",
+              "fieldName": "outline"
+            },
+            {
+              "name": "width",
+              "type": {
+                "text": "number"
+              },
+              "default": "50",
+              "description": "Button width percentage",
+              "fieldName": "width"
+            },
+            {
+              "name": "alignment",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"center\"",
+              "description": "Button alignment: flex-start, center, flex-end",
+              "fieldName": "alignment"
+            },
+            {
+              "name": "variant",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"default\"",
+              "description": "Button variant: default, text, primary, success, neutral, warning, danger",
+              "fieldName": "variant"
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disabled state",
+              "fieldName": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-gamebook-branch-button",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-gamebook-branch-button.ts",
+          "definitionPath": "src/widgets/webwriter-gamebook-branch-button.ts"
+        }
+      ],
       "exports": [
         {
           "kind": "js",
-          "name": "*",
+          "name": "WebwriterGamebookBranchButton",
           "declaration": {
-            "name": "*",
-            "module": "src/widgets/webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component"
+            "name": "WebwriterGamebookBranchButton",
+            "module": "src/widgets/webwriter-gamebook-branch-button.ts"
           }
         },
         {
           "kind": "custom-element-definition",
           "name": "webwriter-gamebook-branch-button",
           "declaration": {
-            "name": "WebWriterGamebookBranchButton",
-            "module": "/src/widgets/webwriter-gamebook-branch-button/webwriter-gamebook-branch-button.component"
+            "name": "WebwriterGamebookBranchButton",
+            "module": "src/widgets/webwriter-gamebook-branch-button.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/widgets/webwriter-gamebook-button/webwriter-gamebook-button.ts",
-      "declarations": [],
-      "exports": [
+      "path": "src/widgets/webwriter-gamebook-branch.ts",
+      "declarations": [
         {
-          "kind": "js",
-          "name": "*",
-          "declaration": {
-            "name": "*",
-            "module": "src/widgets/webwriter-gamebook-button/webwriter-gamebook-button.component"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "webwriter-gamebook-button",
-          "declaration": {
-            "name": "WebWriterGamebookButton",
-            "module": "/src/widgets/webwriter-gamebook-button/webwriter-gamebook-button.component"
-          }
+          "kind": "class",
+          "description": "Represents the logic of a branch of a gamebook.",
+          "name": "WebwriterGamebookBranch",
+          "members": [
+            {
+              "kind": "field",
+              "name": "drawflowNodeId",
+              "type": {
+                "text": "number"
+              },
+              "description": "Associated node id",
+              "attribute": "drawflowNodeId",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "incomingContainerId",
+              "type": {
+                "text": "number"
+              },
+              "default": "-1",
+              "description": "Associated incoming container id",
+              "attribute": "incomingContainerId",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "rules",
+              "type": {
+                "text": "Rule[]"
+              },
+              "default": "[]",
+              "description": "Array of custom objects (rules)"
+            },
+            {
+              "kind": "field",
+              "name": "elseRule",
+              "type": {
+                "text": "Rule | undefined"
+              },
+              "description": "The else rule (custom object)"
+            },
+            {
+              "kind": "field",
+              "name": "pageTitle",
+              "type": {
+                "text": "string"
+              },
+              "description": "The title of the page",
+              "attribute": "pageTitle",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "ruleDataText",
+              "type": {
+                "text": "string | null"
+              },
+              "privacy": "private",
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "rulesObserver",
+              "privacy": "private",
+              "default": "new DataBlockObserver(this, () => this.restoreRules())"
+            },
+            {
+              "kind": "field",
+              "name": "mutationObserver",
+              "type": {
+                "text": "MutationObserver"
+              },
+              "privacy": "private",
+              "default": "new MutationObserver(this.mutationCallback)"
+            },
+            {
+              "kind": "field",
+              "name": "ruleText",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "restoreRules",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "clearRules",
+              "privacy": "public",
+              "description": "Clears all rules from the rules array"
+            },
+            {
+              "kind": "method",
+              "name": "addRule",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "newRule",
+                  "type": {
+                    "text": "Rule"
+                  },
+                  "description": "The rule object to be added"
+                }
+              ],
+              "description": "Adds a new rule to the rules array"
+            },
+            {
+              "kind": "method",
+              "name": "addEmptyRule",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "node",
+                  "type": {
+                    "text": "DiagramNode"
+                  },
+                  "description": "The node to which the rule will be associated"
+                }
+              ],
+              "description": "Adds an empty rule to the rules array"
+            },
+            {
+              "kind": "method",
+              "name": "deleteRule",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "output_id",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The ID of the rule to be deleted"
+                }
+              ],
+              "description": "Deletes a rule from the rules array by its ID"
+            },
+            {
+              "kind": "method",
+              "name": "updateAllRulesOutputIds",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "deleted_output_id",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The ID of the deleted output"
+                }
+              ],
+              "description": "Update all rules output IDs after deletion of an output"
+            },
+            {
+              "kind": "method",
+              "name": "updateRuleOutputId",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "index",
+                  "type": {
+                    "text": "number"
+                  },
+                  "description": "The index of the rule to be updated"
+                },
+                {
+                  "name": "new_output_id",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The new output ID to be set"
+                }
+              ],
+              "description": "Updates a rule's output ID by its index"
+            },
+            {
+              "kind": "method",
+              "name": "updateRules",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "rules",
+                  "type": {
+                    "text": "Rule[]"
+                  },
+                  "description": "The new array of rules to be set"
+                }
+              ],
+              "description": "Updates the entire rules array (deep clone)"
+            },
+            {
+              "kind": "method",
+              "name": "addEmptyElseRule",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "node",
+                  "type": {
+                    "text": "DiagramNode"
+                  },
+                  "description": "The node to which the rule will be associated"
+                }
+              ],
+              "description": "Adds an empty else rule to the rules array"
+            },
+            {
+              "kind": "method",
+              "name": "removeElseRule",
+              "privacy": "public",
+              "description": "Removes the else rule"
+            },
+            {
+              "kind": "method",
+              "name": "_moveElseRuleToLastOutput",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "node",
+                  "type": {
+                    "text": "DiagramNode"
+                  },
+                  "description": "The node to which the rule will be associated"
+                }
+              ],
+              "description": "Moves the else rule to be the last output"
+            },
+            {
+              "kind": "method",
+              "name": "_updateRuleElement",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "index",
+                  "type": {
+                    "text": "number"
+                  },
+                  "description": "The index of the rule to be updated"
+                },
+                {
+                  "name": "value",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The new element ID to be set"
+                },
+                {
+                  "name": "container",
+                  "type": {
+                    "text": "HTMLElement | undefined"
+                  },
+                  "description": "The container HTMLElement"
+                }
+              ],
+              "description": "Updates a rule's element ID by its index"
+            },
+            {
+              "kind": "method",
+              "name": "removeElementOfRules",
+              "privacy": "public",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "element_id",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The ID of the deleted element"
+                },
+                {
+                  "name": "isQuiz",
+                  "type": {
+                    "text": "boolean"
+                  },
+                  "description": "Whether the deleted element is a quiz"
+                }
+              ],
+              "description": "Removes references to a deleted element from all rules"
+            },
+            {
+              "kind": "method",
+              "name": "_updateRuleTasks",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "index",
+                  "type": {
+                    "text": "number"
+                  },
+                  "description": "The index of the rule to be updated"
+                },
+                {
+                  "name": "value",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The new quiz tasks value (comma-separated string)"
+                },
+                {
+                  "name": "container",
+                  "type": {
+                    "text": "HTMLElement | undefined"
+                  },
+                  "description": "The container HTMLElement"
+                }
+              ],
+              "description": "Updates the quiz tasks for a rule"
+            },
+            {
+              "kind": "method",
+              "name": "_updateRuleTarget",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "output_class",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The output ID to match against rules"
+                },
+                {
+                  "name": "input_id",
+                  "type": {
+                    "text": "string | number"
+                  },
+                  "description": "The new target input ID"
+                }
+              ],
+              "description": "Updates the target of a rule by output class"
+            },
+            {
+              "kind": "method",
+              "name": "_updateRuleCondition",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "index",
+                  "type": {
+                    "text": "number"
+                  },
+                  "description": "The index of the rule to be updated"
+                },
+                {
+                  "name": "value",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The new condition value"
+                },
+                {
+                  "name": "container",
+                  "type": {
+                    "text": "HTMLElement | undefined"
+                  },
+                  "description": "The container HTMLElement"
+                }
+              ],
+              "description": "Updates the condition for a rule"
+            },
+            {
+              "kind": "method",
+              "name": "_updateRuleMatch",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "index",
+                  "type": {
+                    "text": "number"
+                  },
+                  "description": "The index of the rule to be updated"
+                },
+                {
+                  "name": "value",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The new match value"
+                }
+              ],
+              "description": "Updates the match value for a rule"
+            },
+            {
+              "kind": "field",
+              "name": "mutationCallback",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "states",
+              "privacy": "private",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "displayStyle",
+              "type": {
+                "text": "CSSResult | undefined"
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "authoring",
+              "privacy": "protected",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setDisplay",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "style",
+                  "type": {
+                    "text": "CSSResult"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hide",
+              "privacy": "public",
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "show",
+              "privacy": "public",
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "markOutputs",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "deleteOutput",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "createConnection",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "deleteConnection",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "drawflowNodeId",
+              "type": {
+                "text": "number"
+              },
+              "description": "Associated node id",
+              "fieldName": "drawflowNodeId"
+            },
+            {
+              "name": "incomingContainerId",
+              "type": {
+                "text": "number"
+              },
+              "default": "-1",
+              "description": "Associated incoming container id",
+              "fieldName": "incomingContainerId"
+            },
+            {
+              "name": "pageTitle",
+              "type": {
+                "text": "string"
+              },
+              "description": "The title of the page",
+              "fieldName": "pageTitle"
+            }
+          ],
+          "superclass": {
+            "name": "GamebookContainer",
+            "module": "/src/components/gamebook-container"
+          },
+          "tagName": "webwriter-gamebook-branch",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-gamebook-branch.ts",
+          "definitionPath": "src/widgets/webwriter-gamebook-branch.ts"
         }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.ts",
-      "declarations": [],
+      ],
       "exports": [
         {
           "kind": "js",
-          "name": "*",
+          "name": "WebwriterGamebookBranch",
           "declaration": {
-            "name": "*",
-            "module": "src/widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.component"
+            "name": "WebwriterGamebookBranch",
+            "module": "src/widgets/webwriter-gamebook-branch.ts"
           }
         },
         {
           "kind": "custom-element-definition",
           "name": "webwriter-gamebook-branch",
           "declaration": {
-            "name": "WebWriterGamebookBranch",
-            "module": "/src/widgets/webwriter-gamebook-branch/webwriter-gamebook-branch.component"
+            "name": "WebwriterGamebookBranch",
+            "module": "src/widgets/webwriter-gamebook-branch.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.ts",
-      "declarations": [],
+      "path": "src/widgets/webwriter-gamebook-button.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Represents a button that branches to another part of the gamebook.",
+          "name": "WebwriterGamebookButton",
+          "members": [
+            {
+              "kind": "field",
+              "name": "localize",
+              "privacy": "protected",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "static": true,
+              "default": "buttonOptions"
+            },
+            {
+              "kind": "field",
+              "name": "msg",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "dataTargetId",
+              "type": {
+                "text": "number"
+              },
+              "description": "The identifier of the target node",
+              "attribute": "dataTargetId",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "identifier",
+              "type": {
+                "text": "string"
+              },
+              "description": "The identifier of the connection",
+              "attribute": "identifier",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Button\"",
+              "description": "Button text",
+              "attribute": "name",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"small\"",
+              "description": "Button size: small, medium, large",
+              "attribute": "size",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "pill",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Button pill style",
+              "attribute": "pill",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "outline",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Button outline style",
+              "attribute": "outline",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "width",
+              "type": {
+                "text": "number"
+              },
+              "default": "50",
+              "description": "Button width percentage",
+              "attribute": "width",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "alignment",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"center\"",
+              "description": "Button alignment: flex-start, center, flex-end",
+              "attribute": "alignment",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "variant",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"default\"",
+              "description": "Button variant: default, text, primary, success, neutral, warning, danger",
+              "attribute": "variant",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "parseConnectionIdentifier",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "identifier",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "dataTargetId",
+              "type": {
+                "text": "number"
+              },
+              "description": "The identifier of the target node",
+              "fieldName": "dataTargetId"
+            },
+            {
+              "name": "identifier",
+              "type": {
+                "text": "string"
+              },
+              "description": "The identifier of the connection",
+              "fieldName": "identifier"
+            },
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Button\"",
+              "description": "Button text",
+              "fieldName": "name"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"small\"",
+              "description": "Button size: small, medium, large",
+              "fieldName": "size"
+            },
+            {
+              "name": "pill",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Button pill style",
+              "fieldName": "pill"
+            },
+            {
+              "name": "outline",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Button outline style",
+              "fieldName": "outline"
+            },
+            {
+              "name": "width",
+              "type": {
+                "text": "number"
+              },
+              "default": "50",
+              "description": "Button width percentage",
+              "fieldName": "width"
+            },
+            {
+              "name": "alignment",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"center\"",
+              "description": "Button alignment: flex-start, center, flex-end",
+              "fieldName": "alignment"
+            },
+            {
+              "name": "variant",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"default\"",
+              "description": "Button variant: default, text, primary, success, neutral, warning, danger",
+              "fieldName": "variant"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-gamebook-button",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-gamebook-button.ts",
+          "definitionPath": "src/widgets/webwriter-gamebook-button.ts"
+        }
+      ],
       "exports": [
         {
           "kind": "js",
-          "name": "*",
+          "name": "WebwriterGamebookButton",
           "declaration": {
-            "name": "*",
-            "module": "src/widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.component"
+            "name": "WebwriterGamebookButton",
+            "module": "src/widgets/webwriter-gamebook-button.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "webwriter-gamebook-popup",
+          "name": "webwriter-gamebook-button",
           "declaration": {
-            "name": "WebWriterGamebookPopup",
-            "module": "/src/widgets/webwriter-gamebook-popup/webwriter-gamebook-popup.component"
+            "name": "WebwriterGamebookButton",
+            "module": "src/widgets/webwriter-gamebook-button.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/widgets/webwriter-gamebook-page/webwriter-gamebook-page.ts",
-      "declarations": [],
+      "path": "src/widgets/webwriter-gamebook-page.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Represents a page of the gamebook",
+          "name": "WebwriterGamebookPage",
+          "members": [
+            {
+              "kind": "field",
+              "name": "localize",
+              "privacy": "protected",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ pageTitle: { type: String, label: (widget: { msg: MsgFn }) => widget.msg(\"Page title\") }, }"
+            },
+            {
+              "kind": "field",
+              "name": "msg",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "editorStore",
+              "privacy": "public",
+              "default": "new GamebookEditorState(\"Default\")",
+              "description": "The state of the editor in a stringified JSON format",
+              "attribute": "editorStore"
+            },
+            {
+              "kind": "field",
+              "name": "drawflowNodeId",
+              "type": {
+                "text": "number"
+              },
+              "description": "Associated node id",
+              "attribute": "drawflowNodeId",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "pageTitle",
+              "type": {
+                "text": "string"
+              },
+              "description": "The title of the page",
+              "attribute": "pageTitle",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "originPage",
+              "type": {
+                "text": "number"
+              },
+              "description": "The origin page number",
+              "attribute": "originPage",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "branchesOff",
+              "type": {
+                "text": "number"
+              },
+              "default": "-1",
+              "description": "The id of the branch connected to the page",
+              "attribute": "branchesOff",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "buttons",
+              "type": {
+                "text": "Array<WebwriterGamebookButton | WebwriterGamebookBranchButton>"
+              },
+              "description": "The gamebook buttons on the page"
+            },
+            {
+              "kind": "field",
+              "name": "slotContent",
+              "type": {
+                "text": "Array<HTMLElement>"
+              },
+              "description": "The content inside the page"
+            },
+            {
+              "kind": "field",
+              "name": "mutationObserver",
+              "type": {
+                "text": "MutationObserver"
+              },
+              "privacy": "private",
+              "default": "new MutationObserver(this.mutationCallback)"
+            },
+            {
+              "kind": "field",
+              "name": "_handleKeydown",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "mutationCallback",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "states",
+              "privacy": "private",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "displayStyle",
+              "type": {
+                "text": "CSSResult | undefined"
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "authoring",
+              "privacy": "protected",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setDisplay",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "style",
+                  "type": {
+                    "text": "CSSResult"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hide",
+              "privacy": "public",
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "show",
+              "privacy": "public",
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "editorStore",
+              "default": "new GamebookEditorState(\"Default\")",
+              "description": "The state of the editor in a stringified JSON format",
+              "fieldName": "editorStore"
+            },
+            {
+              "name": "drawflowNodeId",
+              "type": {
+                "text": "number"
+              },
+              "description": "Associated node id",
+              "fieldName": "drawflowNodeId"
+            },
+            {
+              "name": "pageTitle",
+              "type": {
+                "text": "string"
+              },
+              "description": "The title of the page",
+              "fieldName": "pageTitle"
+            },
+            {
+              "name": "originPage",
+              "type": {
+                "text": "number"
+              },
+              "description": "The origin page number",
+              "fieldName": "originPage"
+            },
+            {
+              "name": "branchesOff",
+              "type": {
+                "text": "number"
+              },
+              "default": "-1",
+              "description": "The id of the branch connected to the page",
+              "fieldName": "branchesOff"
+            }
+          ],
+          "superclass": {
+            "name": "GamebookContainer",
+            "module": "/src/components/gamebook-container"
+          },
+          "tagName": "webwriter-gamebook-page",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-gamebook-page.ts",
+          "definitionPath": "src/widgets/webwriter-gamebook-page.ts"
+        }
+      ],
       "exports": [
         {
           "kind": "js",
-          "name": "*",
+          "name": "WebwriterGamebookPage",
           "declaration": {
-            "name": "*",
-            "module": "src/widgets/webwriter-gamebook-page/webwriter-gamebook-page.component"
+            "name": "WebwriterGamebookPage",
+            "module": "src/widgets/webwriter-gamebook-page.ts"
           }
         },
         {
           "kind": "custom-element-definition",
           "name": "webwriter-gamebook-page",
           "declaration": {
-            "name": "WebWriterGamebookPage",
-            "module": "/src/widgets/webwriter-gamebook-page/webwriter-gamebook-page.component"
+            "name": "WebwriterGamebookPage",
+            "module": "src/widgets/webwriter-gamebook-page.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-gamebook-popup.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Represents a popup dialog in the gamebook",
+          "name": "WebwriterGamebookPopup",
+          "members": [
+            {
+              "kind": "field",
+              "name": "localize",
+              "privacy": "protected",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ pageTitle: { type: String, label: (widget: { msg: MsgFn }) => widget.msg(\"Page title\") }, titleLabel: { type: String, label: (widget: { msg: MsgFn }) => widget.msg(\"Dialog title\") }, noHeader: { type: Boolean, label: (widget: { msg: MsgFn }) => widget.msg(\"Hide dialog header\") }, }"
+            },
+            {
+              "kind": "field",
+              "name": "msg",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "drawflowNodeId",
+              "type": {
+                "text": "number"
+              },
+              "description": "associated node id",
+              "attribute": "drawflowNodeId",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "buttons",
+              "type": {
+                "text": "Array<WebwriterGamebookButton | WebwriterGamebookBranchButton>"
+              },
+              "description": "The buttons in the popup"
+            },
+            {
+              "kind": "field",
+              "name": "pageTitle",
+              "type": {
+                "text": "string"
+              },
+              "description": "The title of the popup",
+              "attribute": "pageTitle",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "slotContent",
+              "type": {
+                "text": "Array<HTMLElement>"
+              },
+              "description": "The content of the popup"
+            },
+            {
+              "kind": "field",
+              "name": "dialog",
+              "type": {
+                "text": "SlDialog"
+              },
+              "description": "The Shoelace dialog element"
+            },
+            {
+              "kind": "field",
+              "name": "titleLabel",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Dialog\"",
+              "description": "The title label of the dialog",
+              "attribute": "titleLabel",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "noHeader",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the header should be disabled",
+              "attribute": "noHeader",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "preventClosing",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "true",
+              "description": "Whether closing the dialog should be prevented",
+              "attribute": "preventClosing",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "branchesOff",
+              "type": {
+                "text": "number"
+              },
+              "default": "-1",
+              "description": "The id of the branch connected to the page",
+              "attribute": "branchesOff",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "dialogRequested",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "mutationObserver",
+              "type": {
+                "text": "MutationObserver"
+              },
+              "privacy": "private",
+              "default": "new MutationObserver(this.mutationCallback)"
+            },
+            {
+              "kind": "field",
+              "name": "_handleKeydown",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "handleCloseRequest",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleDialogHide",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "show",
+              "privacy": "public",
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hideDialog",
+              "privacy": "public"
+            },
+            {
+              "kind": "method",
+              "name": "showDialog",
+              "privacy": "public"
+            },
+            {
+              "kind": "field",
+              "name": "mutationCallback",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "states",
+              "privacy": "private",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "displayStyle",
+              "type": {
+                "text": "CSSResult | undefined"
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "authoring",
+              "privacy": "protected",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setDisplay",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "style",
+                  "type": {
+                    "text": "CSSResult"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hide",
+              "privacy": "public",
+              "inheritedFrom": {
+                "name": "GamebookContainer",
+                "module": "src/components/gamebook-container.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "drawflowNodeId",
+              "type": {
+                "text": "number"
+              },
+              "description": "associated node id",
+              "fieldName": "drawflowNodeId"
+            },
+            {
+              "name": "pageTitle",
+              "type": {
+                "text": "string"
+              },
+              "description": "The title of the popup",
+              "fieldName": "pageTitle"
+            },
+            {
+              "name": "titleLabel",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Dialog\"",
+              "description": "The title label of the dialog",
+              "fieldName": "titleLabel"
+            },
+            {
+              "name": "noHeader",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the header should be disabled",
+              "fieldName": "noHeader"
+            },
+            {
+              "name": "preventClosing",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "true",
+              "description": "Whether closing the dialog should be prevented",
+              "fieldName": "preventClosing"
+            },
+            {
+              "name": "branchesOff",
+              "type": {
+                "text": "number"
+              },
+              "default": "-1",
+              "description": "The id of the branch connected to the page",
+              "fieldName": "branchesOff"
+            }
+          ],
+          "superclass": {
+            "name": "GamebookContainer",
+            "module": "/src/components/gamebook-container"
+          },
+          "tagName": "webwriter-gamebook-popup",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-gamebook-popup.ts",
+          "definitionPath": "src/widgets/webwriter-gamebook-popup.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterGamebookPopup",
+          "declaration": {
+            "name": "WebwriterGamebookPopup",
+            "module": "src/widgets/webwriter-gamebook-popup.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-gamebook-popup",
+          "declaration": {
+            "name": "WebwriterGamebookPopup",
+            "module": "src/widgets/webwriter-gamebook-popup.ts"
           }
         }
       ]

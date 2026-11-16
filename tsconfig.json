@@ -1,10 +1,1 @@
-{
-  "compilerOptions": {
-    "experimentalDecorators": false, // default for TypeScript 5.0 and up
-    "useDefineForClassFields": true, // default when "target" is "ES2022" or higher
-    "target": "ES2022",
-    "moduleResolution": "Bundler",
-    "outDir": "./dist",
-    "module": "esnext"
-  }
-}
+{"extends": "@webwriter/build/tsconfig.json", "include": ["src", "tests"]}
