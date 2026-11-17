@@ -215,7 +215,7 @@ export class NodeConnectionList extends LitElementWw {
             Object.entries(this.editorStore.selectedNode.outputs),
             ([output_class]) =>
               `${this.editorStore.selectedNode.id}-${output_class}`,
-            ([output_class, drawflowConnection], index) => html`
+            ([output_class], index) => html`
               <div
                 class="item"
                 @mouseenter=${() =>

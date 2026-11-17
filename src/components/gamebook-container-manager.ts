@@ -329,25 +329,14 @@ export class GamebookContainerManager extends LitElementWw {
   }
 
   public searchContainers(value: string): number[] {
-    let matchContainerIds: number[] = [];
     const searchValue = value.toLowerCase();
+    const matches = (element: Element) =>
+      element.tagName.toLowerCase().includes(searchValue) ||
+      !!element.textContent?.toLowerCase().includes(searchValue);
 
-    this.gamebookContainers.forEach((container) => {
-      const slotElements = container.querySelectorAll("*"); // Get all child elements in the container
-
-      slotElements.forEach((element) => {
-        // Check if the tagName or textContent includes the search value
-        if (
-          element.tagName.toLowerCase().includes(searchValue) ||
-          (element.textContent &&
-            element.textContent.toLowerCase().includes(searchValue))
-        ) {
-          matchContainerIds = [...matchContainerIds, container.drawflowNodeId];
-        }
-      });
-    });
-
-    return matchContainerIds;
+    return this.gamebookContainers
+      .filter((container) => [...container.querySelectorAll("*")].some(matches))
+      .map((container) => container.drawflowNodeId);
   }
 
   public updateBranchContainerRuleTarget(output_id: number, output_class: string, input_id: number | string) {

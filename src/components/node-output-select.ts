@@ -95,18 +95,28 @@ export class NodeOutputSelect extends LitElementWw {
     }
   `;
 
+  private readonly openObserver = new MutationObserver((mutations) => {
+    if (mutations.some((mutation) => mutation.attributeName === "open")) {
+      this.onOpenChange(this.selectElement.hasAttribute("open"));
+    }
+  });
+
+  connectedCallback() {
+    super.connectedCallback();
+    if (this.hasUpdated) this.observeOpen();
+  }
+
+  disconnectedCallback() {
+    this.openObserver.disconnect();
+    super.disconnectedCallback();
+  }
+
   firstUpdated() {
-    const openObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (
-          mutation.type === "attributes" &&
-          mutation.attributeName === "open"
-        ) {
-          this.onOpenChange(this.selectElement.hasAttribute("open"));
-        }
-      });
-    });
-    openObserver.observe(this.selectElement, { attributes: true });
+    this.observeOpen();
+  }
+
+  private observeOpen() {
+    if (this.selectElement) this.openObserver.observe(this.selectElement, { attributes: true, attributeFilter: ["open"] });
   }
 
   render() {

@@ -8,7 +8,7 @@ import "../src/widgets/webwriter-gamebook-popup";
 import "../src/widgets/webwriter-gamebook-branch";
 import "../src/widgets/webwriter-gamebook-button";
 import "../src/widgets/webwriter-gamebook-branch-button";
-import { center, click, deepFind, drag, dataBlock, edit, frames, make, mount, pointer, read, startMount, stopMount, storedNodes, until } from "./helpers";
+import { center, click, deepFind, drag, dataBlock, edit, frames, make, pointer, read, startMount, stopMount, storedNodes, until } from "./helpers";
 
 mocha.setup(getMochaConfig());
 

@@ -204,7 +204,7 @@ export class WebwriterBranchingScenario extends LitElementWw {
                 @editorInitialized=${() => this.controller._markUsedOutputs()}
                 @nodeSelected=${(e: CustomEvent) =>
                   this.controller._selectContainer(e.detail.nodeId)}
-                @nodeUnselected=${(e: CustomEvent) =>
+                @nodeUnselected=${() =>
                   this.controller._unselectContainer()}
                 @nodeCreated=${(e: CustomEvent) =>
                   this.controller._createContainerForNode(e.detail.node)}
@@ -222,12 +222,12 @@ export class WebwriterBranchingScenario extends LitElementWw {
                   this.controller._outputBranchNodeConnectionRemove(e)}
                 @connectionRemoved=${(e: CustomEvent) =>
                   this.controller._removeButton(e)}
-                @editorCleared=${(e: CustomEvent) =>
+                @editorCleared=${() =>
                   this.controller._editorCleared()}
                 @connectionSelected=${(e: CustomEvent) =>
                   this.controller._selectConnectionButton(e)}
-                @connectionUnselected=${(e: CustomEvent) =>
-                  this.controller._unselectConnectionButton(e)}
+                @connectionUnselected=${() =>
+                  this.controller._unselectConnectionButton()}
                 @nodeGroupImported=${(e: CustomEvent) =>
                   this.controller._importTemplateContainers(e)}
               >
@@ -267,7 +267,7 @@ export class WebwriterBranchingScenario extends LitElementWw {
                       this.controller._removeNode(e.detail.id)}
                     @containerSelectFirstUpdate=${(e: CustomEvent) =>
                       this.controller._selectContainer(e.detail.id)}
-                    @containerError=${(e: CustomEvent) =>
+                    @containerError=${() =>
                       this.controller._unselectContainer()}
                     @buttonDeleted=${(e: CustomEvent) =>
                       this.controller._removeConnection(e)}

@@ -12,7 +12,6 @@ import book from "@tabler/icons/outline/book.svg";
 import packages from "@tabler/icons/outline/packages.svg";
 import trash from "@tabler/icons/outline/trash.svg";
 import circleArrowRight from "@tabler/icons/filled/circle-arrow-right.svg";
-import infoSquareFilled from "@tabler/icons/outline/info-square.svg";
 import infoSquareRounded from "@tabler/icons/filled/info-square-rounded.svg";
 
 import {

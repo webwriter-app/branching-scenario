@@ -10,11 +10,11 @@ export interface Link {
   inputClass: string;
 }
 
-export interface InputPort {
+interface InputPort {
   connections: { node: string; input: string }[];
 }
 
-export interface OutputPort {
+interface OutputPort {
   connections: { node: string; output: string }[];
 }
 
@@ -37,12 +37,12 @@ export type DiagramEvent =
   | { type: "changed" };
 
 /** Why a connection is not made. */
-export type Rejection = "missing" | "duplicate" | "branch-taken" | "branch-to-branch" | "self-loop";
+type Rejection = "missing" | "duplicate" | "branch-taken" | "branch-to-branch" | "self-loop";
 
 const INPUT = "input_1";
 
 /** `output_3` is the third output of a node. */
-export function outputIndex(outputClass: string): number {
+function outputIndex(outputClass: string): number {
   return Number(outputClass.slice("output_".length));
 }
 

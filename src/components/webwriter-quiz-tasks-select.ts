@@ -5,7 +5,6 @@ import { repeat } from "lit/directives/repeat.js";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import SlSelect from "@shoelace-style/shoelace/dist/components/select/select.component.js";
 import SlOption from "@shoelace-style/shoelace/dist/components/option/option.component.js";
-import SlDivider from "@shoelace-style/shoelace/dist/components/divider/divider.component.js";
 import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
 import SlInput from "@shoelace-style/shoelace/dist/components/input/input.component.js";
 
@@ -14,8 +13,6 @@ import checkbox from "@tabler/icons/outline/checkbox.svg";
 import blockquote from "@tabler/icons/outline/blockquote.svg";
 import highlight from "@tabler/icons/outline/highlight.svg";
 import microphone from "@tabler/icons/outline/microphone.svg";
-import file from "@tabler/icons/outline/file.svg";
-import squares from "@tabler/icons/outline/squares.svg";
 
 interface TaskOption {
   task: HTMLElement;

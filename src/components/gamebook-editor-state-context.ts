@@ -33,8 +33,6 @@ export class GamebookEditorState {
   title: string;
   selectedNode: DiagramNode;
   copiedNode: DiagramNode;
-  editorZoom: number;
-  editorPosition: { x?: number; y?: number };
   dividerPosition: number;
   editorIsCollapsed: boolean;
   editorContent: EditorContent | null;
@@ -51,8 +49,6 @@ export class GamebookEditorState {
     title = "Gamebook Title",
     observer: Observer | null = null,
     selectedNode = NO_NODE_SELECTED,
-    editorZoom = -1,
-    editorPositon: { x?: number; y?: number } = { x: undefined, y: undefined },
     dividerPosition = 350,
     editorIsCollapsed = false,
     editorContent: EditorContent | null = null,
@@ -65,8 +61,6 @@ export class GamebookEditorState {
   ) {
     this.title = title;
     this.selectedNode = selectedNode;
-    this.editorZoom = editorZoom;
-    this.editorPosition = editorPositon;
     this.observer = observer;
     this.dividerPosition = dividerPosition;
     this.editorIsCollapsed = editorIsCollapsed;
@@ -97,16 +91,6 @@ export class GamebookEditorState {
 
   setBranchIncomingContainer(incomingContainer: HTMLElement | undefined = undefined) {
     this.branchIncomingContainer = incomingContainer;
-    this.notifyObservers();
-  }
-
-  setEditorZoom(zoom = -1) {
-    this.editorZoom = zoom;
-    this.notifyObservers();
-  }
-
-  setEditorPosition(x = -1, y = -1) {
-    this.editorPosition = { x: x, y: y };
     this.notifyObservers();
   }
 

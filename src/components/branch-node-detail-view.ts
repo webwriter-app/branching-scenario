@@ -149,13 +149,12 @@ export class BranchNodeDetailView extends LitElementWw {
                              class="ruleItem"
                              id="horizontal-stack-${index}"
                              draggable="true"
-                             @dragstart=${(e: DragEvent) =>
-                               this._onDragStart(e, index)}
+                             @dragstart=${() => this._onDragStart(index)}
                              @dragend=${this._onDragEnd}
                              @dragover=${(e: DragEvent) =>
                                this._onDragOver(e, index)}
                              @dragleave=${(e: DragEvent) =>
-                               this._onDragLeave(e, index)}
+                               this._onDragLeave(e)}
                              @drop=${(e: DragEvent) => this._onDrop(e)}
                            >
                              <div
@@ -365,7 +364,7 @@ export class BranchNodeDetailView extends LitElementWw {
     `;
   }
 
-  private _onDragStart(event: DragEvent, index: number) {
+  private _onDragStart(index: number) {
     this.draggedIndex = index;
 
     const stackElement = this.shadowRoot?.getElementById(
@@ -400,7 +399,7 @@ export class BranchNodeDetailView extends LitElementWw {
     this.requestUpdate();
   }
 
-  private _onDragLeave(event: DragEvent, index: number) {
+  private _onDragLeave(event: DragEvent) {
     event.preventDefault();
 
     this.hoveredDividerIndex = -1;

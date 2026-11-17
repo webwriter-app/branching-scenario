@@ -423,7 +423,7 @@ export class GamebookEditorController implements ReactiveController {
     this.host.requestUpdate(); // Update the host component after changes
   };
 
-  _unselectConnectionButton = (event: CustomEvent) => {
+  _unselectConnectionButton = () => {
     this.host.requestUpdate(); // Update the host component after changes
   };
 

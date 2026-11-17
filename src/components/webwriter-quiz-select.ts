@@ -6,12 +6,10 @@ import { repeat } from "lit/directives/repeat.js";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import SlSelect from "@shoelace-style/shoelace/dist/components/select/select.component.js";
 import SlOption from "@shoelace-style/shoelace/dist/components/option/option.component.js";
-import SlDivider from "@shoelace-style/shoelace/dist/components/divider/divider.component.js";
 import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
 import SlInput from "@shoelace-style/shoelace/dist/components/input/input.component.js";
 
 import helpOctagon from "@tabler/icons/outline/help-octagon.svg";
-import textSize from "@tabler/icons/outline/text-size.svg";
 import file from "@tabler/icons/outline/file.svg";
 import squares from "@tabler/icons/outline/squares.svg";
 
