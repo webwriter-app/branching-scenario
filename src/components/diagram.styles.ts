@@ -17,7 +17,7 @@ export default css`
   /* Nodes */
 
   ww-node {
-    --kind: #3077ba;
+    --kind: var(--ww-theme-accent-1, #3077ba);
     --tint: #f4faff;
     display: block;
     min-width: 320px;
@@ -31,12 +31,12 @@ export default css`
   }
 
   ww-node.popup {
-    --kind: #9762b4;
+    --kind: var(--ww-theme-accent-2, #9762b4);
     --tint: #fbf4fe;
   }
 
   ww-node.branch {
-    --kind: #05ae9e;
+    --kind: var(--ww-theme-accent-3, #05ae9e);
     --tint: #f4fffe;
   }
 

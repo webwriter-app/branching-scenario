@@ -3,19 +3,17 @@ import { css } from "lit";
 export default css`
   .controls {
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
     justify-content: flex-end;
     align-items: center; /* Center items vertically */
+    gap: 6px 8px;
 
     width: 100%;
 
     box-sizing: border-box;
     border-bottom: 1px solid #e4e4e4;
 
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px 15px;
 
     font-size: 20px;
     font-weight: bold;
@@ -29,7 +27,14 @@ export default css`
     flex-direction: row;
     justify-content: start;
     align-items: center; /* Center items vertically */
-    margin-right: auto; // Push this item to the start
+    margin-right: auto; /* Push this item to the start */
+    flex: 1 1 9rem;
+    min-width: 0;
+  }
+
+  .first-item sl-input {
+    flex: 1;
+    min-width: 0;
   }
 
   .iconButton {

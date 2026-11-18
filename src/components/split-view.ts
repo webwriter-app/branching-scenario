@@ -75,6 +75,7 @@ export class SplitView extends LitElementWw {
       .divider {
         position: relative;
         cursor: row-resize;
+        touch-action: none;
         display: flex;
         align-items: center;
         justify-content: center; /* Center the grip icon */
@@ -93,6 +94,14 @@ export class SplitView extends LitElementWw {
       .icon {
         color: #52525b;
       }
+      .grip {
+        display: flex;
+        padding: 4px 24px;
+        border-radius: 4px;
+      }
+      .grip:focus-visible {
+        outline: 2px solid var(--ww-theme-accent-1, #0084c7);
+      }
       .dragging {
         color: #0084c7;
       }
@@ -110,6 +119,7 @@ export class SplitView extends LitElementWw {
   accessor maxStart = 350;
 
   @state() accessor isDragging = false;
+  @state() accessor dividerValue = 0;
   @state() accessor initialY = 0;
   @state() accessor startHeight = 0;
   @state() accessor previousHeight = 350;
@@ -144,56 +154,62 @@ export class SplitView extends LitElementWw {
     if (this.isConnected) this.endResizeObserver.observe(this.itemEnd!);
   }
 
-  private onMouseDown(event: MouseEvent) {
+  private onPointerDown(event: PointerEvent) {
     if (this.editorStore.editorIsCollapsed) return; // Prevent dragging when collapsed
+    if (event.button !== 0 || (event.target as Element).closest?.(".collapse-button")) return;
 
     this.isDragging = true;
     this.initialY = event.clientY;
-
-    const itemStart = this.itemStart;
-    this.startHeight = itemStart.getBoundingClientRect().height;
+    this.startHeight = this.itemStart.getBoundingClientRect().height;
 
     // Remove the transition during dragging to avoid animation
-    itemStart.classList.remove("collapsed", "expanded");
-
-    // Add global listeners
-    this.addEventListener("mousemove", this.onMouseMove);
-    this.addEventListener("mouseup", this.onMouseUp);
-    this.addEventListener("mouseleave", this.onMouseUp);
+    this.itemStart.classList.remove("collapsed", "expanded");
+    // Capture keeps the drag going outside the divider; a pointer that is already gone has nothing to capture.
+    try { (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId); } catch {}
   }
 
-  private onMouseUp(_event: MouseEvent) {
+  private onPointerUp() {
+    if (!this.isDragging) return;
     this.isDragging = false;
+    this.commitHeight();
+  }
 
-    // Remove global listeners
-    this.removeEventListener("mousemove", this.onMouseMove);
-    this.removeEventListener("mouseup", this.onMouseUp);
-    this.removeEventListener("mouseleave", this.onMouseUp);
+  private onPointerMove(event: PointerEvent) {
+    if (!this.isDragging) return;
+    this.setStartHeight(this.startHeight + event.clientY - this.initialY);
+  }
 
-    // Update the dividerPosition property to reflect the new height
+  /** The arrow keys move the divider, Home and End go to the limits. */
+  private onDividerKeydown(event: KeyboardEvent) {
+    if (this.editorStore.editorIsCollapsed) return;
+    const step = event.shiftKey ? 40 : 10;
+    const current = this.itemStart.getBoundingClientRect().height;
+    const target =
+      event.key === "ArrowUp" ? current - step
+      : event.key === "ArrowDown" ? current + step
+      : event.key === "Home" ? this.minStart
+      : event.key === "End" ? this.maxStart
+      : undefined;
+    if (target === undefined) return;
+    event.preventDefault();
+    this.itemStart.classList.remove("collapsed", "expanded");
+    this.setStartHeight(target);
+    this.commitHeight();
+  }
+
+  /** Sets the height of the upper part within its bounds and sizes the panel to it. */
+  private setStartHeight(height: number) {
+    const newHeight = Math.max(this.minStart, Math.min(height, this.maxStart));
+    this.itemStart.style.height = `${newHeight}px`;
+    this.splitPanel.style.height = `${newHeight + this.itemEndHeight() + DIVIDER_HEIGHT}px`;
+    this.dividerValue = Math.round(newHeight);
+  }
+
+  private commitHeight() {
     const itemStart = this.itemStart;
     this.editorStore.setDividerPosition(itemStart.style.height
       ? parseInt(itemStart.style.height)
       : this.startHeight);
-  }
-
-  private onMouseMove(event: MouseEvent) {
-    if (!this.isDragging) return;
-
-    const deltaY = event.clientY - this.initialY;
-    let newHeight = this.startHeight + deltaY;
-
-    // Ensure the height is within the min and max bounds
-    newHeight = Math.max(this.minStart, Math.min(newHeight, this.maxStart));
-
-    const itemStart = this.itemStart;
-    const splitPanel = this.splitPanel;
-
-    itemStart.style.height = `${newHeight}px`;
-
-    // Adjust the height of the entire splitPanel accordingly
-    const totalHeight = newHeight + this.itemEndHeight() + DIVIDER_HEIGHT;
-    splitPanel.style.height = `${totalHeight}px`;
   }
 
   private itemEndHeight() {
@@ -236,11 +252,20 @@ export class SplitView extends LitElementWw {
     return html`
       <div class="splitPanel">
         <div class="itemStart"><slot name="start"></slot></div>
-        <div class="divider" @mousedown=${this.onMouseDown}>
-          <sl-icon
-            src=${gripHorizontal}
-            class="${this.isDragging ? "dragging" : "icon"}"
-          ></sl-icon>
+        <div class="divider"
+          @pointerdown=${this.onPointerDown} @pointermove=${this.onPointerMove}
+          @pointerup=${this.onPointerUp} @pointercancel=${this.onPointerUp}>
+          <div
+            class="grip ${this.isDragging ? "dragging" : "icon"}"
+            role="separator"
+            aria-orientation="horizontal"
+            aria-label=${this.messages.msg("Resize")}
+            aria-valuemin=${this.minStart}
+            aria-valuemax=${this.maxStart}
+            aria-valuenow=${this.dividerValue || this.editorStore.dividerPosition}
+            tabindex=${this.editorStore.editorIsCollapsed ? -1 : 0}
+            @keydown=${this.onDividerKeydown}
+          ><sl-icon src=${gripHorizontal}></sl-icon></div>
           <sl-button
             class="collapse-button"
             @click=${this.toggleCollapse}

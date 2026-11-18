@@ -5,6 +5,7 @@ import "@shoelace-style/shoelace/dist/themes/light.css";
 import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
 import gripHorizontal from "@tabler/icons/outline/grip-horizontal.svg";
 import { consume } from "@lit/context";
+import { widgetMsg } from "@webwriter/lit/localize";
 import { editorState, GamebookEditorState } from "./gamebook-editor-state-context";
 
 const DIVIDER_HEIGHT = 30;
@@ -31,6 +32,7 @@ export class VerticalResizeView extends LitElementWw {
       .divider {
         height: ${DIVIDER_HEIGHT}px;
         cursor: row-resize;
+        touch-action: none;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -41,10 +43,20 @@ export class VerticalResizeView extends LitElementWw {
       .icon {
         color: #52525b;
       }
+      .grip {
+        display: flex;
+        padding: 4px 24px;
+        border-radius: 4px;
+      }
+      .grip:focus-visible {
+        outline: 2px solid var(--ww-theme-accent-1, #0084c7);
+      }
       .dragging {
         color: #0084c7;
       }
 `;
+
+  protected readonly messages = { msg: widgetMsg(this) };
 
   @property({ type: Number, attribute: true, reflect: true })
   accessor minHeight = 175;
@@ -64,53 +76,70 @@ export class VerticalResizeView extends LitElementWw {
     this.style.setProperty("--content-height", `${this.startHeight}px`);
   }
 
-  private onMouseDown(event: MouseEvent) {
+  private onPointerDown(event: PointerEvent) {
+    if (event.button !== 0) return;
     event.preventDefault();
 
     this.isDragging = true;
     this.initialY = event.clientY;
-    this.startHeight = this.style.getPropertyValue("--content-height")
-      ? parseInt(this.style.getPropertyValue("--content-height"))
-      : this.clientHeight;
-
-    this.addEventListener("mousemove", this.onMouseMove);
-    this.addEventListener("mouseup", this.onMouseUp);
-    this.addEventListener("mouseleave", this.onMouseUp);
+    this.startHeight = this.currentHeight();
+    // Capture keeps the drag going outside the divider; a pointer that is already gone has nothing to capture.
+    try { (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId); } catch {}
   }
 
-  private onMouseUp() {
+  private onPointerUp() {
     if (!this.isDragging) return;
-
     this.isDragging = false;
-    this.removeEventListener("mousemove", this.onMouseMove);
-    this.removeEventListener("mouseup", this.onMouseUp);
-    this.removeEventListener("mouseleave", this.onMouseUp);
-
-    const currentHeight = parseInt(
-      this.style.getPropertyValue("--content-height") || "400"
-    );
-    this.editorStore.setDetailViewHeight(currentHeight);
+    this.editorStore.setDetailViewHeight(this.currentHeight());
   }
 
-  private onMouseMove(event: MouseEvent) {
+  private onPointerMove(event: PointerEvent) {
     if (!this.isDragging) return;
+    this.setHeight(this.startHeight + event.clientY - this.initialY);
+  }
 
-    const deltaY = event.clientY - this.initialY;
+  /** The arrow keys change the height, Home and End go to the limits. */
+  private onKeydown(event: KeyboardEvent) {
+    const step = event.shiftKey ? 100 : 20;
+    const current = this.currentHeight();
+    const target =
+      event.key === "ArrowUp" ? current - step
+      : event.key === "ArrowDown" ? current + step
+      : event.key === "Home" ? this.minHeight
+      : event.key === "End" ? this.maxHeight
+      : undefined;
+    if (target === undefined) return;
+    event.preventDefault();
+    this.setHeight(target);
+    this.editorStore.setDetailViewHeight(this.currentHeight());
+  }
 
-    let newHeight = this.startHeight + deltaY;
-    newHeight = Math.max(this.minHeight, Math.min(newHeight, this.maxHeight));
-    this.style.setProperty("--content-height", `${newHeight}px`);
+  private currentHeight() {
+    const value = this.style.getPropertyValue("--content-height");
+    return value ? parseInt(value) : this.clientHeight || 400;
+  }
+
+  private setHeight(height: number) {
+    this.style.setProperty("--content-height", `${Math.max(this.minHeight, Math.min(height, this.maxHeight))}px`);
   }
 
   render() {
     return html`
       <div class="container">
         <div class="content"><slot></slot></div>
-        <div class="divider" @mousedown=${this.onMouseDown}>
-          <sl-icon
-            src=${gripHorizontal}
-            class="${this.isDragging ? "dragging" : "icon"}"
-          ></sl-icon>
+        <div class="divider" @pointerdown=${this.onPointerDown} @pointermove=${this.onPointerMove}
+          @pointerup=${this.onPointerUp} @pointercancel=${this.onPointerUp}>
+          <div
+            class="grip ${this.isDragging ? "dragging" : "icon"}"
+            role="separator"
+            aria-orientation="horizontal"
+            aria-label=${this.messages.msg("Resize")}
+            aria-valuemin=${this.minHeight}
+            aria-valuemax=${this.maxHeight}
+            aria-valuenow=${this.currentHeight()}
+            tabindex="0"
+            @keydown=${this.onKeydown}
+          ><sl-icon src=${gripHorizontal}></sl-icon></div>
         </div>
       </div>
     `;

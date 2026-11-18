@@ -13,13 +13,16 @@ export default css`
     box-sizing: border-box;
     overflow: hidden;
     border: 1px solid #e4e4e4;
+    container-type: inline-size;
+    color: var(--ww-text-color, inherit);
+    font-family: var(--ww-font-family, inherit);
   }
 
   .titlebar {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
     width: 100%;
     background-color: white;
-    color: #3f3f46;
+    color: var(--ww-text-color, #3f3f46);
     border-bottom: 1px solid #e4e4e4;
     padding: 10px;
   }
@@ -31,6 +34,7 @@ export default css`
 
     box-sizing: border-box;
     font-size: 22px;
+    overflow-wrap: anywhere;
 
     padding-top: 10px;
     padding-left: 10px;
@@ -49,6 +53,7 @@ export default css`
 
   .pageTitle {
     font-size: 14px;
+    overflow-wrap: anywhere;
 
     height: auto;
     display: flex;
@@ -89,6 +94,17 @@ export default css`
     z-index: 1; /* Ensure content in page appears above the overlay */
   }
 
+  .page:focus-visible {
+    outline: 2px solid var(--ww-theme-accent-1, #0084c7);
+    outline-offset: -2px;
+  }
+
+  @container (max-width: 480px) {
+    .titlebar { padding: 8px; }
+    .surrounding { padding: 4px; }
+    .page { height: min(700px, 75vh); min-height: 18rem; }
+  }
+
   .page[data-popup-open] { overflow-y: hidden; }
 
   ::slotted(webwriter-gamebook-popup) { position: static !important; }
@@ -104,5 +120,36 @@ export default css`
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
     z-index: 100;
+  }
+
+  @media print {
+    :host {
+      overflow: visible;
+      border: 0;
+      max-width: none;
+    }
+
+    .titlebar {
+      box-shadow: none;
+      break-after: avoid;
+    }
+
+    .surrounding {
+      display: block;
+      padding: 0;
+      box-shadow: none;
+      background: none;
+    }
+
+    .page {
+      height: auto;
+      min-height: 0;
+      overflow: visible;
+      box-shadow: none;
+    }
+
+    .overlay {
+      display: none;
+    }
   }
 `;

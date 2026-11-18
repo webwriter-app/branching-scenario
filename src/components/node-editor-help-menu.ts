@@ -32,7 +32,7 @@ export class NodeEditorHelpMenu extends LitElementWw {
     return html` ${this.showWindow
       ? html`
     <div class="help">
-      <div class="close-icon" @click="${this.toggleWindow}">x</div>
+      <button class="close-icon" aria-label=${this.messages.msg("Close")} @click="${this.toggleWindow}">x</button>
       <div class="column">
         <div class="help-item">
           <sl-icon src=${mouseLeft}></sl-icon>
@@ -68,6 +68,7 @@ export class NodeEditorHelpMenu extends LitElementWw {
             <sl-icon-button
               class="helpIcon"
               src=${questionMark}
+              label=${this.messages.msg("Shortcuts")}
               @click="${this.toggleWindow}"
             ></sl-icon-button>
           </sl-tooltip>

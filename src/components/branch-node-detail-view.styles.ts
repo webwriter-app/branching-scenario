@@ -97,13 +97,19 @@ export default css`
 
     box-sizing: border-box;
     width: 100%;
-    height: 150px;
+    min-height: 150px;
+    flex-wrap: wrap;
 
     gap: 15px;
     padding: 15px;
 
     background-color: white;
     border-bottom: 1px solid #d4d4d8;
+  }
+
+  .inputOutputControls > node-connection-list {
+    flex: 1 1 12rem;
+    min-width: 0;
   }
 
   .div-title {
@@ -121,6 +127,8 @@ export default css`
   }
 
   .inputOutputControls {
+    flex-wrap: wrap;
+    row-gap: 8px;
     max-width: 190px;
     width: 100%;
     height: 100%;

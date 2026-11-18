@@ -1,0 +1,67 @@
+{
+  "format": "webwriter-branching-scenario",
+  "version": 1,
+  "title": "Tiny Tale",
+  "graph": {
+    "drawflow": {
+      "Home": {
+        "data": {
+          "1": {
+            "id": 1,
+            "data": {
+              "title": "Start"
+            },
+            "class": "origin",
+            "typenode": false,
+            "inputs": {
+              "input_1": {
+                "connections": []
+              }
+            },
+            "outputs": {
+              "output_1": {
+                "connections": [
+                  {
+                    "node": "2",
+                    "output": "input_1"
+                  }
+                ]
+              }
+            },
+            "pos_x": 0,
+            "pos_y": 0
+          },
+          "2": {
+            "id": 2,
+            "data": {
+              "title": "Finish"
+            },
+            "class": "page",
+            "typenode": false,
+            "inputs": {
+              "input_1": {
+                "connections": [
+                  {
+                    "node": "1",
+                    "input": "output_1"
+                  }
+                ]
+              }
+            },
+            "outputs": {
+              "output_1": {
+                "connections": []
+              }
+            },
+            "pos_x": 300,
+            "pos_y": 40
+          }
+        }
+      }
+    }
+  },
+  "containers": [
+    "<webwriter-gamebook-page drawflownodeid=\"1\" pagetitle=\"Start\" originpage=\"1\" branchesoff=\"-1\"><p>Once upon a time.</p><webwriter-gamebook-button identifier=\"1-output_1-2-input_1\" datatargetid=\"2\" name=\"Go on\"></webwriter-gamebook-button></webwriter-gamebook-page>",
+    "<webwriter-gamebook-page drawflownodeid=\"2\" pagetitle=\"Finish\" originpage=\"0\" branchesoff=\"-1\"><p>The end.</p></webwriter-gamebook-page>"
+  ]
+}

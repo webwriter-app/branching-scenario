@@ -72,14 +72,35 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 22px;
-    height: 22px;
+    width: 28px;
+    height: 28px;
     padding: 0;
     border: 2px solid #b94543;
     border-radius: 50%;
     background: #b94543;
     color: white;
     cursor: pointer;
+  }
+
+  @media (pointer: coarse) {
+    .deleteButton {
+      width: 44px;
+      height: 44px;
+    }
+  }
+
+  .deleteButton:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+  }
+
+  @media print {
+    node-editor-toolbar,
+    .zoomControls,
+    .zoomValue,
+    .deleteButton {
+      display: none;
+    }
   }
 
   sl-dialog::part(base) {

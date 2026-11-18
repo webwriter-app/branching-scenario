@@ -41,6 +41,16 @@ export class WebwriterGamebookPopup extends GamebookContainer {
       padding: 0;
     }
 
+    ::slotted(img),
+    ::slotted(video) {
+      max-width: 100%;
+      height: auto;
+    }
+
+    @media print {
+      .page { padding: 0.5rem 0; }
+    }
+
     /* Base style for the close button visibility */
     sl-dialog::part(close-button) {
       display: var(--close-button-display, flex);

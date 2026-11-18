@@ -494,7 +494,7 @@ export class NodeEditor extends LitElementWw {
         ></node-editor-toolbar>
 
         ${this.menu
-          ? html`<button class="deleteButton" style="left: ${this.menu.x}px; top: ${this.menu.y}px" @click=${() => this.#deleteSelected()}>
+          ? html`<button class="deleteButton" aria-label=${this.messages.msg("Delete")} style="left: ${this.menu.x}px; top: ${this.menu.y}px" @click=${() => this.#deleteSelected()}>
               <sl-icon src=${closeIcon}></sl-icon>
             </button>`
           : nothing}
@@ -504,6 +504,7 @@ export class NodeEditor extends LitElementWw {
             <sl-icon-button
               id="jumpToOriginBtn"
               src=${mapPin}
+              label=${this.messages.msg("Jump to origin node")}
               style="font-size: 18px;"
               @click=${() => {
                 const origin = this.#nodeAt(this.diagram.originId ?? -1);
@@ -512,8 +513,8 @@ export class NodeEditor extends LitElementWw {
             ></sl-icon-button>
           </sl-tooltip>
           <sl-divider vertical style="height: 20px; margin: 2px;"></sl-divider>
-          <sl-icon-button id="zoomInBtn" src=${zoomIn} style="font-size: 18px;" @click=${() => view.zoomBy(ZOOM_STEP)}></sl-icon-button>
-          <sl-icon-button id="zoomOutBtn" src=${zoomOut} style="font-size: 18px;" @click=${() => view.zoomBy(1 / ZOOM_STEP)}></sl-icon-button>
+          <sl-icon-button id="zoomInBtn" src=${zoomIn} label=${this.messages.msg("Zoom in")} style="font-size: 18px;" @click=${() => view.zoomBy(ZOOM_STEP)}></sl-icon-button>
+          <sl-icon-button id="zoomOutBtn" src=${zoomOut} label=${this.messages.msg("Zoom out")} style="font-size: 18px;" @click=${() => view.zoomBy(1 / ZOOM_STEP)}></sl-icon-button>
         </div>
 
         <div class="zoomValue"><p>${percent}%</p></div>

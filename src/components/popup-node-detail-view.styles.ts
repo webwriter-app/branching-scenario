@@ -110,7 +110,8 @@ export default css`
 
     box-sizing: border-box;
     width: 100%;
-    height: 150px;
+    min-height: 150px;
+    flex-wrap: wrap;
 
     gap: 15px;
     padding: 15px;
@@ -123,6 +124,8 @@ export default css`
   }
 
   .inputOutputControls {
+    flex-wrap: wrap;
+    row-gap: 8px;
     width: 100%;
     height: 100%;
     display: flex;
@@ -134,6 +137,11 @@ export default css`
   node-connection-list {
     height: 100%; /* Adjust as needed */
     flex: 1; /* This makes the node-connection-list elements take up remaining space evenly */
+  }
+
+  .inputOutputControls > node-connection-list {
+    flex: 1 1 12rem;
+    min-width: 0;
   }
 
   .div-title {

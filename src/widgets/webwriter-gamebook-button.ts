@@ -3,6 +3,7 @@ import { localizer } from "@webwriter/lit/localize";
 import { localizeOptions } from "../model/localization";
 import { buttonOptions } from "../model/button-options";
 import { html, css } from "lit";
+import buttonStyles from "../components/gamebook-button.styles";
 import { customElement, property, query } from "lit/decorators.js";
 
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -18,7 +19,7 @@ export class WebwriterGamebookButton extends LitElementWw {
   static scopedElements = { "sl-button": SlButton };
 
   /** @internal */
-  static styles = css`
+  static styles = [buttonStyles, css`
     :host(.highlighted) {
       border: 1px dashed #38bdf8;
       -webkit-box-shadow: 0 4px 30px 4px #c0c0c0;
@@ -39,7 +40,7 @@ export class WebwriterGamebookButton extends LitElementWw {
       display: block;
       margin-block: 1em;
     }
-  `;
+  `];
 
   static options = buttonOptions;
 

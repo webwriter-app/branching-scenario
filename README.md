@@ -15,6 +15,16 @@ Create adaptable learning experiences by authoring a gamebook, where you present
 ## `WebwriterBranchingScenario` (`<webwriter-branching-scenario>`)
 This widget allows for the creation and editing of branching gamebooks. These are adaptable learning experiences, where you present the student with choices on how to continue.
 
+Input: the node diagram works with mouse, touch (drag, long press for the context menu) and keyboard (arrow keys and Enter on nodes, Delete to remove); the dividers between editor and detail view are separators that drag and take the arrow keys. Readers choose with the buttons on a page.
+
+Layout: designed for container widths of 300 px to 2100 px.
+
+Conversions: the scenario exports as a JSON file (`.json`, lossless: title, graph and the markup of every page, popup and branch) and imports the same file; the import replaces the pages, popups and branches of the scenario after the whole file has been checked. It also exports a Twee 3 story (`.twee`, for Twine: one passage per node with its text and `[[label->passage]]` links, positions and the start passage; formatting, media, quizzes and branching rules are not carried) and, as a native conversion, a series of `section` elements (pages and popups with their text and a list of links for the choices; branches are left out).
+
+Signals: `page` is the title of the page the reader is on (an empty string in edit mode) and `ended` is true when that page offers no choice. Another widget can show them with `effect="#id[page]"`.
+
+Print: the current page is printed with its choices as outlined buttons; in edit mode a note is printed instead of the editor.
+
 ### Usage
 
 Use with a CDN (e.g. [jsdelivr](https://jsdelivr.com)):
@@ -40,9 +50,12 @@ npm install @webwriter/branching-scenario
 | Name (Attribute Name) | Type | Description | Default | Reflects |
 | :-------------------: | :--: | :---------: | :-----: | :------: |
 | `WebwriterBranchingScenario.actions` | `object` | - | `{ configureScenario: { label: (widget: { msg: MsgFn }) => widget.msg("Scenario options") }, }` | ✗ |
+| `WebwriterBranchingScenario.convertFrom` | `object` | - | `{ ".json": "importJson" }` | ✗ |
+| `WebwriterBranchingScenario.convertTo` | `object` | - | `{ ".json": "exportJson", ".twee": "exportTwee", section: "toSections" }` | ✗ |
 | `msg` | - | - | - | ✗ |
 | `editorState` | - | The state of the editor in a stringified JSON format | `new GamebookEditorState("")` | ✗ |
 | `nodeEditor` | `NodeEditor` | The node editor component | - | ✗ |
+| `signals` | `object` | What other widgets can read: the reader's current page and whether it has no choice left. | `{ page: computed(() => this.#page.get()), ended: computed(() => this.#ended.get()), }` | ✗ |
 
 *Fields including [properties](https://developer.mozilla.org/en-US/docs/Glossary/Property/JavaScript) and [attributes](https://developer.mozilla.org/en-US/docs/Glossary/Attribute) define the current state of the widget and offer customization options.*
 
@@ -50,18 +63,45 @@ npm install @webwriter/branching-scenario
 | Name | Description | Parameters |
 | :--: | :---------: | :-------: |
 | `configureScenario` | - | -
+| `exportJson` | Exports the scenario as JSON, including the markup of its pages. | -
+| `exportTwee` | Exports the scenario as a Twee 3 story. | -
+| `toSections` | Converts the pages and popups to `section` elements. | -
+| `importJson` | Reads a scenario file. Nothing changes until the returned function runs. | `file: File`
 
 *[Methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Method_definitions) allow programmatic access to the widget.*
+
+## Custom CSS properties
+| Name | Description |
+| :--: | :---------: |
+| --ww-text-color | Text color. |
+| --ww-font-family | Font family. |
+| --ww-theme-accent-1 | Page nodes in the editor and the focus ring of the dividers. |
+| --ww-theme-accent-2 | Popup nodes in the editor. |
+| --ww-theme-accent-3 | Branch nodes in the editor. |
+
+*[Custom CSS properties](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascading_variables/Using_CSS_custom_properties) offer defined customization of the widget's style.*
+
+## CSS parts
+| Name | Description |
+| :--: | :---------: |
+| gamebook | The reading view of the gamebook, with title and page. |
+| title | The title of the gamebook. |
+| page-title | The title of the current page. |
+| page | The scrolling area that shows the current page. |
+
+*[CSS parts](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_shadow_parts) allow freely styling internals of the widget with CSS.*
 
 ## Editing config
 | Name | Value |
 | :--: | :---------: |
 | `definingAsContext` | `true` |
 | `content` | `(webwriter-gamebook-page \| webwriter-gamebook-popup \| webwriter-gamebook-branch)*` |
+| `importFormats` | `.json` |
+| `exportFormats` | `.json,.twee` |
 
 *The [editing config](https://webwriter.app/docs/packages/configuring/#editingconfig) defines how explorable authoring tools such as [WebWriter](https://webwriter.app) treat the widget.*
 
-*No public slots, events, custom CSS properties, or CSS parts.*
+*No public slots, or events.*
 
 
 ## `WebwriterGamebookBranch` (`<webwriter-gamebook-branch>`)

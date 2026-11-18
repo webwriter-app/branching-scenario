@@ -5,6 +5,7 @@ import SlAlert from "@shoelace-style/shoelace/dist/components/alert/alert.compon
 import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
 import alertOctagon from "@tabler/icons/outline/alert-octagon.svg";
 import styles from "./webwriter-gamebook-viewer.styles";
+import type { WebwriterBranchingScenario } from "../widgets/webwriter-branching-scenario";
 import type { WebwriterGamebookPage } from "../widgets/webwriter-gamebook-page";
 import type { WebwriterGamebookPopup } from "../widgets/webwriter-gamebook-popup";
 import type { WebwriterGamebookBranch } from "../widgets/webwriter-gamebook-branch";
@@ -39,7 +40,7 @@ export class WebWriterGamebookViewer extends LitElementWw {
   @state() private accessor error: WebwriterGamebookBranch | undefined;
 
   @query(".page") private accessor pageViewer: HTMLElement;
-  @property({ attribute: false }) accessor scenario: HTMLElement;
+  @property({ attribute: false }) accessor scenario: WebwriterBranchingScenario;
 
   private get gamebookContainers(): Container[] {
     return Array.from(this.scenario.children).filter(
@@ -51,7 +52,15 @@ export class WebWriterGamebookViewer extends LitElementWw {
     return this.popup ?? this.page;
   }
 
+  protected updated() {
+    if (!this.isConnected) return;
+    const page = this.page;
+    const ended = !!page && !this.popup && !page.querySelector(`:scope > ${buttonSelector}`);
+    this.scenario?.setReaderState(page?.getAttribute("pagetitle") ?? "", ended);
+  }
+
   disconnectedCallback() {
+    this.scenario?.setReaderState("", false);
     this.closePopup();
     super.disconnectedCallback();
   }
@@ -190,11 +199,11 @@ export class WebWriterGamebookViewer extends LitElementWw {
   render() {
     return html`
       <header class="titlebar">
-        <p class="gamebookTitle">${this.gamebookTitle}</p>
-        <p class="pageTitle">${this.page?.getAttribute("pagetitle")}</p>
+        <p class="gamebookTitle" part="title">${this.gamebookTitle}</p>
+        <p class="pageTitle" part="page-title">${this.page?.getAttribute("pagetitle")}</p>
       </header>
       <div class="surrounding">
-        <div class="page" ?data-popup-open=${this.popup}
+        <div class="page" part="page" ?data-popup-open=${this.popup}
           @click=${this.handleClick} @submit=${this.handleSubmit} @sl-hide=${this.handlePopupHide}>
           <slot @slotchange=${this.syncContainers}></slot>
         </div>

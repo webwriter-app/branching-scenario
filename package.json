@@ -8,9 +8,8 @@
   "repository": "github:@webwriter-app/branching-scenario",
   "keywords": [
     "webwriter-widget",
-    "widget-presentational",
     "widget-practical",
-    "widget-testable",
+    "widget-presentational",
     "isced2011-1",
     "isced2011-2",
     "isced2011-3",
@@ -29,6 +28,24 @@
     "iscedf2013-08",
     "iscedf2013-09",
     "iscedf2013-10",
+    "widget-editable",
+    "widget-has-content",
+    "widget-allows-pointer-input",
+    "widget-allows-keyboard-input",
+    "widget-allows-touch-input",
+    "widget-convertible-to-application/json",
+    "widget-convertible-to-section",
+    "widget-convertible-from-application/json",
+    "widget-responsive",
+    "widget-themeable",
+    "widget-printable",
+    "widget-stateful",
+    "widget-configurable",
+    "widget-reactive",
+    "widget-testable",
+    "gamebook",
+    "branching scenario",
+    "interactive story",
     "widget-lang-en",
     "widget-lang-en-US",
     "widget-lang-en-GB",
@@ -201,6 +218,14 @@
       "source": "./tests/editing.test.ts",
       "default": "./dist/tests/editing.*"
     },
+    "./tests/interaction.*": {
+      "source": "./tests/interaction.test.ts",
+      "default": "./dist/tests/interaction.*"
+    },
+    "./tests/exchange.*": {
+      "source": "./tests/exchange.test.ts",
+      "default": "./dist/tests/exchange.*"
+    },
     "./tests/localization.*": {
       "source": "./tests/localization.test.ts",
       "default": "./dist/tests/localization.*"
@@ -214,7 +239,14 @@
     ".": {},
     "./widgets/webwriter-branching-scenario": {
       "definingAsContext": true,
-      "content": "(webwriter-gamebook-page | webwriter-gamebook-popup | webwriter-gamebook-branch)*"
+      "content": "(webwriter-gamebook-page | webwriter-gamebook-popup | webwriter-gamebook-branch)*",
+      "importFormats": [
+        ".json"
+      ],
+      "exportFormats": [
+        ".json",
+        ".twee"
+      ]
     },
     "./widgets/webwriter-gamebook-page": {
       "draggable": false,

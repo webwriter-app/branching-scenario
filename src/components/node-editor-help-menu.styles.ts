@@ -47,11 +47,20 @@ export default css`
 
   .close-icon {
     position: absolute;
-    top: 1px;
-    right: 5px;
-    font-size: 10px;
-    aspect-ratio: 1;
+    top: 0;
+    right: 0;
+    min-width: 24px;
+    min-height: 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-size: 12px;
     cursor: pointer;
+  }
+
+  .close-icon:focus-visible {
+    outline: 2px solid var(--ww-theme-accent-1, #0084c7);
   }
 
   .column {

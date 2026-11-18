@@ -8,8 +8,48 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "This widget allows for the creation and editing of branching gamebooks. These are adaptable learning experiences, where you present the student with choices on how to continue.",
+          "description": "This widget allows for the creation and editing of branching gamebooks. These are adaptable learning experiences, where you present the student with choices on how to continue.\n\nInput: the node diagram works with mouse, touch (drag, long press for the context menu) and keyboard (arrow keys and Enter on nodes, Delete to remove); the dividers between editor and detail view are separators that drag and take the arrow keys. Readers choose with the buttons on a page.\n\nLayout: designed for container widths of 300 px to 2100 px.\n\nConversions: the scenario exports as a JSON file (`.json`, lossless: title, graph and the markup of every page, popup and branch) and imports the same file; the import replaces the pages, popups and branches of the scenario after the whole file has been checked. It also exports a Twee 3 story (`.twee`, for Twine: one passage per node with its text and `[[label->passage]]` links, positions and the start passage; formatting, media, quizzes and branching rules are not carried) and, as a native conversion, a series of `section` elements (pages and popups with their text and a list of links for the choices; branches are left out).\n\nSignals: `page` is the title of the page the reader is on (an empty string in edit mode) and `ended` is true when that page offers no choice. Another widget can show them with `effect=\"#id[page]\"`.\n\nPrint: the current page is printed with its choices as outlined buttons; in edit mode a note is printed instead of the editor.",
           "name": "WebwriterBranchingScenario",
+          "cssProperties": [
+            {
+              "description": "Text color.",
+              "name": "--ww-text-color"
+            },
+            {
+              "description": "Font family.",
+              "name": "--ww-font-family"
+            },
+            {
+              "description": "Page nodes in the editor and the focus ring of the dividers.",
+              "name": "--ww-theme-accent-1"
+            },
+            {
+              "description": "Popup nodes in the editor.",
+              "name": "--ww-theme-accent-2"
+            },
+            {
+              "description": "Branch nodes in the editor.",
+              "name": "--ww-theme-accent-3"
+            }
+          ],
+          "cssParts": [
+            {
+              "description": "The reading view of the gamebook, with title and page.",
+              "name": "gamebook"
+            },
+            {
+              "description": "The title of the gamebook.",
+              "name": "title"
+            },
+            {
+              "description": "The title of the current page.",
+              "name": "page-title"
+            },
+            {
+              "description": "The scrolling area that shows the current page.",
+              "name": "page"
+            }
+          ],
           "members": [
             {
               "kind": "field",
@@ -19,6 +59,24 @@
               },
               "static": true,
               "default": "{ configureScenario: { label: (widget: { msg: MsgFn }) => widget.msg(\"Scenario options\") }, }"
+            },
+            {
+              "kind": "field",
+              "name": "convertFrom",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ \".json\": \"importJson\" }"
+            },
+            {
+              "kind": "field",
+              "name": "convertTo",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ \".json\": \"exportJson\", \".twee\": \"exportTwee\", section: \"toSections\" }"
             },
             {
               "kind": "field",
@@ -67,6 +125,26 @@
               },
               "privacy": "private",
               "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#page",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#ended",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "signals",
+              "type": {
+                "text": "object"
+              },
+              "readonly": true,
+              "default": "{ page: computed(() => this.#page.get()), ended: computed(() => this.#ended.get()), }",
+              "description": "What other widgets can read: the reader's current page and whether it has no choice left."
             },
             {
               "kind": "field",
@@ -125,6 +203,72 @@
             {
               "kind": "method",
               "name": "configureScenario"
+            },
+            {
+              "kind": "method",
+              "name": "#authored",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#fileName",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "title",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "extension",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "exportJson",
+              "description": "Exports the scenario as JSON, including the markup of its pages."
+            },
+            {
+              "kind": "method",
+              "name": "exportTwee",
+              "description": "Exports the scenario as a Twee 3 story."
+            },
+            {
+              "kind": "method",
+              "name": "toSections",
+              "description": "Converts the pages and popups to `section` elements."
+            },
+            {
+              "kind": "method",
+              "name": "importJson",
+              "parameters": [
+                {
+                  "name": "file",
+                  "type": {
+                    "text": "File"
+                  }
+                }
+              ],
+              "description": "Reads a scenario file. Nothing changes until the returned function runs."
+            },
+            {
+              "kind": "method",
+              "name": "#isTyping",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "KeyboardEvent"
+                  }
+                }
+              ],
+              "description": "Copy and paste belong to the text when the key goes to an input or to authored content."
             },
             {
               "kind": "field",

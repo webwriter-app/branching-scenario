@@ -43,6 +43,23 @@ export class WebwriterGamebookPage extends GamebookContainer {
       .author-only {
       display: none;
     }
+
+    ::slotted(img),
+    ::slotted(video) {
+      max-width: 100%;
+      height: auto;
+    }
+
+    @container (max-width: 480px) {
+      .page { padding: 12px; }
+    }
+
+    @media print {
+      .page {
+        min-height: 0;
+        padding: 0.5rem 0;
+      }
+    }
   `];
 
   static options = {
